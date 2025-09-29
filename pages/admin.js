@@ -8,7 +8,7 @@ export default function Admin() {
   const [q, setQ] = useState("");
   const [filter, setFilter] = useState("all");
 
-  // ----- Dummy data (replace with Supabase later) -----
+  // ----- Dummy data (swap for Supabase later) -----
   const vendors = useMemo(
     () => [
       { id: "v1", name: "Sunrise Soap Co", email: "hello@sunrise.com", platform: "Shopify", cap: 200, status: "Active" },
@@ -53,15 +53,17 @@ export default function Admin() {
 
   return (
     <main className="min-h-screen bg-white relative overflow-hidden">
-      {/* soft radial background like the landing/onboard */}
+      {/* Soft radial BG like your index.html */}
       <div className="pointer-events-none absolute inset-0 [background:radial-gradient(60%_50%_at_15%_5%,#fff3ea_0%,transparent_60%),radial-gradient(60%_60%_at_100%_0%,#fff6fb_0%,transparent_60%)]" />
 
       <section className="relative z-10 max-w-6xl mx-auto px-6 py-10 md:py-14">
         {/* Header */}
         <header className="flex items-center justify-between mb-6">
           <div>
-            <h1 className="text-3xl md:text-4xl font-semibold text-[#111827]">Tapify Command Center</h1>
-            <p className="text-sm text-gray-500 mt-1">Admin dashboard • Manage vendors, retailers, analytics & more</p>
+            <h1 className="text-3xl md:text-4xl font-semibold text-[#ff7a4a]">Tapify Command Center</h1>
+            <p className="text-sm text-gray-500 mt-1">
+              Admin dashboard • Manage vendors, retailers, analytics & more
+            </p>
           </div>
           <span className="inline-flex items-center rounded-full border border-gray-200 bg-white/90 px-3 py-1 text-xs font-medium text-gray-700">
             v1.1
@@ -110,7 +112,7 @@ export default function Admin() {
           )}
           <button
             onClick={() => alert("Add new (stub)")}
-            className="h-10 rounded-xl bg-[#111827] px-4 text-sm font-semibold text-white hover:scale-[1.02] transition"
+            className="h-10 rounded-xl bg-[#ff6fb3] px-4 text-sm font-semibold text-white hover:scale-[1.02] transition"
           >
             + New
           </button>
@@ -303,7 +305,6 @@ function KPI({ label, value }) {
     </div>
   );
 }
-
 function Th({ children }) {
   return <th className="px-3 py-3 text-xs font-semibold text-gray-600">{children}</th>;
 }
