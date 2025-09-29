@@ -1,3 +1,21 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Optional: light design tokens */
+:root{
+  --bg: #ffffff;
+  --bg-muted: #fafafa;
+  --text: #111827;
+  --text-muted:#6B7280;
+  --brand:#FF7A59;   /* Tapify accent */
+  --brand-2:#6D28D9; /* secondary */
+  --radius: 14px;
+}
+html,body { background: var(--bg); color: var(--text); }
+.container-xl { @apply max-w-6xl mx-auto px-5; }
+.h1 { @apply text-4xl md:text-5xl font-bold tracking-tight; }
+.lead { @apply text-lg text-gray-600; }
+.card { @apply rounded-2xl shadow-sm border border-gray-100 bg-white; }
+.btn { @apply inline-flex items-center rounded-full px-4 py-2 font-medium border border-gray-200 hover:border-gray-300; }
+.btn-primary { @apply bg-black text-white border-black hover:opacity-90; }
