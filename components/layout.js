@@ -2,8 +2,6 @@ import Navbar from './navbar';
 import Footer from './footer';
 
 export default function Layout({ children }) {
-  console.log('Layout rendering'); // DEBUG
-  
   return (
     <div className="flex flex-col min-h-screen">
       <Navbar />
