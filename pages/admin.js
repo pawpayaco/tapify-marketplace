@@ -135,7 +135,7 @@ export default function Admin() {
         setLoadingPayouts(true);
         try {
           const { data, error } = await supabase
-            .from('payouts')
+            .from('payout_jobs')
             .select('*')
             .order('created_at', { ascending: false })
             .limit(10);
@@ -145,7 +145,7 @@ export default function Admin() {
           setPayouts(data || []);
           
           // Calculate total revenue
-          const total = (data || []).reduce((sum, payout) => sum + (payout.amount || 0), 0);
+          const total = (data || []).reduce((sum, payout) => sum + (payout.total_amount || 0), 0);
           setTotalRevenue(total);
         } catch (error) {
           console.error('Error fetching payouts:', error);
@@ -457,7 +457,7 @@ export default function Admin() {
                         {payouts.map((payout) => (
                           <tr key={payout.id} className="border-t border-gray-100 card">
                             <Td>{payout.id}</Td>
-                            <Td className="font-semibold text-green-700">{formatMoney(payout.amount)}</Td>
+                            <Td className="font-semibold text-green-700">{formatMoney(payout.total_amount)}</Td>
                             <Td>
                               <span className={[
                                 "rounded-full px-2 py-0.5 text-[10px] border",
