@@ -3,7 +3,9 @@ import { useMemo, useState, useEffect, useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
-gsap.registerPlugin(ScrollTrigger);
+if (typeof window !== "undefined") {
+  gsap.registerPlugin(ScrollTrigger);
+}
 
 const TABS = ["Vendors", "Retailers", "Analytics", "Sourcers", "UIDs"];
 
@@ -21,25 +23,30 @@ export default function Admin() {
 
   // Animate page load
   useEffect(() => {
-    gsap.from(bgRef.current, { opacity: 0, duration: 1.2, ease: "power2.out" });
-
-    gsap.from(headerRef.current, { opacity: 0, y: -50, duration: 1, ease: "power3.out" });
-
-    gsap.from(tabsRef.current, {
-      opacity: 0,
-      y: 30,
-      stagger: 0.1,
-      delay: 0.5,
-      duration: 0.8,
-      ease: "power2.out",
-    });
-
-    gsap.from(toolbarRef.current, { opacity: 0, y: 40, delay: 1, duration: 0.8, ease: "power2.out" });
+    if (typeof window !== "undefined") {
+      gsap.from(bgRef.current, { opacity: 0, duration: 1.2, ease: "power2.out" });
+      gsap.from(headerRef.current, { opacity: 0, y: -50, duration: 1, ease: "power3.out" });
+      gsap.from(tabsRef.current, {
+        opacity: 0,
+        y: 30,
+        stagger: 0.1,
+        delay: 0.5,
+        duration: 0.8,
+        ease: "power2.out",
+      });
+      gsap.from(toolbarRef.current, {
+        opacity: 0,
+        y: 40,
+        delay: 1,
+        duration: 0.8,
+        ease: "power2.out",
+      });
+    }
   }, []);
 
   // Animate tab content switch
   useEffect(() => {
-    if (contentRef.current) {
+    if (typeof window !== "undefined" && contentRef.current) {
       gsap.fromTo(
         contentRef.current,
         { opacity: 0, scale: 0.97, y: 20 },
@@ -50,15 +57,18 @@ export default function Admin() {
 
   // Scroll-trigger reveals
   const revealCards = (selector) => {
-    gsap.utils.toArray(selector).forEach((el) => {
-      gsap.from(el, {
-        scrollTrigger: { trigger: el, start: "top 85%" },
-        opacity: 0,
-        y: 40,
-        duration: 0.8,
-        ease: "power3.out",
+    if (typeof window !== "undefined") {
+      gsap.utils.toArray(selector).forEach((el) => {
+        gsap.from(el, {
+          scrollTrigger: { trigger: el, start: "top 85%" },
+          opacity: 0,
+          y: 40,
+          duration: 0.8,
+          ease: "power3.out",
+        });
       });
-    });
+      ScrollTrigger.refresh();
+    }
   };
   useEffect(() => {
     revealCards(".card");
@@ -66,7 +76,7 @@ export default function Admin() {
 
   // KPI counter animation
   useEffect(() => {
-    if (tab === "Analytics") {
+    if (typeof window !== "undefined" && tab === "Analytics") {
       document.querySelectorAll("[data-kpi]").forEach((el) => {
         const value = parseInt(el.dataset.kpi.replace(/[^0-9]/g, ""));
         gsap.fromTo(
@@ -86,7 +96,7 @@ export default function Admin() {
     }
   }, [tab]);
 
-  // ----- Dummy data (unchanged from your original) -----
+  // ----- Dummy data -----
   const vendors = useMemo(
     () => [
       { id: "v1", name: "Sunrise Soap Co", email: "hello@sunrise.com", platform: "Shopify", cap: 200, status: "Active" },
