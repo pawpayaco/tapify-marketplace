@@ -1,7 +1,12 @@
 "use client";
 import { useMemo, useState, useEffect, useRef } from "react";
+import { useRouter } from "next/router";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { supabase } from "../lib/supabase";
+import { formatMoney } from "../utils/formatMoney";
+import { initiatePayout } from "../services/dwolla";
+import { useAuthContext } from "../context/AuthContext";
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
@@ -10,9 +15,16 @@ if (typeof window !== "undefined") {
 const TABS = ["Vendors", "Retailers", "Analytics", "Sourcers", "UIDs"];
 
 export default function Admin() {
+  const router = useRouter();
+  const { user, loading: authContextLoading } = useAuthContext();
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [authLoading, setAuthLoading] = useState(true);
   const [tab, setTab] = useState("Vendors");
   const [q, setQ] = useState("");
   const [filter, setFilter] = useState("all");
+  const [payouts, setPayouts] = useState([]);
+  const [loadingPayouts, setLoadingPayouts] = useState(false);
+  const [totalRevenue, setTotalRevenue] = useState(0);
 
   // --- GSAP refs ---
   const bgRef = useRef(null);
@@ -20,6 +32,41 @@ export default function Admin() {
   const tabsRef = useRef([]);
   const toolbarRef = useRef(null);
   const contentRef = useRef(null);
+
+  // Check if user is authenticated and authorized
+  useEffect(() => {
+    const checkAuth = async () => {
+      // Redirect to login if no user
+      if (!user) {
+        router.push('/login');
+        return;
+      }
+
+      // Check if user is in admins table
+      if (supabase && user.email) {
+        try {
+          const { data, error } = await supabase
+            .from('admins')
+            .select('email')
+            .eq('email', user.email)
+            .single();
+
+          if (error || !data) {
+            setIsAdmin(false);
+          } else {
+            setIsAdmin(true);
+          }
+        } catch (error) {
+          console.error('Error checking admin status:', error);
+          setIsAdmin(false);
+        }
+      }
+
+      setAuthLoading(false);
+    };
+
+    checkAuth();
+  }, [user, router]);
 
   // Animate page load
   useEffect(() => {
@@ -74,6 +121,43 @@ export default function Admin() {
     revealCards(".card");
   }, [tab]);
 
+  // Fetch payout data from Supabase when Analytics tab is active
+  useEffect(() => {
+    const fetchPayouts = async () => {
+      if (tab === "Analytics") {
+        // Check if Supabase is initialized
+        if (!supabase) {
+          console.warn('Supabase not initialized - skipping payout fetch');
+          setLoadingPayouts(false);
+          return;
+        }
+
+        setLoadingPayouts(true);
+        try {
+          const { data, error } = await supabase
+            .from('payouts')
+            .select('*')
+            .order('created_at', { ascending: false })
+            .limit(10);
+
+          if (error) throw error;
+
+          setPayouts(data || []);
+          
+          // Calculate total revenue
+          const total = (data || []).reduce((sum, payout) => sum + (payout.amount || 0), 0);
+          setTotalRevenue(total);
+        } catch (error) {
+          console.error('Error fetching payouts:', error);
+        } finally {
+          setLoadingPayouts(false);
+        }
+      }
+    };
+
+    fetchPayouts();
+  }, [tab]);
+
   // KPI counter animation
   useEffect(() => {
     if (typeof window !== "undefined" && tab === "Analytics") {
@@ -95,6 +179,27 @@ export default function Admin() {
       });
     }
   }, [tab]);
+
+  // Test payout function
+  const handleTestPayout = async () => {
+    try {
+      const testPayoutData = {
+        sourceFundingSource: 'https://api-sandbox.dwolla.com/funding-sources/test-source',
+        destinationFundingSource: 'https://api-sandbox.dwolla.com/funding-sources/test-dest',
+        amount: 100.00,
+        currency: 'USD',
+        metadata: {
+          test: true,
+          timestamp: new Date().toISOString(),
+        }
+      };
+
+      const result = await initiatePayout(testPayoutData);
+      alert(`Payout initiated! Transfer ID: ${result.transferId || 'N/A'}`);
+    } catch (error) {
+      alert(`Payout failed: ${error.message}`);
+    }
+  };
 
   // ----- Dummy data -----
   const vendors = useMemo(
@@ -137,6 +242,44 @@ export default function Admin() {
       (!qlc || v.name.toLowerCase().includes(qlc) || v.email.toLowerCase().includes(qlc)) &&
       (filter === "all" || v.platform.toLowerCase() === filter)
   );
+
+  // Show loading while checking auth
+  if (authLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#fff3ea] via-white to-[#fff6fb]">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#ff6fb3] mx-auto mb-4"></div>
+          <p className="text-gray-600">Checking authorization...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Show unauthorized message if not admin
+  if (!isAdmin) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#fff3ea] via-white to-[#fff6fb]">
+        <div className="max-w-md mx-auto text-center px-6">
+          <div className="bg-white rounded-2xl shadow-xl p-8 border border-red-200">
+            <div className="text-6xl mb-4">🚫</div>
+            <h1 className="text-3xl font-bold text-red-600 mb-4">Not Authorized</h1>
+            <p className="text-gray-600 mb-6">
+              You don't have permission to access this page. Please contact an administrator if you believe this is an error.
+            </p>
+            <div className="space-y-3">
+              <p className="text-sm text-gray-500">Logged in as: {user?.email}</p>
+              <a
+                href="/"
+                className="inline-block bg-[#ff6fb3] text-white px-6 py-3 rounded-lg hover:bg-[#ff58a8] transition-colors font-medium"
+              >
+                Go to Home
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <main className="min-h-screen bg-white relative overflow-hidden">
@@ -275,8 +418,66 @@ export default function Admin() {
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 mb-4">
                 <KPI label="Total Scans (7d)" value="1148" />
                 <KPI label="Conversions (7d)" value="124" />
-                <KPI label="Est. Revenue (7d)" value="8920" />
+                <KPI label="Total Revenue" value={formatMoney(totalRevenue)} />
                 <KPI label="Top Vendor" value="Sunrise Soap Co" />
+              </div>
+
+              {/* Test Payout Button */}
+              <div className="mb-4">
+                <button
+                  onClick={handleTestPayout}
+                  className="rounded-xl bg-blue-600 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-700 transition"
+                >
+                  Test Payout (Dwolla)
+                </button>
+              </div>
+
+              {/* Payouts Table */}
+              <div className="rounded-2xl border border-gray-200 bg-white/90 backdrop-blur overflow-hidden">
+                <div className="p-4 border-b border-gray-200">
+                  <h3 className="text-lg font-semibold text-[#111827]">Recent Payouts</h3>
+                </div>
+                {loadingPayouts ? (
+                  <div className="p-8 text-center text-gray-500">Loading payouts...</div>
+                ) : payouts.length === 0 ? (
+                  <div className="p-8 text-center text-gray-500">No payouts found</div>
+                ) : (
+                  <div className="overflow-auto">
+                    <table className="w-full text-sm">
+                      <thead>
+                        <tr className="text-left bg-gray-50">
+                          <Th>ID</Th>
+                          <Th>Amount</Th>
+                          <Th>Status</Th>
+                          <Th>Vendor</Th>
+                          <Th>Date</Th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {payouts.map((payout) => (
+                          <tr key={payout.id} className="border-t border-gray-100 card">
+                            <Td>{payout.id}</Td>
+                            <Td className="font-semibold text-green-700">{formatMoney(payout.amount)}</Td>
+                            <Td>
+                              <span className={[
+                                "rounded-full px-2 py-0.5 text-[10px] border",
+                                payout.status === "completed"
+                                  ? "bg-green-50 text-green-700 border-green-200"
+                                  : payout.status === "pending"
+                                  ? "bg-yellow-50 text-yellow-700 border-yellow-200"
+                                  : "bg-gray-50 text-gray-700 border-gray-200",
+                              ].join(" ")}>
+                                {payout.status || 'pending'}
+                              </span>
+                            </Td>
+                            <Td>{payout.vendor_name || 'N/A'}</Td>
+                            <Td>{new Date(payout.created_at).toLocaleDateString()}</Td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                )}
               </div>
             </>
           )}
