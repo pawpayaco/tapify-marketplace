@@ -54,7 +54,7 @@ export default function ClaimPage() {
 
   if (submitted) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#fef9f5] to-[#ffe9f0]">
+      <div className="min-h-screen flex items-center justify-center bg-white">
         <div className="text-center p-6 rounded-lg bg-white shadow-md">
           <h1 className="text-2xl text-[#ff60a5] font-semibold mb-2">🎉 You're all set!</h1>
           <p className="text-gray-600">Your display is now live. Customers will be redirected to your affiliate page.</p>
@@ -64,7 +64,7 @@ export default function ClaimPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#fef9f5] to-[#ffe9f0]">
+    <div className="min-h-screen flex items-center justify-center bg-white">
       <form
         onSubmit={handleSubmit}
         className="bg-white shadow-lg rounded-xl p-8 w-full max-w-md font-sans"

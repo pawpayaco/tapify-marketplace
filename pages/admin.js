@@ -1,4 +1,3 @@
-"use client";
 import { useMemo, useState, useEffect, useRef } from "react";
 import { useRouter } from "next/router";
 import gsap from "gsap";
@@ -36,6 +35,16 @@ export default function Admin() {
   // Check if user is authenticated and authorized
   useEffect(() => {
     const checkAuth = async () => {
+      // Check if auth is disabled for testing
+      const disableAuth = process.env.NEXT_PUBLIC_DISABLE_AUTH === 'true';
+      
+      if (disableAuth) {
+        console.log('🚧 Auth disabled - allowing access to admin');
+        setIsAdmin(true);
+        setAuthLoading(false);
+        return;
+      }
+
       // Redirect to login if no user
       if (!user) {
         router.push('/login');
