@@ -1,202 +1,282 @@
 import { useState } from 'react';
 import Link from 'next/link';
+import { motion } from 'framer-motion';
 
 export default function RetailerDashboard() {
   const [activeTab, setActiveTab] = useState('stats');
 
-  // Mock data
+  // Mock data - New display with no activity yet
   const kpis = {
-    weeklyScans: 342,
-    revenue: 2840,
-    displaysClaimed: 4,
-    conversionRate: 23.5,
-    avgOrderValue: 47.20,
-    topProduct: "Sunrise Soap Co."
+    weeklyScans: 0,
+    revenue: 0,
+    displaysClaimed: 1,
+    conversionRate: 0,
+    avgOrderValue: 0,
+    topProduct: "No data yet"
   };
 
-  const recentOrders = [
-    { id: 'ORD-001', customer: 'Sarah M.', product: 'Lavender Soap Set', amount: 45.99, status: 'completed', date: '2025-09-28' },
-    { id: 'ORD-002', customer: 'Michael T.', product: 'Cedar Candle', amount: 32.50, status: 'completed', date: '2025-09-28' },
-    { id: 'ORD-003', customer: 'Emily R.', product: 'Ceramic Bowl', amount: 68.00, status: 'pending', date: '2025-09-29' },
-    { id: 'ORD-004', customer: 'David L.', product: 'Handmade Mug', amount: 28.99, status: 'completed', date: '2025-09-29' },
-    { id: 'ORD-005', customer: 'Jessica P.', product: 'Artisan Soap Bundle', amount: 55.00, status: 'completed', date: '2025-09-30' },
-  ];
+  const recentOrders = [];
 
   const weeklyData = [
-    { day: 'Mon', scans: 45, orders: 12, revenue: 380 },
-    { day: 'Tue', scans: 52, orders: 15, revenue: 485 },
-    { day: 'Wed', scans: 38, orders: 9, revenue: 320 },
-    { day: 'Thu', scans: 61, orders: 18, revenue: 590 },
-    { day: 'Fri', scans: 73, orders: 21, revenue: 680 },
-    { day: 'Sat', scans: 48, orders: 14, revenue: 445 },
-    { day: 'Sun', scans: 25, orders: 6, revenue: 240 },
+    { day: 'Mon', scans: 0, orders: 0, revenue: 0 },
+    { day: 'Tue', scans: 0, orders: 0, revenue: 0 },
+    { day: 'Wed', scans: 0, orders: 0, revenue: 0 },
+    { day: 'Thu', scans: 0, orders: 0, revenue: 0 },
+    { day: 'Fri', scans: 0, orders: 0, revenue: 0 },
+    { day: 'Sat', scans: 0, orders: 0, revenue: 0 },
+    { day: 'Sun', scans: 0, orders: 0, revenue: 0 },
   ];
 
-  const topProducts = [
-    { name: 'Lavender Soap Set', scans: 89, conversions: 24, revenue: 1104 },
-    { name: 'Cedar Candle', scans: 67, conversions: 18, revenue: 585 },
-    { name: 'Ceramic Bowl', scans: 54, conversions: 12, revenue: 816 },
-    { name: 'Handmade Mug', scans: 42, conversions: 11, revenue: 319 },
-  ];
+  const topProducts = [];
 
-  const maxScans = Math.max(...weeklyData.map(d => d.scans));
-  const maxRevenue = Math.max(...weeklyData.map(d => d.revenue));
+  const maxScans = Math.max(...weeklyData.map(d => d.scans), 1);
+  const maxRevenue = Math.max(...weeklyData.map(d => d.revenue), 1);
+
+  // Animation variants
+  const fadeInUp = {
+    hidden: { opacity: 0, y: 20 },
+    visible: { opacity: 1, y: 0 }
+  };
+
+  const staggerContainer = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1
+      }
+    }
+  };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-white">
+    <div className="min-h-screen bg-gradient-to-br from-pink-50 via-purple-50 to-blue-50">
       {/* Header */}
-      <div className="bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3] text-white py-8 px-6 shadow-lg">
-        <div className="max-w-7xl mx-auto">
+      <motion.div 
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+        className="bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3] text-white py-12 px-6 shadow-lg relative overflow-hidden"
+      >
+        {/* Background decoration */}
+        <div className="absolute inset-0 opacity-10">
+          <div className="absolute top-0 right-0 w-96 h-96 bg-white rounded-full blur-3xl"></div>
+          <div className="absolute bottom-0 left-0 w-96 h-96 bg-white rounded-full blur-3xl"></div>
+        </div>
+
+        <div className="max-w-7xl mx-auto relative z-10">
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
             <div>
-              <h1 className="text-3xl md:text-4xl font-bold mb-2">Retailer Dashboard</h1>
-              <p className="text-white/90">Welcome back! Here's how your displays are performing.</p>
-            </div>
-            <div className="flex gap-3">
-              <Link 
-                href="/onboard"
-                className="bg-white/20 hover:bg-white/30 text-white px-6 py-3 rounded-lg font-semibold transition-all backdrop-blur-sm"
+              <motion.h1 
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.5, delay: 0.2 }}
+                className="text-4xl md:text-5xl font-bold mb-2"
               >
-                ← Back to Onboarding
-              </Link>
+                Your Dashboard 📊
+              </motion.h1>
+              <motion.p 
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.5, delay: 0.3 }}
+                className="text-white/90 text-lg"
+              >
+                Welcome back! Here's how your displays are performing.
+              </motion.p>
             </div>
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.5, delay: 0.4 }}
+              className="flex gap-3"
+            >
+              <Link 
+                href="/"
+                className="bg-white/20 hover:bg-white/30 text-white px-6 py-3 rounded-xl font-semibold transition-all backdrop-blur-sm hover:scale-105"
+              >
+                ← Home
+              </Link>
+            </motion.div>
           </div>
         </div>
-      </div>
+      </motion.div>
 
       <div className="max-w-7xl mx-auto px-6 py-8">
         {/* KPI Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <motion.div 
+          variants={staggerContainer}
+          initial="hidden"
+          animate="visible"
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8"
+        >
           {/* Weekly Scans */}
-          <div className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100 hover:shadow-xl transition-shadow">
+          <motion.div 
+            variants={fadeInUp}
+            whileHover={{ scale: 1.05, y: -5 }}
+            className="bg-white rounded-3xl p-6 shadow-lg border-2 border-gray-100 hover:border-blue-200 hover:shadow-xl transition-all"
+          >
             <div className="flex items-start justify-between mb-4">
-              <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center shadow-md">
-                <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div className="w-14 h-14 bg-gradient-to-br from-blue-400 to-blue-600 rounded-2xl flex items-center justify-center shadow-lg">
+                <svg className="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                 </svg>
               </div>
-              <span className="text-xs bg-green-100 text-green-700 px-2 py-1 rounded-full font-semibold">+12%</span>
+              <span className="text-xs bg-gray-100 text-gray-600 px-3 py-1.5 rounded-full font-bold">New</span>
             </div>
-            <h3 className="text-gray-600 text-sm font-medium mb-1">Weekly Scans</h3>
-            <p className="text-3xl font-bold text-gray-900">{kpis.weeklyScans}</p>
-            <p className="text-xs text-gray-500 mt-2">Last 7 days</p>
-          </div>
+            <h3 className="text-gray-600 text-sm font-semibold mb-1">Weekly Scans</h3>
+            <p className="text-4xl font-bold text-gray-900 mb-1">{kpis.weeklyScans}</p>
+            <p className="text-xs text-gray-500">Last 7 days</p>
+          </motion.div>
 
           {/* Revenue */}
-          <div className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100 hover:shadow-xl transition-shadow">
+          <motion.div 
+            variants={fadeInUp}
+            whileHover={{ scale: 1.05, y: -5 }}
+            className="bg-white rounded-3xl p-6 shadow-lg border-2 border-gray-100 hover:border-pink-200 hover:shadow-xl transition-all"
+          >
             <div className="flex items-start justify-between mb-4">
-              <div className="w-12 h-12 bg-gradient-to-br from-[#ff7a4a] to-[#ff6fb3] rounded-xl flex items-center justify-center shadow-md">
-                <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div className="w-14 h-14 bg-gradient-to-br from-[#ff7a4a] to-[#ff6fb3] rounded-2xl flex items-center justify-center shadow-lg">
+                <svg className="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
               </div>
-              <span className="text-xs bg-green-100 text-green-700 px-2 py-1 rounded-full font-semibold">+8%</span>
+              <span className="text-xs bg-gray-100 text-gray-600 px-3 py-1.5 rounded-full font-bold">New</span>
             </div>
-            <h3 className="text-gray-600 text-sm font-medium mb-1">Revenue Earned</h3>
-            <p className="text-3xl font-bold text-gray-900">${kpis.revenue.toLocaleString()}</p>
-            <p className="text-xs text-gray-500 mt-2">This month</p>
-          </div>
+            <h3 className="text-gray-600 text-sm font-semibold mb-1">Revenue Earned</h3>
+            <p className="text-4xl font-bold text-gray-900 mb-1">${kpis.revenue.toLocaleString()}</p>
+            <p className="text-xs text-gray-500">This month</p>
+          </motion.div>
 
           {/* Displays Claimed */}
-          <div className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100 hover:shadow-xl transition-shadow">
+          <motion.div 
+            variants={fadeInUp}
+            whileHover={{ scale: 1.05, y: -5 }}
+            className="bg-white rounded-3xl p-6 shadow-lg border-2 border-gray-100 hover:border-purple-200 hover:shadow-xl transition-all"
+          >
             <div className="flex items-start justify-between mb-4">
-              <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl flex items-center justify-center shadow-md">
-                <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div className="w-14 h-14 bg-gradient-to-br from-purple-400 to-purple-600 rounded-2xl flex items-center justify-center shadow-lg">
+                <svg className="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                 </svg>
               </div>
-              <span className="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded-full font-semibold">Active</span>
+              <span className="text-xs bg-blue-100 text-blue-700 px-3 py-1.5 rounded-full font-bold">Active</span>
             </div>
-            <h3 className="text-gray-600 text-sm font-medium mb-1">Displays Active</h3>
-            <p className="text-3xl font-bold text-gray-900">{kpis.displaysClaimed}</p>
-            <p className="text-xs text-gray-500 mt-2">In your store</p>
-          </div>
+            <h3 className="text-gray-600 text-sm font-semibold mb-1">Displays Active</h3>
+            <p className="text-4xl font-bold text-gray-900 mb-1">{kpis.displaysClaimed}</p>
+            <p className="text-xs text-gray-500">In your store</p>
+          </motion.div>
 
           {/* Conversion Rate */}
-          <div className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100 hover:shadow-xl transition-shadow">
+          <motion.div 
+            variants={fadeInUp}
+            whileHover={{ scale: 1.05, y: -5 }}
+            className="bg-white rounded-3xl p-6 shadow-lg border-2 border-gray-100 hover:border-green-200 hover:shadow-xl transition-all"
+          >
             <div className="flex items-start justify-between mb-4">
-              <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-green-600 rounded-xl flex items-center justify-center shadow-md">
-                <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div className="w-14 h-14 bg-gradient-to-br from-green-400 to-green-600 rounded-2xl flex items-center justify-center shadow-lg">
+                <svg className="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
                 </svg>
               </div>
-              <span className="text-xs bg-green-100 text-green-700 px-2 py-1 rounded-full font-semibold">+3%</span>
+              <span className="text-xs bg-gray-100 text-gray-600 px-3 py-1.5 rounded-full font-bold">New</span>
             </div>
-            <h3 className="text-gray-600 text-sm font-medium mb-1">Conversion Rate</h3>
-            <p className="text-3xl font-bold text-gray-900">{kpis.conversionRate}%</p>
-            <p className="text-xs text-gray-500 mt-2">Scans to orders</p>
-          </div>
-        </div>
+            <h3 className="text-gray-600 text-sm font-semibold mb-1">Conversion Rate</h3>
+            <p className="text-4xl font-bold text-gray-900 mb-1">{kpis.conversionRate}%</p>
+            <p className="text-xs text-gray-500">Scans to orders</p>
+          </motion.div>
+        </motion.div>
 
         {/* Tabs */}
-        <div className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.4 }}
+          className="bg-white rounded-3xl shadow-xl border-2 border-gray-100 overflow-hidden"
+        >
           {/* Tab Headers */}
-          <div className="border-b border-gray-200 bg-gray-50">
-            <div className="flex gap-2 px-6 pt-6">
-              <button
+          <div className="border-b-2 border-gray-100 bg-gradient-to-r from-pink-50 to-purple-50">
+            <div className="flex gap-2 px-6 pt-6 pb-2">
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
                 onClick={() => setActiveTab('stats')}
-                className={`px-6 py-3 rounded-t-lg font-semibold transition-all ${
+                className={`px-6 py-3 rounded-t-2xl font-bold transition-all ${
                   activeTab === 'stats'
-                    ? 'bg-white text-[#ff6fb3] border-b-2 border-[#ff6fb3]'
-                    : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
+                    ? 'bg-white text-[#ff6fb3] shadow-lg'
+                    : 'text-gray-600 hover:text-gray-900 hover:bg-white/50'
                 }`}
               >
                 📊 Stats & Analytics
-              </button>
-              <button
+              </motion.button>
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
                 onClick={() => setActiveTab('orders')}
-                className={`px-6 py-3 rounded-t-lg font-semibold transition-all ${
+                className={`px-6 py-3 rounded-t-2xl font-bold transition-all ${
                   activeTab === 'orders'
-                    ? 'bg-white text-[#ff6fb3] border-b-2 border-[#ff6fb3]'
-                    : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
+                    ? 'bg-white text-[#ff6fb3] shadow-lg'
+                    : 'text-gray-600 hover:text-gray-900 hover:bg-white/50'
                 }`}
               >
                 🛍️ Orders
-              </button>
-              <button
+              </motion.button>
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
                 onClick={() => setActiveTab('settings')}
-                className={`px-6 py-3 rounded-t-lg font-semibold transition-all ${
+                className={`px-6 py-3 rounded-t-2xl font-bold transition-all ${
                   activeTab === 'settings'
-                    ? 'bg-white text-[#ff6fb3] border-b-2 border-[#ff6fb3]'
-                    : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
+                    ? 'bg-white text-[#ff6fb3] shadow-lg'
+                    : 'text-gray-600 hover:text-gray-900 hover:bg-white/50'
                 }`}
               >
                 ⚙️ Settings
-              </button>
+              </motion.button>
             </div>
           </div>
 
           {/* Tab Content */}
-          <div className="p-6">
+          <div className="p-8">
             {/* Stats Tab */}
             {activeTab === 'stats' && (
-              <div className="space-y-8">
+              <motion.div 
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.3 }}
+                className="space-y-8"
+              >
                 {/* Weekly Performance Chart */}
                 <div>
-                  <h3 className="text-xl font-bold text-gray-900 mb-4">Weekly Performance</h3>
-                  <div className="bg-gradient-to-br from-gray-50 to-white rounded-xl p-6 border border-gray-100">
+                  <h3 className="text-2xl font-bold text-gray-900 mb-6">Weekly Performance</h3>
+                  <div className="bg-gradient-to-br from-gray-50 to-white rounded-2xl p-8 border-2 border-gray-100">
                     {/* Bar Chart - Scans */}
-                    <div className="mb-8">
+                    <div className="mb-10">
                       <div className="flex items-center justify-between mb-4">
-                        <h4 className="font-semibold text-gray-700">Scans per Day</h4>
+                        <h4 className="font-bold text-gray-700 text-lg">Scans per Day</h4>
                         <div className="text-sm text-gray-500">Max: {maxScans}</div>
                       </div>
                       <div className="flex items-end justify-between gap-2 h-48">
                         {weeklyData.map((day, idx) => (
-                          <div key={idx} className="flex-1 flex flex-col items-center gap-2">
+                          <motion.div 
+                            key={idx} 
+                            initial={{ height: 0 }}
+                            animate={{ height: 'auto' }}
+                            transition={{ duration: 0.5, delay: idx * 0.1 }}
+                            className="flex-1 flex flex-col items-center gap-2"
+                          >
                             <div className="w-full flex flex-col justify-end h-full">
-                              <div
-                                className="w-full bg-gradient-to-t from-blue-500 to-blue-400 rounded-t-lg hover:from-blue-600 hover:to-blue-500 transition-all cursor-pointer relative group"
+                              <motion.div
+                                whileHover={{ scale: 1.1 }}
+                                className="w-full bg-gradient-to-t from-blue-500 to-blue-400 rounded-t-xl hover:from-blue-600 hover:to-blue-500 transition-all cursor-pointer relative group shadow-lg"
                                 style={{ height: `${(day.scans / maxScans) * 100}%` }}
                               >
-                                <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-gray-900 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
+                                <div className="absolute -top-10 left-1/2 transform -translate-x-1/2 bg-gray-900 text-white text-xs px-3 py-1.5 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap font-semibold shadow-lg">
                                   {day.scans} scans
                                 </div>
-                              </div>
+                              </motion.div>
                             </div>
-                            <span className="text-xs font-medium text-gray-600">{day.day}</span>
-                          </div>
+                            <span className="text-sm font-bold text-gray-600">{day.day}</span>
+                          </motion.div>
                         ))}
                       </div>
                     </div>
@@ -204,24 +284,31 @@ export default function RetailerDashboard() {
                     {/* Revenue Chart */}
                     <div>
                       <div className="flex items-center justify-between mb-4">
-                        <h4 className="font-semibold text-gray-700">Revenue per Day</h4>
+                        <h4 className="font-bold text-gray-700 text-lg">Revenue per Day</h4>
                         <div className="text-sm text-gray-500">Max: ${maxRevenue}</div>
                       </div>
                       <div className="flex items-end justify-between gap-2 h-48">
                         {weeklyData.map((day, idx) => (
-                          <div key={idx} className="flex-1 flex flex-col items-center gap-2">
+                          <motion.div 
+                            key={idx}
+                            initial={{ height: 0 }}
+                            animate={{ height: 'auto' }}
+                            transition={{ duration: 0.5, delay: idx * 0.1 + 0.3 }}
+                            className="flex-1 flex flex-col items-center gap-2"
+                          >
                             <div className="w-full flex flex-col justify-end h-full">
-                              <div
-                                className="w-full bg-gradient-to-t from-[#ff7a4a] to-[#ff6fb3] rounded-t-lg hover:opacity-80 transition-all cursor-pointer relative group"
+                              <motion.div
+                                whileHover={{ scale: 1.1 }}
+                                className="w-full bg-gradient-to-t from-[#ff7a4a] to-[#ff6fb3] rounded-t-xl hover:opacity-90 transition-all cursor-pointer relative group shadow-lg"
                                 style={{ height: `${(day.revenue / maxRevenue) * 100}%` }}
                               >
-                                <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-gray-900 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
+                                <div className="absolute -top-10 left-1/2 transform -translate-x-1/2 bg-gray-900 text-white text-xs px-3 py-1.5 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap font-semibold shadow-lg">
                                   ${day.revenue}
                                 </div>
-                              </div>
+                              </motion.div>
                             </div>
-                            <span className="text-xs font-medium text-gray-600">{day.day}</span>
-                          </div>
+                            <span className="text-sm font-bold text-gray-600">{day.day}</span>
+                          </motion.div>
                         ))}
                       </div>
                     </div>
@@ -230,255 +317,278 @@ export default function RetailerDashboard() {
 
                 {/* Top Products */}
                 <div>
-                  <h3 className="text-xl font-bold text-gray-900 mb-4">Top Performing Products</h3>
-                  <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
+                  <h3 className="text-2xl font-bold text-gray-900 mb-6">Top Performing Products</h3>
+                  <div className="bg-white rounded-2xl border-2 border-gray-100 overflow-hidden shadow-lg">
                     <table className="w-full">
-                      <thead className="bg-gray-50">
+                      <thead className="bg-gradient-to-r from-pink-50 to-purple-50">
                         <tr>
-                          <th className="text-left py-3 px-4 font-semibold text-gray-700 text-sm">Product</th>
-                          <th className="text-center py-3 px-4 font-semibold text-gray-700 text-sm">Scans</th>
-                          <th className="text-center py-3 px-4 font-semibold text-gray-700 text-sm">Conversions</th>
-                          <th className="text-right py-3 px-4 font-semibold text-gray-700 text-sm">Revenue</th>
+                          <th className="text-left py-4 px-6 font-bold text-gray-700">Product</th>
+                          <th className="text-center py-4 px-6 font-bold text-gray-700">Scans</th>
+                          <th className="text-center py-4 px-6 font-bold text-gray-700">Conversions</th>
+                          <th className="text-right py-4 px-6 font-bold text-gray-700">Revenue</th>
                         </tr>
                       </thead>
                       <tbody className="divide-y divide-gray-100">
-                        {topProducts.map((product, idx) => (
-                          <tr key={idx} className="hover:bg-gray-50 transition-colors">
-                            <td className="py-4 px-4">
-                              <div className="flex items-center gap-3">
-                                <div className="w-2 h-2 rounded-full bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3]"></div>
-                                <span className="font-medium text-gray-900">{product.name}</span>
+                        {topProducts.length > 0 ? (
+                          topProducts.map((product, idx) => (
+                            <motion.tr 
+                              key={idx}
+                              initial={{ opacity: 0, x: -20 }}
+                              animate={{ opacity: 1, x: 0 }}
+                              transition={{ duration: 0.3, delay: idx * 0.1 }}
+                              whileHover={{ backgroundColor: '#fafafa' }}
+                              className="transition-colors"
+                            >
+                              <td className="py-4 px-6">
+                                <div className="flex items-center gap-3">
+                                  <div className="w-2 h-2 rounded-full bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3]"></div>
+                                  <span className="font-semibold text-gray-900">{product.name}</span>
+                                </div>
+                              </td>
+                              <td className="py-4 px-6 text-center">
+                                <span className="inline-block bg-blue-100 text-blue-700 px-4 py-1.5 rounded-full text-sm font-bold">
+                                  {product.scans}
+                                </span>
+                              </td>
+                              <td className="py-4 px-6 text-center">
+                                <span className="inline-block bg-green-100 text-green-700 px-4 py-1.5 rounded-full text-sm font-bold">
+                                  {product.conversions}
+                                </span>
+                              </td>
+                              <td className="py-4 px-6 text-right">
+                                <span className="font-bold text-gray-900">${product.revenue.toLocaleString()}</span>
+                              </td>
+                            </motion.tr>
+                          ))
+                        ) : (
+                          <tr>
+                            <td colSpan="4" className="py-20 text-center">
+                              <div className="flex flex-col items-center gap-4">
+                                <div className="w-20 h-20 bg-gradient-to-br from-gray-100 to-gray-200 rounded-full flex items-center justify-center">
+                                  <svg className="w-10 h-10 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                                  </svg>
+                                </div>
+                                <div>
+                                  <p className="text-gray-900 font-bold text-lg mb-1">No product data yet</p>
+                                  <p className="text-gray-500">Product performance will show here once you have scans</p>
+                                </div>
                               </div>
                             </td>
-                            <td className="py-4 px-4 text-center">
-                              <span className="inline-block bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-sm font-semibold">
-                                {product.scans}
-                              </span>
-                            </td>
-                            <td className="py-4 px-4 text-center">
-                              <span className="inline-block bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm font-semibold">
-                                {product.conversions}
-                              </span>
-                            </td>
-                            <td className="py-4 px-4 text-right">
-                              <span className="font-bold text-gray-900">${product.revenue.toLocaleString()}</span>
-                            </td>
                           </tr>
-                        ))}
+                        )}
                       </tbody>
                     </table>
                   </div>
                 </div>
-
-                {/* Conversion Funnel */}
-                <div>
-                  <h3 className="text-xl font-bold text-gray-900 mb-4">Conversion Funnel</h3>
-                  <div className="bg-gradient-to-br from-gray-50 to-white rounded-xl p-8 border border-gray-100">
-                    <div className="space-y-4">
-                      {/* Step 1 */}
-                      <div>
-                        <div className="flex items-center justify-between mb-2">
-                          <span className="font-semibold text-gray-900">1. Display Scans</span>
-                          <span className="font-bold text-gray-900">342</span>
-                        </div>
-                        <div className="h-10 bg-gradient-to-r from-blue-500 to-blue-400 rounded-lg w-full"></div>
-                      </div>
-
-                      {/* Step 2 */}
-                      <div>
-                        <div className="flex items-center justify-between mb-2">
-                          <span className="font-semibold text-gray-900">2. Product Clicks</span>
-                          <span className="font-bold text-gray-900">187 (54.7%)</span>
-                        </div>
-                        <div className="h-10 bg-gradient-to-r from-purple-500 to-purple-400 rounded-lg" style={{ width: '54.7%' }}></div>
-                      </div>
-
-                      {/* Step 3 */}
-                      <div>
-                        <div className="flex items-center justify-between mb-2">
-                          <span className="font-semibold text-gray-900">3. Add to Cart</span>
-                          <span className="font-bold text-gray-900">103 (30.1%)</span>
-                        </div>
-                        <div className="h-10 bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3] rounded-lg" style={{ width: '30.1%' }}></div>
-                      </div>
-
-                      {/* Step 4 */}
-                      <div>
-                        <div className="flex items-center justify-between mb-2">
-                          <span className="font-semibold text-gray-900">4. Completed Purchase</span>
-                          <span className="font-bold text-gray-900">80 (23.5%)</span>
-                        </div>
-                        <div className="h-10 bg-gradient-to-r from-green-500 to-green-400 rounded-lg" style={{ width: '23.5%' }}></div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
+              </motion.div>
             )}
 
             {/* Orders Tab */}
             {activeTab === 'orders' && (
-              <div>
+              <motion.div
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.3 }}
+              >
                 <div className="flex items-center justify-between mb-6">
-                  <h3 className="text-xl font-bold text-gray-900">Recent Orders</h3>
-                  <div className="flex gap-2">
-                    <button className="px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-lg text-sm font-medium transition-colors">
+                  <h3 className="text-2xl font-bold text-gray-900">Recent Orders</h3>
+                  <div className="flex gap-3">
+                    <motion.button 
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                      className="px-5 py-2.5 bg-gray-100 hover:bg-gray-200 rounded-xl text-sm font-bold transition-all"
+                    >
                       Filter
-                    </button>
-                    <button className="px-4 py-2 bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3] text-white rounded-lg text-sm font-semibold hover:shadow-lg transition-all">
+                    </motion.button>
+                    <motion.button 
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                      className="px-5 py-2.5 bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3] text-white rounded-xl text-sm font-bold hover:shadow-lg transition-all"
+                    >
                       Export
-                    </button>
+                    </motion.button>
                   </div>
                 </div>
 
-                <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
+                <div className="bg-white rounded-2xl border-2 border-gray-100 overflow-hidden shadow-lg">
                   <table className="w-full">
-                    <thead className="bg-gray-50">
+                    <thead className="bg-gradient-to-r from-pink-50 to-purple-50">
                       <tr>
-                        <th className="text-left py-3 px-4 font-semibold text-gray-700 text-sm">Order ID</th>
-                        <th className="text-left py-3 px-4 font-semibold text-gray-700 text-sm">Customer</th>
-                        <th className="text-left py-3 px-4 font-semibold text-gray-700 text-sm">Product</th>
-                        <th className="text-right py-3 px-4 font-semibold text-gray-700 text-sm">Amount</th>
-                        <th className="text-center py-3 px-4 font-semibold text-gray-700 text-sm">Status</th>
-                        <th className="text-right py-3 px-4 font-semibold text-gray-700 text-sm">Date</th>
+                        <th className="text-left py-4 px-6 font-bold text-gray-700">Order ID</th>
+                        <th className="text-left py-4 px-6 font-bold text-gray-700">Customer</th>
+                        <th className="text-left py-4 px-6 font-bold text-gray-700">Product</th>
+                        <th className="text-right py-4 px-6 font-bold text-gray-700">Amount</th>
+                        <th className="text-center py-4 px-6 font-bold text-gray-700">Status</th>
+                        <th className="text-right py-4 px-6 font-bold text-gray-700">Date</th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-gray-100">
-                      {recentOrders.map((order, idx) => (
-                        <tr key={idx} className="hover:bg-gray-50 transition-colors">
-                          <td className="py-4 px-4">
-                            <span className="font-mono text-sm font-semibold text-gray-900">{order.id}</span>
-                          </td>
-                          <td className="py-4 px-4">
-                            <span className="text-gray-900">{order.customer}</span>
-                          </td>
-                          <td className="py-4 px-4">
-                            <span className="text-gray-700">{order.product}</span>
-                          </td>
-                          <td className="py-4 px-4 text-right">
-                            <span className="font-bold text-gray-900">${order.amount}</span>
-                          </td>
-                          <td className="py-4 px-4 text-center">
-                            <span className={`inline-block px-3 py-1 rounded-full text-xs font-semibold ${
-                              order.status === 'completed' 
-                                ? 'bg-green-100 text-green-700' 
-                                : 'bg-yellow-100 text-yellow-700'
-                            }`}>
-                              {order.status}
-                            </span>
-                          </td>
-                          <td className="py-4 px-4 text-right text-sm text-gray-600">
-                            {order.date}
+                    <tbody>
+                      {recentOrders.length > 0 ? (
+                        recentOrders.map((order, idx) => (
+                          <motion.tr 
+                            key={idx}
+                            initial={{ opacity: 0, x: -20 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            transition={{ duration: 0.3, delay: idx * 0.1 }}
+                            whileHover={{ backgroundColor: '#fafafa' }}
+                            className="border-t border-gray-100"
+                          >
+                            <td className="py-4 px-6">
+                              <span className="font-mono text-sm font-bold text-gray-900">{order.id}</span>
+                            </td>
+                            <td className="py-4 px-6">
+                              <span className="text-gray-900 font-medium">{order.customer}</span>
+                            </td>
+                            <td className="py-4 px-6">
+                              <span className="text-gray-700">{order.product}</span>
+                            </td>
+                            <td className="py-4 px-6 text-right">
+                              <span className="font-bold text-gray-900">${order.amount}</span>
+                            </td>
+                            <td className="py-4 px-6 text-center">
+                              <span className={`inline-block px-4 py-1.5 rounded-full text-xs font-bold ${
+                                order.status === 'completed' 
+                                  ? 'bg-green-100 text-green-700' 
+                                  : 'bg-yellow-100 text-yellow-700'
+                              }`}>
+                                {order.status}
+                              </span>
+                            </td>
+                            <td className="py-4 px-6 text-right text-sm text-gray-600 font-medium">
+                              {order.date}
+                            </td>
+                          </motion.tr>
+                        ))
+                      ) : (
+                        <tr>
+                          <td colSpan="6" className="py-20 text-center">
+                            <div className="flex flex-col items-center gap-4">
+                              <div className="w-20 h-20 bg-gradient-to-br from-gray-100 to-gray-200 rounded-full flex items-center justify-center">
+                                <svg className="w-10 h-10 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+                                </svg>
+                              </div>
+                              <div>
+                                <p className="text-gray-900 font-bold text-lg mb-1">No orders yet</p>
+                                <p className="text-gray-500">Orders will appear here once customers start purchasing</p>
+                              </div>
+                            </div>
                           </td>
                         </tr>
-                      ))}
+                      )}
                     </tbody>
                   </table>
                 </div>
-
-                {/* Pagination */}
-                <div className="flex items-center justify-between mt-6">
-                  <p className="text-sm text-gray-600">Showing 1-5 of 87 orders</p>
-                  <div className="flex gap-2">
-                    <button className="px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-lg text-sm font-medium transition-colors">
-                      Previous
-                    </button>
-                    <button className="px-4 py-2 bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3] text-white rounded-lg text-sm font-semibold hover:shadow-lg transition-all">
-                      Next
-                    </button>
-                  </div>
-                </div>
-              </div>
+              </motion.div>
             )}
 
             {/* Settings Tab */}
             {activeTab === 'settings' && (
-              <div className="space-y-6">
-                <h3 className="text-xl font-bold text-gray-900">Store Settings</h3>
+              <motion.div 
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.3 }}
+                className="space-y-6"
+              >
+                <h3 className="text-2xl font-bold text-gray-900">Store Settings</h3>
 
                 {/* Store Information */}
-                <div className="bg-gradient-to-br from-gray-50 to-white rounded-xl p-6 border border-gray-100">
-                  <h4 className="font-semibold text-gray-900 mb-4">Store Information</h4>
+                <motion.div 
+                  whileHover={{ scale: 1.01 }}
+                  className="bg-gradient-to-br from-white to-gray-50 rounded-2xl p-8 border-2 border-gray-100 hover:border-gray-200 transition-all shadow-lg"
+                >
+                  <h4 className="font-bold text-gray-900 text-lg mb-6">Store Information</h4>
                   <div className="space-y-4">
                     <div className="grid md:grid-cols-2 gap-4">
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">Store Name</label>
+                        <label className="block text-sm font-bold text-gray-700 mb-2">Store Name</label>
                         <input
                           type="text"
                           defaultValue="Urban Goods Market"
-                          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#ff6fb3] focus:border-transparent"
+                          className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-[#ff6fb3] focus:border-transparent transition-all"
                         />
                       </div>
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">Contact Email</label>
+                        <label className="block text-sm font-bold text-gray-700 mb-2">Contact Email</label>
                         <input
                           type="email"
                           defaultValue="owner@urbangoods.com"
-                          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#ff6fb3] focus:border-transparent"
+                          className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-[#ff6fb3] focus:border-transparent transition-all"
                         />
                       </div>
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">Store Address</label>
+                      <label className="block text-sm font-bold text-gray-700 mb-2">Store Address</label>
                       <textarea
                         rows={2}
                         defaultValue="123 Main Street, San Francisco, CA 94102"
-                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#ff6fb3] focus:border-transparent resize-none"
+                        className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-[#ff6fb3] focus:border-transparent resize-none transition-all"
                       />
                     </div>
                   </div>
-                </div>
+                </motion.div>
 
                 {/* Notification Preferences */}
-                <div className="bg-gradient-to-br from-gray-50 to-white rounded-xl p-6 border border-gray-100">
-                  <h4 className="font-semibold text-gray-900 mb-4">Notification Preferences</h4>
-                  <div className="space-y-3">
-                    <label className="flex items-center gap-3 cursor-pointer">
+                <motion.div 
+                  whileHover={{ scale: 1.01 }}
+                  className="bg-gradient-to-br from-white to-gray-50 rounded-2xl p-8 border-2 border-gray-100 hover:border-gray-200 transition-all shadow-lg"
+                >
+                  <h4 className="font-bold text-gray-900 text-lg mb-6">Notification Preferences</h4>
+                  <div className="space-y-4">
+                    <label className="flex items-center gap-3 cursor-pointer group">
                       <input type="checkbox" defaultChecked className="w-5 h-5 text-[#ff6fb3] rounded focus:ring-[#ff6fb3]" />
-                      <span className="text-gray-700">Email me when a new order is placed</span>
+                      <span className="text-gray-700 font-medium group-hover:text-gray-900 transition-colors">Email me when a new order is placed</span>
                     </label>
-                    <label className="flex items-center gap-3 cursor-pointer">
+                    <label className="flex items-center gap-3 cursor-pointer group">
                       <input type="checkbox" defaultChecked className="w-5 h-5 text-[#ff6fb3] rounded focus:ring-[#ff6fb3]" />
-                      <span className="text-gray-700">Weekly performance summary</span>
+                      <span className="text-gray-700 font-medium group-hover:text-gray-900 transition-colors">Weekly performance summary</span>
                     </label>
-                    <label className="flex items-center gap-3 cursor-pointer">
+                    <label className="flex items-center gap-3 cursor-pointer group">
                       <input type="checkbox" className="w-5 h-5 text-[#ff6fb3] rounded focus:ring-[#ff6fb3]" />
-                      <span className="text-gray-700">Product rotation updates</span>
+                      <span className="text-gray-700 font-medium group-hover:text-gray-900 transition-colors">Product rotation updates</span>
                     </label>
                   </div>
-                </div>
+                </motion.div>
 
                 {/* Payout Settings */}
-                <div className="bg-gradient-to-br from-gray-50 to-white rounded-xl p-6 border border-gray-100">
-                  <h4 className="font-semibold text-gray-900 mb-4">Payout Settings</h4>
+                <motion.div 
+                  whileHover={{ scale: 1.01 }}
+                  className="bg-gradient-to-br from-white to-gray-50 rounded-2xl p-8 border-2 border-gray-100 hover:border-gray-200 transition-all shadow-lg"
+                >
+                  <h4 className="font-bold text-gray-900 text-lg mb-6">Payout Settings</h4>
                   <div className="space-y-4">
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">Payout Method</label>
-                      <select className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#ff6fb3] focus:border-transparent">
+                      <label className="block text-sm font-bold text-gray-700 mb-2">Payout Method</label>
+                      <select className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-[#ff6fb3] focus:border-transparent transition-all">
                         <option>Bank Transfer (ACH)</option>
                         <option>PayPal</option>
                         <option>Stripe</option>
                       </select>
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">Payout Frequency</label>
-                      <select className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#ff6fb3] focus:border-transparent">
+                      <label className="block text-sm font-bold text-gray-700 mb-2">Payout Frequency</label>
+                      <select className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-[#ff6fb3] focus:border-transparent transition-all">
                         <option>Weekly</option>
                         <option>Bi-weekly</option>
                         <option>Monthly</option>
                       </select>
                     </div>
                   </div>
-                </div>
+                </motion.div>
 
                 {/* Save Button */}
-                <button className="w-full bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3] text-white py-3 px-6 rounded-xl font-bold text-lg hover:shadow-xl transition-all">
+                <motion.button 
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  className="w-full bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3] text-white py-4 px-6 rounded-2xl font-bold text-lg hover:shadow-xl transition-all"
+                >
                   Save Settings
-                </button>
-              </div>
+                </motion.button>
+              </motion.div>
             )}
           </div>
-        </div>
+        </motion.div>
       </div>
     </div>
   );

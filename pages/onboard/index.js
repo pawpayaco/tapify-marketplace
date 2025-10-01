@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { motion } from 'framer-motion';
 
 export default function RetailerOnboardLanding() {
   const testimonials = [
@@ -61,106 +62,209 @@ export default function RetailerOnboardLanding() {
     }
   ];
 
+  const steps = [
+    { number: 1, title: "Sign Up", description: "Quick form. Takes 3 minutes. No credit card needed." },
+    { number: 2, title: "Get Displays", description: "We send you beautiful NFC displays with curated products." },
+    { number: 3, title: "Place & Profit", description: "Put them in your store. Customers tap, shop, you earn." },
+    { number: 4, title: "Get Paid", description: "Weekly payouts. Track everything in your dashboard." }
+  ];
+
+  const stats = [
+    { value: "$2.8K", label: "Avg. Monthly Earnings", color: "text-[#ff7a4a]" },
+    { value: "500+", label: "Active Stores", color: "text-[#ff6fb3]" },
+    { value: "15-20%", label: "Commission Rate", color: "text-[#ff7a4a]" },
+    { value: "$0", label: "Setup Cost", color: "text-[#ff6fb3]" }
+  ];
+
+  // Animation variants
+  const fadeInUp = {
+    hidden: { opacity: 0, y: 30 },
+    visible: { opacity: 1, y: 0 }
+  };
+
+  const staggerContainer = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1
+      }
+    }
+  };
+
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-gradient-to-br from-pink-50 via-purple-50 to-blue-50">
       {/* Hero Section */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-[#fff3ea] via-white to-[#fff6fb] py-16 md:py-24 px-6">
-        <div className="max-w-5xl mx-auto">
-          <div className="text-center mb-8">
-            <div className="inline-block bg-[#ff6fb3]/10 text-[#ff6fb3] px-4 py-2 rounded-full text-sm font-semibold mb-6">
+      <section className="relative overflow-hidden py-20 md:py-32 px-6">
+        {/* Background decorations */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          <motion.div
+            animate={{ 
+              scale: [1, 1.2, 1],
+              rotate: [0, 90, 0]
+            }}
+            transition={{ duration: 20, repeat: Infinity }}
+            className="absolute -top-40 -right-40 w-96 h-96 bg-gradient-to-br from-pink-200 to-purple-200 rounded-full blur-3xl opacity-30"
+          />
+          <motion.div
+            animate={{ 
+              scale: [1, 1.3, 1],
+              rotate: [0, -90, 0]
+            }}
+            transition={{ duration: 25, repeat: Infinity }}
+            className="absolute -bottom-40 -left-40 w-96 h-96 bg-gradient-to-br from-blue-200 to-purple-200 rounded-full blur-3xl opacity-30"
+          />
+        </div>
+
+        <div className="max-w-5xl mx-auto relative z-10">
+          <div className="text-center mb-12">
+            <motion.div 
+              initial={{ scale: 0.8, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ duration: 0.5 }}
+              className="inline-block bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3] text-white px-6 py-2 rounded-full text-sm font-bold mb-8 shadow-lg"
+            >
               ✨ Free to Join • No Inventory Required
-            </div>
-            <h1 className="text-5xl md:text-7xl font-bold text-gray-900 mb-6 leading-tight">
+            </motion.div>
+            
+            <motion.h1 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+              className="text-5xl md:text-7xl font-bold text-gray-900 mb-6 leading-tight"
+            >
               Turn Your Store Into a{' '}
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3]">
                 Revenue Machine
               </span>
-            </h1>
-            <p className="text-xl md:text-2xl text-gray-600 mb-8 max-w-3xl mx-auto leading-relaxed">
+            </motion.h1>
+            
+            <motion.p 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.3 }}
+              className="text-xl md:text-2xl text-gray-600 mb-10 max-w-3xl mx-auto leading-relaxed"
+            >
               Add NFC-powered product displays to your store and earn commissions on every sale. 
               <span className="font-semibold text-gray-900"> Zero inventory risk. Zero setup costs. 100% passive income.</span>
-            </p>
+            </motion.p>
           </div>
 
           {/* Value Props - Quick Glance */}
-          <div className="flex flex-wrap justify-center gap-6 mb-10">
-            <div className="flex items-center gap-2 bg-white px-6 py-3 rounded-full shadow-sm border border-gray-100">
-              <span className="text-2xl">✅</span>
-              <span className="font-medium text-gray-900">Free Displays</span>
-            </div>
-            <div className="flex items-center gap-2 bg-white px-6 py-3 rounded-full shadow-sm border border-gray-100">
-              <span className="text-2xl">✅</span>
-              <span className="font-medium text-gray-900">Passive Commissions</span>
-            </div>
-            <div className="flex items-center gap-2 bg-white px-6 py-3 rounded-full shadow-sm border border-gray-100">
-              <span className="text-2xl">✅</span>
-              <span className="font-medium text-gray-900">More Foot Traffic</span>
-            </div>
-          </div>
+          <motion.div 
+            variants={staggerContainer}
+            initial="hidden"
+            animate="visible"
+            className="flex flex-wrap justify-center gap-4 mb-12"
+          >
+            {['Free Displays', 'Passive Commissions', 'More Foot Traffic'].map((prop, idx) => (
+              <motion.div 
+                key={idx}
+                variants={fadeInUp}
+                whileHover={{ scale: 1.05, y: -2 }}
+                className="flex items-center gap-2 bg-white px-6 py-3 rounded-full shadow-lg border-2 border-gray-100 hover:border-[#ff6fb3] transition-all"
+              >
+                <span className="text-2xl">✅</span>
+                <span className="font-bold text-gray-900">{prop}</span>
+              </motion.div>
+            ))}
+          </motion.div>
 
           {/* CTA Buttons */}
-          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12">
-            <Link 
-              href="/onboard/register"
-              className="bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3] text-white px-10 py-5 rounded-xl text-xl font-bold hover:shadow-xl transition-all transform hover:scale-105 shadow-lg w-full sm:w-auto text-center"
-            >
-              Get Started Free →
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.5 }}
+            className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-16"
+          >
+            <Link href="/onboard/register">
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                className="bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3] text-white px-10 py-5 rounded-2xl text-xl font-bold shadow-2xl w-full sm:w-auto"
+              >
+                Get Started Free →
+              </motion.button>
             </Link>
-            <Link 
-              href="#how-it-works"
-              className="bg-white text-gray-700 px-10 py-5 rounded-xl text-xl font-semibold hover:bg-gray-50 transition-all border-2 border-gray-200 w-full sm:w-auto text-center"
-            >
-              See How It Works
+            <Link href="#how-it-works">
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                className="bg-white text-gray-700 px-10 py-5 rounded-2xl text-xl font-bold border-2 border-gray-200 hover:border-gray-300 shadow-lg w-full sm:w-auto"
+              >
+                See How It Works
+              </motion.button>
             </Link>
-          </div>
+          </motion.div>
 
           {/* Social Proof Stats */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mt-16 max-w-4xl mx-auto">
-            <div className="text-center">
-              <div className="text-4xl font-bold text-[#ff7a4a] mb-1">$2.8K</div>
-              <div className="text-gray-600 text-sm">Avg. Monthly Earnings</div>
-            </div>
-            <div className="text-center">
-              <div className="text-4xl font-bold text-[#ff6fb3] mb-1">500+</div>
-              <div className="text-gray-600 text-sm">Active Stores</div>
-            </div>
-            <div className="text-center">
-              <div className="text-4xl font-bold text-[#ff7a4a] mb-1">15-20%</div>
-              <div className="text-gray-600 text-sm">Commission Rate</div>
-            </div>
-            <div className="text-center">
-              <div className="text-4xl font-bold text-[#ff6fb3] mb-1">$0</div>
-              <div className="text-gray-600 text-sm">Setup Cost</div>
-            </div>
-          </div>
+          <motion.div 
+            variants={staggerContainer}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            className="grid grid-cols-2 md:grid-cols-4 gap-6 mt-20 max-w-4xl mx-auto"
+          >
+            {stats.map((stat, idx) => (
+              <motion.div 
+                key={idx}
+                variants={fadeInUp}
+                whileHover={{ scale: 1.1, y: -5 }}
+                className="text-center bg-white rounded-2xl p-6 shadow-lg border-2 border-gray-100"
+              >
+                <div className={`text-4xl md:text-5xl font-bold ${stat.color} mb-2`}>{stat.value}</div>
+                <div className="text-gray-600 text-sm font-medium">{stat.label}</div>
+              </motion.div>
+            ))}
+          </motion.div>
         </div>
       </section>
 
       {/* Testimonials Section */}
-      <section className="py-20 px-6 bg-white">
+      <section className="py-20 px-6 bg-white/50 backdrop-blur-sm">
         <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-12">
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="text-center mb-12"
+          >
             <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
-              Store Owners Love Tapify
+              Store Owners Love Pawpaya
             </h2>
             <p className="text-xl text-gray-600">
               Join 500+ retailers earning passive income with zero risk
             </p>
-          </div>
+          </motion.div>
 
-          <div className="grid md:grid-cols-3 gap-6">
+          <motion.div 
+            variants={staggerContainer}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            className="grid md:grid-cols-3 gap-6"
+          >
             {testimonials.map((testimonial, idx) => (
-              <div 
+              <motion.div 
                 key={idx}
-                className="bg-gradient-to-br from-white to-gray-50 rounded-2xl p-7 shadow-lg hover:shadow-xl transition-all border border-gray-100 relative overflow-hidden"
+                variants={fadeInUp}
+                whileHover={{ scale: 1.03, y: -5 }}
+                className="bg-white rounded-3xl p-8 shadow-xl border-2 border-gray-100 relative overflow-hidden"
               >
                 {/* Earnings Badge */}
-                <div className="absolute top-4 right-4 bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3] text-white px-4 py-2 rounded-full text-sm font-bold shadow-md">
+                <motion.div 
+                  initial={{ scale: 0, rotate: -45 }}
+                  whileInView={{ scale: 1, rotate: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.5, delay: idx * 0.1 + 0.3 }}
+                  className="absolute top-4 right-4 bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3] text-white px-4 py-2 rounded-full text-sm font-bold shadow-lg"
+                >
                   {testimonial.revenue}
-                </div>
+                </motion.div>
 
                 <div className="flex items-start gap-3 mb-4 mt-8">
-                  <div className="w-14 h-14 rounded-full bg-gradient-to-br from-[#ff7a4a] to-[#ff6fb3] flex items-center justify-center text-white font-bold text-lg shadow-md">
+                  <div className="w-14 h-14 rounded-full bg-gradient-to-br from-[#ff7a4a] to-[#ff6fb3] flex items-center justify-center text-white font-bold text-lg shadow-lg">
                     {testimonial.avatar}
                   </div>
                   <div className="flex-1">
@@ -176,100 +280,115 @@ export default function RetailerOnboardLanding() {
 
                 <div className="flex gap-1">
                   {[...Array(5)].map((_, i) => (
-                    <svg key={i} className="w-5 h-5 text-[#ff7a4a]" fill="currentColor" viewBox="0 0 20 20">
+                    <motion.svg 
+                      key={i}
+                      initial={{ opacity: 0, scale: 0 }}
+                      whileInView={{ opacity: 1, scale: 1 }}
+                      viewport={{ once: true }}
+                      transition={{ duration: 0.3, delay: idx * 0.1 + i * 0.05 }}
+                      className="w-5 h-5 text-[#ff7a4a]" 
+                      fill="currentColor" 
+                      viewBox="0 0 20 20"
+                    >
                       <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                    </svg>
+                    </motion.svg>
                   ))}
                 </div>
-              </div>
+              </motion.div>
             ))}
-          </div>
+          </motion.div>
         </div>
       </section>
 
       {/* How It Works */}
-      <section id="how-it-works" className="py-20 px-6 bg-gradient-to-br from-gray-50 to-white">
+      <section id="how-it-works" className="py-20 px-6 bg-gradient-to-br from-white to-gray-50">
         <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-16">
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="text-center mb-16"
+          >
             <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
               Dead Simple Setup
             </h2>
             <p className="text-xl text-gray-600">
               From signup to earning in less than 7 days
             </p>
-          </div>
+          </motion.div>
 
           <div className="grid md:grid-cols-4 gap-8 relative">
             {/* Connecting Line */}
             <div className="hidden md:block absolute top-12 left-0 right-0 h-1 bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3] opacity-20" style={{ top: '48px' }}></div>
 
-            <div className="relative text-center">
-              <div className="w-20 h-20 bg-gradient-to-br from-[#ff7a4a] to-[#ff6fb3] text-white rounded-2xl flex items-center justify-center text-3xl font-bold mx-auto mb-4 shadow-lg">
-                1
-              </div>
-              <h3 className="text-xl font-bold mb-3 text-gray-900">Sign Up</h3>
-              <p className="text-gray-600">
-                Quick form. Takes 3 minutes. No credit card needed.
-              </p>
-            </div>
-
-            <div className="relative text-center">
-              <div className="w-20 h-20 bg-gradient-to-br from-[#ff7a4a] to-[#ff6fb3] text-white rounded-2xl flex items-center justify-center text-3xl font-bold mx-auto mb-4 shadow-lg">
-                2
-              </div>
-              <h3 className="text-xl font-bold mb-3 text-gray-900">Get Displays</h3>
-              <p className="text-gray-600">
-                We send you beautiful NFC displays with curated products.
-              </p>
-            </div>
-
-            <div className="relative text-center">
-              <div className="w-20 h-20 bg-gradient-to-br from-[#ff7a4a] to-[#ff6fb3] text-white rounded-2xl flex items-center justify-center text-3xl font-bold mx-auto mb-4 shadow-lg">
-                3
-              </div>
-              <h3 className="text-xl font-bold mb-3 text-gray-900">Place & Profit</h3>
-              <p className="text-gray-600">
-                Put them in your store. Customers tap, shop, you earn.
-              </p>
-            </div>
-
-            <div className="relative text-center">
-              <div className="w-20 h-20 bg-gradient-to-br from-[#ff7a4a] to-[#ff6fb3] text-white rounded-2xl flex items-center justify-center text-3xl font-bold mx-auto mb-4 shadow-lg">
-                4
-              </div>
-              <h3 className="text-xl font-bold mb-3 text-gray-900">Get Paid</h3>
-              <p className="text-gray-600">
-                Weekly payouts. Track everything in your dashboard.
-              </p>
-            </div>
+            {steps.map((step, idx) => (
+              <motion.div 
+                key={idx}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: idx * 0.1 }}
+                whileHover={{ y: -10 }}
+                className="relative text-center"
+              >
+                <motion.div 
+                  initial={{ scale: 0 }}
+                  whileInView={{ scale: 1 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.5, delay: idx * 0.1 + 0.2, type: "spring" }}
+                  className="w-24 h-24 bg-gradient-to-br from-[#ff7a4a] to-[#ff6fb3] text-white rounded-3xl flex items-center justify-center text-4xl font-bold mx-auto mb-6 shadow-2xl"
+                >
+                  {step.number}
+                </motion.div>
+                <h3 className="text-xl font-bold mb-3 text-gray-900">{step.title}</h3>
+                <p className="text-gray-600">
+                  {step.description}
+                </p>
+              </motion.div>
+            ))}
           </div>
         </div>
       </section>
 
       {/* Benefits Grid */}
-      <section className="py-20 px-6 bg-white">
+      <section className="py-20 px-6 bg-white/50 backdrop-blur-sm">
         <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-16">
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="text-center mb-16"
+          >
             <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
               Why Store Owners Choose Us
             </h2>
             <p className="text-xl text-gray-600">
               Everything you need to turn your space into a revenue stream
             </p>
-          </div>
+          </motion.div>
 
-          <div className="grid md:grid-cols-3 gap-8">
+          <motion.div 
+            variants={staggerContainer}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            className="grid md:grid-cols-3 gap-8"
+          >
             {benefits.map((benefit, idx) => (
-              <div 
+              <motion.div 
                 key={idx}
-                className="bg-white rounded-xl p-6 border-2 border-gray-100 hover:border-[#ff6fb3] hover:shadow-lg transition-all"
+                variants={fadeInUp}
+                whileHover={{ scale: 1.05, y: -5 }}
+                className="bg-white rounded-3xl p-8 border-2 border-gray-100 hover:border-[#ff6fb3] shadow-xl transition-all"
               >
-                <div className="text-5xl mb-4">{benefit.icon}</div>
+                <div className="text-6xl mb-6">{benefit.icon}</div>
                 <h3 className="text-xl font-bold text-gray-900 mb-3">{benefit.title}</h3>
                 <p className="text-gray-600 leading-relaxed">{benefit.description}</p>
-              </div>
+              </motion.div>
             ))}
-          </div>
+          </motion.div>
         </div>
       </section>
 
@@ -277,48 +396,64 @@ export default function RetailerOnboardLanding() {
       <section className="py-20 px-6 bg-gradient-to-br from-[#ff7a4a] to-[#ff6fb3] text-white relative overflow-hidden">
         {/* Background Pattern */}
         <div className="absolute inset-0 opacity-10">
-          <div className="absolute top-0 left-0 w-96 h-96 bg-white rounded-full blur-3xl"></div>
-          <div className="absolute bottom-0 right-0 w-96 h-96 bg-white rounded-full blur-3xl"></div>
+          <motion.div 
+            animate={{ scale: [1, 1.2, 1] }}
+            transition={{ duration: 8, repeat: Infinity }}
+            className="absolute top-0 left-0 w-96 h-96 bg-white rounded-full blur-3xl"
+          />
+          <motion.div 
+            animate={{ scale: [1, 1.3, 1] }}
+            transition={{ duration: 10, repeat: Infinity }}
+            className="absolute bottom-0 right-0 w-96 h-96 bg-white rounded-full blur-3xl"
+          />
         </div>
 
-        <div className="max-w-4xl mx-auto text-center relative z-10">
-          <h2 className="text-4xl md:text-5xl font-bold mb-6">
+        <motion.div 
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+          className="max-w-4xl mx-auto text-center relative z-10"
+        >
+          <h2 className="text-4xl md:text-6xl font-bold mb-6">
             Ready to Start Earning?
           </h2>
-          <p className="text-2xl mb-8 opacity-95 font-medium">
-            Join 500+ stores already earning passive income with Tapify displays
+          <p className="text-2xl mb-10 opacity-95 font-medium">
+            Join 500+ stores already earning passive income with Pawpaya displays
           </p>
           
-          <Link 
-            href="/onboard/register"
-            className="inline-block bg-white text-[#ff6fb3] px-12 py-6 rounded-xl text-2xl font-bold hover:bg-gray-50 transition-all transform hover:scale-105 shadow-2xl mb-6"
-          >
-            Get Started Free →
+          <Link href="/onboard/register">
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              className="inline-block bg-white text-[#ff6fb3] px-12 py-6 rounded-2xl text-2xl font-bold hover:bg-gray-50 transition-all shadow-2xl mb-8"
+            >
+              Get Started Free →
+            </motion.button>
           </Link>
 
-          <div className="flex flex-col sm:flex-row gap-8 justify-center items-center mt-10 text-white/90">
-            <div className="flex items-center gap-2">
-              <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
-                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-              </svg>
-              <span className="font-medium">No Credit Card Required</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
-                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-              </svg>
-              <span className="font-medium">Free Setup</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
-                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-              </svg>
-              <span className="font-medium">Cancel Anytime</span>
-            </div>
-          </div>
-        </div>
+          <motion.div 
+            variants={staggerContainer}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            className="flex flex-col sm:flex-row gap-8 justify-center items-center mt-10 text-white/90"
+          >
+            {['No Credit Card Required', 'Free Setup', 'Cancel Anytime'].map((text, idx) => (
+              <motion.div 
+                key={idx}
+                variants={fadeInUp}
+                className="flex items-center gap-2"
+              >
+                <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                </svg>
+                <span className="font-bold">{text}</span>
+              </motion.div>
+            ))}
+          </motion.div>
+        </motion.div>
       </section>
     </div>
   );
 }
-

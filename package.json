@@ -12,6 +12,7 @@
     "@supabase/auth-ui-shared": "^0.1.8",
     "@supabase/supabase-js": "^2.45.0",
     "dwolla-v2": "^3.4.0",
+    "framer-motion": "^12.23.22",
     "gsap": "^3.13.0",
     "next": "latest",
     "plaid": "^38.1.0",

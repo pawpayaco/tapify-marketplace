@@ -18,8 +18,8 @@ export default function Login() {
   // If auth is disabled, redirect immediately
   useEffect(() => {
     if (disableAuth) {
-      console.log('🚧 Auth disabled - redirecting to admin');
-      const redirectTo = router.query.redirect || '/admin';
+      console.log('🚧 Auth disabled - redirecting to dashboard');
+      const redirectTo = router.query.redirect || '/onboard/dashboard';
       router.push(redirectTo);
     }
   }, [disableAuth, router]);
@@ -28,7 +28,7 @@ export default function Login() {
   useEffect(() => {
     if (user && !loading) {
       // Check if there's a redirect query param
-      const redirectTo = router.query.redirect || '/admin';
+      const redirectTo = router.query.redirect || '/onboard/dashboard';
       router.push(redirectTo);
     }
   }, [user, loading, router]);
@@ -44,7 +44,7 @@ export default function Login() {
           email,
           password,
           options: {
-            emailRedirectTo: `${window.location.origin}/admin`,
+            emailRedirectTo: `${window.location.origin}/onboard/dashboard`,
           },
         });
         if (error) throw error;
@@ -56,8 +56,8 @@ export default function Login() {
              });
              if (error) throw error;
              
-             // Redirect to specified page or default to admin
-             const redirectTo = router.query.redirect || '/admin';
+             // Redirect to specified page or default to dashboard
+             const redirectTo = router.query.redirect || '/onboard/dashboard';
              router.push(redirectTo);
       }
     } catch (err) {
@@ -98,7 +98,7 @@ export default function Login() {
           {false && supabase && (
             <button
               onClick={async () => {
-                const redirectTo = router.query.redirect || '/admin';
+                const redirectTo = router.query.redirect || '/onboard/dashboard';
                 const { error } = await supabase.auth.signInWithOAuth({
                   provider: 'google',
                   options: {
