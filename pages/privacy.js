@@ -1,89 +1,57 @@
 import { motion } from 'framer-motion';
 import Link from 'next/link';
+import { useState } from 'react';
 
 export default function PrivacyPolicies() {
+  const [emailCopied, setEmailCopied] = useState(false);
+
+  const copyEmailToClipboard = () => {
+    navigator.clipboard.writeText('pawpayaco@gmail.com');
+    setEmailCopied(true);
+    setTimeout(() => setEmailCopied(false), 3000);
+  };
   const policyDocuments = [
-    // Security Policies
+    // Privacy Policy
     {
-      category: "Security Policies",
+      category: "Privacy Policy",
+      description: "Our comprehensive privacy policy outlining how we collect, use, and protect your information",
       documents: [
-        { name: "Information Security Policy", file: "Tapify_Information_Security_Policy.pdf" },
-        { name: "Security Overview", file: "Tapify_Security_Overview.pdf" },
-        { name: "Security Policies Collection", file: "Tapify_Security_Policies.pdf" },
-        { name: "Security Incident Response Policy", file: "Security_Incident_Response_Policy.pdf" },
-        { name: "Security Awareness Training Policy", file: "Security_Awareness_Training_Policy.pdf" },
+        { name: "Pawpaya Privacy Policy", file: "Pawpaya_Privacy_Policy.pdf", description: "Complete privacy policy and data practices" },
       ]
     },
-    // Access & Authentication
+    // Core Security Policies
     {
-      category: "Access & Authentication",
+      category: "Core Security Policies",
+      description: "Our foundational security framework and practices",
       documents: [
-        { name: "Access Controls Policy", file: "Tapify_Access_Controls_Policy.pdf" },
-        { name: "Multi-Factor Authentication Policy", file: "MultiFactorAuthenticationPolicy.pdf" },
-        { name: "2FA Documentation", file: "Q25_2FA_Documentation.pdf" },
+        { name: "Information Security Policy", file: "Tapify_Information_Security_Policy.pdf", description: "Comprehensive security framework and standards" },
+        { name: "Security Overview", file: "Tapify_Security_Overview.pdf", description: "High-level overview of our security practices" },
+        { name: "Security Incident Response Policy", file: "Security_Incident_Response_Policy.pdf", description: "How we handle and respond to security incidents" },
       ]
     },
-    // Data Privacy & Compliance
+    // Data Protection & Consent
     {
-      category: "Data Privacy & Compliance",
+      category: "Data Protection & Consent",
+      description: "How we protect your data and respect your rights",
       documents: [
-        { name: "Consumer Consent", file: "Q22_Consumer_Consent.pdf" },
-        { name: "Data Minimization Documentation", file: "Q23_Data_Minimization_Documentation.pdf" },
-        { name: "Data Minimization Policy", file: "Q23_Data_Minimization.pdf" },
-        { name: "Data Usage Documentation", file: "Q24_Data_Usage_Documentation.pdf" },
+        { name: "Consumer Consent & Data Usage", file: "Q22_Consumer_Consent.pdf", description: "Your rights and how we use your data" },
       ]
     },
-    // Network & Infrastructure
+    // Access & Security Controls
     {
-      category: "Network & Infrastructure",
+      category: "Access & Security Controls",
+      description: "Protecting access to systems and data",
       documents: [
-        { name: "Network Segmentation Policy", file: "Network_Segmentation_Policy.pdf" },
-        { name: "Asset Management Policy", file: "Tapify_Asset_Management_Policy.pdf" },
-        { name: "BYOD Policy", file: "Tapify_BYOD_Policy.pdf" },
+        { name: "Access Controls Policy", file: "Tapify_Access_Controls_Policy.pdf", description: "How we manage and control system access" },
+        { name: "Vulnerability Management Policy", file: "vulnerability_management_policy.pdf", description: "Proactive security maintenance and patching" },
       ]
     },
-    // Monitoring & Logging
+    // Third-Party Management
     {
-      category: "Monitoring & Logging",
+      category: "Third-Party Management",
+      description: "Our approach to vendor security",
       documents: [
-        { name: "Audit Trail and Logging Policy", file: "Audit_Trail_and_Logging_Policy.pdf" },
-        { name: "Monitoring & Alerting Policy", file: "Monitoring_Alerting_Policy.pdf" },
-        { name: "Logging & Monitoring Documentation", file: "Question_14_Logging_Monitoring.pdf" },
-        { name: "Monitoring & Alerting Documentation", file: "Question_15_Monitoring_Alerting.pdf" },
-      ]
-    },
-    // Development & Testing
-    {
-      category: "Development & Testing",
-      documents: [
-        { name: "Code Change Process Policy", file: "CodeChangeProcessPolicy.pdf" },
-        { name: "Code Review Approval Policy", file: "CodeReviewApprovalPolicy.pdf" },
-        { name: "Code Testing Policy", file: "CodeTestingPolicy.pdf" },
-        { name: "Independent Testing Documentation", file: "Independent_Testing_Documentation.pdf" },
-        { name: "Independent Testing (Q20)", file: "Q20_Independent_Testing_Documentation.pdf" },
-      ]
-    },
-    // Vendor & Personnel Management
-    {
-      category: "Vendor & Personnel Management",
-      documents: [
-        { name: "Vendor Management Documentation", file: "Vendor_Management_Documentation.pdf" },
-        { name: "Background Checks", file: "Q21_Background_Checks.pdf" },
-      ]
-    },
-    // Vulnerability Management
-    {
-      category: "Vulnerability Management",
-      documents: [
-        { name: "Vulnerability Management Policy", file: "vulnerability_management_policy.pdf" },
-      ]
-    },
-    // Security Questionnaires
-    {
-      category: "Security Questionnaires",
-      documents: [
-        { name: "Security Questionnaire Part 12", file: "security_questionnaire_part12.pdf" },
-        { name: "Security Questionnaire Part 13", file: "security_questionnaire_part13.pdf" },
+        { name: "Vendor Management Documentation", file: "Vendor_Management_Documentation.pdf", description: "How we ensure third-party security compliance" },
       ]
     }
   ];
@@ -157,41 +125,44 @@ export default function PrivacyPolicies() {
               className="bg-white rounded-3xl shadow-xl p-8 border-2 border-gray-100"
             >
               {/* Category Header */}
-              <div className="flex items-center gap-3 mb-6 pb-4 border-b-2 border-gray-100">
-                <div className="w-10 h-10 bg-gradient-to-br from-[#ff7a4a] to-[#ff6fb3] rounded-xl flex items-center justify-center shadow-lg">
-                  <span className="text-white font-bold text-lg">{sectionIdx + 1}</span>
+              <div className="mb-6 pb-6 border-b-2 border-gray-100">
+                <div className="flex items-center gap-3 mb-3">
+                  <div className="w-10 h-10 bg-gradient-to-br from-[#ff7a4a] to-[#ff6fb3] rounded-xl flex items-center justify-center shadow-lg">
+                    <span className="text-white font-bold text-lg">{sectionIdx + 1}</span>
+                  </div>
+                  <h2 className="text-2xl font-bold text-gray-900">{section.category}</h2>
                 </div>
-                <h2 className="text-2xl font-bold text-gray-900">{section.category}</h2>
+                <p className="text-gray-600 ml-13">{section.description}</p>
               </div>
 
               {/* Documents Grid */}
-              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+              <div className="grid md:grid-cols-2 gap-4">
                 {section.documents.map((doc, docIdx) => (
                   <motion.a
                     key={docIdx}
                     href={`/Privacy/${doc.file}`}
                     download
-                    whileHover={{ scale: 1.03, y: -2 }}
+                    whileHover={{ scale: 1.02, y: -2 }}
                     whileTap={{ scale: 0.98 }}
-                    className="flex items-center gap-3 p-4 rounded-2xl border-2 border-gray-200 hover:border-[#ff6fb3] hover:bg-gradient-to-br hover:from-pink-50 hover:to-purple-50 transition-all group"
+                    className="flex items-start gap-4 p-5 rounded-2xl border-2 border-gray-200 hover:border-[#ff6fb3] hover:bg-gradient-to-br hover:from-pink-50 hover:to-purple-50 transition-all group"
                   >
                     {/* PDF Icon */}
-                    <div className="flex-shrink-0 w-10 h-10 bg-gradient-to-br from-red-500 to-red-600 rounded-xl flex items-center justify-center shadow-md group-hover:shadow-lg transition-all">
-                      <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <div className="flex-shrink-0 w-12 h-12 bg-gradient-to-br from-red-500 to-red-600 rounded-xl flex items-center justify-center shadow-md group-hover:shadow-lg transition-all">
+                      <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
                       </svg>
                     </div>
                     
-                    {/* Document Name */}
+                    {/* Document Info */}
                     <div className="flex-1 min-w-0">
-                      <p className="font-semibold text-gray-900 text-sm leading-tight group-hover:text-[#ff6fb3] transition-colors">
+                      <p className="font-bold text-gray-900 text-base leading-tight group-hover:text-[#ff6fb3] transition-colors mb-2">
                         {doc.name}
                       </p>
-                      <p className="text-xs text-gray-500 mt-1">PDF Document</p>
+                      <p className="text-sm text-gray-600 leading-snug">{doc.description}</p>
                     </div>
 
                     {/* Download Icon */}
-                    <div className="flex-shrink-0">
+                    <div className="flex-shrink-0 mt-1">
                       <svg className="w-5 h-5 text-gray-400 group-hover:text-[#ff6fb3] transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
                       </svg>
@@ -215,14 +186,37 @@ export default function PrivacyPolicies() {
           <p className="text-gray-700 mb-6 max-w-2xl mx-auto">
             If you have any questions about our privacy and security policies, please don't hesitate to reach out to our team.
           </p>
-          <motion.a
-            href="mailto:pawpayaco@gmail.com"
+          <motion.button
+            onClick={copyEmailToClipboard}
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
-            className="inline-block bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3] text-white px-8 py-4 rounded-2xl font-bold shadow-lg hover:shadow-xl transition-all"
+            className="inline-flex items-center gap-3 bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3] text-white px-8 py-4 rounded-2xl font-bold shadow-lg hover:shadow-xl transition-all"
           >
-            Contact Privacy Team
-          </motion.a>
+            {emailCopied ? (
+              <>
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                </svg>
+                Email Copied to Clipboard!
+              </>
+            ) : (
+              <>
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                </svg>
+                Contact Privacy Team
+              </>
+            )}
+          </motion.button>
+          {emailCopied && (
+            <motion.p
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="mt-3 text-sm text-gray-600"
+            >
+              pawpayaco@gmail.com
+            </motion.p>
+          )}
         </motion.div>
       </div>
     </div>
