@@ -18,7 +18,8 @@ export default function Home() {
       description: 'Matching collars and bracelets for every kind of bestie. Your dog wears the collar, you wear the bracelet. Always connected.',
       gradient: 'from-pink-200 via-purple-200 to-indigo-200',
       icon: '🐾',
-      features: ['Matching sets', 'Premium materials', 'Adjustable sizing']
+      features: ['Matching sets', 'Premium materials', 'Adjustable sizing'],
+      link: 'https://pawpayaco.com/products/bff-friendship-collar'
     },
     {
       id: 2,
@@ -26,7 +27,8 @@ export default function Home() {
       description: 'Design your own custom friendship collar kit. Choose colors, charms, and styles to make it uniquely yours.',
       gradient: 'from-yellow-200 via-orange-200 to-pink-200',
       icon: '🎨',
-      features: ['Customizable', 'Creative fun', 'Perfect gifts']
+      features: ['Customizable', 'Creative fun', 'Perfect gifts'],
+      link: 'https://pawpayaco.com/products/diy-bestie-kit'
     }
   ];
 
@@ -187,13 +189,20 @@ export default function Home() {
                       </div>
                     ))}
                   </div>
-                  <motion.button
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    className="bg-white text-gray-800 px-6 py-3 rounded-xl font-bold shadow-lg hover:shadow-xl transition-all w-full"
+                  <a 
+                    href={product.link} 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="block"
                   >
-                    Learn More →
-                  </motion.button>
+                    <motion.button
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                      className="bg-white text-gray-800 px-6 py-3 rounded-xl font-bold shadow-lg hover:shadow-xl transition-all w-full"
+                    >
+                      Learn More →
+                    </motion.button>
+                  </a>
                 </div>
               </motion.div>
             ))}
