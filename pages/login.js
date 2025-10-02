@@ -26,20 +26,26 @@ export default function Login() {
 
   // Redirect if already logged in
   useEffect(() => {
+    console.log('🔍 [Login] Auth state check:', { hasUser: !!user, loading });
+    
     if (user && !loading) {
       // Check if there's a redirect query param
       const redirectTo = router.query.redirect || '/onboard/dashboard';
+      console.log('✅ [Login] User already logged in, redirecting to:', redirectTo);
       router.push(redirectTo);
     }
   }, [user, loading, router]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    console.log('\n🔐 [Login] Form submitted:', { email, isSignUp });
+    
     setError('');
     setSubmitting(true);
 
     try {
       if (isSignUp) {
+        console.log('📝 [Login] Calling signUp...');
         const { data, error } = await supabase.auth.signUp({
           email,
           password,
@@ -47,20 +53,45 @@ export default function Login() {
             emailRedirectTo: `${window.location.origin}/onboard/dashboard`,
           },
         });
-        if (error) throw error;
+        
+        if (error) {
+          console.error('❌ [Login] Sign up failed:', error);
+          throw error;
+        }
+        
+        console.log('✅ [Login] Sign up successful:', {
+          userId: data?.user?.id,
+          email: data?.user?.email,
+          hasSession: !!data?.session,
+        });
+        
         setError('Check your email to confirm your account!');
       } else {
-             const { data, error } = await supabase.auth.signInWithPassword({
-               email,
-               password,
-             });
-             if (error) throw error;
-             
-             // Redirect to specified page or default to dashboard
-             const redirectTo = router.query.redirect || '/onboard/dashboard';
-             router.push(redirectTo);
+        console.log('🔑 [Login] Calling signInWithPassword...');
+        const { data, error } = await supabase.auth.signInWithPassword({
+          email,
+          password,
+        });
+        
+        if (error) {
+          console.error('❌ [Login] Sign in failed:', error);
+          throw error;
+        }
+        
+        console.log('✅ [Login] Sign in successful:', {
+          userId: data?.user?.id,
+          email: data?.user?.email,
+          hasSession: !!data?.session,
+          accessToken: data?.session?.access_token ? `${data.session.access_token.substring(0, 20)}...` : 'NONE',
+        });
+        
+        // Redirect to specified page or default to dashboard
+        const redirectTo = router.query.redirect || '/onboard/dashboard';
+        console.log('🚀 [Login] Redirecting to:', redirectTo);
+        router.push(redirectTo);
       }
     } catch (err) {
+      console.error('❌ [Login] Exception:', err);
       setError(err.message || 'An error occurred');
     } finally {
       setSubmitting(false);

@@ -1,68 +1,250 @@
-import { useMemo, useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useRouter } from "next/router";
 import { motion } from "framer-motion";
-import { supabase } from "../lib/supabase";
+import { createServerClient } from '@supabase/ssr';
+import { supabase, supabaseAdmin } from "../lib/supabase";
 import { formatMoney } from "../utils/formatMoney";
 import { initiatePayout } from "../services/dwolla";
-import { useAuthContext } from "../context/AuthContext";
 
 const TABS = ["Vendors", "Retailers", "Payouts", "Analytics", "Sourcers", "UIDs"];
 
-// Note: Server-side auth check temporarily disabled due to cookie issues
-// Using client-side auth check instead
-// export async function getServerSideProps(context) { ... }
+/**
+ * Server-side authentication check using @supabase/ssr
+ * Always returns props, never redirects
+ */
+export async function getServerSideProps(context) {
 
-export default function Admin() {
+  try {
+    const { req, res } = context;
+
+    // Parse cookies from raw Cookie header since req.cookies might be empty
+    const cookieHeader = req.headers.cookie || '';
+    const parsedCookies = {};
+    if (cookieHeader) {
+      cookieHeader.split(';').forEach(cookie => {
+        const [name, ...rest] = cookie.trim().split('=');
+        if (name && rest.length > 0) {
+          parsedCookies[name] = rest.join('=');
+        }
+      });
+    }
+    
+    const supabaseServer = createServerClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
+      {
+        cookies: {
+          get(name) {
+            return parsedCookies[name] || req.cookies?.[name];
+          },
+          set(name, value, options) {
+            if (!res.headersSent) {
+              res.setHeader('Set-Cookie', `${name}=${value}; Path=/; ${options?.secure ? 'Secure;' : ''} ${options?.httpOnly ? 'HttpOnly;' : ''}`);
+            }
+          },
+          remove(name, options) {
+            if (!res.headersSent) {
+              res.setHeader('Set-Cookie', `${name}=; Path=/; Max-Age=0`);
+            }
+          },
+        },
+      }
+    );
+
+    const { data: { user }, error: userError } = await supabaseServer.auth.getUser();
+
+    if (userError) {
+      console.error('[ADMIN] Auth error:', userError.message);
+      return {
+        props: {
+          user: null,
+          isAdmin: false,
+          error: `Auth error: ${userError.message}`,
+          debugInfo: {
+            timestamp: new Date().toISOString(),
+            userError: userError.message,
+            errorStatus: userError.status,
+          },
+        },
+      };
+    }
+
+    if (!user) {
+      return {
+        props: {
+          user: null,
+          isAdmin: false,
+          error: 'No user session found',
+          debugInfo: {
+            timestamp: new Date().toISOString(),
+            message: 'User not logged in',
+          },
+        },
+      };
+    }
+
+    // Check if user is in admins table using admin client
+    if (!supabaseAdmin) {
+      console.error('[ADMIN] Admin client not available - check SUPABASE_SERVICE_ROLE_KEY');
+      return {
+        props: {
+          user: {
+            id: user.id,
+            email: user.email,
+          },
+          isAdmin: false,
+          error: 'Admin client not configured (missing SUPABASE_SERVICE_ROLE_KEY)',
+          debugInfo: {
+            timestamp: new Date().toISOString(),
+            user: { id: user.id, email: user.email },
+          },
+        },
+      };
+    }
+
+    const { data: adminData, error: adminError } = await supabaseAdmin
+      .from('admins')
+      .select('id, email')
+      .eq('id', user.id)
+      .maybeSingle();
+
+    if (adminError) {
+      console.error('[ADMIN] Database error:', adminError.message);
+      return {
+        props: {
+          user: {
+            id: user.id,
+            email: user.email,
+          },
+          isAdmin: false,
+          error: `Database error: ${adminError.message}`,
+          debugInfo: {
+            timestamp: new Date().toISOString(),
+            user: { id: user.id, email: user.email },
+            adminError: adminError.message,
+            adminErrorCode: adminError.code,
+          },
+        },
+      };
+    }
+
+    if (!adminData) {
+      console.log(`[ADMIN] User ${user.email} not in admins table`);
+      return {
+        props: {
+          user: {
+            id: user.id,
+            email: user.email,
+          },
+          isAdmin: false,
+          error: 'User not in admins table',
+          sqlCommand: `INSERT INTO admins (id, email) VALUES ('${user.id}', '${user.email}');`,
+          debugInfo: {
+            timestamp: new Date().toISOString(),
+            user: { id: user.id, email: user.email },
+            message: 'User exists but not in admins table',
+          },
+        },
+      };
+    }
+
+    // Fetch dashboard data
+    const [
+      { data: payoutJobs, error: payoutError },
+      { data: vendors, error: vendorsError },
+      { data: retailers, error: retailersError },
+      { data: sourcers, error: sourcersError },
+      { data: uids, error: uidsError },
+    ] = await Promise.all([
+      supabaseAdmin.from('payout_jobs').select('*').order('created_at', { ascending: false }).limit(100),
+      supabaseAdmin.from('vendors').select('*').order('created_at', { ascending: false }),
+      supabaseAdmin.from('retailers').select('*').order('created_at', { ascending: false }),
+      supabaseAdmin.from('sourcer_accounts').select('*').order('created_at', { ascending: false }),
+      supabaseAdmin.from('uids').select('*').order('registered_at', { ascending: false }).limit(100),
+    ]);
+
+    if (payoutError) console.error('[ADMIN] Payout jobs error:', payoutError.message);
+    if (vendorsError) console.error('[ADMIN] Vendors error:', vendorsError.message);
+    if (retailersError) console.error('[ADMIN] Retailers error:', retailersError.message);
+    if (sourcersError) console.error('[ADMIN] Sourcers error:', sourcersError.message);
+    if (uidsError) console.error('[ADMIN] UIDs error:', uidsError.message);
+
+    return {
+      props: {
+        user: {
+          id: user.id,
+          email: user.email,
+        },
+        isAdmin: true,
+        error: null,
+        initialPayoutJobs: payoutJobs || [],
+        initialVendors: vendors || [],
+        initialRetailers: retailers || [],
+        initialSourcers: sourcers || [],
+        initialUids: uids || [],
+        debugInfo: {
+          timestamp: new Date().toISOString(),
+          user: { id: user.id, email: user.email },
+          dataLoaded: {
+            payoutJobs: payoutJobs?.length || 0,
+            vendors: vendors?.length || 0,
+            retailers: retailers?.length || 0,
+            sourcers: sourcers?.length || 0,
+            uids: uids?.length || 0,
+          },
+        },
+      },
+    };
+
+  } catch (error) {
+    console.error('[ADMIN] Unexpected error:', error.message);
+    return {
+      props: {
+        user: null,
+        isAdmin: false,
+        error: `Unexpected error: ${error.message}`,
+        debugInfo: {
+          timestamp: new Date().toISOString(),
+          error: error.message,
+          errorName: error.name,
+          stack: error.stack,
+        },
+      },
+    };
+  }
+}
+
+export default function Admin({ 
+  user = null,
+  isAdmin = false,
+  error = null,
+  initialPayoutJobs = [],
+  initialVendors = [],
+  initialRetailers = [],
+  initialSourcers = [],
+  initialUids = [],
+  sqlCommand = null,
+  debugInfo = {},
+}) {
+
   const router = useRouter();
-  const { user } = useAuthContext();
-  const [isAdmin, setIsAdmin] = useState(false);
-  const [authLoading, setAuthLoading] = useState(true);
+  const [mounted, setMounted] = useState(false);
   const [tab, setTab] = useState("Vendors");
   const [q, setQ] = useState("");
   const [filter, setFilter] = useState("all");
   const [payouts, setPayouts] = useState([]);
   const [loadingPayouts, setLoadingPayouts] = useState(false);
   const [totalRevenue, setTotalRevenue] = useState(0);
-  const [payoutJobs, setPayoutJobs] = useState([]);
+  const [payoutJobs, setPayoutJobs] = useState(initialPayoutJobs);
   const [loadingPayoutJobs, setLoadingPayoutJobs] = useState(false);
-  const [payoutFilter, setPayoutFilter] = useState('pending'); // 'pending' or 'paid'
+  const [payoutFilter, setPayoutFilter] = useState('pending');
   const [processingPayouts, setProcessingPayouts] = useState(new Set());
   const [toast, setToast] = useState(null);
 
-  // Client-side auth check
+  // Handle client-side mounting to prevent hydration mismatch
   useEffect(() => {
-    const checkAuth = async () => {
-      if (!user) {
-        router.push('/login');
-        return;
-      }
-
-      // Check if user is in admins table
-      if (supabase && user.id) {
-        try {
-          const { data, error } = await supabase
-            .from('admins')
-            .select('id')
-            .eq('id', user.id)
-            .single();
-
-          if (error || !data) {
-            console.log('Not authorized as admin:', user.email);
-            router.push('/');
-          } else {
-            setIsAdmin(true);
-          }
-        } catch (error) {
-          console.error('Error checking admin status:', error);
-          router.push('/');
-        }
-      }
-
-      setAuthLoading(false);
-    };
-
-    checkAuth();
-  }, [user, router]);
+    setMounted(true);
+  }, []);
 
   // Animation variants
   const fadeInUp = {
@@ -74,19 +256,16 @@ export default function Admin() {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
-      transition: {
-        staggerChildren: 0.1
-      }
+      transition: { staggerChildren: 0.1 }
     }
   };
 
   // Fetch payout data from Supabase when Analytics tab is active
   useEffect(() => {
     const fetchPayouts = async () => {
-      if (tab === "Analytics") {
-        // Check if Supabase is initialized
+      if (tab === "Analytics" && isAdmin) {
         if (!supabase) {
-          console.warn('Supabase not initialized - skipping payout fetch');
+          console.warn('[Admin] Supabase not initialized');
           setLoadingPayouts(false);
           return;
         }
@@ -102,12 +281,10 @@ export default function Admin() {
           if (error) throw error;
 
           setPayouts(data || []);
-          
-          // Calculate total revenue
           const total = (data || []).reduce((sum, payout) => sum + (payout.total_amount || 0), 0);
           setTotalRevenue(total);
         } catch (error) {
-          console.error('Error fetching payouts:', error);
+          console.error('[Admin] Error fetching payouts:', error);
         } finally {
           setLoadingPayouts(false);
         }
@@ -115,14 +292,14 @@ export default function Admin() {
     };
 
     fetchPayouts();
-  }, [tab]);
+  }, [tab, isAdmin]);
 
   // Fetch payout jobs when Payouts tab is active
   useEffect(() => {
     const fetchPayoutJobs = async () => {
-      if (tab === "Payouts") {
+      if (tab === "Payouts" && isAdmin) {
         if (!supabase) {
-          console.warn('Supabase not initialized - skipping payout jobs fetch');
+          console.warn('[Admin] Supabase not initialized');
           setLoadingPayoutJobs(false);
           return;
         }
@@ -141,10 +318,9 @@ export default function Admin() {
             .order('created_at', { ascending: false });
 
           if (error) throw error;
-
           setPayoutJobs(data || []);
         } catch (error) {
-          console.error('Error fetching payout jobs:', error);
+          console.error('[Admin] Error fetching payout jobs:', error);
           showToast('Failed to fetch payout jobs', 'error');
         } finally {
           setLoadingPayoutJobs(false);
@@ -153,8 +329,7 @@ export default function Admin() {
     };
 
     fetchPayoutJobs();
-  }, [tab, payoutFilter]);
-
+  }, [tab, payoutFilter, isAdmin]);
 
   // Toast notification helper
   const showToast = (message, type = 'success') => {
@@ -169,9 +344,7 @@ export default function Admin() {
     try {
       const response = await fetch('/api/payout', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ payoutJobId: jobId }),
       });
 
@@ -181,18 +354,15 @@ export default function Admin() {
         throw new Error(result.error || 'Payout failed');
       }
 
-      // Update the job status in local state
       setPayoutJobs(prev => 
         prev.map(job => 
-          job.id === jobId 
-            ? { ...job, status: 'paid' }
-            : job
+          job.id === jobId ? { ...job, status: 'paid' } : job
         ).filter(job => payoutFilter === 'paid' ? true : job.id !== jobId)
       );
 
       showToast('Payout processed successfully!', 'success');
     } catch (error) {
-      console.error('Error processing payout:', error);
+      console.error('[Admin] Error processing payout:', error);
       showToast(error.message || 'Failed to process payout', 'error');
     } finally {
       setProcessingPayouts(prev => {
@@ -224,98 +394,123 @@ export default function Admin() {
     }
   };
 
-  // ----- Dummy data -----
-  const vendors = useMemo(
-    () => [
-      { id: "v1", name: "Sunrise Soap Co", email: "hello@sunrise.com", platform: "Shopify", cap: 200, status: "Active" },
-      { id: "v2", name: "Moonbeam Ceramics", email: "hi@moonbeam.io", platform: "Etsy", cap: 80, status: "Pending" },
-      { id: "v3", name: "Cedar & Sage", email: "support@cedarsage.com", platform: "Shopify", cap: 120, status: "Active" },
-    ],
-    []
-  );
-
-  const retailers = useMemo(
-    () => [
-      { id: "r1", name: "Green Market - Austin", location: "Austin, TX", displays: 4 },
-      { id: "r2", name: "Urban Goods - SF", location: "San Francisco, CA", displays: 7 },
-    ],
-    []
-  );
-
-  const sourcers = useMemo(
-    () => [
-      { id: "s1", name: "Ecom Kid 1", email: "kid1@tapify.io", revenue: 2450 },
-      { id: "s2", name: "Ecom Kid 2", email: "kid2@tapify.io", revenue: 1310 },
-    ],
-    []
-  );
-
-  const uids = useMemo(
-    () => [
-      { uid: "AAA111", business: "Sunrise Soap Co", claimed: true, scans: 92 },
-      { uid: "BBB222", business: "Moonbeam Ceramics", claimed: false, scans: 11 },
-      { uid: "CCC333", business: "Cedar & Sage", claimed: true, scans: 37 },
-    ],
-    []
-  );
+  const vendors = useMemo(() => initialVendors, [initialVendors]);
+  const retailers = useMemo(() => initialRetailers, [initialRetailers]);
+  const sourcers = useMemo(() => initialSourcers, [initialSourcers]);
+  const uids = useMemo(() => initialUids, [initialUids]);
 
   const qlc = q.trim().toLowerCase();
   const filtVendors = vendors.filter(
     (v) =>
-      (!qlc || v.name.toLowerCase().includes(qlc) || v.email.toLowerCase().includes(qlc)) &&
-      (filter === "all" || v.platform.toLowerCase() === filter)
+      (!qlc || v.name?.toLowerCase().includes(qlc) || v.email?.toLowerCase().includes(qlc)) &&
+      (filter === "all" || (v.store_type || v.platform || '').toLowerCase() === filter)
   );
 
-  // Show loading while checking auth
-  if (authLoading) {
+  // LOADING STATE - Show before mount to prevent hydration mismatch
+  if (!mounted) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-pink-50 via-purple-50 to-blue-50">
-        <motion.div 
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          className="text-center"
-        >
-          <div className="animate-spin rounded-full h-16 w-16 border-4 border-[#ff6fb3] border-t-transparent mx-auto mb-4"></div>
-          <p className="text-gray-700 font-semibold text-lg">Checking authorization...</p>
-        </motion.div>
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-16 w-16 border-4 border-purple-500 border-t-transparent mx-auto mb-4"></div>
+          <p className="text-gray-600 text-lg font-semibold">Loading admin panel...</p>
+        </div>
       </div>
     );
   }
 
-  // Show unauthorized message if not admin
+  // ACCESS DENIED STATE
   if (!isAdmin) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-pink-50 via-purple-50 to-blue-50">
-        <motion.div 
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          className="max-w-md mx-auto text-center px-6"
-        >
-          <div className="bg-white rounded-3xl shadow-2xl p-10 border-2 border-red-200">
-            <div className="text-7xl mb-6">🚫</div>
-            <h1 className="text-4xl font-bold text-red-600 mb-4">Not Authorized</h1>
-            <p className="text-gray-600 mb-6 leading-relaxed">
-              You don't have permission to access this page. Please contact an administrator if you believe this is an error.
-            </p>
-            <div className="space-y-4">
-              <p className="text-sm text-gray-500 font-medium">Logged in as: {user?.email}</p>
-              <motion.a
-                href="/"
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                className="inline-block bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3] text-white px-8 py-4 rounded-2xl hover:shadow-xl transition-all font-bold"
-              >
-                Go to Home
-              </motion.a>
+      <div className="min-h-screen bg-gradient-to-br from-red-50 via-orange-50 to-yellow-50 p-4 md:p-8">
+        {/* ACCESS DENIED BANNER */}
+        <div className="max-w-4xl mx-auto">
+          <div className="bg-red-100 border-l-4 border-red-500 rounded-lg shadow-lg p-6 mb-6">
+            <div className="flex items-start">
+              <svg className="w-8 h-8 text-red-500 mr-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+              </svg>
+              <div className="flex-1">
+                <h1 className="text-2xl md:text-3xl font-bold text-red-900 mb-2">🚫 Access Denied</h1>
+                <p className="text-red-800 mb-4">You are not authorized to access the admin panel.</p>
+                
+                {error && (
+                  <div className="bg-red-50 border border-red-200 rounded p-4 mb-4">
+                    <p className="font-bold text-red-900 mb-1">Error:</p>
+                    <p className="text-sm text-red-800 font-mono">{error}</p>
+                  </div>
+                )}
+
+                {user && (
+                  <div className="bg-white border border-gray-300 rounded-lg p-4 mb-4">
+                    <p className="font-bold text-gray-900 mb-2">Your Account:</p>
+                    <p className="text-sm text-gray-700">Email: <span className="font-mono bg-gray-100 px-2 py-1 rounded">{user.email}</span></p>
+                    <p className="text-sm text-gray-700 mt-1">User ID: <span className="font-mono bg-gray-100 px-2 py-1 rounded text-xs">{user.id}</span></p>
+                  </div>
+                )}
+
+                {sqlCommand && (
+                  <div className="bg-yellow-50 border-2 border-yellow-400 rounded-lg p-4 mb-4">
+                    <p className="font-bold text-yellow-900 mb-2">💡 To Grant Admin Access:</p>
+                    <p className="text-sm text-yellow-800 mb-2">Run this SQL command in your Supabase SQL Editor:</p>
+                    <pre className="bg-gray-900 text-green-400 p-3 rounded overflow-x-auto text-xs md:text-sm font-mono">
+{sqlCommand}
+                    </pre>
+                    <p className="text-xs text-yellow-700 mt-2">After running this command, refresh this page.</p>
+                  </div>
+                )}
+
+                {!user && (
+                  <div className="bg-blue-50 border border-blue-300 rounded-lg p-4 mb-4">
+                    <p className="text-blue-900 mb-2">You need to log in to access the admin panel.</p>
+                    <button
+                      onClick={() => router.push('/login?redirect=/admin')}
+                      className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-bold transition-all"
+                    >
+                      Log In →
+                    </button>
+                  </div>
+                )}
+
+                <div className="flex flex-wrap gap-3 mt-4">
+                  <button
+                    onClick={() => router.push('/')}
+                    className="bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3] text-white px-6 py-3 rounded-lg font-bold hover:shadow-lg transition-all"
+                  >
+                    ← Back to Home
+                  </button>
+                  {user && (
+                    <button
+                      onClick={() => router.reload()}
+                      className="bg-gray-600 hover:bg-gray-700 text-white px-6 py-3 rounded-lg font-bold transition-all"
+                    >
+                      🔄 Refresh Page
+                    </button>
+                  )}
+                </div>
+              </div>
             </div>
           </div>
-        </motion.div>
+
+          {/* DEBUG INFO */}
+          <div className="bg-white rounded-lg shadow-lg p-6">
+            <details>
+              <summary className="text-lg font-bold text-gray-900 cursor-pointer mb-4">
+                🐛 Debug Information (Click to expand)
+              </summary>
+              <pre className="bg-gray-100 p-4 rounded overflow-auto text-xs font-mono max-h-96">
+{JSON.stringify({ isAdmin, user, error, sqlCommand, debugInfo }, null, 2)}
+              </pre>
+            </details>
+          </div>
+        </div>
       </div>
     );
   }
 
+  // AUTHORIZED ADMIN STATE
   return (
     <div className="min-h-screen bg-gradient-to-br from-pink-50 via-purple-50 to-blue-50">
+      
       {/* Header */}
       <motion.div 
         initial={{ opacity: 0, y: -20 }}
@@ -323,7 +518,6 @@ export default function Admin() {
         transition={{ duration: 0.5 }}
         className="bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3] text-white shadow-lg relative overflow-hidden"
       >
-        {/* Background decoration */}
         <div className="absolute inset-0 opacity-10 pointer-events-none">
           <div className="absolute top-0 right-0 w-96 h-96 bg-white rounded-full blur-3xl"></div>
           <div className="absolute bottom-0 left-0 w-96 h-96 bg-white rounded-full blur-3xl"></div>
@@ -332,7 +526,6 @@ export default function Admin() {
         <div className="relative z-10 w-full">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 md:py-10">
             <div className="flex items-start justify-between gap-4">
-              {/* Left side - Title and subtitle */}
               <motion.div
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
@@ -345,12 +538,19 @@ export default function Admin() {
                     Admin Command Center
                   </h1>
                 </div>
-                <p className="text-white/90 text-xs sm:text-sm md:text-base leading-relaxed">
-                  Manage vendors, retailers, analytics & more
-                </p>
+                <div className="space-y-1">
+                  <p className="text-white/90 text-xs sm:text-sm md:text-base leading-relaxed">
+                    Manage vendors, retailers, analytics & more
+                  </p>
+                  <p className="text-white/70 text-xs sm:text-sm flex items-center gap-2">
+                    <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                      <path d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" />
+                    </svg>
+                    Logged in as: <span className="font-semibold">{user?.email}</span>
+                  </p>
+                </div>
               </motion.div>
 
-              {/* Right side - Version badge */}
               <motion.div
                 initial={{ opacity: 0, scale: 0.8 }}
                 animate={{ opacity: 1, scale: 1 }}
@@ -358,7 +558,7 @@ export default function Admin() {
                 className="flex-shrink-0 self-start"
               >
                 <span className="inline-flex items-center rounded-full bg-white/20 backdrop-blur-sm px-3 sm:px-4 py-1.5 sm:py-2 text-xs font-bold text-white border-2 border-white/30 whitespace-nowrap shadow-lg">
-                  v1.1
+                  v1.2
                 </span>
               </motion.div>
             </div>
@@ -376,7 +576,7 @@ export default function Admin() {
           className="bg-white rounded-3xl shadow-xl border-2 border-gray-100 p-4 mb-6"
         >
           <div className="flex flex-wrap gap-3">
-            {TABS.map((t, i) => {
+            {TABS.map((t) => {
               const active = tab === t;
               return (
                 <motion.button
@@ -464,25 +664,20 @@ export default function Admin() {
                 >
                   <div className="flex items-start justify-between mb-3">
                     <h3 className="text-lg font-bold text-gray-900">{v.name}</h3>
-                    <span
-                      className={[
-                        "rounded-full px-3 py-1.5 text-xs font-bold",
-                        v.status === "Active"
-                          ? "bg-green-100 text-green-700"
-                          : "bg-yellow-100 text-yellow-700",
-                      ].join(" ")}
-                    >
-                      {v.status}
+                    <span className="rounded-full px-3 py-1.5 text-xs font-bold bg-green-100 text-green-700">
+                      Active
                     </span>
                   </div>
-                  <div className="text-sm text-gray-600 mb-4">{v.email}</div>
+                  <div className="text-sm text-gray-600 mb-4">{v.email || 'No email'}</div>
                   <div className="flex flex-wrap gap-2 mb-4">
                     <span className="rounded-full bg-gradient-to-r from-purple-100 to-pink-100 text-purple-700 px-3 py-1.5 text-xs font-bold">
-                      {v.platform}
+                      {v.store_type || v.platform || 'N/A'}
                     </span>
-                    <span className="rounded-full bg-gradient-to-r from-blue-100 to-cyan-100 text-blue-700 px-3 py-1.5 text-xs font-bold">
-                      Cap: {v.cap}
-                    </span>
+                    {(v.inventory_cap || v.cap) && (
+                      <span className="rounded-full bg-gradient-to-r from-blue-100 to-cyan-100 text-blue-700 px-3 py-1.5 text-xs font-bold">
+                        Cap: {v.inventory_cap || v.cap}
+                      </span>
+                    )}
                   </div>
                   <div className="flex gap-2">
                     <motion.a
@@ -543,7 +738,6 @@ export default function Admin() {
 
           {tab === "Payouts" && (
             <>
-              {/* Filter Toggle */}
               <motion.div 
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -580,7 +774,6 @@ export default function Admin() {
                 </div>
               </motion.div>
 
-              {/* Payouts Table */}
               <div className="rounded-3xl border-2 border-gray-100 bg-white shadow-xl overflow-hidden">
                 <div className="p-6 border-b-2 border-gray-100 bg-gradient-to-r from-pink-50 to-purple-50">
                   <div className="flex items-center justify-between">
@@ -780,7 +973,6 @@ export default function Admin() {
                 </motion.div>
               </motion.div>
 
-              {/* Test Payout Button */}
               <div className="mb-6">
                 <motion.button
                   onClick={handleTestPayout}
@@ -792,7 +984,6 @@ export default function Admin() {
                 </motion.button>
               </div>
 
-              {/* Payouts Table */}
               <div className="rounded-3xl border-2 border-gray-100 bg-white shadow-xl overflow-hidden">
                 <div className="p-6 border-b-2 border-gray-100 bg-gradient-to-r from-pink-50 to-purple-50">
                   <h3 className="text-2xl font-bold text-gray-900">Recent Payouts</h3>
@@ -966,7 +1157,7 @@ export default function Admin() {
   );
 }
 
-/* ---------- small UI helpers ---------- */
+/* ---------- UI helpers ---------- */
 function Th({ children }) {
   return <th className="px-6 py-4 text-sm font-bold text-gray-700">{children}</th>;
 }
