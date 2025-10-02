@@ -21,6 +21,7 @@ export function AuthProvider({ children }) {
       user: null,
       loading: false,
       signIn: async () => ({ user: null, error: 'Auth not configured' }),
+      signUp: async () => ({ user: null, error: 'Auth not configured' }),
       signOut: async () => ({ error: 'Auth not configured' }),
     };
     
@@ -43,6 +44,7 @@ export function useAuthContext() {
       user: null,
       loading: false,
       signIn: async () => ({ user: null, error: 'No auth context' }),
+      signUp: async () => ({ user: null, error: 'No auth context' }),
       signOut: async () => ({ error: 'No auth context' }),
     };
   }

@@ -6,11 +6,15 @@ import { formatMoney } from "../utils/formatMoney";
 import { initiatePayout } from "../services/dwolla";
 import { useAuthContext } from "../context/AuthContext";
 
-const TABS = ["Vendors", "Retailers", "Analytics", "Sourcers", "UIDs"];
+const TABS = ["Vendors", "Retailers", "Payouts", "Analytics", "Sourcers", "UIDs"];
+
+// Note: Server-side auth check temporarily disabled due to cookie issues
+// Using client-side auth check instead
+// export async function getServerSideProps(context) { ... }
 
 export default function Admin() {
   const router = useRouter();
-  const { user, loading: authContextLoading } = useAuthContext();
+  const { user } = useAuthContext();
   const [isAdmin, setIsAdmin] = useState(false);
   const [authLoading, setAuthLoading] = useState(true);
   const [tab, setTab] = useState("Vendors");
@@ -19,43 +23,38 @@ export default function Admin() {
   const [payouts, setPayouts] = useState([]);
   const [loadingPayouts, setLoadingPayouts] = useState(false);
   const [totalRevenue, setTotalRevenue] = useState(0);
+  const [payoutJobs, setPayoutJobs] = useState([]);
+  const [loadingPayoutJobs, setLoadingPayoutJobs] = useState(false);
+  const [payoutFilter, setPayoutFilter] = useState('pending'); // 'pending' or 'paid'
+  const [processingPayouts, setProcessingPayouts] = useState(new Set());
+  const [toast, setToast] = useState(null);
 
-  // Check if user is authenticated and authorized
+  // Client-side auth check
   useEffect(() => {
     const checkAuth = async () => {
-      // Check if auth is disabled for testing
-      const disableAuth = process.env.NEXT_PUBLIC_DISABLE_AUTH === 'true';
-      
-      if (disableAuth) {
-        console.log('🚧 Auth disabled - allowing access to admin');
-        setIsAdmin(true);
-        setAuthLoading(false);
-        return;
-      }
-
-      // Redirect to login if no user
       if (!user) {
         router.push('/login');
         return;
       }
 
       // Check if user is in admins table
-      if (supabase && user.email) {
+      if (supabase && user.id) {
         try {
           const { data, error } = await supabase
             .from('admins')
-            .select('email')
-            .eq('email', user.email)
+            .select('id')
+            .eq('id', user.id)
             .single();
 
           if (error || !data) {
-            setIsAdmin(false);
+            console.log('Not authorized as admin:', user.email);
+            router.push('/');
           } else {
             setIsAdmin(true);
           }
         } catch (error) {
           console.error('Error checking admin status:', error);
-          setIsAdmin(false);
+          router.push('/');
         }
       }
 
@@ -118,6 +117,91 @@ export default function Admin() {
     fetchPayouts();
   }, [tab]);
 
+  // Fetch payout jobs when Payouts tab is active
+  useEffect(() => {
+    const fetchPayoutJobs = async () => {
+      if (tab === "Payouts") {
+        if (!supabase) {
+          console.warn('Supabase not initialized - skipping payout jobs fetch');
+          setLoadingPayoutJobs(false);
+          return;
+        }
+
+        setLoadingPayoutJobs(true);
+        try {
+          const { data, error } = await supabase
+            .from('payout_jobs')
+            .select(`
+              *,
+              vendors:vendor_id (name, email),
+              retailers:retailer_id (name, location),
+              sourcer_accounts:sourcer_id (name, email)
+            `)
+            .eq('status', payoutFilter)
+            .order('created_at', { ascending: false });
+
+          if (error) throw error;
+
+          setPayoutJobs(data || []);
+        } catch (error) {
+          console.error('Error fetching payout jobs:', error);
+          showToast('Failed to fetch payout jobs', 'error');
+        } finally {
+          setLoadingPayoutJobs(false);
+        }
+      }
+    };
+
+    fetchPayoutJobs();
+  }, [tab, payoutFilter]);
+
+
+  // Toast notification helper
+  const showToast = (message, type = 'success') => {
+    setToast({ message, type });
+    setTimeout(() => setToast(null), 3000);
+  };
+
+  // Process individual payout
+  const handleProcessPayout = async (jobId) => {
+    setProcessingPayouts(prev => new Set([...prev, jobId]));
+    
+    try {
+      const response = await fetch('/api/payout', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ payoutJobId: jobId }),
+      });
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.error || 'Payout failed');
+      }
+
+      // Update the job status in local state
+      setPayoutJobs(prev => 
+        prev.map(job => 
+          job.id === jobId 
+            ? { ...job, status: 'paid' }
+            : job
+        ).filter(job => payoutFilter === 'paid' ? true : job.id !== jobId)
+      );
+
+      showToast('Payout processed successfully!', 'success');
+    } catch (error) {
+      console.error('Error processing payout:', error);
+      showToast(error.message || 'Failed to process payout', 'error');
+    } finally {
+      setProcessingPayouts(prev => {
+        const newSet = new Set(prev);
+        newSet.delete(jobId);
+        return newSet;
+      });
+    }
+  };
 
   // Test payout function
   const handleTestPayout = async () => {
@@ -457,6 +541,171 @@ export default function Admin() {
             </motion.div>
           )}
 
+          {tab === "Payouts" && (
+            <>
+              {/* Filter Toggle */}
+              <motion.div 
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="bg-white rounded-3xl shadow-xl border-2 border-gray-100 p-4 mb-6"
+              >
+                <div className="flex items-center gap-3">
+                  <span className="text-sm font-bold text-gray-700">Show:</span>
+                  <motion.button
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    onClick={() => setPayoutFilter('pending')}
+                    className={[
+                      "rounded-2xl px-6 py-2.5 text-sm font-bold transition-all",
+                      payoutFilter === 'pending'
+                        ? "bg-gradient-to-r from-yellow-400 to-orange-500 text-white shadow-lg"
+                        : "text-gray-700 hover:bg-gray-100 border-2 border-gray-200",
+                    ].join(" ")}
+                  >
+                    Pending
+                  </motion.button>
+                  <motion.button
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    onClick={() => setPayoutFilter('paid')}
+                    className={[
+                      "rounded-2xl px-6 py-2.5 text-sm font-bold transition-all",
+                      payoutFilter === 'paid'
+                        ? "bg-gradient-to-r from-green-400 to-emerald-500 text-white shadow-lg"
+                        : "text-gray-700 hover:bg-gray-100 border-2 border-gray-200",
+                    ].join(" ")}
+                  >
+                    Paid
+                  </motion.button>
+                </div>
+              </motion.div>
+
+              {/* Payouts Table */}
+              <div className="rounded-3xl border-2 border-gray-100 bg-white shadow-xl overflow-hidden">
+                <div className="p-6 border-b-2 border-gray-100 bg-gradient-to-r from-pink-50 to-purple-50">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h3 className="text-2xl font-bold text-gray-900">Payout Jobs</h3>
+                      <p className="text-sm text-gray-600 mt-1">
+                        {payoutFilter === 'pending' ? 'Process pending payouts' : 'View payout history'}
+                      </p>
+                    </div>
+                    <span className={[
+                      "px-4 py-2 rounded-full text-sm font-bold",
+                      payoutFilter === 'pending' 
+                        ? "bg-yellow-100 text-yellow-700" 
+                        : "bg-green-100 text-green-700"
+                    ].join(" ")}>
+                      {payoutJobs.length} {payoutFilter === 'pending' ? 'Pending' : 'Paid'}
+                    </span>
+                  </div>
+                </div>
+                
+                {loadingPayoutJobs ? (
+                  <div className="p-12 text-center">
+                    <div className="animate-spin rounded-full h-12 w-12 border-4 border-[#ff6fb3] border-t-transparent mx-auto mb-4"></div>
+                    <p className="text-gray-600 font-medium">Loading payout jobs...</p>
+                  </div>
+                ) : payoutJobs.length === 0 ? (
+                  <div className="p-12 text-center">
+                    <div className="w-20 h-20 bg-gradient-to-br from-gray-100 to-gray-200 rounded-full flex items-center justify-center mx-auto mb-4">
+                      <svg className="w-10 h-10 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                    </div>
+                    <p className="text-gray-700 font-bold text-lg">
+                      No {payoutFilter} payout jobs
+                    </p>
+                    <p className="text-gray-500 mt-2">
+                      {payoutFilter === 'pending' 
+                        ? 'All payouts have been processed!' 
+                        : 'Process some payouts to see history here'}
+                    </p>
+                  </div>
+                ) : (
+                  <div className="overflow-auto">
+                    <table className="w-full text-sm">
+                      <thead>
+                        <tr className="text-left bg-gradient-to-r from-gray-50 to-gray-100">
+                          <Th>Vendor</Th>
+                          <Th>Retailer</Th>
+                          <Th>Sourcer</Th>
+                          <Th>Total</Th>
+                          <Th>Vendor Cut</Th>
+                          <Th>Retailer Cut</Th>
+                          <Th>Sourcer Cut</Th>
+                          <Th>Tapify Cut</Th>
+                          <Th>Date</Th>
+                          {payoutFilter === 'pending' && <Th>Action</Th>}
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-gray-100">
+                        {payoutJobs.map((job) => {
+                          const isProcessing = processingPayouts.has(job.id);
+                          const totalAmount = (job.vendor_cut || 0) + (job.retailer_cut || 0) + (job.sourcer_cut || 0) + (job.tapify_cut || 0);
+                          
+                          return (
+                            <tr key={job.id} className="hover:bg-gray-50 transition-colors">
+                              <Td>
+                                <div>
+                                  <div className="font-bold text-gray-900">{job.vendors?.name || 'N/A'}</div>
+                                  <div className="text-xs text-gray-500">{job.vendors?.email}</div>
+                                </div>
+                              </Td>
+                              <Td>
+                                <div>
+                                  <div className="font-bold text-gray-900">{job.retailers?.name || 'N/A'}</div>
+                                  <div className="text-xs text-gray-500">{job.retailers?.location}</div>
+                                </div>
+                              </Td>
+                              <Td>
+                                <div>
+                                  <div className="font-bold text-gray-900">{job.sourcer_accounts?.name || 'N/A'}</div>
+                                  <div className="text-xs text-gray-500">{job.sourcer_accounts?.email}</div>
+                                </div>
+                              </Td>
+                              <Td><span className="font-bold text-lg text-purple-700">{formatMoney(totalAmount)}</span></Td>
+                              <Td><span className="font-bold text-green-700">{formatMoney(job.vendor_cut || 0)}</span></Td>
+                              <Td><span className="font-bold text-blue-700">{formatMoney(job.retailer_cut || 0)}</span></Td>
+                              <Td><span className="font-bold text-orange-700">{formatMoney(job.sourcer_cut || 0)}</span></Td>
+                              <Td><span className="font-bold text-pink-700">{formatMoney(job.tapify_cut || 0)}</span></Td>
+                              <Td className="text-gray-600">{new Date(job.created_at).toLocaleDateString()}</Td>
+                              {payoutFilter === 'pending' && (
+                                <Td>
+                                  <motion.button
+                                    whileHover={!isProcessing ? { scale: 1.05 } : {}}
+                                    whileTap={!isProcessing ? { scale: 0.95 } : {}}
+                                    onClick={() => handleProcessPayout(job.id)}
+                                    disabled={isProcessing}
+                                    className={[
+                                      "rounded-2xl px-4 py-2 text-xs font-bold transition-all whitespace-nowrap",
+                                      isProcessing
+                                        ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+                                        : "bg-gradient-to-r from-green-400 to-emerald-500 text-white hover:shadow-lg"
+                                    ].join(" ")}
+                                  >
+                                    {isProcessing ? (
+                                      <span className="flex items-center gap-2">
+                                        <div className="animate-spin rounded-full h-3 w-3 border-2 border-white border-t-transparent"></div>
+                                        Processing...
+                                      </span>
+                                    ) : (
+                                      '💰 Process Payout'
+                                    )}
+                                  </motion.button>
+                                </Td>
+                              )}
+                            </tr>
+                          );
+                        })}
+                      </tbody>
+                    </table>
+                  </div>
+                )}
+              </div>
+            </>
+          )}
+
           {tab === "Analytics" && (
             <>
               <motion.div 
@@ -685,6 +934,34 @@ export default function Admin() {
           </p>
         </motion.footer>
       </div>
+
+      {/* Toast Notification */}
+      {toast && (
+        <motion.div
+          initial={{ opacity: 0, y: 50, scale: 0.9 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          exit={{ opacity: 0, y: 50, scale: 0.9 }}
+          className="fixed bottom-8 right-8 z-50"
+        >
+          <div className={[
+            "rounded-2xl px-6 py-4 shadow-2xl border-2 flex items-center gap-3 min-w-[300px]",
+            toast.type === 'success' 
+              ? "bg-gradient-to-r from-green-400 to-emerald-500 border-green-300 text-white" 
+              : "bg-gradient-to-r from-red-400 to-rose-500 border-red-300 text-white"
+          ].join(" ")}>
+            {toast.type === 'success' ? (
+              <svg className="w-6 h-6 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            ) : (
+              <svg className="w-6 h-6 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            )}
+            <p className="font-bold">{toast.message}</p>
+          </div>
+        </motion.div>
+      )}
     </div>
   );
 }

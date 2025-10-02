@@ -67,6 +67,32 @@ export default function useAuth() {
     }
   };
 
+  // Sign up with email and password
+  const signUp = async (email, password) => {
+    if (!supabase) {
+      return { user: null, error: new Error('Supabase client not initialized') };
+    }
+
+    try {
+      setLoading(true);
+      const { data, error } = await supabase.auth.signUp({
+        email,
+        password,
+      });
+
+      if (error) throw error;
+
+      // Note: User may need to confirm email depending on Supabase settings
+      setUser(data.user);
+      return { user: data.user, session: data.session, error: null };
+    } catch (error) {
+      console.error('Error signing up:', error);
+      return { user: null, session: null, error };
+    } finally {
+      setLoading(false);
+    }
+  };
+
   // Sign out
   const signOut = async () => {
     if (!supabase) {
@@ -93,6 +119,7 @@ export default function useAuth() {
     user,
     loading,
     signIn,
+    signUp,
     signOut,
   };
 }
