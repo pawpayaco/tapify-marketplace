@@ -11,6 +11,9 @@ export default function ConnectPage() {
   const [error, setError] = useState("");
 
   useEffect(() => {
+    // Ensure page loads at top
+    window.scrollTo(0, 0);
+    
     // Get UID from URL (?u=xxxx)
     const params = new URLSearchParams(window.location.search);
     const u = params.get("u");
@@ -66,7 +69,7 @@ export default function ConnectPage() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center px-6 py-12 bg-white">
+    <div className="min-h-screen flex flex-col items-center px-6 pt-20 pb-12 bg-white">
       <div className="max-w-lg w-full">
         {/* Header */}
         <div className="text-center mb-8">

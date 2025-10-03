@@ -1,590 +1,642 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
-import Link from 'next/link';
-import { useAuthContext } from '../../context/AuthContext';
+import { motion, AnimatePresence } from 'framer-motion';
 import { supabase } from '../../lib/supabase';
+import AddressInput from '../../components/AddressInput';
 
 export default function ShopifyConnect() {
   const router = useRouter();
-  const { user, loading: authLoading } = useAuthContext();
-  const [prioritySelected, setPrioritySelected] = useState(true);
+  const [priorityShipping, setPriorityShipping] = useState(true);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-
-  const [shippingData, setShippingData] = useState({
+  
+  const [shippingAddress, setShippingAddress] = useState({
+    name: '',
     email: '',
-    storeName: '',
-    addressLine1: '',
-    addressLine2: '',
-    city: '',
-    state: '',
-    zipCode: '',
-    phone: ''
+    phone: '',
+    address: ''
   });
 
+  const [paymentMethod, setPaymentMethod] = useState('card'); // 'card', 'paypal', 'applepay'
+
   const SHOPIFY_STORE_URL = process.env.NEXT_PUBLIC_SHOPIFY_STORE_URL || 'https://yourstore.myshopify.com';
-  const PRIORITY_SKU = process.env.NEXT_PUBLIC_PRIORITY_SKU || '12345678';
-
-  // Check if auth is disabled for testing
-  const disableAuth = process.env.NEXT_PUBLIC_DISABLE_AUTH === 'true';
+  const PRIORITY_SKU = process.env.NEXT_PUBLIC_PRIORITY_SKU || 'PRIORITY_SHIPPING';
+  const FREE_DISPLAY_SKU = process.env.NEXT_PUBLIC_FREE_DISPLAY_SKU || 'FREE_DISPLAY';
 
   useEffect(() => {
-    // Skip auth check if auth is disabled
-    if (disableAuth) {
-      console.log('🚧 Auth disabled - allowing access to shopify-connect');
-      return;
+    // Ensure page loads at top
+    window.scrollTo(0, 0);
+    
+    // Load data from session storage (from registration form)
+    const savedEmail = sessionStorage.getItem('onboarding_email') || '';
+    const savedName = sessionStorage.getItem('onboarding_owner_name') || '';
+    const savedPhone = sessionStorage.getItem('onboarding_phone') || '';
+    const savedAddress = sessionStorage.getItem('onboarding_address') || '';
+    
+    // Set address if it exists
+    if (savedAddress) {
+      setShippingAddress({
+        name: savedName,
+        email: savedEmail,
+        phone: savedPhone,
+        address: savedAddress
+      });
+    } else {
+      setShippingAddress(prev => ({
+        ...prev,
+        name: savedName,
+        email: savedEmail,
+        phone: savedPhone
+      }));
     }
 
-    if (!authLoading && !user) {
-      // Redirect to login with return URL
-      router.push(`/login?redirect=/onboard/shopify-connect`);
-    }
-  }, [user, authLoading, router, disableAuth]);
-
-  useEffect(() => {
-    if (user?.email) {
-      setShippingData(prev => ({ ...prev, email: user.email }));
-    } else if (disableAuth) {
-      // If auth is disabled, use a placeholder email
-      setShippingData(prev => ({ ...prev, email: 'test@example.com' }));
-    }
-
+    // Load from database as fallback
     const loadRetailerData = async () => {
       const retailerId = sessionStorage.getItem('onboarding_retailer_id');
       if (retailerId && supabase) {
         const { data, error } = await supabase
           .from('retailers')
-          .select('*')
+          .select('name, email, phone, address, location')
           .eq('id', retailerId)
           .single();
 
         if (data && !error) {
-          setShippingData(prev => ({
-            ...prev,
-            email: user?.email || data.email || '',
-            storeName: data.name || '',
-            addressLine1: data.location?.split('\n')[0] || '',
-            phone: data.phone || ''
+          // Only fill in missing fields
+          setShippingAddress(prev => ({
+            name: prev.name || data.name || '',
+            email: prev.email || data.email || '',
+            phone: prev.phone || data.phone || '',
+            address: prev.address || data.address || data.location || ''
           }));
         }
       }
     };
-
     loadRetailerData();
-  }, [user, disableAuth]);
-
-  const handleInputChange = (e) => {
-    setShippingData(prev => ({
-      ...prev,
-      [e.target.name]: e.target.value
-    }));
-  };
-
-  const saveShippingInfo = async () => {
-    if (!supabase) {
-      console.warn('Supabase not configured');
-      return null;
-    }
-
-    const retailerId = sessionStorage.getItem('onboarding_retailer_id');
-    
-    const fullAddress = [
-      shippingData.addressLine1,
-      shippingData.addressLine2,
-      `${shippingData.city}, ${shippingData.state} ${shippingData.zipCode}`
-    ].filter(Boolean).join('\n');
-
-    const updateData = {
-      name: shippingData.storeName || 'Store Name Not Provided',
-      location: fullAddress,
-      email: shippingData.email,
-      phone: shippingData.phone || null,
-      express_shipping: prioritySelected,
-      onboarding_step: prioritySelected ? 'payment_pending' : 'completed',
-      onboarding_completed: !prioritySelected
-    };
-
-    if (retailerId) {
-      const { data, error } = await supabase
-        .from('retailers')
-        .update(updateData)
-        .eq('id', retailerId)
-        .select()
-        .single();
-
-      if (error) {
-        console.error('Error updating retailer:', error);
-        return null;
-      }
-      return data;
-    } else {
-      const { data, error } = await supabase
-        .from('retailers')
-        .insert([updateData])
-        .select()
-        .single();
-
-      if (error) {
-        console.error('Error creating retailer:', error);
-        return null;
-      }
-
-      if (data?.id) {
-        sessionStorage.setItem('onboarding_retailer_id', data.id);
-      }
-      return data;
-    }
-  };
-
-  const validateForm = () => {
-    if (!shippingData.storeName.trim()) {
-      setError('Please enter your store name');
-      return false;
-    }
-    if (!shippingData.addressLine1.trim()) {
-      setError('Please enter your street address');
-      return false;
-    }
-    if (!shippingData.city.trim()) {
-      setError('Please enter your city');
-      return false;
-    }
-    if (!shippingData.state.trim()) {
-      setError('Please enter your state');
-      return false;
-    }
-    if (!shippingData.zipCode.trim()) {
-      setError('Please enter your ZIP code');
-      return false;
-    }
-    return true;
-  };
+  }, []);
 
   const handlePlaceOrder = async () => {
+    setLoading(true);
     setError('');
 
-    if (!validateForm()) {
-      return;
-    }
-
-    setLoading(true);
-
     try {
-      await saveShippingInfo();
-
-      if (prioritySelected) {
-        const checkoutUrl = `${SHOPIFY_STORE_URL}/cart/${PRIORITY_SKU}:1`;
-        window.location.href = checkoutUrl;
-      } else {
-        router.push('/onboard/dashboard');
+      // Validate required fields
+      if (priorityShipping) {
+        if (!shippingAddress.name || !shippingAddress.email || !shippingAddress.address) {
+          setError('Please fill in all shipping details');
+          setLoading(false);
+          return;
+        }
       }
+
+      // Build Shopify checkout URL
+      const cartItems = [];
+      
+      // Always add free display
+      cartItems.push(`${FREE_DISPLAY_SKU}:1`);
+      
+      // Add priority shipping if selected
+      if (priorityShipping) {
+        cartItems.push(`${PRIORITY_SKU}:1`);
+      }
+
+      // Parse the full address into components for Shopify
+      const addressParts = shippingAddress.address.split(',').map(p => p.trim());
+      const address1 = addressParts[0] || shippingAddress.address;
+      const city = addressParts[1] || '';
+      const state = addressParts[2] || '';
+      const zip = addressParts[3] || '';
+
+      const checkoutUrl = `${SHOPIFY_STORE_URL}/cart/${cartItems.join(',')}?` + new URLSearchParams({
+        'checkout[email]': shippingAddress.email,
+        'checkout[shipping_address][first_name]': shippingAddress.name.split(' ')[0] || '',
+        'checkout[shipping_address][last_name]': shippingAddress.name.split(' ').slice(1).join(' ') || '',
+        'checkout[shipping_address][address1]': address1,
+        'checkout[shipping_address][city]': city,
+        'checkout[shipping_address][province]': state,
+        'checkout[shipping_address][zip]': zip,
+        'checkout[shipping_address][phone]': shippingAddress.phone
+      });
+
+      // Redirect to Shopify checkout
+      window.location.href = checkoutUrl;
+      
     } catch (err) {
-      console.error('Error placing order:', err);
-      setError('Something went wrong. Please try again.');
+      console.error('Checkout error:', err);
+      setError('Failed to process order. Please try again.');
       setLoading(false);
     }
   };
 
-  // Only show loading/block if auth is NOT disabled
-  if (!disableAuth) {
-    if (authLoading) {
-      return (
-        <div className="min-h-screen flex items-center justify-center bg-white">
-          <div className="text-center">
-            <svg className="animate-spin h-12 w-12 text-[#ff6fb3] mx-auto mb-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-            </svg>
-            <p className="text-gray-600">Loading...</p>
-          </div>
-        </div>
-      );
-    }
-
-    if (!user) {
-      return null;
-    }
-  }
-
-  const totalAmount = prioritySelected ? 50 : 0;
+  const shippingPrice = priorityShipping ? 50 : 0;
+  const displayValue = 299;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-[#fff6fb]">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 py-12">
-        <div className="text-center mb-12">
-          <div className="inline-block bg-gradient-to-r from-red-500 to-red-600 text-white px-5 py-2 rounded-full text-sm font-bold mb-6 shadow-lg animate-pulse">
-            🎁 Holiday Rush Special
-          </div>
-          <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
-            Get Your Display in Time for the Holidays 🎁
+    <div className="min-h-screen bg-gradient-to-br from-pink-50 via-purple-50 to-blue-50">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 pb-12">
+        
+        {/* Header */}
+        <div className="text-center mb-8">
+          <motion.div
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="inline-block bg-gradient-to-r from-green-500 to-emerald-600 text-white px-6 py-2 rounded-full text-sm font-bold mb-4 shadow-lg"
+          >
+            🎉 Almost Done! Claim Your Free Display
+          </motion.div>
+          <h1 className="text-4xl md:text-5xl font-black text-gray-900 mb-3">
+            Complete Your Order
           </h1>
-          <p className="text-xl text-gray-600 max-w-2xl mx-auto leading-relaxed">
-            <span className="font-semibold text-gray-900">Standard shipping is free (21–28 days).</span><br />
-            Priority Processing ($50) ensures your display arrives in <span className="font-bold text-[#ff6fb3]">7–10 days</span>, just in time for Q4 holiday sales.
+          <p className="text-lg text-gray-600">
+            Get your <span className="font-bold text-[#ff6fb3]">${displayValue} Display FREE</span> — just cover shipping
           </p>
         </div>
 
-        <div className="bg-white rounded-2xl shadow-2xl border-2 border-gray-100 overflow-hidden mb-8">
-          <div className="bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3] text-white py-6 px-8">
-            <h2 className="text-2xl font-bold">Your Order Summary</h2>
-            <p className="text-white/90 text-sm mt-1">Choose your shipping preference</p>
-          </div>
+        {/* Main Content */}
+        <div className="max-w-4xl mx-auto space-y-6">
+          
+          {/* Shipping Option Selection - Clean & Simple */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="bg-white rounded-2xl shadow-xl border-2 border-gray-100 overflow-hidden"
+          >
+            <div className="p-6">
+              <h2 className="text-2xl font-bold text-gray-900 mb-6">Choose Your Shipping</h2>
+              
+              <div className="space-y-4">
+                {/* Priority Shipping - Pre-selected */}
+                <motion.button
+                  whileHover={{ scale: 1.01 }}
+                  whileTap={{ scale: 0.99 }}
+                  onClick={() => setPriorityShipping(true)}
+                  className={[
+                    "w-full p-6 rounded-2xl border-2 transition-all text-left relative",
+                    priorityShipping
+                      ? "border-[#ff6fb3] bg-gradient-to-br from-pink-50 to-purple-50 shadow-lg ring-4 ring-[#ff6fb3]/20"
+                      : "border-gray-300 bg-white hover:border-gray-400 shadow-md"
+                  ].join(" ")}
+                >
+                  <div className="flex items-start justify-between gap-6">
+                    <div className="flex-1">
+                      <div className="flex items-center gap-3 mb-3">
+                        {priorityShipping && (
+                          <motion.div
+                            initial={{ scale: 0 }}
+                            animate={{ scale: 1 }}
+                            className="w-6 h-6 bg-gradient-to-br from-[#ff6fb3] to-purple-600 rounded-full flex items-center justify-center flex-shrink-0"
+                          >
+                            <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
+                              <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                            </svg>
+                          </motion.div>
+                        )}
+                        <span className="text-2xl">🚀</span>
+                        <h3 className="text-xl font-bold text-gray-900">Priority Shipping</h3>
+                        <span className="bg-gradient-to-r from-orange-500 to-red-500 text-white px-3 py-1 rounded-full text-xs font-bold">
+                          RECOMMENDED
+                        </span>
+                      </div>
+                      <p className="text-gray-600 font-medium mb-3">Get your display in 2-3 business days</p>
+                      <ul className="space-y-2 text-sm text-gray-600">
+                        <li className="flex items-center gap-2">
+                          <svg className="w-4 h-4 text-green-600 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                            <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                          </svg>
+                          Start earning faster
+                        </li>
+                        <li className="flex items-center gap-2">
+                          <svg className="w-4 h-4 text-green-600 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                            <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                          </svg>
+                          Full tracking & insurance
+                        </li>
+                        <li className="flex items-center gap-2">
+                          <svg className="w-4 h-4 text-green-600 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                            <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                          </svg>
+                          Priority customer support
+                        </li>
+                      </ul>
+                    </div>
+                    <div className="text-center flex-shrink-0">
+                      <div className="text-4xl font-black text-gray-900 mb-1">${shippingPrice}</div>
+                      <div className="text-sm text-gray-500 font-medium">one-time</div>
+                    </div>
+                  </div>
+                </motion.button>
 
-          <div className="p-8 space-y-6">
-            <div className="flex items-start gap-4 pb-6 border-b border-gray-200">
-              <div className="flex-shrink-0 w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
-                <svg className="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                </svg>
-              </div>
-              <div className="flex-1">
-                <h3 className="font-bold text-gray-900 text-lg">Free Pawpaya Display</h3>
-                <p className="text-gray-600 text-sm mt-1">NFC-powered display with curated products</p>
-                <p className="text-xs text-green-600 font-semibold mt-2">✅ Included with onboarding</p>
-              </div>
-              <div className="text-right">
-                <span className="text-lg font-bold text-gray-900">$0</span>
-                <p className="text-xs text-gray-500 line-through">$299</p>
+                {/* Standard Shipping */}
+                <motion.button
+                  whileHover={{ scale: 1.01 }}
+                  whileTap={{ scale: 0.99 }}
+                  onClick={() => setPriorityShipping(false)}
+                  className={[
+                    "w-full p-6 rounded-2xl border-2 transition-all text-left relative",
+                    !priorityShipping
+                      ? "border-[#ff6fb3] bg-gradient-to-br from-pink-50 to-purple-50 shadow-lg ring-4 ring-[#ff6fb3]/20"
+                      : "border-gray-300 bg-white hover:border-gray-400 shadow-md"
+                  ].join(" ")}
+                >
+                  <div className="flex items-start justify-between gap-6">
+                    <div className="flex-1">
+                      <div className="flex items-center gap-3 mb-3">
+                        {!priorityShipping && (
+                          <motion.div
+                            initial={{ scale: 0 }}
+                            animate={{ scale: 1 }}
+                            className="w-6 h-6 bg-gradient-to-br from-[#ff6fb3] to-purple-600 rounded-full flex items-center justify-center flex-shrink-0"
+                          >
+                            <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
+                              <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                            </svg>
+                          </motion.div>
+                        )}
+                        <span className="text-2xl">📦</span>
+                        <h3 className="text-xl font-bold text-gray-900">Standard Shipping</h3>
+                      </div>
+                      <p className="text-gray-600 font-medium mb-2">Arrives in 5-7 business days</p>
+                      <p className="text-sm text-gray-500">Basic tracking included</p>
+                    </div>
+                    <div className="text-center flex-shrink-0">
+                      <div className="text-4xl font-black text-green-600 mb-1">FREE</div>
+                      <div className="text-sm text-gray-500 font-medium">no charge</div>
+                    </div>
+                  </div>
+                </motion.button>
               </div>
             </div>
+          </motion.div>
 
-            <div 
-              onClick={() => setPrioritySelected(!prioritySelected)}
-              className={`flex items-start gap-4 p-6 rounded-xl border-2 transition-all cursor-pointer ${
-                prioritySelected 
-                  ? 'border-[#ff6fb3] bg-gradient-to-br from-[#fff3ea] to-[#fff6fb] shadow-lg' 
-                  : 'border-gray-200 bg-gray-50 hover:border-gray-300'
-              }`}
-            >
-              <div className="flex-shrink-0 pt-1">
-                <input
-                  type="checkbox"
-                  checked={prioritySelected}
-                  onChange={(e) => setPrioritySelected(e.target.checked)}
-                  className="w-6 h-6 text-[#ff6fb3] border-2 border-gray-300 rounded focus:ring-[#ff6fb3] cursor-pointer"
-                />
-              </div>
-              <div className="flex-1">
-                <div className="flex items-center gap-3 mb-2">
-                  <h3 className="font-bold text-gray-900 text-lg">Priority Processing</h3>
-                  <span className="bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3] text-white text-xs px-3 py-1 rounded-full font-bold">
-                    RECOMMENDED
-                  </span>
+          {/* Shipping Address - Only show if priority selected */}
+          <AnimatePresence>
+            {priorityShipping && (
+              <motion.div
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: 'auto' }}
+                exit={{ opacity: 0, height: 0 }}
+                transition={{ duration: 0.3 }}
+                className="bg-white rounded-2xl shadow-xl border-2 border-gray-100 overflow-hidden"
+              >
+                <div className="p-6">
+                  <div className="flex items-center gap-3 mb-6">
+                    <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center">
+                      <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                      </svg>
+                    </div>
+                    <h2 className="text-2xl font-bold text-gray-900">Shipping Address</h2>
+                  </div>
+
+                  <div className="space-y-6">
+                    {/* Full Name */}
+                    <div>
+                      <label className="block text-sm font-bold text-gray-700 mb-2">
+                        Full Name <span className="text-red-500">*</span>
+                      </label>
+                      <input
+                        type="text"
+                        value={shippingAddress.name}
+                        onChange={(e) => setShippingAddress({ ...shippingAddress, name: e.target.value })}
+                        className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-[#ff6fb3] focus:border-transparent"
+                        placeholder="John Smith"
+                        required
+                      />
+                    </div>
+
+                    {/* Email */}
+                    <div>
+                      <label className="block text-sm font-bold text-gray-700 mb-2">
+                        Email Address <span className="text-red-500">*</span>
+                      </label>
+                      <input
+                        type="email"
+                        value={shippingAddress.email}
+                        onChange={(e) => setShippingAddress({ ...shippingAddress, email: e.target.value })}
+                        className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-[#ff6fb3] focus:border-transparent"
+                        placeholder="john@example.com"
+                        required
+                      />
+                    </div>
+
+                    {/* Phone */}
+                    <div>
+                      <label className="block text-sm font-bold text-gray-700 mb-2">
+                        Phone Number
+                      </label>
+                      <input
+                        type="tel"
+                        value={shippingAddress.phone}
+                        onChange={(e) => setShippingAddress({ ...shippingAddress, phone: e.target.value })}
+                        className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-[#ff6fb3] focus:border-transparent"
+                        placeholder="(555) 123-4567"
+                      />
+                    </div>
+
+                    {/* Address with Google Maps + USPS Validation */}
+                    <AddressInput
+                      value={shippingAddress.address}
+                      onChange={(address) => setShippingAddress({ ...shippingAddress, address })}
+                      onValidated={(validated) => {
+                        // When USPS validates, use the full standardized address
+                        const fullAddress = [
+                          validated.address1,
+                          validated.address2,
+                          validated.city,
+                          validated.state,
+                          validated.zip5
+                        ].filter(Boolean).join(', ');
+                        setShippingAddress({ ...shippingAddress, address: fullAddress });
+                      }}
+                      required={true}
+                      googleApiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}
+                      label="Shipping Address"
+                      className="mb-0"
+                    />
+                  </div>
                 </div>
-                <ul className="space-y-2 mt-3">
-                  <li className="flex items-start gap-2 text-sm text-gray-700">
-                    <span className="text-green-600 font-bold mt-0.5">✓</span>
-                    <span><strong>Arrives in time for Q4 holiday season</strong></span>
-                  </li>
-                  <li className="flex items-start gap-2 text-sm text-gray-700">
-                    <span className="text-green-600 font-bold mt-0.5">✓</span>
-                    <span><strong>Beat shipping delays</strong> - jump the queue</span>
-                  </li>
-                  <li className="flex items-start gap-2 text-sm text-gray-700">
-                    <span className="text-green-600 font-bold mt-0.5">✓</span>
-                    <span><strong>Start earning sooner</strong> - 7-10 day delivery vs 21-28 days</span>
-                  </li>
-                  <li className="flex items-start gap-2 text-sm text-gray-700">
-                    <span className="text-orange-600 font-bold mt-0.5">🔥</span>
-                    <span className="font-semibold text-orange-700">Limited availability - holiday rush</span>
-                  </li>
-                </ul>
-              </div>
-              <div className="text-right">
-                <span className="text-2xl font-bold text-[#ff6fb3]">+$50</span>
-                <p className="text-xs text-gray-500 mt-1">One-time fee</p>
-              </div>
-            </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
 
-            <div className="border-t-2 border-gray-200 my-6"></div>
+          {/* Payment Section - Only show if priority selected */}
+          <AnimatePresence>
+            {priorityShipping && (
+              <motion.div
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: 'auto' }}
+                exit={{ opacity: 0, height: 0 }}
+                transition={{ duration: 0.3, delay: 0.1 }}
+                className="bg-white rounded-2xl shadow-xl border-2 border-gray-100 overflow-hidden"
+              >
+                <div className="p-6">
+                  <div className="flex items-center gap-3 mb-6">
+                    <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-green-500 to-emerald-600 flex items-center justify-center">
+                      <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
+                      </svg>
+                    </div>
+                    <h2 className="text-2xl font-bold text-gray-900">Payment Method</h2>
+                  </div>
 
-            <div className="flex items-center justify-between bg-gradient-to-r from-gray-50 to-gray-100 rounded-xl p-6">
-              <div>
-                <p className="text-gray-600 text-sm font-medium">Order Total</p>
-                <p className="text-xs text-gray-500 mt-1">
-                  {prioritySelected ? 'Priority Processing' : 'Standard Shipping (Free)'}
+                  <div className="space-y-6">
+                    {/* Payment Method Selection */}
+                    <div>
+                      <label className="block text-sm font-bold text-gray-700 mb-4">
+                        Choose Payment Method
+                      </label>
+                      <div className="grid grid-cols-3 gap-4">
+                        <motion.button
+                          whileHover={{ scale: 1.02 }}
+                          whileTap={{ scale: 0.98 }}
+                          type="button"
+                          onClick={() => setPaymentMethod('card')}
+                          className={[
+                            "p-6 rounded-2xl border-2 transition-all flex flex-col items-center justify-center gap-3",
+                            paymentMethod === 'card'
+                              ? "border-[#ff6fb3] bg-gradient-to-br from-pink-50 to-purple-50 shadow-lg"
+                              : "border-gray-200 hover:border-gray-300 bg-white"
+                          ].join(" ")}
+                        >
+                          {paymentMethod === 'card' && (
+                            <motion.div
+                              initial={{ scale: 0 }}
+                              animate={{ scale: 1 }}
+                              className="absolute top-3 right-3 w-6 h-6 bg-gradient-to-br from-[#ff6fb3] to-purple-600 rounded-full flex items-center justify-center"
+                            >
+                              <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
+                                <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                              </svg>
+                            </motion.div>
+                          )}
+                          <svg className="w-10 h-10 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
+                          </svg>
+                          <span className="text-sm font-bold">Credit Card</span>
+                        </motion.button>
+                        
+                        <motion.button
+                          whileHover={{ scale: 1.02 }}
+                          whileTap={{ scale: 0.98 }}
+                          type="button"
+                          onClick={() => setPaymentMethod('paypal')}
+                          className={[
+                            "p-6 rounded-2xl border-2 transition-all flex flex-col items-center justify-center gap-3 relative",
+                            paymentMethod === 'paypal'
+                              ? "border-[#ff6fb3] bg-gradient-to-br from-pink-50 to-purple-50 shadow-lg"
+                              : "border-gray-200 hover:border-gray-300 bg-white"
+                          ].join(" ")}
+                        >
+                          {paymentMethod === 'paypal' && (
+                            <motion.div
+                              initial={{ scale: 0 }}
+                              animate={{ scale: 1 }}
+                              className="absolute top-3 right-3 w-6 h-6 bg-gradient-to-br from-[#ff6fb3] to-purple-600 rounded-full flex items-center justify-center"
+                            >
+                              <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
+                                <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                              </svg>
+                            </motion.div>
+                          )}
+                          <div className="text-3xl font-bold text-[#003087]">PayPal</div>
+                          <span className="text-sm font-bold">PayPal</span>
+                        </motion.button>
+                        
+                        <motion.button
+                          whileHover={{ scale: 1.02 }}
+                          whileTap={{ scale: 0.98 }}
+                          type="button"
+                          onClick={() => setPaymentMethod('applepay')}
+                          className={[
+                            "p-6 rounded-2xl border-2 transition-all flex flex-col items-center justify-center gap-3 relative",
+                            paymentMethod === 'applepay'
+                              ? "border-[#ff6fb3] bg-gradient-to-br from-pink-50 to-purple-50 shadow-lg"
+                              : "border-gray-200 hover:border-gray-300 bg-white"
+                          ].join(" ")}
+                        >
+                          {paymentMethod === 'applepay' && (
+                            <motion.div
+                              initial={{ scale: 0 }}
+                              animate={{ scale: 1 }}
+                              className="absolute top-3 right-3 w-6 h-6 bg-gradient-to-br from-[#ff6fb3] to-purple-600 rounded-full flex items-center justify-center"
+                            >
+                              <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
+                                <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                              </svg>
+                            </motion.div>
+                          )}
+                          <div className="text-3xl">🍎</div>
+                          <span className="text-sm font-bold">Apple Pay</span>
+                        </motion.button>
+                      </div>
+                    </div>
+
+                    {/* Security Notice */}
+                    <div className="bg-gradient-to-r from-green-50 to-emerald-50 rounded-2xl p-6 border-2 border-green-100">
+                      <div className="flex items-start gap-4">
+                        <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-green-500 to-emerald-600 flex items-center justify-center flex-shrink-0">
+                          <svg className="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 20 20">
+                            <path fillRule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clipRule="evenodd" />
+                          </svg>
+                        </div>
+                        <div className="flex-1">
+                          <h3 className="text-lg font-bold text-gray-900 mb-2">🔒 Secure Checkout via Shopify</h3>
+                          <p className="text-sm text-gray-700 mb-3">
+                            You'll be redirected to our secure Shopify checkout to complete your payment. 
+                            We accept all major credit cards, PayPal, Apple Pay, Google Pay, and more.
+                          </p>
+                          <div className="flex items-center gap-4 text-xs text-gray-600">
+                            <span className="flex items-center gap-1">
+                              <svg className="w-4 h-4 text-green-600" fill="currentColor" viewBox="0 0 20 20">
+                                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                              </svg>
+                              SSL Encrypted
+                            </span>
+                            <span className="flex items-center gap-1">
+                              <svg className="w-4 h-4 text-green-600" fill="currentColor" viewBox="0 0 20 20">
+                                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                              </svg>
+                              PCI Compliant
+                            </span>
+                            <span className="flex items-center gap-1">
+                              <svg className="w-4 h-4 text-green-600" fill="currentColor" viewBox="0 0 20 20">
+                                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                              </svg>
+                              Money-Back Guarantee
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+
+          {/* Order Summary */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+            className="bg-gradient-to-br from-gray-900 to-gray-800 rounded-2xl shadow-xl overflow-hidden"
+          >
+            <div className="p-6">
+              <h2 className="text-2xl font-bold text-white mb-6">Order Summary</h2>
+              
+              <div className="space-y-4 mb-6">
+                {/* Free Display */}
+                <div className="flex items-center justify-between py-3 border-b border-gray-700">
+                  <div className="flex items-center gap-3">
+                    <span className="text-3xl">🎁</span>
+                    <div>
+                      <p className="font-bold text-white">NFC Tap Display</p>
+                      <p className="text-sm text-gray-400">$299 Value • 2-4 Products</p>
+                    </div>
+                  </div>
+                  <div className="text-right">
+                    <div className="text-lg font-bold text-green-400">FREE</div>
+                    <div className="text-xs text-gray-400 line-through">${displayValue}</div>
+                  </div>
+                </div>
+
+                {/* Shipping */}
+                <div className="flex items-center justify-between py-3 border-b border-gray-700">
+                  <div className="flex items-center gap-3">
+                    <span className="text-2xl">{priorityShipping ? '🚀' : '📦'}</span>
+                    <div>
+                      <p className="font-bold text-white">
+                        {priorityShipping ? 'Priority Shipping' : 'Standard Shipping'}
+                      </p>
+                      <p className="text-sm text-gray-400">
+                        {priorityShipping ? '2-3 business days' : '5-7 business days'}
+                      </p>
+                    </div>
+                  </div>
+                  <div className="text-lg font-bold text-white">
+                    {priorityShipping ? `$${shippingPrice}` : 'FREE'}
+                  </div>
+                </div>
+              </div>
+
+              {/* Total */}
+              <div className="bg-gradient-to-r from-[#ff6fb3] to-purple-600 rounded-xl p-4 mb-6">
+                <div className="flex items-center justify-between">
+                  <span className="text-lg font-bold text-white">Total Today</span>
+                  <span className="text-3xl font-black text-white">${shippingPrice}</span>
+                </div>
+                <p className="text-xs text-white/80 mt-2">
+                  🎉 You're saving ${displayValue}! Display value not included.
                 </p>
               </div>
-              <div className="text-right">
-                <span className="text-4xl font-bold text-gray-900">${totalAmount}</span>
-                {!prioritySelected && (
-                  <p className="text-xs text-gray-500 mt-1">Free shipping</p>
+
+              {/* Place Order Button */}
+              <motion.button
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                onClick={handlePlaceOrder}
+                disabled={loading}
+                className="w-full bg-white text-gray-900 py-5 rounded-2xl font-black text-lg shadow-xl hover:shadow-2xl transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-3"
+              >
+                {loading ? (
+                  <>
+                    <div className="animate-spin rounded-full h-5 w-5 border-2 border-gray-900 border-t-transparent"></div>
+                    Processing...
+                  </>
+                ) : (
+                  <>
+                    <span>Complete Order</span>
+                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                    </svg>
+                  </>
                 )}
-              </div>
-            </div>
-          </div>
-        </div>
+              </motion.button>
 
-        <div className="bg-gradient-to-br from-[#fff3ea] to-[#fff6fb] rounded-2xl p-8 mb-8 border-2 border-[#ff6fb3]/20 shadow-lg">
-          <div className="flex items-start gap-4 mb-6">
-            <div className="flex-shrink-0 w-12 h-12 bg-gradient-to-br from-[#ff7a4a] to-[#ff6fb3] rounded-full flex items-center justify-center shadow-lg">
-              <span className="text-2xl">💡</span>
-            </div>
-            <div>
-              <h3 className="text-xl font-bold text-gray-900 mb-2">Why Most Stores Choose Priority</h3>
-              <p className="text-gray-700 leading-relaxed">
-                <strong>Most stores make back their $50 in the first week of holiday sales.</strong> Don't miss 
-                the busiest season of the year. Q4 accounts for 30-40% of annual retail revenue.
+              <p className="text-xs text-gray-400 text-center mt-4">
+                🔒 Secure checkout powered by Shopify
               </p>
             </div>
-          </div>
+          </motion.div>
 
-          <div className="grid md:grid-cols-3 gap-4 mt-6">
-            <div className="bg-white rounded-xl p-5 shadow-sm border border-gray-100">
-              <div className="text-3xl mb-3">🚀</div>
-              <h4 className="font-bold text-gray-900 mb-2">Ship Before Black Friday</h4>
-              <p className="text-sm text-gray-600">
-                Get your display installed and earning before the biggest shopping weekend of the year.
-              </p>
-            </div>
-
-            <div className="bg-white rounded-xl p-5 shadow-sm border border-gray-100">
-              <div className="text-3xl mb-3">💰</div>
-              <h4 className="font-bold text-gray-900 mb-2">Capture Holiday Sales</h4>
-              <p className="text-sm text-gray-600">
-                Average stores see 2-3x more traffic during holidays. Each scan is a potential sale.
-              </p>
-            </div>
-
-            <div className="bg-white rounded-xl p-5 shadow-sm border border-gray-100">
-              <div className="text-3xl mb-3">🔥</div>
-              <h4 className="font-bold text-gray-900 mb-2">Limited Supply Available</h4>
-              <p className="text-sm text-gray-600">
-                We can only fulfill a limited number of priority orders. Once they're gone, standard only.
-              </p>
-            </div>
-          </div>
-
-          <div className="mt-6 bg-white/50 rounded-xl p-4 border border-gray-200">
-            <div className="flex items-center gap-3">
-              <div className="flex -space-x-2">
-                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-blue-600 border-2 border-white flex items-center justify-center text-white font-bold text-sm">JM</div>
-                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-purple-500 to-purple-600 border-2 border-white flex items-center justify-center text-white font-bold text-sm">AC</div>
-                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-green-500 to-green-600 border-2 border-white flex items-center justify-center text-white font-bold text-sm">DT</div>
-              </div>
-              <div className="flex-1">
-                <p className="text-sm text-gray-700">
-                  <strong>387 retailers</strong> upgraded to priority this month
-                </p>
-              </div>
-              <div className="flex gap-1">
-                {[...Array(5)].map((_, i) => (
-                  <svg key={i} className="w-5 h-5 text-yellow-500" fill="currentColor" viewBox="0 0 20 20">
-                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                  </svg>
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div className="bg-white rounded-2xl shadow-2xl border-2 border-gray-100 overflow-hidden mb-8">
-          <div className="bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3] text-white py-4 px-8">
-            <h2 className="text-xl font-bold">Shipping Information</h2>
-            <p className="text-white/90 text-sm mt-1">Where should we send your display?</p>
-          </div>
-
-          <div className="p-8 space-y-6">
-            <div>
-              <label htmlFor="email" className="block text-sm font-semibold text-gray-700 mb-2">
-                Email Address <span className="text-xs text-gray-500">(from your account)</span>
-              </label>
-              <input
-                type="email"
-                id="email"
-                name="email"
-                value={shippingData.email}
-                readOnly
-                className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg bg-gray-50 text-gray-600 cursor-not-allowed"
-              />
-            </div>
-
-            <div>
-              <label htmlFor="storeName" className="block text-sm font-semibold text-gray-700 mb-2">
-                Store Name <span className="text-red-500">*</span>
-              </label>
-              <input
-                type="text"
-                id="storeName"
-                name="storeName"
-                value={shippingData.storeName}
-                onChange={handleInputChange}
-                required
-                className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:ring-2 focus:ring-[#ff6fb3] focus:border-transparent transition-all text-gray-900"
-                placeholder="e.g., Urban Goods Market"
-              />
-            </div>
-
-            <div>
-              <label htmlFor="addressLine1" className="block text-sm font-semibold text-gray-700 mb-2">
-                Street Address <span className="text-red-500">*</span>
-              </label>
-              <input
-                type="text"
-                id="addressLine1"
-                name="addressLine1"
-                value={shippingData.addressLine1}
-                onChange={handleInputChange}
-                required
-                className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:ring-2 focus:ring-[#ff6fb3] focus:border-transparent transition-all text-gray-900"
-                placeholder="123 Main Street"
-              />
-            </div>
-
-            <div>
-              <label htmlFor="addressLine2" className="block text-sm font-semibold text-gray-700 mb-2">
-                Apt, Suite, etc. <span className="text-xs text-gray-500">(optional)</span>
-              </label>
-              <input
-                type="text"
-                id="addressLine2"
-                name="addressLine2"
-                value={shippingData.addressLine2}
-                onChange={handleInputChange}
-                className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:ring-2 focus:ring-[#ff6fb3] focus:border-transparent transition-all text-gray-900"
-                placeholder="Suite 200"
-              />
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div>
-                <label htmlFor="city" className="block text-sm font-semibold text-gray-700 mb-2">
-                  City <span className="text-red-500">*</span>
-                </label>
-                <input
-                  type="text"
-                  id="city"
-                  name="city"
-                  value={shippingData.city}
-                  onChange={handleInputChange}
-                  required
-                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:ring-2 focus:ring-[#ff6fb3] focus:border-transparent transition-all text-gray-900"
-                  placeholder="San Francisco"
-                />
-              </div>
-
-              <div>
-                <label htmlFor="state" className="block text-sm font-semibold text-gray-700 mb-2">
-                  State <span className="text-red-500">*</span>
-                </label>
-                <input
-                  type="text"
-                  id="state"
-                  name="state"
-                  value={shippingData.state}
-                  onChange={handleInputChange}
-                  required
-                  maxLength={2}
-                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:ring-2 focus:ring-[#ff6fb3] focus:border-transparent transition-all text-gray-900 uppercase"
-                  placeholder="CA"
-                />
-              </div>
-
-              <div>
-                <label htmlFor="zipCode" className="block text-sm font-semibold text-gray-700 mb-2">
-                  ZIP Code <span className="text-red-500">*</span>
-                </label>
-                <input
-                  type="text"
-                  id="zipCode"
-                  name="zipCode"
-                  value={shippingData.zipCode}
-                  onChange={handleInputChange}
-                  required
-                  maxLength={10}
-                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:ring-2 focus:ring-[#ff6fb3] focus:border-transparent transition-all text-gray-900"
-                  placeholder="94102"
-                />
-              </div>
-            </div>
-
-            <div>
-              <label htmlFor="phone" className="block text-sm font-semibold text-gray-700 mb-2">
-                Phone Number <span className="text-xs text-gray-500">(for shipping updates)</span>
-              </label>
-              <input
-                type="tel"
-                id="phone"
-                name="phone"
-                value={shippingData.phone}
-                onChange={handleInputChange}
-                className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:ring-2 focus:ring-[#ff6fb3] focus:border-transparent transition-all text-gray-900"
-                placeholder="(555) 123-4567"
-              />
-            </div>
-          </div>
-        </div>
-
-        {error && (
-          <div className="bg-red-50 border-2 border-red-200 text-red-700 px-6 py-4 rounded-xl flex items-start gap-3 mb-6">
-            <svg className="w-6 h-6 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
-              <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
-            </svg>
-            <span className="font-medium">{error}</span>
-          </div>
-        )}
-
-        <button
-          onClick={handlePlaceOrder}
-          disabled={loading}
-          className="w-full bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3] text-white py-6 px-8 rounded-xl font-bold text-2xl hover:shadow-2xl transition-all transform hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none flex items-center justify-center gap-3 mb-6"
-        >
-          {loading ? (
-            <>
-              <svg className="animate-spin h-7 w-7 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+          {/* Error Message */}
+          {error && (
+            <motion.div
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="bg-red-50 border-2 border-red-200 rounded-xl p-4 flex items-center gap-3"
+            >
+              <svg className="w-5 h-5 text-red-600 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
               </svg>
-              {prioritySelected ? 'Processing...' : 'Saving...'}
-            </>
-          ) : (
-            <>
-              <span>
-                {prioritySelected 
-                  ? `Place Order ($${totalAmount})` 
-                  : 'Complete Registration (Free)'}
-              </span>
-              <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
-              </svg>
-            </>
+              <span className="text-red-800 font-medium">{error}</span>
+            </motion.div>
           )}
-        </button>
 
-        <p className="text-center text-sm text-gray-600 mb-8">
-          {prioritySelected ? (
-            <>You'll be redirected to secure checkout to complete your $50 payment</>
-          ) : (
-            <>You'll proceed directly to your dashboard - no payment required</>
-          )}
-        </p>
-
-        <div className="flex flex-wrap items-center justify-center gap-6 mt-10 text-sm text-gray-500">
-          <div className="flex items-center gap-2">
-            <svg className="w-5 h-5 text-green-600" fill="currentColor" viewBox="0 0 20 20">
-              <path fillRule="evenodd" d="M2.166 4.999A11.954 11.954 0 0010 1.944 11.954 11.954 0 0017.834 5c.11.65.166 1.32.166 2.001 0 5.225-3.34 9.67-8 11.317C5.34 16.67 2 12.225 2 7c0-.682.057-1.35.166-2.001zm11.541 3.708a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-            </svg>
-            <span>Secure Checkout</span>
+          {/* Trust Badges */}
+          <div className="bg-white/50 backdrop-blur-sm rounded-2xl p-6 border border-gray-200">
+            <div className="flex items-center justify-center gap-8 flex-wrap">
+              <div className="flex items-center gap-2 text-gray-600">
+                <svg className="w-5 h-5 text-green-600" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clipRule="evenodd" />
+                </svg>
+                <span className="text-sm font-bold">Secure Checkout</span>
+              </div>
+              <div className="flex items-center gap-2 text-gray-600">
+                <svg className="w-5 h-5 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                </svg>
+                <span className="text-sm font-bold">Money-Back Guarantee</span>
+              </div>
+              <div className="flex items-center gap-2 text-gray-600">
+                <svg className="w-5 h-5 text-purple-600" fill="currentColor" viewBox="0 0 20 20">
+                  <path d="M2 5a2 2 0 012-2h7a2 2 0 012 2v4a2 2 0 01-2 2H9l-3 3v-3H4a2 2 0 01-2-2V5z" />
+                  <path d="M15 7v2a4 4 0 01-4 4H9.828l-1.766 1.767c.28.149.599.233.938.233h2l3 3v-3h2a2 2 0 002-2V9a2 2 0 00-2-2h-1z" />
+                </svg>
+                <span className="text-sm font-bold">24/7 Support</span>
+              </div>
+            </div>
           </div>
-          <div className="flex items-center gap-2">
-            <svg className="w-5 h-5 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
-              <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-            </svg>
-            <span>Money-Back Guarantee</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <svg className="w-5 h-5 text-purple-600" fill="currentColor" viewBox="0 0 20 20">
-              <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" />
-              <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z" />
-            </svg>
-            <span>24/7 Support</span>
-          </div>
-        </div>
-
-        <div className="text-center mt-8">
-          <Link href="/onboard/register" className="text-gray-600 hover:text-gray-900 font-medium text-sm">
-            ← Back to registration
-          </Link>
         </div>
       </div>
     </div>

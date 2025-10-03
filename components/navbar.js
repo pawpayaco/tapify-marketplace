@@ -6,20 +6,22 @@ export default function Navbar() {
   const { user, signOut } = useAuthContext();
 
   return (
-    <nav className="bg-white border-b border-gray-100 sticky top-0 z-50 backdrop-blur-sm bg-white/95">
+    <nav className="fixed top-0 left-0 right-0 z-50 backdrop-blur-md bg-white/70 border-b border-white/20 shadow-lg shadow-purple-100/50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-16">
+        <div className="flex justify-between items-center h-20">
           {/* Logo/Brand */}
           <div className="flex-shrink-0">
-            <Link href="/" className="flex items-center hover:opacity-80 transition-opacity">
-              <Image 
-                src="/pawpaya-logo.png" 
-                alt="Pawpaya" 
-                width={151}
-                height={40}
-                className="h-[42px] w-auto"
-                priority
-              />
+            <Link href="/" className="flex items-center hover:scale-105 transition-all duration-300 group">
+              <div className="relative">
+                <Image 
+                  src="/pawpaya-logo.png" 
+                  alt="Pawpaya" 
+                  width={160}
+                  height={45}
+                  className="h-[45px] w-auto drop-shadow-md group-hover:drop-shadow-lg transition-all"
+                  priority
+                />
+              </div>
             </Link>
           </div>
 
@@ -28,7 +30,7 @@ export default function Navbar() {
             {/* Dashboard Button */}
             <Link
               href="/onboard/dashboard"
-              className="hidden sm:flex items-center gap-2 px-4 py-2 font-semibold text-gray-700 hover:text-gray-900 transition-all rounded-xl hover:bg-gradient-to-r hover:from-pink-50 hover:to-purple-50"
+              className="hidden sm:flex items-center gap-2 px-5 py-2.5 font-bold text-gray-700 hover:text-gray-900 transition-all rounded-xl bg-white/80 backdrop-blur-sm hover:bg-gradient-to-r hover:from-pink-50 hover:to-purple-50 shadow-sm hover:shadow-md border border-gray-200/50"
             >
               <span>📊</span>
               <span>Dashboard</span>
@@ -36,12 +38,12 @@ export default function Navbar() {
 
             {user ? (
               <div className="flex items-center gap-3">
-                <span className="hidden md:block text-sm text-gray-600 bg-gray-100 px-3 py-1.5 rounded-lg font-medium">
+                <span className="hidden md:block text-sm text-gray-700 bg-white/80 backdrop-blur-sm px-4 py-2 rounded-xl font-semibold border border-gray-200/50 shadow-sm">
                   {user.email}
                 </span>
                 <button
                   onClick={signOut}
-                  className="px-4 py-2 font-semibold text-gray-700 hover:text-gray-900 transition-all rounded-xl border-2 border-gray-200 hover:border-gray-300 hover:bg-gray-50"
+                  className="px-5 py-2.5 font-bold text-gray-700 hover:text-gray-900 transition-all rounded-xl border-2 border-gray-300/80 hover:border-gray-400 bg-white/80 backdrop-blur-sm hover:bg-white/90 shadow-sm hover:shadow-md"
                 >
                   Sign Out
                 </button>
@@ -49,7 +51,7 @@ export default function Navbar() {
             ) : (
               <Link
                 href="/login"
-                className="px-5 py-2.5 font-bold text-white bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3] rounded-xl shadow-md hover:shadow-lg transition-all hover:scale-105"
+                className="px-6 py-3 font-bold text-white bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3] rounded-xl shadow-lg hover:shadow-xl transition-all hover:scale-105 border border-white/20"
               >
                 Login
               </Link>

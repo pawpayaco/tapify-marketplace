@@ -11,6 +11,7 @@ export default function RetailerDashboard() {
   const [activeTab, setActiveTab] = useState('stats');
   const [loading, setLoading] = useState(true);
   const [toast, setToast] = useState(null);
+  const [settingsChanged, setSettingsChanged] = useState(false);
   
   // Data states
   const [retailer, setRetailer] = useState(null);
@@ -84,10 +85,11 @@ export default function RetailerDashboard() {
           }
         }
         
-        // If no retailer found, initialize with empty data
+        // If no retailer found, initialize with empty data (no popup - just continue)
         if (!retailerData) {
           console.warn('No retailer profile found for user:', user.email);
-          showToast('No retailer profile found. Contact support to get set up.', 'error');
+          // Don't show popup - let them finish onboarding in registration flow
+          // showToast('No retailer profile found. Contact support to get set up.', 'error');
           setLoading(false);
           
           // Initialize with empty weekly data so charts don't break
@@ -244,7 +246,7 @@ export default function RetailerDashboard() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-pink-50 via-purple-50 to-blue-50">
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-pink-50 via-purple-50 to-blue-50 pt-20">
         <motion.div 
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
@@ -274,7 +276,7 @@ export default function RetailerDashboard() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-pink-50 via-purple-50 to-blue-50">
+    <div className="min-h-screen bg-gradient-to-br from-pink-50 via-purple-50 to-blue-50 pt-20">
       {/* Header */}
       <motion.div 
         initial={{ opacity: 0, y: -20 }}
@@ -284,8 +286,8 @@ export default function RetailerDashboard() {
       >
         {/* Background decoration */}
         <div className="absolute inset-0 opacity-10">
-          <div className="absolute top-0 right-0 w-96 h-96 bg-white rounded-full blur-3xl"></div>
-          <div className="absolute bottom-0 left-0 w-96 h-96 bg-white rounded-full blur-3xl"></div>
+          <div className="absolute top-0 right-0 w-64 h-64 md:w-96 md:h-96 bg-white rounded-full blur-3xl"></div>
+          <div className="absolute bottom-0 left-0 w-64 h-64 md:w-96 md:h-96 bg-white rounded-full blur-3xl"></div>
         </div>
 
         <div className="max-w-7xl mx-auto relative z-10">
@@ -331,13 +333,12 @@ export default function RetailerDashboard() {
           variants={staggerContainer}
           initial="hidden"
           animate="visible"
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8"
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 mb-8"
         >
           {/* Weekly Scans */}
           <motion.div 
             variants={fadeInUp}
-            whileHover={{ scale: 1.05, y: -5 }}
-            className="bg-white rounded-3xl p-6 shadow-lg border-2 border-gray-100 hover:border-blue-200 hover:shadow-xl transition-all"
+            className="bg-white rounded-3xl p-6 border-2 border-gray-100"
           >
             <div className="flex items-start justify-between mb-4">
               <div className="w-14 h-14 bg-gradient-to-br from-blue-400 to-blue-600 rounded-2xl flex items-center justify-center shadow-lg">
@@ -356,8 +357,7 @@ export default function RetailerDashboard() {
           {/* Revenue */}
           <motion.div 
             variants={fadeInUp}
-            whileHover={{ scale: 1.05, y: -5 }}
-            className="bg-white rounded-3xl p-6 shadow-lg border-2 border-gray-100 hover:border-pink-200 hover:shadow-xl transition-all"
+            className="bg-white rounded-3xl p-6 border-2 border-gray-100"
           >
             <div className="flex items-start justify-between mb-4">
               <div className="w-14 h-14 bg-gradient-to-br from-[#ff7a4a] to-[#ff6fb3] rounded-2xl flex items-center justify-center shadow-lg">
@@ -375,8 +375,7 @@ export default function RetailerDashboard() {
           {/* Displays Claimed */}
           <motion.div 
             variants={fadeInUp}
-            whileHover={{ scale: 1.05, y: -5 }}
-            className="bg-white rounded-3xl p-6 shadow-lg border-2 border-gray-100 hover:border-purple-200 hover:shadow-xl transition-all"
+            className="bg-white rounded-3xl p-6 border-2 border-gray-100"
           >
             <div className="flex items-start justify-between mb-4">
               <div className="w-14 h-14 bg-gradient-to-br from-purple-400 to-purple-600 rounded-2xl flex items-center justify-center shadow-lg">
@@ -394,8 +393,7 @@ export default function RetailerDashboard() {
           {/* Conversion Rate */}
           <motion.div 
             variants={fadeInUp}
-            whileHover={{ scale: 1.05, y: -5 }}
-            className="bg-white rounded-3xl p-6 shadow-lg border-2 border-gray-100 hover:border-green-200 hover:shadow-xl transition-all"
+            className="bg-white rounded-3xl p-6 border-2 border-gray-100"
           >
             <div className="flex items-start justify-between mb-4">
               <div className="w-14 h-14 bg-gradient-to-br from-green-400 to-green-600 rounded-2xl flex items-center justify-center shadow-lg">
@@ -419,73 +417,43 @@ export default function RetailerDashboard() {
           className="bg-white rounded-3xl shadow-xl border-2 border-gray-100 overflow-hidden"
         >
           {/* Tab Headers */}
-          <div className="border-b-2 border-gray-100 bg-gradient-to-r from-pink-50 to-purple-50">
-            <div className="flex gap-2 px-6 pt-6 pb-2">
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                onClick={() => setActiveTab('stats')}
-                className={`px-6 py-3 rounded-t-2xl font-bold transition-all ${
-                  activeTab === 'stats'
-                    ? 'bg-white text-[#ff6fb3] shadow-lg'
-                    : 'text-gray-600 hover:text-gray-900 hover:bg-white/50'
-                }`}
-              >
-                📊 Stats & Analytics
-              </motion.button>
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                onClick={() => setActiveTab('orders')}
-                className={`px-6 py-3 rounded-t-2xl font-bold transition-all ${
-                  activeTab === 'orders'
-                    ? 'bg-white text-[#ff6fb3] shadow-lg'
-                    : 'text-gray-600 hover:text-gray-900 hover:bg-white/50'
-                }`}
-              >
-                🛍️ Orders
-              </motion.button>
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                onClick={() => setActiveTab('payouts')}
-                className={`px-6 py-3 rounded-t-2xl font-bold transition-all ${
-                  activeTab === 'payouts'
-                    ? 'bg-white text-[#ff6fb3] shadow-lg'
-                    : 'text-gray-600 hover:text-gray-900 hover:bg-white/50'
-                }`}
-              >
-                💸 Payouts
-              </motion.button>
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                onClick={() => setActiveTab('displays')}
-                className={`px-6 py-3 rounded-t-2xl font-bold transition-all ${
-                  activeTab === 'displays'
-                    ? 'bg-white text-[#ff6fb3] shadow-lg'
-                    : 'text-gray-600 hover:text-gray-900 hover:bg-white/50'
-                }`}
-              >
-                🖼️ Displays
-              </motion.button>
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                onClick={() => setActiveTab('settings')}
-                className={`px-6 py-3 rounded-t-2xl font-bold transition-all ${
-                  activeTab === 'settings'
-                    ? 'bg-white text-[#ff6fb3] shadow-lg'
-                    : 'text-gray-600 hover:text-gray-900 hover:bg-white/50'
-                }`}
-              >
-                ⚙️ Settings
-              </motion.button>
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.4 }}
+            className="bg-white rounded-3xl shadow-xl border-2 border-gray-100 p-4 mb-6"
+          >
+            <div className="flex flex-wrap gap-3">
+              {[
+                { id: 'stats', label: '📊 Stats & Analytics' },
+                { id: 'orders', label: '🛍️ Orders' },
+                { id: 'payouts', label: '💸 Payouts' },
+                { id: 'displays', label: '🖼️ Displays' },
+                { id: 'settings', label: '⚙️ Settings' }
+              ].map((tab) => {
+                const active = activeTab === tab.id;
+                return (
+                  <motion.button
+                    key={tab.id}
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    onClick={() => setActiveTab(tab.id)}
+                    className={[
+                      "rounded-2xl px-6 py-3 text-sm font-bold transition-all",
+                      active
+                        ? "bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3] text-white shadow-lg"
+                        : "text-gray-700 hover:bg-gray-100 border-2 border-gray-200",
+                    ].join(" ")}
+                  >
+                    {tab.label}
+                  </motion.button>
+                );
+              })}
             </div>
-          </div>
+          </motion.div>
 
           {/* Tab Content */}
-          <div className="p-8">
+          <div className="bg-white rounded-3xl shadow-xl border-2 border-gray-100 p-8">
             {/* Stats Tab */}
             {activeTab === 'stats' && (
               <motion.div 
@@ -753,7 +721,7 @@ export default function RetailerDashboard() {
                 </div>
 
                 {/* Summary Cards */}
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 mb-8">
                   <div className="bg-gradient-to-br from-yellow-50 to-orange-50 border-2 border-yellow-200 rounded-3xl p-6 shadow-lg">
                     <h4 className="font-bold text-gray-700 mb-2">Pending Earnings</h4>
                     <p className="text-3xl font-bold text-gray-900">
@@ -855,7 +823,7 @@ export default function RetailerDashboard() {
               >
                 <h3 className="text-2xl font-bold text-gray-900 mb-6">🖼️ Your Displays (UIDs)</h3>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
                   {uids.map((uid, idx) => (
                     <motion.div
                       key={uid.uid}
@@ -1011,15 +979,29 @@ export default function RetailerDashboard() {
                   <h4 className="font-bold text-gray-900 text-lg mb-6">Notification Preferences</h4>
                   <div className="space-y-4">
                     <label className="flex items-center gap-3 cursor-pointer group">
-                      <input type="checkbox" defaultChecked className="w-5 h-5 text-[#ff6fb3] rounded focus:ring-[#ff6fb3]" />
+                      <input 
+                        type="checkbox" 
+                        defaultChecked 
+                        onChange={() => setSettingsChanged(true)}
+                        className="w-5 h-5 text-[#ff6fb3] rounded focus:ring-[#ff6fb3]" 
+                      />
                       <span className="text-gray-700 font-medium group-hover:text-gray-900 transition-colors">Email me when a new order is placed</span>
                     </label>
                     <label className="flex items-center gap-3 cursor-pointer group">
-                      <input type="checkbox" defaultChecked className="w-5 h-5 text-[#ff6fb3] rounded focus:ring-[#ff6fb3]" />
+                      <input 
+                        type="checkbox" 
+                        defaultChecked 
+                        onChange={() => setSettingsChanged(true)}
+                        className="w-5 h-5 text-[#ff6fb3] rounded focus:ring-[#ff6fb3]" 
+                      />
                       <span className="text-gray-700 font-medium group-hover:text-gray-900 transition-colors">Weekly performance summary</span>
                     </label>
                     <label className="flex items-center gap-3 cursor-pointer group">
-                      <input type="checkbox" className="w-5 h-5 text-[#ff6fb3] rounded focus:ring-[#ff6fb3]" />
+                      <input 
+                        type="checkbox" 
+                        onChange={() => setSettingsChanged(true)}
+                        className="w-5 h-5 text-[#ff6fb3] rounded focus:ring-[#ff6fb3]" 
+                      />
                       <span className="text-gray-700 font-medium group-hover:text-gray-900 transition-colors">Product rotation updates</span>
                     </label>
                   </div>
@@ -1034,7 +1016,10 @@ export default function RetailerDashboard() {
                   <div className="space-y-4">
                     <div>
                       <label className="block text-sm font-bold text-gray-700 mb-2">Payout Method</label>
-                      <select className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-[#ff6fb3] focus:border-transparent transition-all">
+                      <select 
+                        onChange={() => setSettingsChanged(true)}
+                        className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-[#ff6fb3] focus:border-transparent transition-all"
+                      >
                         <option>Bank Transfer (ACH)</option>
                         <option>PayPal</option>
                         <option>Stripe</option>
@@ -1042,7 +1027,10 @@ export default function RetailerDashboard() {
                     </div>
                     <div>
                       <label className="block text-sm font-bold text-gray-700 mb-2">Payout Frequency</label>
-                      <select className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-[#ff6fb3] focus:border-transparent transition-all">
+                      <select 
+                        onChange={() => setSettingsChanged(true)}
+                        className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-[#ff6fb3] focus:border-transparent transition-all"
+                      >
                         <option>Weekly</option>
                         <option>Bi-weekly</option>
                         <option>Monthly</option>
@@ -1053,11 +1041,22 @@ export default function RetailerDashboard() {
 
                 {/* Save Button */}
                 <motion.button 
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                  className="w-full bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3] text-white py-4 px-6 rounded-2xl font-bold text-lg hover:shadow-xl transition-all"
+                  whileHover={{ scale: settingsChanged ? 1.02 : 1 }}
+                  whileTap={{ scale: settingsChanged ? 0.98 : 1 }}
+                  onClick={() => {
+                    if (settingsChanged) {
+                      showToast('Settings saved successfully!', 'success');
+                      setSettingsChanged(false);
+                    }
+                  }}
+                  className={`w-full py-4 px-6 rounded-2xl font-bold text-lg transition-all ${
+                    settingsChanged
+                      ? 'bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3] text-white hover:shadow-xl cursor-pointer'
+                      : 'bg-gray-200 text-gray-500 cursor-not-allowed'
+                  }`}
+                  disabled={!settingsChanged}
                 >
-                  Save Settings
+                  {settingsChanged ? '💾 Save Changes' : '✓ All Settings Saved'}
                 </motion.button>
               </motion.div>
             )}

@@ -17,10 +17,13 @@
     "framer-motion": "^12.23.22",
     "gsap": "^3.13.0",
     "next": "latest",
+    "pg": "^8.16.3",
     "plaid": "^38.1.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "react-plaid-link": "^4.1.1"
+    "react-plaid-link": "^4.1.1",
+    "use-places-autocomplete": "^4.0.1",
+    "xml2js": "^0.6.2"
   },
   "devDependencies": {
     "autoprefixer": "^10.4.20",

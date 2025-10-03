@@ -24,17 +24,13 @@ export default function Login() {
     }
   }, [disableAuth, router]);
 
-  // Redirect if already logged in
+  // Redirect if already logged in (silently, no popup)
   useEffect(() => {
-    console.log('🔍 [Login] Auth state check:', { hasUser: !!user, loading });
-    
-    if (user && !loading) {
-      // Check if there's a redirect query param
+    if (user && !loading && router.isReady) {
       const redirectTo = router.query.redirect || '/onboard/dashboard';
-      console.log('✅ [Login] User already logged in, redirecting to:', redirectTo);
-      router.push(redirectTo);
+      router.replace(redirectTo); // Use replace instead of push to avoid back button issues
     }
-  }, [user, loading, router]);
+  }, [user, loading, router.isReady, router.query.redirect]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -45,7 +41,6 @@ export default function Login() {
 
     try {
       if (isSignUp) {
-        console.log('📝 [Login] Calling signUp...');
         const { data, error } = await supabase.auth.signUp({
           email,
           password,
@@ -54,45 +49,33 @@ export default function Login() {
           },
         });
         
-        if (error) {
-          console.error('❌ [Login] Sign up failed:', error);
-          throw error;
-        }
+        if (error) throw error;
         
-        console.log('✅ [Login] Sign up successful:', {
-          userId: data?.user?.id,
-          email: data?.user?.email,
-          hasSession: !!data?.session,
-        });
-        
-        setError('Check your email to confirm your account!');
+        setError('success:Check your email to confirm your account!');
       } else {
-        console.log('🔑 [Login] Calling signInWithPassword...');
         const { data, error } = await supabase.auth.signInWithPassword({
           email,
           password,
         });
         
         if (error) {
-          console.error('❌ [Login] Sign in failed:', error);
-          throw error;
+          // Better error messages
+          if (error.message.includes('Invalid login credentials')) {
+            setError('Invalid email or password. Please try again.');
+          } else if (error.message.includes('Email not confirmed')) {
+            setError('Please verify your email before signing in.');
+          } else {
+            setError(error.message);
+          }
+          return;
         }
         
-        console.log('✅ [Login] Sign in successful:', {
-          userId: data?.user?.id,
-          email: data?.user?.email,
-          hasSession: !!data?.session,
-          accessToken: data?.session?.access_token ? `${data.session.access_token.substring(0, 20)}...` : 'NONE',
-        });
-        
-        // Redirect to specified page or default to dashboard
+        // Successful login - redirect
         const redirectTo = router.query.redirect || '/onboard/dashboard';
-        console.log('🚀 [Login] Redirecting to:', redirectTo);
-        router.push(redirectTo);
+        router.replace(redirectTo);
       }
     } catch (err) {
-      console.error('❌ [Login] Exception:', err);
-      setError(err.message || 'An error occurred');
+      setError(err.message || 'An error occurred. Please try again.');
     } finally {
       setSubmitting(false);
     }
@@ -101,7 +84,7 @@ export default function Login() {
   // Show loading or nothing if already authenticated
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-white">
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-pink-50 via-purple-50 to-blue-50 pt-20">
         <div className="text-gray-600">Loading...</div>
       </div>
     );
@@ -112,7 +95,7 @@ export default function Login() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-4 bg-white">
+    <div className="min-h-screen flex items-center justify-center px-4 bg-gradient-to-br from-pink-50 via-purple-50 to-blue-50 pt-20">
       <div className="w-full max-w-md">
         <div className="bg-white rounded-2xl shadow-xl p-8 border border-gray-100">
           {/* Header */}
@@ -196,27 +179,58 @@ export default function Login() {
               </div>
 
               {error && (
-                <div className={`p-3 rounded-lg text-sm ${error.includes('Check your email') ? 'bg-green-50 text-green-700' : 'bg-red-50 text-red-700'}`}>
-                  {error}
+                <div className={`p-4 rounded-2xl text-sm font-medium flex items-center gap-3 ${error.startsWith('success:') ? 'bg-green-50 border-2 border-green-200 text-green-700' : 'bg-red-50 border-2 border-red-200 text-red-700'}`}>
+                  {error.startsWith('success:') ? (
+                    <>
+                      <svg className="w-5 h-5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                      </svg>
+                      <span>{error.replace('success:', '')}</span>
+                    </>
+                  ) : (
+                    <>
+                      <svg className="w-5 h-5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+                      </svg>
+                      <span>{error}</span>
+                    </>
+                  )}
                 </div>
               )}
 
               <button
                 type="submit"
                 disabled={submitting}
-                className="w-full bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3] text-white py-3 px-4 rounded-lg font-semibold hover:shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3] text-white py-3 px-4 rounded-2xl font-bold hover:shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                {submitting ? 'Loading...' : isSignUp ? 'Sign Up' : 'Sign In'}
+                {submitting ? (
+                  <span className="flex items-center justify-center gap-2">
+                    <div className="animate-spin rounded-full h-5 w-5 border-2 border-white border-t-transparent"></div>
+                    {isSignUp ? 'Creating account...' : 'Signing in...'}
+                  </span>
+                ) : (
+                  isSignUp ? 'Create Account' : 'Sign In'
+                )}
               </button>
 
-              <div className="text-center">
+              <div className="flex items-center justify-between pt-2">
                 <button
                   type="button"
                   onClick={() => setIsSignUp(!isSignUp)}
                   className="text-sm text-[#ff6fb3] hover:text-[#ff58a8] font-medium"
                 >
-                  {isSignUp ? 'Already have an account? Sign in' : "Don't have an account? Sign up"}
+                  {isSignUp ? 'Already have an account?' : "Don't have an account?"}
                 </button>
+                
+                {!isSignUp && (
+                  <button
+                    type="button"
+                    onClick={() => router.push('/reset-password')}
+                    className="text-sm text-gray-600 hover:text-[#ff6fb3] font-medium"
+                  >
+                    Forgot password?
+                  </button>
+                )}
               </div>
             </form>
           ) : (

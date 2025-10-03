@@ -6,7 +6,7 @@ import { supabase, supabaseAdmin } from "../lib/supabase";
 import { formatMoney } from "../utils/formatMoney";
 import { initiatePayout } from "../services/dwolla";
 
-const TABS = ["Vendors", "Retailers", "Payouts", "Analytics", "Sourcers", "UIDs"];
+const TABS = ["Vendors", "Retailers", "Stores", "Payouts", "Analytics", "Sourcers", "UIDs"];
 
 /**
  * Server-side authentication check using @supabase/ssr
@@ -244,6 +244,8 @@ export default function Admin({
   // Handle client-side mounting to prevent hydration mismatch
   useEffect(() => {
     setMounted(true);
+    // Scroll to top on page load
+    window.scrollTo(0, 0);
   }, []);
 
   // Animation variants
@@ -421,7 +423,7 @@ export default function Admin({
   // ACCESS DENIED STATE
   if (!isAdmin) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-red-50 via-orange-50 to-yellow-50 p-4 md:p-8">
+      <div className="min-h-screen bg-gradient-to-br from-red-50 via-orange-50 to-yellow-50 p-4 md:p-8 pt-24">
         {/* ACCESS DENIED BANNER */}
         <div className="max-w-4xl mx-auto">
           <div className="bg-red-100 border-l-4 border-red-500 rounded-lg shadow-lg p-6 mb-6">
@@ -509,7 +511,7 @@ export default function Admin({
 
   // AUTHORIZED ADMIN STATE
   return (
-    <div className="min-h-screen bg-gradient-to-br from-pink-50 via-purple-50 to-blue-50">
+    <div className="min-h-screen bg-gradient-to-br from-pink-50 via-purple-50 to-blue-50 pt-20">
       
       {/* Header */}
       <motion.div 
@@ -734,6 +736,49 @@ export default function Admin({
                 </motion.article>
               ))}
             </motion.div>
+          )}
+
+          {tab === "Stores" && (
+            <div className="bg-white rounded-3xl shadow-xl border-2 border-gray-100 p-8 text-center">
+              <div className="w-20 h-20 bg-gradient-to-br from-purple-400 to-pink-500 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg">
+                <span className="text-4xl">🏪</span>
+              </div>
+              <h3 className="text-2xl font-bold text-gray-900 mb-3">
+                Stores & Outreach Management
+              </h3>
+              <p className="text-gray-600 mb-6 max-w-lg mx-auto">
+                Manage store outreach campaigns, track cold emails, register owners, and export store data.
+              </p>
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={() => router.push('/admin/stores')}
+                className="inline-flex items-center gap-2 px-8 py-4 rounded-2xl bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3] text-white font-bold text-lg hover:shadow-xl transition-all"
+              >
+                <span>Open Stores Dashboard</span>
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                </svg>
+              </motion.button>
+              
+              <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-4 max-w-3xl mx-auto">
+                <div className="bg-gradient-to-br from-blue-50 to-cyan-50 rounded-2xl p-4 border-2 border-blue-100">
+                  <div className="text-3xl mb-2">📊</div>
+                  <div className="font-bold text-gray-900">Filter & Search</div>
+                  <div className="text-sm text-gray-600">Search stores by name, location, or status</div>
+                </div>
+                <div className="bg-gradient-to-br from-green-50 to-emerald-50 rounded-2xl p-4 border-2 border-green-100">
+                  <div className="text-3xl mb-2">✍️</div>
+                  <div className="font-bold text-gray-900">Register Owners</div>
+                  <div className="text-sm text-gray-600">Add owner contacts and mark conversions</div>
+                </div>
+                <div className="bg-gradient-to-br from-purple-50 to-pink-50 rounded-2xl p-4 border-2 border-purple-100">
+                  <div className="text-3xl mb-2">📧</div>
+                  <div className="font-bold text-gray-900">Track Outreach</div>
+                  <div className="text-sm text-gray-600">Mark cold emails sent and track campaigns</div>
+                </div>
+              </div>
+            </div>
           )}
 
           {tab === "Payouts" && (
