@@ -5,10 +5,10 @@ export default async function handler(req, res) {
   }
 
   try {
-    const { retailerId } = req.body;
+    const { user_id, retailer_id } = req.body;
 
-    if (!retailerId) {
-      return res.status(400).json({ error: 'Missing retailer ID' });
+    if (!user_id || !retailer_id) {
+      return res.status(400).json({ error: 'Missing user ID or retailer ID' });
     }
 
     // Create Plaid Link token
@@ -22,7 +22,7 @@ export default async function handler(req, res) {
         secret: process.env.PLAID_SECRET,
         client_name: 'Tapify Marketplace',
         user: {
-          client_user_id: retailerId,
+          client_user_id: user_id,
         },
         products: ['auth', 'transactions'],
         country_codes: ['US'],

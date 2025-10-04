@@ -9,7 +9,7 @@ export default function ShopifyConnect() {
   const [priorityShipping, setPriorityShipping] = useState(true);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  
+
   const [shippingAddress, setShippingAddress] = useState({
     name: '',
     email: '',
@@ -84,7 +84,7 @@ export default function ShopifyConnect() {
         if (!shippingAddress.name || !shippingAddress.email || !shippingAddress.address) {
           setError('Please fill in all shipping details');
           setLoading(false);
-          return;
+      return;
         }
       }
 
@@ -131,7 +131,7 @@ export default function ShopifyConnect() {
   const displayValue = 299;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-pink-50 via-purple-50 to-blue-50">
+    <div className="min-h-screen" style={{ backgroundColor: '#faf8f3' }}>
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 pb-12">
         
         {/* Header */}
@@ -177,7 +177,7 @@ export default function ShopifyConnect() {
                   ].join(" ")}
                 >
                   <div className="flex items-start justify-between gap-6">
-                    <div className="flex-1">
+                  <div className="flex-1">
                       <div className="flex items-center gap-3 mb-3">
                         {priorityShipping && (
                           <motion.div
@@ -193,9 +193,9 @@ export default function ShopifyConnect() {
                         <span className="text-2xl">🚀</span>
                         <h3 className="text-xl font-bold text-gray-900">Priority Shipping</h3>
                         <span className="bg-gradient-to-r from-orange-500 to-red-500 text-white px-3 py-1 rounded-full text-xs font-bold">
-                          RECOMMENDED
-                        </span>
-                      </div>
+                        RECOMMENDED
+                      </span>
+                    </div>
                       <p className="text-gray-600 font-medium mb-3">Get your display in 2-3 business days</p>
                       <ul className="space-y-2 text-sm text-gray-600">
                         <li className="flex items-center gap-2">
@@ -203,21 +203,21 @@ export default function ShopifyConnect() {
                             <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                           </svg>
                           Start earning faster
-                        </li>
+                      </li>
                         <li className="flex items-center gap-2">
                           <svg className="w-4 h-4 text-green-600 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                             <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                           </svg>
                           Full tracking & insurance
-                        </li>
+                      </li>
                         <li className="flex items-center gap-2">
                           <svg className="w-4 h-4 text-green-600 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                             <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                           </svg>
                           Priority customer support
-                        </li>
-                      </ul>
-                    </div>
+                      </li>
+                    </ul>
+                  </div>
                     <div className="text-center flex-shrink-0">
                       <div className="text-4xl font-black text-gray-900 mb-1">${shippingPrice}</div>
                       <div className="text-sm text-gray-500 font-medium">one-time</div>
@@ -256,11 +256,11 @@ export default function ShopifyConnect() {
                       </div>
                       <p className="text-gray-600 font-medium mb-2">Arrives in 5-7 business days</p>
                       <p className="text-sm text-gray-500">Basic tracking included</p>
-                    </div>
+                </div>
                     <div className="text-center flex-shrink-0">
                       <div className="text-4xl font-black text-green-600 mb-1">FREE</div>
                       <div className="text-sm text-gray-500 font-medium">no charge</div>
-                    </div>
+                  </div>
                   </div>
                 </motion.button>
               </div>
@@ -284,13 +284,13 @@ export default function ShopifyConnect() {
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                       </svg>
-                    </div>
+          </div>
                     <h2 className="text-2xl font-bold text-gray-900">Shipping Address</h2>
                   </div>
 
                   <div className="space-y-6">
                     {/* Full Name */}
-                    <div>
+                  <div>
                       <label className="block text-sm font-bold text-gray-700 mb-2">
                         Full Name <span className="text-red-500">*</span>
                       </label>
@@ -302,7 +302,7 @@ export default function ShopifyConnect() {
                         placeholder="John Smith"
                         required
                       />
-                    </div>
+                </div>
 
                     {/* Email */}
                     <div>
@@ -317,7 +317,7 @@ export default function ShopifyConnect() {
                         placeholder="john@example.com"
                         required
                       />
-                    </div>
+                  </div>
 
                     {/* Phone */}
                     <div>
@@ -331,7 +331,7 @@ export default function ShopifyConnect() {
                         className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-[#ff6fb3] focus:border-transparent"
                         placeholder="(555) 123-4567"
                       />
-                    </div>
+                  </div>
 
                     {/* Address with Google Maps + USPS Validation */}
                     <AddressInput
@@ -477,8 +477,8 @@ export default function ShopifyConnect() {
                         <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-green-500 to-emerald-600 flex items-center justify-center flex-shrink-0">
                           <svg className="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 20 20">
                             <path fillRule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clipRule="evenodd" />
-                          </svg>
-                        </div>
+                        </svg>
+                    </div>
                         <div className="flex-1">
                           <h3 className="text-lg font-bold text-gray-900 mb-2">🔒 Secure Checkout via Shopify</h3>
                           <p className="text-sm text-gray-700 mb-3">
@@ -504,12 +504,12 @@ export default function ShopifyConnect() {
                               </svg>
                               Money-Back Guarantee
                             </span>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
                   </div>
                 </div>
+              </div>
+            </div>
+          </div>
+        </div>
               </motion.div>
             )}
           </AnimatePresence>
@@ -529,22 +529,22 @@ export default function ShopifyConnect() {
                 <div className="flex items-center justify-between py-3 border-b border-gray-700">
                   <div className="flex items-center gap-3">
                     <span className="text-3xl">🎁</span>
-                    <div>
+                <div>
                       <p className="font-bold text-white">NFC Tap Display</p>
                       <p className="text-sm text-gray-400">$299 Value • 2-4 Products</p>
-                    </div>
-                  </div>
+                </div>
+              </div>
                   <div className="text-right">
                     <div className="text-lg font-bold text-green-400">FREE</div>
                     <div className="text-xs text-gray-400 line-through">${displayValue}</div>
-                  </div>
+              </div>
                 </div>
 
                 {/* Shipping */}
                 <div className="flex items-center justify-between py-3 border-b border-gray-700">
                   <div className="flex items-center gap-3">
                     <span className="text-2xl">{priorityShipping ? '🚀' : '📦'}</span>
-                    <div>
+                <div>
                       <p className="font-bold text-white">
                         {priorityShipping ? 'Priority Shipping' : 'Standard Shipping'}
                       </p>
@@ -555,7 +555,7 @@ export default function ShopifyConnect() {
                   </div>
                   <div className="text-lg font-bold text-white">
                     {priorityShipping ? `$${shippingPrice}` : 'FREE'}
-                  </div>
+                </div>
                 </div>
               </div>
 
@@ -575,13 +575,13 @@ export default function ShopifyConnect() {
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
                 onClick={handlePlaceOrder}
-                disabled={loading}
+                  disabled={loading}
                 className="w-full bg-white text-gray-900 py-5 rounded-2xl font-black text-lg shadow-xl hover:shadow-2xl transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-3"
-              >
-                {loading ? (
+                >
+                  {loading ? (
                   <>
                     <div className="animate-spin rounded-full h-5 w-5 border-2 border-gray-900 border-t-transparent"></div>
-                    Processing...
+                      Processing...
                   </>
                 ) : (
                   <>
@@ -617,22 +617,22 @@ export default function ShopifyConnect() {
           <div className="bg-white/50 backdrop-blur-sm rounded-2xl p-6 border border-gray-200">
             <div className="flex items-center justify-center gap-8 flex-wrap">
               <div className="flex items-center gap-2 text-gray-600">
-                <svg className="w-5 h-5 text-green-600" fill="currentColor" viewBox="0 0 20 20">
+            <svg className="w-5 h-5 text-green-600" fill="currentColor" viewBox="0 0 20 20">
                   <path fillRule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clipRule="evenodd" />
-                </svg>
+            </svg>
                 <span className="text-sm font-bold">Secure Checkout</span>
-              </div>
+          </div>
               <div className="flex items-center gap-2 text-gray-600">
-                <svg className="w-5 h-5 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                </svg>
+            <svg className="w-5 h-5 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
+              <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+            </svg>
                 <span className="text-sm font-bold">Money-Back Guarantee</span>
-              </div>
+          </div>
               <div className="flex items-center gap-2 text-gray-600">
-                <svg className="w-5 h-5 text-purple-600" fill="currentColor" viewBox="0 0 20 20">
+            <svg className="w-5 h-5 text-purple-600" fill="currentColor" viewBox="0 0 20 20">
                   <path d="M2 5a2 2 0 012-2h7a2 2 0 012 2v4a2 2 0 01-2 2H9l-3 3v-3H4a2 2 0 01-2-2V5z" />
                   <path d="M15 7v2a4 4 0 01-4 4H9.828l-1.766 1.767c.28.149.599.233.938.233h2l3 3v-3h2a2 2 0 002-2V9a2 2 0 00-2-2h-1z" />
-                </svg>
+            </svg>
                 <span className="text-sm font-bold">24/7 Support</span>
               </div>
             </div>

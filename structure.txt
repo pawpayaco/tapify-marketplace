@@ -1,0 +1,154 @@
+.
+├── components
+│   ├── AddProspectModal.js
+│   ├── AddressInput.js
+│   ├── AdminAddOwnerModal.js
+│   ├── button.js
+│   ├── DashboardCard.js
+│   ├── ErrorBoundary.js
+│   ├── footer.js
+│   ├── FormInput.js
+│   ├── ImageModalGallery.js
+│   ├── layout.js
+│   ├── navbar.js
+│   ├── ProgressBar.js
+│   ├── StoreRegistrationForm.js
+│   └── StoresDataGrid.js
+├── context
+│   ├── AuthContext.js
+│   ├── CLAUDE.md
+│   ├── data_model.md
+│   ├── GAME_PLAN_2.0.md
+│   ├── nextjs
+│   │   ├── db_calls_summary.md
+│   │   ├── frontend_flow.md
+│   │   ├── pages_api_summary.md
+│   │   └── shopify_integration.md
+│   ├── payouts_flow.md
+│   ├── README_CONTEXT.md
+│   ├── shopify
+│   │   ├── flows.md
+│   │   ├── integration_points.md
+│   │   ├── metafields.md
+│   │   ├── overview.md
+│   │   ├── store_structure.md
+│   │   └── webhooks.md
+│   ├── supabase
+│   │   ├── constraints.md
+│   │   ├── fk_candidates.md
+│   │   ├── foreign_keys.md
+│   │   ├── overview.md
+│   │   ├── queries
+│   │   │   ├── constraints.sql
+│   │   │   ├── fk_candidates.sql
+│   │   │   ├── foreign_keys.sql
+│   │   │   ├── row_counts.sql
+│   │   │   └── tables_and_columns.sql
+│   │   ├── row_counts.md
+│   │   └── tables_and_columns.md
+│   └── ui
+│       ├── design_system_tokens.md
+│       └── ui_overview.md
+├── hooks
+│   └── useAuth.js
+├── lib
+│   ├── auth.js
+│   └── supabase.js
+├── middleware.js
+├── migrations
+│   ├── 2025-10-register-store.sql
+│   ├── rollback.sql
+│   └── stores_outreach.sql
+├── next.config.js
+├── package-lock.json
+├── package.json
+├── pages
+│   ├── _app.js
+│   ├── admin
+│   │   └── stores.js
+│   ├── admin.js
+│   ├── api
+│   │   ├── admin
+│   │   │   ├── add-owner.js
+│   │   │   └── add-prospect.js
+│   │   ├── onboard
+│   │   │   └── register.js
+│   │   ├── payout.js
+│   │   ├── plaid-exchange.js
+│   │   ├── plaid-link-token.js
+│   │   ├── plaid-link.js
+│   │   ├── register-store.js
+│   │   ├── retailers
+│   │   │   ├── create.js
+│   │   │   └── search.js
+│   │   ├── shopify-webhook.js
+│   │   ├── stores
+│   │   │   └── bulk-update.js
+│   │   ├── submit-vendor.js
+│   │   ├── supabase-hook.js
+│   │   ├── uid-redirect.js
+│   │   └── validate-address.js
+│   ├── claim.js
+│   ├── index.js
+│   ├── login.js
+│   ├── onboard
+│   │   ├── dashboard.js
+│   │   ├── index.js
+│   │   ├── register.js
+│   │   └── shopify-connect.js
+│   ├── privacy.js
+│   ├── reset-password.js
+│   └── update-password.js
+├── postcss.config.js
+├── public
+│   ├── images
+│   │   ├── iap_640x640.7007939477_lvhsoby5_800x800.webp
+│   │   ├── iap_640x640.7017951079_8sz51aem_800x800.webp
+│   │   ├── iap_640x640.7081491652_6pmm5zhf_800x800.webp
+│   │   ├── iap_640x640.7082515652_jtlddech_800x800.webp
+│   │   ├── image1.webp
+│   │   ├── image10.webp
+│   │   ├── image15.jpeg
+│   │   ├── image16.jpeg
+│   │   ├── image17.jpeg
+│   │   ├── image18.jpeg
+│   │   ├── image2.webp
+│   │   ├── image20.webp
+│   │   ├── image28.jpg
+│   │   ├── image29.jpg
+│   │   ├── image3.webp
+│   │   ├── image30.jpg
+│   │   ├── image4.webp
+│   │   ├── image5.webp
+│   │   ├── image6.webp
+│   │   ├── image7.webp
+│   │   ├── image9.webp
+│   │   └── video1.mp4
+│   ├── pawpaya-logo.png
+│   └── Privacy
+│       ├── Pawpaya_Privacy_Policy.pdf
+│       ├── Q22_Consumer_Consent.pdf
+│       ├── Security_Incident_Response_Policy.pdf
+│       ├── Tapify_Access_Controls_Policy.pdf
+│       ├── Tapify_Information_Security_Policy.pdf
+│       ├── Tapify_Security_Overview.pdf
+│       ├── Vendor_Management_Documentation.pdf
+│       └── vulnerability_management_policy.pdf
+├── services
+│   ├── dwolla.js
+│   └── plaid.js
+├── sql
+│   ├── check-retailers-data.sql
+│   ├── README--setup.sql
+│   └── sample-retailers.sql
+├── structure.txt
+├── styles
+│   ├── globals.css
+│   └── tailwind.config.js
+├── tailwind.config.js
+├── utils
+│   ├── formatMoney.js
+│   └── logger.js
+└── vercel.json
+
+26 directories, 126 files

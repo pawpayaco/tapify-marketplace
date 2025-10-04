@@ -431,7 +431,7 @@ export default function RegisterRetailer() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-pink-50 via-purple-50 to-blue-50 pt-28 pb-12 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
+    <div className="min-h-screen pt-28 pb-12 px-4 sm:px-6 lg:px-8 relative overflow-hidden" style={{ backgroundColor: '#faf8f3' }}>
       {/* Background decorations */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <motion.div
@@ -789,7 +789,7 @@ export default function RegisterRetailer() {
               <motion.div variants={fadeInUp} className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                   <label htmlFor="ownerName" className="block text-sm font-bold text-gray-700 mb-2">
-                    Owner / Management Group's Name <span className="text-red-500">*</span>
+                    Owner's Name(s) <span className="text-red-500">*</span>
                   </label>
                   <input
                     type="text"

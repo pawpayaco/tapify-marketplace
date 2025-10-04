@@ -1,0 +1,1 @@
+for sequence diagrams of payout logic (helps Claude debug logic loops).

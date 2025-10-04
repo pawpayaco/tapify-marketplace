@@ -54,7 +54,7 @@ export default function Home() {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-pink-50 via-purple-50 to-blue-50">
+    <div className="min-h-screen" style={{ backgroundColor: '#faf8f3' }}>
       {/* Hero Section */}
       <section className="relative overflow-hidden pt-8 md:pt-20 pb-16 md:pb-32 px-4 md:px-6">
         <motion.div

@@ -411,7 +411,7 @@ export default function Admin({
   // LOADING STATE - Show before mount to prevent hydration mismatch
   if (!mounted) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: '#faf8f3' }}>
         <div className="text-center">
           <div className="animate-spin rounded-full h-16 w-16 border-4 border-purple-500 border-t-transparent mx-auto mb-4"></div>
           <p className="text-gray-600 text-lg font-semibold">Loading admin panel...</p>
@@ -423,7 +423,7 @@ export default function Admin({
   // ACCESS DENIED STATE
   if (!isAdmin) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-red-50 via-orange-50 to-yellow-50 p-4 md:p-8 pt-24">
+      <div className="min-h-screen p-4 md:p-8 pt-24" style={{ backgroundColor: '#faf8f3' }}>
         {/* ACCESS DENIED BANNER */}
         <div className="max-w-4xl mx-auto">
           <div className="bg-red-100 border-l-4 border-red-500 rounded-lg shadow-lg p-6 mb-6">
@@ -511,7 +511,7 @@ export default function Admin({
 
   // AUTHORIZED ADMIN STATE
   return (
-    <div className="min-h-screen bg-gradient-to-br from-pink-50 via-purple-50 to-blue-50 pt-20">
+    <div className="min-h-screen pt-20" style={{ backgroundColor: '#faf8f3' }}>
       
       {/* Header */}
       <motion.div 

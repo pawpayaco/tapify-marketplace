@@ -64,12 +64,6 @@ export default function RetailerOnboardLanding() {
     { number: 4, title: "Get Paid Weekly", description: "Money goes directly to your bank account. Track earnings in your dashboard." }
   ];
 
-  const stats = [
-    { value: "$2.8K", label: "Avg. Monthly Earnings", color: "text-[#ff7a4a]" },
-    { value: "500+", label: "Active Stores", color: "text-[#ff6fb3]" },
-    { value: "15-20%", label: "Commission Rate", color: "text-[#ff7a4a]" },
-    { value: "$0", label: "Setup Cost", color: "text-[#ff6fb3]" }
-  ];
 
   // Animation variants
   const fadeInUp = {
@@ -88,7 +82,7 @@ export default function RetailerOnboardLanding() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-pink-50 via-purple-50 to-blue-50 pt-20">
+    <div className="min-h-screen pt-20" style={{ backgroundColor: '#faf8f3' }}>
       {/* Hero Section */}
       <section className="relative overflow-hidden py-16 md:py-24 px-4 sm:px-6 lg:px-8">
         {/* Background decorations */}
@@ -220,25 +214,83 @@ export default function RetailerOnboardLanding() {
             </Link>
           </motion.div>
 
-          {/* Social Proof Stats */}
+          {/* Product Display Showcase */}
           <motion.div 
             variants={staggerContainer}
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true }}
-            className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-8 mt-20 max-w-5xl mx-auto"
+            className="py-16 px-8"
           >
-            {stats.map((stat, idx) => (
+            <div className="max-w-6xl mx-auto">
               <motion.div 
-                key={idx}
                 variants={fadeInUp}
-                whileHover={{ scale: 1.1, y: -5 }}
-                className="text-center bg-white rounded-2xl p-6 shadow-lg border-2 border-gray-100"
+                className="text-center mb-12"
               >
-                <div className={`text-4xl md:text-5xl font-bold ${stat.color} mb-2`}>{stat.value}</div>
-                <div className="text-gray-600 text-sm font-medium">{stat.label}</div>
+                <h2 className="text-4xl md:text-5xl font-black text-gray-900 mb-4">
+                  Real Displays, Real Results
+                </h2>
+                <p className="text-xl text-gray-600 font-medium">
+                  Professional displays that work automatically in your store
+                </p>
               </motion.div>
-            ))}
+
+              <motion.div 
+                variants={staggerContainer}
+                className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+              >
+                {/* Display 1 */}
+                <motion.div 
+                  variants={fadeInUp}
+                  className="text-center"
+                >
+                  <div className="relative w-full max-w-sm mx-auto">
+                    <div className="relative w-full h-80 rounded-xl overflow-hidden shadow-lg border-2 border-orange-200">
+                      <Image
+                        src="/images/image28.jpg"
+                        alt="Pawpaya Display Stand with Beaded Collars"
+                        fill
+                        className="object-cover"
+                      />
+                    </div>
+                  </div>
+                </motion.div>
+
+                {/* Display 2 */}
+                <motion.div 
+                  variants={fadeInUp}
+                  className="text-center"
+                >
+                  <div className="relative w-full max-w-sm mx-auto">
+                    <div className="relative w-full h-80 rounded-xl overflow-hidden shadow-lg border-2 border-pink-200">
+                      <Image
+                        src="/images/image29.jpg"
+                        alt="Pawpaya Display Stand with Beaded Collars"
+                        fill
+                        className="object-cover"
+                      />
+                    </div>
+                  </div>
+                </motion.div>
+
+                {/* Display 3 */}
+                <motion.div 
+                  variants={fadeInUp}
+                  className="text-center"
+                >
+                  <div className="relative w-full max-w-sm mx-auto">
+                    <div className="relative w-full h-80 rounded-xl overflow-hidden shadow-lg border-2 border-purple-200">
+                      <Image
+                        src="/images/image30.jpg"
+                        alt="Pawpaya Display Stand with Beaded Collars"
+                        fill
+                        className="object-cover"
+                      />
+                    </div>
+                  </div>
+                </motion.div>
+              </motion.div>
+            </div>
           </motion.div>
         </div>
       </section>

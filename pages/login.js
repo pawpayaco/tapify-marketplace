@@ -84,7 +84,7 @@ export default function Login() {
   // Show loading or nothing if already authenticated
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-pink-50 via-purple-50 to-blue-50 pt-20">
+      <div className="min-h-screen flex items-center justify-center pt-20" style={{ backgroundColor: '#faf8f3' }}>
         <div className="text-gray-600">Loading...</div>
       </div>
     );
@@ -95,7 +95,7 @@ export default function Login() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-4 bg-gradient-to-br from-pink-50 via-purple-50 to-blue-50 pt-20">
+    <div className="min-h-screen flex items-center justify-center px-4 pt-20" style={{ backgroundColor: '#faf8f3' }}>
       <div className="w-full max-w-md">
         <div className="bg-white rounded-2xl shadow-xl p-8 border border-gray-100">
           {/* Header */}

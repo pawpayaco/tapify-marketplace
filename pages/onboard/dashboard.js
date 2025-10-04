@@ -4,6 +4,7 @@ import { useRouter } from 'next/router';
 import { motion, AnimatePresence } from 'framer-motion';
 import { supabase } from '../../lib/supabase';
 import { useAuthContext } from '../../context/AuthContext';
+import Head from 'next/head';
 
 export default function RetailerDashboard() {
   const router = useRouter();
@@ -240,13 +241,83 @@ export default function RetailerDashboard() {
     }
   };
 
+  // Handle Plaid Connect
+  const handlePlaidConnect = async () => {
+    try {
+      // Get link token from backend
+      const response = await fetch('/api/plaid-link-token', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          user_id: user?.id,
+          retailer_id: retailer?.id
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to get link token');
+      }
+
+      const { link_token } = await response.json();
+
+      // Initialize Plaid Link
+      const handler = window.Plaid.create({
+        token: link_token,
+        onSuccess: async (public_token, metadata) => {
+          try {
+            // Exchange public token for access token
+            const exchangeResponse = await fetch('/api/plaid-exchange', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                public_token,
+                user_id: user?.id,
+                retailer_id: retailer?.id,
+                metadata
+              })
+            });
+
+            if (exchangeResponse.ok) {
+              showToast('Bank account connected successfully!', 'success');
+              // Refresh the page to update the UI
+              window.location.reload();
+            } else {
+              throw new Error('Failed to exchange token');
+            }
+          } catch (error) {
+            console.error('Plaid exchange error:', error);
+            showToast('Failed to connect bank account', 'error');
+          }
+        },
+        onExit: (err, metadata) => {
+          if (err) {
+            console.error('Plaid exit error:', err);
+            showToast('Bank connection cancelled', 'info');
+          }
+        },
+        onEvent: (eventName, metadata) => {
+          console.log('Plaid event:', eventName, metadata);
+        }
+      });
+
+      handler.open();
+    } catch (error) {
+      console.error('Plaid connect error:', error);
+      showToast('Failed to initialize bank connection', 'error');
+    }
+  };
+
   // Calculate max values for charts
   const maxScans = weeklyData.length > 0 ? Math.max(...weeklyData.map(d => d.scans), 1) : 1;
   const maxRevenue = weeklyData.length > 0 ? Math.max(...weeklyData.map(d => d.revenue), 1) : 1;
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-pink-50 via-purple-50 to-blue-50 pt-20">
+      <div className="min-h-screen flex items-center justify-center pt-20" style={{ backgroundColor: '#faf8f3' }}>
         <motion.div 
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
@@ -276,7 +347,11 @@ export default function RetailerDashboard() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-pink-50 via-purple-50 to-blue-50 pt-20">
+    <>
+      <Head>
+        <script src="https://cdn.plaid.com/link/v2/stable/link-initialize.js"></script>
+      </Head>
+      <div className="min-h-screen pt-20" style={{ backgroundColor: '#faf8f3' }}>
       {/* Header */}
       <motion.div 
         initial={{ opacity: 0, y: -20 }}
@@ -410,47 +485,40 @@ export default function RetailerDashboard() {
         </motion.div>
 
         {/* Tabs */}
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.4 }}
-          className="bg-white rounded-3xl shadow-xl border-2 border-gray-100 overflow-hidden"
+          className="bg-white rounded-3xl shadow-xl border-2 border-gray-100 p-4 mb-6"
         >
-          {/* Tab Headers */}
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.4 }}
-            className="bg-white rounded-3xl shadow-xl border-2 border-gray-100 p-4 mb-6"
-          >
-            <div className="flex flex-wrap gap-3">
-              {[
-                { id: 'stats', label: '📊 Stats & Analytics' },
-                { id: 'orders', label: '🛍️ Orders' },
-                { id: 'payouts', label: '💸 Payouts' },
-                { id: 'displays', label: '🖼️ Displays' },
-                { id: 'settings', label: '⚙️ Settings' }
-              ].map((tab) => {
-                const active = activeTab === tab.id;
-                return (
-                  <motion.button
-                    key={tab.id}
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    onClick={() => setActiveTab(tab.id)}
-                    className={[
-                      "rounded-2xl px-6 py-3 text-sm font-bold transition-all",
-                      active
-                        ? "bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3] text-white shadow-lg"
-                        : "text-gray-700 hover:bg-gray-100 border-2 border-gray-200",
-                    ].join(" ")}
-                  >
-                    {tab.label}
-                  </motion.button>
-                );
-              })}
-            </div>
-          </motion.div>
+          <div className="flex flex-wrap gap-3">
+            {[
+              { id: 'stats', label: 'Stats & Analytics' },
+              { id: 'orders', label: 'Orders' },
+              { id: 'payouts', label: 'Payouts' },
+              { id: 'displays', label: 'Displays' },
+              { id: 'settings', label: 'Settings' }
+            ].map((tab) => {
+              const active = activeTab === tab.id;
+              return (
+                <motion.button
+                  key={tab.id}
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={() => setActiveTab(tab.id)}
+                  className={[
+                    "rounded-2xl px-6 py-3 text-sm font-bold transition-all",
+                    active
+                      ? "bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3] text-white shadow-lg"
+                      : "text-gray-700 hover:bg-gray-100 border-2 border-gray-200",
+                  ].join(" ")}
+                >
+                  {tab.label}
+                </motion.button>
+              );
+            })}
+          </div>
+        </motion.div>
 
           {/* Tab Content */}
           <div className="bg-white rounded-3xl shadow-xl border-2 border-gray-100 p-8">
@@ -924,11 +992,20 @@ export default function RetailerDashboard() {
                       <motion.button 
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
-                        onClick={() => showToast('Bank connection feature coming soon! Contact support.', 'success')}
+                        onClick={handlePlaidConnect}
                         className="px-8 py-3 bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3] text-white rounded-2xl font-bold hover:shadow-xl transition-all"
                       >
                         Connect Bank Account
                       </motion.button>
+                      
+                      {/* Bank Availability Info */}
+                      <div className="mt-6 p-4 bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-xl text-center">
+                        <div className="flex items-center justify-center gap-2 mb-2">
+                          <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                          <span className="text-sm font-semibold text-blue-800">Chase & Schwab coming in 2 weeks</span>
+                        </div>
+                        <p className="text-xs text-blue-600">All other major banks accepted • Instant setup • Secure connection</p>
+                      </div>
                     </div>
                   )}
                 </div>
@@ -1061,7 +1138,6 @@ export default function RetailerDashboard() {
               </motion.div>
             )}
           </div>
-        </motion.div>
       </div>
 
       {/* Toast Notification */}
@@ -1094,5 +1170,6 @@ export default function RetailerDashboard() {
         )}
       </AnimatePresence>
     </div>
+    </>
   );
 }

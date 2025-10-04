@@ -12,9 +12,9 @@ export default async function handler(req, res) {
   }
 
   try {
-    const { public_token, metadata, retailerId } = req.body;
+    const { public_token, metadata, user_id, retailer_id } = req.body;
 
-    if (!public_token || !retailerId) {
+    if (!public_token || !user_id || !retailer_id) {
       return res.status(400).json({ error: 'Missing required fields' });
     }
 
@@ -69,7 +69,7 @@ export default async function handler(req, res) {
     const { data: existingAccount } = await supabase
       .from('retailer_accounts')
       .select('*')
-      .eq('retailer_id', retailerId)
+      .eq('retailer_id', retailer_id)
       .single();
 
     let accountData;
@@ -80,7 +80,7 @@ export default async function handler(req, res) {
         .update({
           plaid_access_token: access_token,
         })
-        .eq('retailer_id', retailerId)
+        .eq('retailer_id', retailer_id)
         .select()
         .single();
       
@@ -91,7 +91,7 @@ export default async function handler(req, res) {
       const { data, error } = await supabase
         .from('retailer_accounts')
         .insert({
-          retailer_id: retailerId,
+          retailer_id: retailer_id,
           plaid_access_token: access_token,
           dwolla_customer_id: null, // Will be set when Dwolla customer is created
         })
