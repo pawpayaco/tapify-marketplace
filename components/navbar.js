@@ -3,7 +3,7 @@ import Image from 'next/image';
 import { useAuthContext } from '../context/AuthContext';
 
 export default function Navbar() {
-  const { user, signOut } = useAuthContext();
+  const { user } = useAuthContext();
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 border-b border-gray-200/50 shadow-lg" style={{ backgroundColor: '#faf8f3' }}>
@@ -27,27 +27,18 @@ export default function Navbar() {
 
           {/* Desktop Navigation & Auth */}
           <div className="flex items-center gap-3">
-            {/* Dashboard Button */}
-            <Link
-              href="/onboard/dashboard"
-              className="hidden sm:flex items-center gap-2 px-5 py-2.5 font-bold text-gray-700 hover:text-gray-900 transition-all rounded-xl bg-white/80 backdrop-blur-sm hover:bg-gradient-to-r hover:from-pink-50 hover:to-purple-50 shadow-sm hover:shadow-md border border-gray-200/50"
-            >
-              <span>📊</span>
-              <span>Dashboard</span>
-            </Link>
-
             {user ? (
-              <div className="flex items-center gap-3">
+              <>
                 <span className="hidden md:block text-sm text-gray-700 bg-white/80 backdrop-blur-sm px-4 py-2 rounded-xl font-semibold border border-gray-200/50 shadow-sm">
                   {user.email}
                 </span>
-                <button
-                  onClick={signOut}
-                  className="px-5 py-2.5 font-bold text-gray-700 hover:text-gray-900 transition-all rounded-xl border-2 border-gray-300/80 hover:border-gray-400 bg-white/80 backdrop-blur-sm hover:bg-white/90 shadow-sm hover:shadow-md"
+                <Link
+                  href="/onboard/dashboard"
+                  className="px-6 py-3 font-bold text-white bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3] rounded-xl shadow-lg hover:shadow-xl transition-all hover:scale-105 border border-white/20"
                 >
-                  Sign Out
-                </button>
-              </div>
+                  Dashboard
+                </Link>
+              </>
             ) : (
               <Link
                 href="/login"

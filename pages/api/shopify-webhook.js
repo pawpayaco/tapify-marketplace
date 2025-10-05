@@ -220,6 +220,29 @@ export default async function handler(req, res) {
         .eq('uid', uid);
     }
 
+    // Check for express shipping purchase and update business record
+    const hasExpressShipping = order.line_items?.some(item => 
+      item.product_id && item.variant_id && 
+      (item.title?.toLowerCase().includes('express') || 
+       item.title?.toLowerCase().includes('priority') ||
+       item.sku?.toLowerCase().includes('priority'))
+    );
+
+    if (hasExpressShipping && businessId) {
+      console.log('[shopify-webhook] Express shipping purchase detected, updating business record');
+      
+      const { error: businessUpdateError } = await supabaseAdmin
+        .from('businesses')
+        .update({ display_shipping: true })
+        .eq('id', businessId);
+
+      if (businessUpdateError) {
+        console.error('[shopify-webhook] Failed to update business express shipping', businessUpdateError.message);
+      } else {
+        console.log('[shopify-webhook] Business express shipping updated successfully');
+      }
+    }
+
     await logEvent('shopify-webhook', 'order_received', {
       shop_domain: shopDomain,
       shopify_order_id: orderRecord.shopify_order_id,

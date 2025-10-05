@@ -4,16 +4,28 @@ import { useRouter } from 'next/router';
 import { motion, AnimatePresence } from 'framer-motion';
 import { supabase } from '../../lib/supabase';
 import { useAuthContext } from '../../context/AuthContext';
-import Head from 'next/head';
+import Script from 'next/script';
 
 export default function RetailerDashboard() {
   const router = useRouter();
-  const { user } = useAuthContext();
+  const { user, signOut } = useAuthContext();
   const [activeTab, setActiveTab] = useState('stats');
+
+  // Handle URL tab parameter
+  useEffect(() => {
+    if (router.query.tab && ['stats', 'payouts', 'settings'].includes(router.query.tab)) {
+      setActiveTab(router.query.tab);
+    }
+  }, [router.query.tab]);
+  const [previousTabIndex, setPreviousTabIndex] = useState(0);
+  const [tabDirection, setTabDirection] = useState(0);
   const [loading, setLoading] = useState(true);
   const [toast, setToast] = useState(null);
   const [settingsChanged, setSettingsChanged] = useState(false);
   const [plaidLoading, setPlaidLoading] = useState(false);
+  const [connecting, setConnecting] = useState(false);
+  const [removingBank, setRemovingBank] = useState(false);
+  const [showRemoveConfirm, setShowRemoveConfirm] = useState(false);
   const [plaidScriptLoaded, setPlaidScriptLoaded] = useState(false);
   
   // Data states
@@ -38,28 +50,25 @@ export default function RetailerDashboard() {
     setTimeout(() => setToast(null), 3000);
   };
 
-  // Load Plaid script dynamically
-  const loadPlaidScript = () => {
+  // Wait for Plaid to be available
+  const waitForPlaid = () => {
     return new Promise((resolve, reject) => {
-      // Check if script already exists
-      if (document.querySelector('script[src*="plaid.com"]')) {
-        resolve();
-        return;
-      }
+      let attempts = 0;
+      const maxAttempts = 20;
 
-      const script = document.createElement('script');
-      script.src = 'https://cdn.plaid.com/link/v2/stable/link-initialize.js';
-      script.onload = () => {
-        console.log('[PLAID] Script loaded dynamically');
-        setPlaidScriptLoaded(true);
-        resolve();
+      const check = () => {
+        if (typeof window.Plaid !== 'undefined') {
+          setPlaidScriptLoaded(true);
+          resolve();
+        } else if (attempts < maxAttempts) {
+          attempts++;
+          setTimeout(check, 200);
+        } else {
+          reject(new Error('Plaid script not loaded'));
+        }
       };
-      script.onerror = () => {
-        console.error('[PLAID] Failed to load script dynamically');
-        setPlaidScriptLoaded(false);
-        reject(new Error('Failed to load Plaid script'));
-      };
-      document.head.appendChild(script);
+
+      check();
     });
   };
 
@@ -78,17 +87,23 @@ export default function RetailerDashboard() {
 
   // Check if Plaid is loaded on mount
   useEffect(() => {
+    let attempts = 0;
+    const maxAttempts = 10;
+
     const checkPlaid = () => {
       if (typeof window.Plaid !== 'undefined') {
         console.log('[PLAID] Plaid is available');
         setPlaidScriptLoaded(true);
+      } else if (attempts < maxAttempts) {
+        attempts++;
+        console.log(`[PLAID] Plaid not yet available, attempt ${attempts}/${maxAttempts}`);
+        setTimeout(checkPlaid, 500);
       } else {
-        console.log('[PLAID] Plaid not yet available');
-        // Try again after a short delay
-        setTimeout(checkPlaid, 1000);
+        console.error('[PLAID] Failed to load Plaid script after multiple attempts');
+        setPlaidScriptLoaded(false);
       }
     };
-    
+
     checkPlaid();
   }, []);
 
@@ -146,10 +161,19 @@ export default function RetailerDashboard() {
         
         setRetailer(retailerData);
         
-        // Get UIDs claimed by this retailer
+        // Get UIDs claimed by this retailer with business information
         const { data: uidsData } = await supabase
           .from('uids')
-          .select('*')
+          .select(`
+            *,
+            business:business_id (
+              id,
+              name,
+              address,
+              city,
+              state
+            )
+          `)
           .eq('retailer_id', retailerData.id)
           .limit(100);
 
@@ -207,6 +231,11 @@ export default function RetailerDashboard() {
     };
     
     fetchRetailerData();
+    
+    // Refresh data every 30 seconds to catch webhook updates
+    const refreshInterval = setInterval(fetchRetailerData, 30000);
+    
+    return () => clearInterval(refreshInterval);
   }, [user]);
 
   // Calculate statistics from scans
@@ -281,6 +310,91 @@ export default function RetailerDashboard() {
     }
   };
 
+  // Handle Remove Bank
+  const handleRemoveBank = async () => {
+    try {
+      setRemovingBank(true);
+      setShowRemoveConfirm(false);
+
+      console.log('[REMOVE BANK] Starting bank removal');
+
+      const response = await fetch('/api/remove-bank', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          account_type: 'retailer',
+          entity_id: retailer.id,
+        }),
+      });
+
+      if (response.ok) {
+        console.log('[REMOVE BANK] Bank removed successfully');
+        setRetailerAccount(null);
+        showToast('Bank account removed successfully', 'success');
+      } else {
+        const errorData = await response.json().catch(() => ({}));
+        console.error('[REMOVE BANK] Error:', errorData);
+        showToast(errorData.error || 'Failed to remove bank account', 'error');
+      }
+    } catch (error) {
+      console.error('[REMOVE BANK] Error:', error);
+      showToast('Failed to remove bank account', 'error');
+    } finally {
+      setRemovingBank(false);
+    }
+  };
+
+  // Handle Express Shipping Toggle
+  const handleExpressShippingToggle = () => {
+    if (!retailer?.express_shipping) {
+      // Redirect to Shopify product for express shipping purchase
+      window.open('https://pawpayaco.com/products/display-setup-for-affiliate', '_blank');
+    }
+  };
+
+  // Get display status based on UID data
+  const getDisplayStatus = (uid) => {
+    if (!uid) return { status: 'No display', icon: '❌', color: 'gray' };
+    
+    // Check if UID is claimed
+    if (uid.is_claimed && uid.claimed_at) {
+      const storeName = uid.business?.name || 'Unknown Store';
+      return { 
+        status: `Active at ${storeName}`, 
+        icon: '🟢', 
+        color: 'green',
+        storeName: storeName
+      };
+    }
+    
+    // Check if UID is registered but not claimed (shipping/in transit)
+    if (uid.registered_at && !uid.is_claimed) {
+      return { 
+        status: 'In transit / shipping', 
+        icon: '🚚', 
+        color: 'blue' 
+      };
+    }
+    
+    // Check if UID exists but not yet shipped (preparing)
+    if (uid.uid && !uid.registered_at) {
+      return { 
+        status: 'Preparing your display', 
+        icon: '🟡', 
+        color: 'yellow' 
+      };
+    }
+    
+    // Fallback for unknown status
+    return { 
+      status: 'Pending', 
+      icon: '⏳', 
+      color: 'gray' 
+    };
+  };
+
   // Handle Plaid Connect
   const handlePlaidConnect = async () => {
     try {
@@ -325,16 +439,14 @@ export default function RetailerDashboard() {
       const { link_token } = await response.json();
       console.log('[PLAID CONNECT] Received link token:', !!link_token);
 
-      // Check if Plaid is loaded, try to load it if not
+      // Check if Plaid is loaded, wait for it if not
       if (typeof window.Plaid === 'undefined') {
-        console.log('[PLAID CONNECT] Plaid not loaded, attempting to load script');
-        await loadPlaidScript();
-        
-        // Wait a bit for script to load
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        
-        if (typeof window.Plaid === 'undefined') {
-          console.error('[PLAID CONNECT] Plaid script still not loaded after retry');
+        console.log('[PLAID CONNECT] Plaid not loaded yet, waiting...');
+        try {
+          await waitForPlaid();
+          console.log('[PLAID CONNECT] Plaid is now available');
+        } catch (error) {
+          console.error('[PLAID CONNECT] Plaid failed to load:', error);
           throw new Error('Plaid script not loaded. Please refresh the page and try again.');
         }
       }
@@ -344,7 +456,10 @@ export default function RetailerDashboard() {
       const handler = window.Plaid.create({
         token: link_token,
         onSuccess: async (public_token, metadata) => {
-          console.log('[PLAID CONNECT] Success callback triggered');
+          console.log('[PLAID CONNECT] Success callback triggered', { metadata });
+          setConnecting(true);
+          setPlaidLoading(false);
+
           try {
             console.log('[PLAID CONNECT] Exchanging public token');
             // Exchange public token for access token
@@ -355,8 +470,11 @@ export default function RetailerDashboard() {
               },
               body: JSON.stringify({
                 public_token,
-                user_id: user.id,
-                retailer_id: retailer.id,
+                account_id: metadata?.account_id || metadata?.accounts?.[0]?.id,
+                account_type: 'retailer',
+                entity_id: retailer.id,
+                name: retailer.name,
+                email: user.email,
                 metadata
               })
             });
@@ -364,22 +482,40 @@ export default function RetailerDashboard() {
             console.log('[PLAID CONNECT] Exchange response status:', exchangeResponse.status);
 
             if (exchangeResponse.ok) {
-              console.log('[PLAID CONNECT] Bank account connected successfully');
+              const result = await exchangeResponse.json();
+              console.log('[PLAID CONNECT] Bank account connected successfully', result);
+
+              // Refresh retailer account data
+              const { data: accountData } = await supabase
+                .from('retailer_accounts')
+                .select('*')
+                .eq('retailer_id', retailer.id)
+                .maybeSingle();
+
+              setRetailerAccount(accountData);
+              setConnecting(false);
               showToast('Bank account connected successfully!', 'success');
-              // Refresh the page to update the UI
-              window.location.reload();
             } else {
               const errorData = await exchangeResponse.json().catch(() => ({}));
-              console.error('[PLAID CONNECT] Exchange error:', errorData);
-              throw new Error('Failed to exchange token');
+              console.error('[PLAID CONNECT] Exchange error:', {
+                status: exchangeResponse.status,
+                statusText: exchangeResponse.statusText,
+                error: errorData
+              });
+              setConnecting(false);
+              showToast(errorData.error || 'Failed to connect bank account', 'error');
+              throw new Error(errorData.error || 'Failed to exchange token');
             }
           } catch (error) {
             console.error('[PLAID CONNECT] Exchange error:', error);
+            setConnecting(false);
             showToast('Failed to connect bank account', 'error');
           }
         },
         onExit: (err, metadata) => {
           console.log('[PLAID CONNECT] Exit callback triggered:', err, metadata);
+          setPlaidLoading(false);
+          setConnecting(false);
           if (err) {
             console.error('[PLAID CONNECT] Exit error:', err);
             showToast('Bank connection cancelled', 'info');
@@ -398,6 +534,19 @@ export default function RetailerDashboard() {
     } finally {
       setPlaidLoading(false);
     }
+  };
+
+  // Handle tab change with direction calculation
+  const handleTabChange = (newTab) => {
+    const tabs = ['stats', 'payouts', 'settings'];
+    const currentIndex = tabs.indexOf(activeTab);
+    const newIndex = tabs.indexOf(newTab);
+
+    // Calculate direction: positive = right to left, negative = left to right
+    const direction = newIndex > currentIndex ? 1 : -1;
+    setTabDirection(direction);
+    setPreviousTabIndex(currentIndex);
+    setActiveTab(newTab);
   };
 
   // Calculate max values for charts
@@ -437,19 +586,17 @@ export default function RetailerDashboard() {
 
   return (
     <>
-      <Head>
-        <script 
-          src="https://cdn.plaid.com/link/v2/stable/link-initialize.js"
-          onLoad={() => {
-            console.log('[PLAID] Script loaded successfully');
-            setPlaidScriptLoaded(true);
-          }}
-          onError={() => {
-            console.error('[PLAID] Script failed to load');
-            setPlaidScriptLoaded(false);
-          }}
-        />
-      </Head>
+      <Script
+        src="https://cdn.plaid.com/link/v2/stable/link-initialize.js"
+        strategy="lazyOnload"
+        onLoad={() => {
+          console.log('[PLAID] Script loaded via next/script');
+          setPlaidScriptLoaded(true);
+        }}
+        onError={() => {
+          console.error('[PLAID] Script failed to load');
+        }}
+      />
       <div className="min-h-screen pt-20" style={{ backgroundColor: '#faf8f3' }}>
       {/* Header */}
       <motion.div 
@@ -467,19 +614,19 @@ export default function RetailerDashboard() {
         <div className="max-w-7xl mx-auto relative z-10">
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
             <div>
-              <motion.h1 
+              <motion.h1
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.5, delay: 0.2 }}
-                className="text-4xl md:text-5xl font-bold mb-2"
+                className="text-3xl md:text-5xl font-bold mb-2"
               >
-                Your Dashboard 📊
+                Your Dashboard
               </motion.h1>
-              <motion.p 
+              <motion.p
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.5, delay: 0.3 }}
-                className="text-white/90 text-lg"
+                className="text-white/90 text-base md:text-lg"
               >
                 Welcome back! Here's how your displays are performing.
               </motion.p>
@@ -503,82 +650,49 @@ export default function RetailerDashboard() {
 
       <div className="max-w-7xl mx-auto px-6 py-8">
         {/* KPI Cards */}
-        <motion.div 
+        <motion.div
           variants={staggerContainer}
           initial="hidden"
           animate="visible"
-          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 mb-8"
+          className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 mb-8"
         >
           {/* Weekly Scans */}
-          <motion.div 
+          <motion.div
             variants={fadeInUp}
-            className="bg-white rounded-3xl p-6 border-2 border-gray-100"
+            className="bg-white rounded-3xl p-4 border-2 border-gray-100 text-center"
           >
-            <div className="flex items-start justify-between mb-4">
-              <div className="w-14 h-14 bg-gradient-to-br from-blue-400 to-blue-600 rounded-2xl flex items-center justify-center shadow-lg">
-                <svg className="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                </svg>
-              </div>
-              <span className="text-xs bg-gray-100 text-gray-600 px-3 py-1.5 rounded-full font-bold">New</span>
-            </div>
-            <h3 className="text-gray-600 text-sm font-semibold mb-1">Weekly Scans</h3>
-            <p className="text-4xl font-bold text-gray-900 mb-1">{stats.weeklyScans}</p>
+            <h3 className="text-gray-600 text-xs md:text-sm font-semibold mb-1">Weekly Scans</h3>
+            <p className="text-3xl md:text-4xl font-bold text-gray-900 mb-1">{stats.weeklyScans}</p>
             <p className="text-xs text-gray-500">Last 7 days</p>
           </motion.div>
 
           {/* Revenue */}
-          <motion.div 
+          <motion.div
             variants={fadeInUp}
-            className="bg-white rounded-3xl p-6 border-2 border-gray-100"
+            className="bg-white rounded-3xl p-4 border-2 border-gray-100 text-center"
           >
-            <div className="flex items-start justify-between mb-4">
-              <div className="w-14 h-14 bg-gradient-to-br from-[#ff7a4a] to-[#ff6fb3] rounded-2xl flex items-center justify-center shadow-lg">
-                <svg className="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-              </div>
-              <span className="text-xs bg-gray-100 text-gray-600 px-3 py-1.5 rounded-full font-bold">New</span>
-            </div>
-            <h3 className="text-gray-600 text-sm font-semibold mb-1">Revenue Earned</h3>
-            <p className="text-4xl font-bold text-gray-900 mb-1">${stats.revenue.toLocaleString()}</p>
+            <h3 className="text-gray-600 text-xs md:text-sm font-semibold mb-1">Revenue Earned</h3>
+            <p className="text-3xl md:text-4xl font-bold text-gray-900 mb-1">${stats.revenue.toLocaleString()}</p>
             <p className="text-xs text-gray-500">This month</p>
           </motion.div>
 
           {/* Displays Claimed */}
-          <motion.div 
+          <motion.div
             variants={fadeInUp}
-            className="bg-white rounded-3xl p-6 border-2 border-gray-100"
+            className="bg-white rounded-3xl p-4 border-2 border-gray-100 text-center"
           >
-            <div className="flex items-start justify-between mb-4">
-              <div className="w-14 h-14 bg-gradient-to-br from-purple-400 to-purple-600 rounded-2xl flex items-center justify-center shadow-lg">
-                <svg className="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                </svg>
-              </div>
-              <span className="text-xs bg-blue-100 text-blue-700 px-3 py-1.5 rounded-full font-bold">Active</span>
-            </div>
-            <h3 className="text-gray-600 text-sm font-semibold mb-1">Displays Active</h3>
-            <p className="text-4xl font-bold text-gray-900 mb-1">{stats.displaysClaimed}</p>
+            <h3 className="text-gray-600 text-xs md:text-sm font-semibold mb-1">Displays Active</h3>
+            <p className="text-3xl md:text-4xl font-bold text-gray-900 mb-1">{stats.displaysClaimed}</p>
             <p className="text-xs text-gray-500">In your store</p>
           </motion.div>
 
           {/* Conversion Rate */}
-          <motion.div 
+          <motion.div
             variants={fadeInUp}
-            className="bg-white rounded-3xl p-6 border-2 border-gray-100"
+            className="bg-white rounded-3xl p-4 border-2 border-gray-100 text-center"
           >
-            <div className="flex items-start justify-between mb-4">
-              <div className="w-14 h-14 bg-gradient-to-br from-green-400 to-green-600 rounded-2xl flex items-center justify-center shadow-lg">
-                <svg className="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
-                </svg>
-              </div>
-              <span className="text-xs bg-gray-100 text-gray-600 px-3 py-1.5 rounded-full font-bold">New</span>
-            </div>
-            <h3 className="text-gray-600 text-sm font-semibold mb-1">Conversion Rate</h3>
-            <p className="text-4xl font-bold text-gray-900 mb-1">{stats.conversionRate}%</p>
+            <h3 className="text-gray-600 text-xs md:text-sm font-semibold mb-1">Conversion Rate</h3>
+            <p className="text-3xl md:text-4xl font-bold text-gray-900 mb-1">{stats.conversionRate}%</p>
             <p className="text-xs text-gray-500">Scans to orders</p>
           </motion.div>
         </motion.div>
@@ -588,31 +702,36 @@ export default function RetailerDashboard() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.4 }}
-          className="bg-white rounded-3xl shadow-xl border-2 border-gray-100 p-4 mb-6"
+          className="mb-6"
         >
-          <div className="flex flex-wrap gap-3">
+          <div className="flex gap-2 border-b-2 border-gray-200">
             {[
-              { id: 'stats', label: 'Stats & Analytics' },
-              { id: 'orders', label: 'Orders' },
+              { id: 'stats', label: 'Orders & Analytics' },
               { id: 'payouts', label: 'Payouts' },
-              { id: 'displays', label: 'Displays' },
               { id: 'settings', label: 'Settings' }
             ].map((tab) => {
               const active = activeTab === tab.id;
               return (
                 <motion.button
                   key={tab.id}
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  onClick={() => setActiveTab(tab.id)}
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  onClick={() => handleTabChange(tab.id)}
                   className={[
-                    "rounded-2xl px-6 py-3 text-sm font-bold transition-all",
+                    "px-4 py-3 md:px-6 text-xs md:text-sm font-bold transition-all relative",
                     active
-                      ? "bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3] text-white shadow-lg"
-                      : "text-gray-700 hover:bg-gray-100 border-2 border-gray-200",
+                      ? "text-[#ff6fb3]"
+                      : "text-gray-600 hover:text-gray-900",
                   ].join(" ")}
                 >
                   {tab.label}
+                  {active && (
+                    <motion.div
+                      layoutId="activeTab"
+                      className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3]"
+                      transition={{ type: "spring", stiffness: 380, damping: 30 }}
+                    />
+                  )}
                 </motion.button>
               );
             })}
@@ -620,24 +739,178 @@ export default function RetailerDashboard() {
         </motion.div>
 
           {/* Tab Content */}
-          <div className="bg-white rounded-3xl shadow-xl border-2 border-gray-100 p-8">
+          <div className="bg-white rounded-3xl shadow-xl border-2 border-gray-100 p-4 md:p-8">
             {/* Stats Tab */}
             {activeTab === 'stats' && (
-              <motion.div 
-                initial={{ opacity: 0, x: -20 }}
+              <motion.div
+                key="stats"
+                initial={{ opacity: 0, x: tabDirection * 20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.3 }}
                 className="space-y-8"
               >
+                {/* Recent Scan Activity */}
+                <motion.div
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.3 }}
+                  className="space-y-6"
+                >
+                  <div className="flex items-center justify-between mb-4 md:mb-6">
+                    <h3 className="text-xl md:text-2xl font-bold text-gray-900">Recent Scan Activity</h3>
+                    <div className="text-xs md:text-sm text-gray-500 font-semibold">
+                      Showing {scans.length} scans
+                    </div>
+                  </div>
+
+                  {scans.length > 0 ? (
+                    <>
+                      {/* Desktop Table View */}
+                      <div className="hidden md:block bg-white rounded-2xl border-2 border-gray-100 overflow-hidden shadow-lg">
+                        <table className="w-full">
+                          <thead className="bg-gradient-to-r from-pink-50 to-purple-50">
+                            <tr>
+                              <th className="text-left py-4 px-6 font-bold text-gray-700">UID</th>
+                              <th className="text-left py-4 px-6 font-bold text-gray-700">Location</th>
+                              <th className="text-center py-4 px-6 font-bold text-gray-700">Clicked</th>
+                              <th className="text-center py-4 px-6 font-bold text-gray-700">Converted</th>
+                              <th className="text-right py-4 px-6 font-bold text-gray-700">Revenue</th>
+                              <th className="text-right py-4 px-6 font-bold text-gray-700">Date</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {scans.slice(0, 50).map((scan, idx) => (
+                              <motion.tr
+                                key={scan.id || idx}
+                                initial={{ opacity: 0, x: -20 }}
+                                animate={{ opacity: 1, x: 0 }}
+                                transition={{ duration: 0.3, delay: Math.min(idx * 0.05, 0.5) }}
+                                className="border-t border-gray-100 hover:bg-gray-50"
+                              >
+                                <td className="py-4 px-6">
+                                  <span className="font-mono text-sm text-gray-900">{scan.uid || '-'}</span>
+                                </td>
+                                <td className="py-4 px-6 text-gray-700">{scan.location || '-'}</td>
+                                <td className="py-4 px-6 text-center">
+                                  {scan.clicked ? (
+                                    <span className="text-green-600 text-lg">✓</span>
+                                  ) : (
+                                    <span className="text-gray-300 text-lg">○</span>
+                                  )}
+                                </td>
+                                <td className="py-4 px-6 text-center">
+                                  {scan.converted ? (
+                                    <span className="text-green-600 font-bold text-lg">✓</span>
+                                  ) : (
+                                    <span className="text-gray-300 text-lg">○</span>
+                                  )}
+                                </td>
+                                <td className="py-4 px-6 text-right">
+                                  <span className="font-bold text-green-700">
+                                    ${(scan.revenue || 0).toFixed(2)}
+                                  </span>
+                                </td>
+                                <td className="py-4 px-6 text-right text-sm text-gray-600">
+                                  {new Date(scan.timestamp).toLocaleDateString()}
+                                </td>
+                              </motion.tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+
+                      {/* Mobile Card View */}
+                      <div className="md:hidden space-y-3">
+                        {scans.slice(0, 50).map((scan, idx) => (
+                          <motion.div
+                            key={scan.id || idx}
+                            initial={{ opacity: 0, y: 10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.3, delay: Math.min(idx * 0.05, 0.5) }}
+                            className="bg-white rounded-2xl border-2 border-gray-100 p-4 shadow-lg"
+                          >
+                            <div className="flex items-center justify-between mb-3">
+                              <div>
+                                <div className="text-xs text-gray-500 mb-1">UID</div>
+                                <span className="font-mono text-sm text-gray-900">{scan.uid || '-'}</span>
+                              </div>
+                              <div className="text-right">
+                                <div className="text-xs text-gray-500 mb-1">Date</div>
+                                <span className="text-sm text-gray-600">{new Date(scan.timestamp).toLocaleDateString()}</span>
+                              </div>
+                            </div>
+
+                            <div className="mb-3">
+                              <div className="text-xs text-gray-500 mb-1">Location</div>
+                              <span className="text-sm text-gray-700">{scan.location || '-'}</span>
+                            </div>
+
+                            <div className="grid grid-cols-3 gap-3 pt-3 border-t border-gray-100">
+                              <div className="text-center">
+                                <div className="text-xs text-gray-500 mb-1">Clicked</div>
+                                {scan.clicked ? (
+                                  <span className="text-green-600 text-lg">✓</span>
+                                ) : (
+                                  <span className="text-gray-300 text-lg">○</span>
+                                )}
+                              </div>
+                              <div className="text-center">
+                                <div className="text-xs text-gray-500 mb-1">Converted</div>
+                                {scan.converted ? (
+                                  <span className="text-green-600 font-bold text-lg">✓</span>
+                                ) : (
+                                  <span className="text-gray-300 text-lg">○</span>
+                                )}
+                              </div>
+                              <div className="text-center">
+                                <div className="text-xs text-gray-500 mb-1">Revenue</div>
+                                <span className="font-bold text-green-700">
+                                  ${(scan.revenue || 0).toFixed(2)}
+                                </span>
+                              </div>
+                            </div>
+                          </motion.div>
+                        ))}
+                      </div>
+                    </>
+                  ) : (
+                    <div className="bg-white rounded-2xl border-2 border-gray-100 shadow-lg py-12 md:py-20 text-center">
+                      <div className="flex flex-col items-center gap-4 max-w-sm mx-auto px-4">
+                        <div className="w-20 h-20 bg-gradient-to-br from-gray-100 to-gray-200 rounded-full flex items-center justify-center">
+                          <svg className="w-10 h-10 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                          </svg>
+                        </div>
+                        <div>
+                          <p className="text-gray-900 font-bold text-lg mb-1">No scans yet</p>
+                          <p className="text-gray-500 text-sm">Scan activity will appear here once customers interact with your displays</p>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {stats.unpaidEarnings > 0 && (
+                    <div className="bg-gradient-to-r from-yellow-100 to-orange-100 border-2 border-yellow-300 rounded-2xl p-6">
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <h4 className="text-lg font-bold text-gray-900 mb-1">💰 Unpaid Earnings</h4>
+                          <p className="text-sm text-gray-600">Pending payout to your account</p>
+                        </div>
+                        <div className="text-3xl font-bold text-orange-700">${stats.unpaidEarnings.toFixed(2)}</div>
+                      </div>
+                    </div>
+                  )}
+                </motion.div>
+
                 {/* Weekly Performance Chart */}
                 <div>
-                  <h3 className="text-2xl font-bold text-gray-900 mb-6">Weekly Performance</h3>
-                  <div className="bg-gradient-to-br from-gray-50 to-white rounded-2xl p-8 border-2 border-gray-100">
+                  <h3 className="text-xl md:text-2xl font-bold text-gray-900 mb-4 md:mb-6">Weekly Performance</h3>
+                  <div className="bg-gradient-to-br from-gray-50 to-white rounded-2xl p-4 md:p-8 border-2 border-gray-100">
                     {/* Bar Chart - Scans */}
                     <div className="mb-10">
                       <div className="flex items-center justify-between mb-4">
-                        <h4 className="font-bold text-gray-700 text-lg">Scans per Day</h4>
-                        <div className="text-sm text-gray-500">Max: {maxScans}</div>
+                        <h4 className="font-bold text-gray-700 text-base md:text-lg">Scans per Day</h4>
+                        <div className="text-xs md:text-sm text-gray-500">Max: {maxScans}</div>
                       </div>
                       <div className="flex items-end justify-between gap-2 h-48">
                         {weeklyData.map((day, idx) => (
@@ -668,8 +941,8 @@ export default function RetailerDashboard() {
                     {/* Revenue Chart */}
                     <div>
                       <div className="flex items-center justify-between mb-4">
-                        <h4 className="font-bold text-gray-700 text-lg">Revenue per Day</h4>
-                        <div className="text-sm text-gray-500">Max: ${maxRevenue}</div>
+                        <h4 className="font-bold text-gray-700 text-base md:text-lg">Revenue per Day</h4>
+                        <div className="text-xs md:text-sm text-gray-500">Max: ${maxRevenue}</div>
                       </div>
                       <div className="flex items-end justify-between gap-2 h-48">
                         {weeklyData.map((day, idx) => (
@@ -701,169 +974,107 @@ export default function RetailerDashboard() {
 
                 {/* Top Products */}
                 <div>
-                  <h3 className="text-2xl font-bold text-gray-900 mb-6">Top Performing Products</h3>
-                  <div className="bg-white rounded-2xl border-2 border-gray-100 overflow-hidden shadow-lg">
-                    <table className="w-full">
-                      <thead className="bg-gradient-to-r from-pink-50 to-purple-50">
-                        <tr>
-                          <th className="text-left py-4 px-6 font-bold text-gray-700">Product</th>
-                          <th className="text-center py-4 px-6 font-bold text-gray-700">Scans</th>
-                          <th className="text-center py-4 px-6 font-bold text-gray-700">Conversions</th>
-                          <th className="text-right py-4 px-6 font-bold text-gray-700">Revenue</th>
-                        </tr>
-                      </thead>
-                      <tbody className="divide-y divide-gray-100">
-                        {topProducts.length > 0 ? (
-                          topProducts.map((product, idx) => (
-                            <motion.tr 
-                              key={idx}
-                              initial={{ opacity: 0, x: -20 }}
-                              animate={{ opacity: 1, x: 0 }}
-                              transition={{ duration: 0.3, delay: idx * 0.1 }}
-                              whileHover={{ backgroundColor: '#fafafa' }}
-                              className="transition-colors"
-                            >
-                              <td className="py-4 px-6">
-                                <div className="flex items-center gap-3">
-                                  <div className="w-2 h-2 rounded-full bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3]"></div>
-                                  <span className="font-semibold text-gray-900">{product.name}</span>
-                                </div>
-                              </td>
-                              <td className="py-4 px-6 text-center">
-                                <span className="inline-block bg-blue-100 text-blue-700 px-4 py-1.5 rounded-full text-sm font-bold">
+                  <h3 className="text-xl md:text-2xl font-bold text-gray-900 mb-4 md:mb-6">Top Performing Products</h3>
+
+                  {topProducts.length > 0 ? (
+                    <>
+                      {/* Desktop Table View */}
+                      <div className="hidden md:block bg-white rounded-2xl border-2 border-gray-100 overflow-hidden shadow-lg">
+                        <table className="w-full">
+                          <thead className="bg-gradient-to-r from-pink-50 to-purple-50">
+                            <tr>
+                              <th className="text-left py-4 px-6 font-bold text-gray-700">Product</th>
+                              <th className="text-center py-4 px-6 font-bold text-gray-700">Scans</th>
+                              <th className="text-center py-4 px-6 font-bold text-gray-700">Conversions</th>
+                              <th className="text-right py-4 px-6 font-bold text-gray-700">Revenue</th>
+                            </tr>
+                          </thead>
+                          <tbody className="divide-y divide-gray-100">
+                            {topProducts.map((product, idx) => (
+                              <motion.tr
+                                key={idx}
+                                initial={{ opacity: 0, x: -20 }}
+                                animate={{ opacity: 1, x: 0 }}
+                                transition={{ duration: 0.3, delay: idx * 0.1 }}
+                                whileHover={{ backgroundColor: '#fafafa' }}
+                                className="transition-colors"
+                              >
+                                <td className="py-4 px-6">
+                                  <div className="flex items-center gap-3">
+                                    <div className="w-2 h-2 rounded-full bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3]"></div>
+                                    <span className="font-semibold text-gray-900">{product.name}</span>
+                                  </div>
+                                </td>
+                                <td className="py-4 px-6 text-center">
+                                  <span className="inline-block bg-blue-100 text-blue-700 px-4 py-1.5 rounded-full text-sm font-bold">
+                                    {product.scans}
+                                  </span>
+                                </td>
+                                <td className="py-4 px-6 text-center">
+                                  <span className="inline-block bg-green-100 text-green-700 px-4 py-1.5 rounded-full text-sm font-bold">
+                                    {product.conversions}
+                                  </span>
+                                </td>
+                                <td className="py-4 px-6 text-right">
+                                  <span className="font-bold text-gray-900">${product.revenue.toLocaleString()}</span>
+                                </td>
+                              </motion.tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+
+                      {/* Mobile Card View */}
+                      <div className="md:hidden space-y-3">
+                        {topProducts.map((product, idx) => (
+                          <motion.div
+                            key={idx}
+                            initial={{ opacity: 0, y: 10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.3, delay: idx * 0.1 }}
+                            className="bg-white rounded-2xl border-2 border-gray-100 p-4 shadow-lg"
+                          >
+                            <div className="flex items-center gap-2 mb-3">
+                              <div className="w-2 h-2 rounded-full bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3]"></div>
+                              <span className="font-bold text-gray-900">{product.name}</span>
+                            </div>
+                            <div className="grid grid-cols-3 gap-3">
+                              <div className="text-center">
+                                <div className="text-xs text-gray-500 mb-1">Scans</div>
+                                <span className="inline-block bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-xs font-bold">
                                   {product.scans}
                                 </span>
-                              </td>
-                              <td className="py-4 px-6 text-center">
-                                <span className="inline-block bg-green-100 text-green-700 px-4 py-1.5 rounded-full text-sm font-bold">
+                              </div>
+                              <div className="text-center">
+                                <div className="text-xs text-gray-500 mb-1">Conversions</div>
+                                <span className="inline-block bg-green-100 text-green-700 px-3 py-1 rounded-full text-xs font-bold">
                                   {product.conversions}
                                 </span>
-                              </td>
-                              <td className="py-4 px-6 text-right">
-                                <span className="font-bold text-gray-900">${product.revenue.toLocaleString()}</span>
-                              </td>
-                            </motion.tr>
-                          ))
-                        ) : (
-                          <tr>
-                            <td colSpan="4" className="py-20 text-center">
-                              <div className="flex flex-col items-center gap-4">
-                                <div className="w-20 h-20 bg-gradient-to-br from-gray-100 to-gray-200 rounded-full flex items-center justify-center">
-                                  <svg className="w-10 h-10 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-                                  </svg>
-                                </div>
-                                <div>
-                                  <p className="text-gray-900 font-bold text-lg mb-1">No product data yet</p>
-                                  <p className="text-gray-500">Product performance will show here once you have scans</p>
-                                </div>
                               </div>
-                            </td>
-                          </tr>
-                        )}
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
-              </motion.div>
-            )}
-
-            {/* Orders Tab (Scans Activity) */}
-            {activeTab === 'orders' && (
-              <motion.div
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.3 }}
-              >
-                {/* Unpaid Earnings Banner */}
-                {stats.unpaidEarnings > 0 && (
-                  <div className="bg-gradient-to-r from-yellow-100 to-orange-100 border-2 border-yellow-300 rounded-2xl p-6 mb-6">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <h4 className="text-lg font-bold text-gray-900 mb-1">💰 Unpaid Earnings</h4>
-                        <p className="text-sm text-gray-600">Pending payout to your account</p>
-                      </div>
-                      <div className="text-3xl font-bold text-orange-700">${stats.unpaidEarnings.toFixed(2)}</div>
-                    </div>
-                  </div>
-                )}
-
-                <div className="flex items-center justify-between mb-6">
-                  <h3 className="text-2xl font-bold text-gray-900">Recent Scan Activity</h3>
-                  <div className="text-sm text-gray-500 font-semibold">
-                    Showing {scans.length} scans
-                  </div>
-                </div>
-
-                <div className="bg-white rounded-2xl border-2 border-gray-100 overflow-hidden shadow-lg">
-                  <table className="w-full">
-                    <thead className="bg-gradient-to-r from-pink-50 to-purple-50">
-                      <tr>
-                        <th className="text-left py-4 px-6 font-bold text-gray-700">UID</th>
-                        <th className="text-left py-4 px-6 font-bold text-gray-700">Location</th>
-                        <th className="text-center py-4 px-6 font-bold text-gray-700">Clicked</th>
-                        <th className="text-center py-4 px-6 font-bold text-gray-700">Converted</th>
-                        <th className="text-right py-4 px-6 font-bold text-gray-700">Revenue</th>
-                        <th className="text-right py-4 px-6 font-bold text-gray-700">Date</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {scans.length > 0 ? (
-                        scans.slice(0, 50).map((scan, idx) => (
-                          <motion.tr 
-                            key={scan.id || idx}
-                            initial={{ opacity: 0, x: -20 }}
-                            animate={{ opacity: 1, x: 0 }}
-                            transition={{ duration: 0.3, delay: Math.min(idx * 0.05, 0.5) }}
-                            className="border-t border-gray-100 hover:bg-gray-50"
-                          >
-                            <td className="py-4 px-6">
-                              <span className="font-mono text-sm text-gray-900">{scan.uid || '-'}</span>
-                            </td>
-                            <td className="py-4 px-6 text-gray-700">{scan.location || '-'}</td>
-                            <td className="py-4 px-6 text-center">
-                              {scan.clicked ? (
-                                <span className="text-green-600 text-lg">✓</span>
-                              ) : (
-                                <span className="text-gray-300 text-lg">○</span>
-                              )}
-                            </td>
-                            <td className="py-4 px-6 text-center">
-                              {scan.converted ? (
-                                <span className="text-green-600 font-bold text-lg">✓</span>
-                              ) : (
-                                <span className="text-gray-300 text-lg">○</span>
-                              )}
-                            </td>
-                            <td className="py-4 px-6 text-right">
-                              <span className="font-bold text-green-700">
-                                ${(scan.revenue || 0).toFixed(2)}
-                              </span>
-                            </td>
-                            <td className="py-4 px-6 text-right text-sm text-gray-600">
-                              {new Date(scan.timestamp).toLocaleDateString()}
-                            </td>
-                          </motion.tr>
-                        ))
-                      ) : (
-                        <tr>
-                          <td colSpan="6" className="py-20 text-center">
-                            <div className="flex flex-col items-center gap-4">
-                              <div className="w-20 h-20 bg-gradient-to-br from-gray-100 to-gray-200 rounded-full flex items-center justify-center">
-                                <svg className="w-10 h-10 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z" />
-                                </svg>
-                              </div>
-                              <div>
-                                <p className="text-gray-900 font-bold text-lg mb-1">No scans yet</p>
-                                <p className="text-gray-500">Scan activity will appear here once customers interact with your displays</p>
+                              <div className="text-center">
+                                <div className="text-xs text-gray-500 mb-1">Revenue</div>
+                                <span className="font-bold text-gray-900 text-sm">${product.revenue.toLocaleString()}</span>
                               </div>
                             </div>
-                          </td>
-                        </tr>
-                      )}
-                    </tbody>
-                  </table>
+                          </motion.div>
+                        ))}
+                      </div>
+                    </>
+                  ) : (
+                    <div className="bg-white rounded-2xl border-2 border-gray-100 shadow-lg py-12 md:py-20 text-center">
+                      <div className="flex flex-col items-center gap-4 max-w-sm mx-auto px-4">
+                        <div className="w-20 h-20 bg-gradient-to-br from-gray-100 to-gray-200 rounded-full flex items-center justify-center">
+                          <svg className="w-10 h-10 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                          </svg>
+                        </div>
+                        <div>
+                          <p className="text-gray-900 font-bold text-lg mb-1">No product data yet</p>
+                          <p className="text-gray-500 text-sm">Product performance will show here once you have scans</p>
+                        </div>
+                      </div>
+                    </div>
+                  )}
                 </div>
               </motion.div>
             )}
@@ -871,26 +1082,27 @@ export default function RetailerDashboard() {
             {/* Payouts Tab */}
             {activeTab === 'payouts' && (
               <motion.div
-                initial={{ opacity: 0, x: -20 }}
+                key="payouts"
+                initial={{ opacity: 0, x: tabDirection * 20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.3 }}
               >
-                <div className="flex items-center justify-between mb-6">
-                  <h3 className="text-2xl font-bold text-gray-900">💸 Payouts</h3>
-                  <motion.button 
+                 <div className="flex items-center justify-between mb-4 md:mb-6">
+                   <h3 className="text-xl md:text-2xl font-bold text-gray-900">Payouts</h3>
+                  <motion.button
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                     onClick={handleExportPayouts}
-                    className="px-5 py-2.5 bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3] text-white rounded-xl text-sm font-bold hover:shadow-lg transition-all"
+                    className="px-3 py-2 md:px-5 md:py-2.5 bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3] text-white rounded-xl text-xs md:text-sm font-bold hover:shadow-lg transition-all"
                   >
                     Export CSV
                   </motion.button>
                 </div>
 
                 {/* Summary Cards */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 mb-8">
-                  <div className="bg-gradient-to-br from-yellow-50 to-orange-50 border-2 border-yellow-200 rounded-3xl p-6 shadow-lg">
-                    <h4 className="font-bold text-gray-700 mb-2">Pending Earnings</h4>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 mb-4 md:mb-8">
+                  <div className="bg-gradient-to-br from-yellow-50 to-orange-50 border-2 border-yellow-200 rounded-3xl p-4 md:p-6 shadow-lg">
+                    <h4 className="font-bold text-gray-700 mb-2 text-sm md:text-base">Pending Earnings</h4>
                     <p className="text-3xl font-bold text-gray-900">
                       ${payoutJobs
                         .filter(p => p.status === 'pending')
@@ -898,9 +1110,9 @@ export default function RetailerDashboard() {
                         .toFixed(2)}
                     </p>
                   </div>
-                  
-                  <div className="bg-gradient-to-br from-green-50 to-emerald-50 border-2 border-green-200 rounded-3xl p-6 shadow-lg">
-                    <h4 className="font-bold text-gray-700 mb-2">Total Paid Out</h4>
+
+                  <div className="bg-gradient-to-br from-green-50 to-emerald-50 border-2 border-green-200 rounded-3xl p-4 md:p-6 shadow-lg">
+                    <h4 className="font-bold text-gray-700 mb-2 text-sm md:text-base">Total Paid Out</h4>
                     <p className="text-3xl font-bold text-gray-900">
                       ${payoutJobs
                         .filter(p => p.status === 'paid')
@@ -908,9 +1120,9 @@ export default function RetailerDashboard() {
                         .toFixed(2)}
                     </p>
                   </div>
-                  
-                  <div className="bg-gradient-to-br from-blue-50 to-cyan-50 border-2 border-blue-200 rounded-3xl p-6 shadow-lg">
-                    <h4 className="font-bold text-gray-700 mb-2">Lifetime Earnings</h4>
+
+                  <div className="bg-gradient-to-br from-blue-50 to-cyan-50 border-2 border-blue-200 rounded-3xl p-4 md:p-6 shadow-lg">
+                    <h4 className="font-bold text-gray-700 mb-2 text-sm md:text-base">Lifetime Earnings</h4>
                     <p className="text-3xl font-bold text-gray-900">
                       ${payoutJobs
                         .reduce((sum, p) => sum + (p.retailer_cut || 0), 0)
@@ -920,124 +1132,117 @@ export default function RetailerDashboard() {
                 </div>
 
                 {/* Payouts Table */}
-                <div className="bg-white rounded-2xl border-2 border-gray-100 overflow-hidden shadow-lg">
-                  <table className="w-full">
-                    <thead className="bg-gradient-to-r from-pink-50 to-purple-50">
-                      <tr>
-                        <th className="text-left py-4 px-6 font-bold text-gray-700">Date</th>
-                        <th className="text-left py-4 px-6 font-bold text-gray-700">Vendor</th>
-                        <th className="text-right py-4 px-6 font-bold text-gray-700">Your Cut</th>
-                        <th className="text-right py-4 px-6 font-bold text-gray-700">Total Amount</th>
-                        <th className="text-center py-4 px-6 font-bold text-gray-700">Status</th>
-                        <th className="text-right py-4 px-6 font-bold text-gray-700">Paid Date</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {payoutJobs.length > 0 ? (
-                        payoutJobs.map((payout, idx) => (
-                          <tr key={idx} className="border-t border-gray-100 hover:bg-gray-50">
-                            <td className="py-4 px-6 text-gray-900">
-                              {new Date(payout.created_at).toLocaleDateString()}
-                            </td>
-                            <td className="py-4 px-6 text-gray-700">Vendor #{payout.vendor_id?.substring(0, 8)}</td>
-                            <td className="py-4 px-6 text-right">
-                              <span className="font-bold text-green-700">${(payout.retailer_cut || 0).toFixed(2)}</span>
-                            </td>
-                            <td className="py-4 px-6 text-right">
-                              <span className="font-bold text-gray-900">${(payout.total_amount || 0).toFixed(2)}</span>
-                            </td>
-                            <td className="py-4 px-6 text-center">
-                              <span className={`inline-block px-4 py-1.5 rounded-full text-xs font-bold ${
-                                payout.status === 'paid' 
-                                  ? 'bg-green-100 text-green-700' 
-                                  : 'bg-yellow-100 text-yellow-700'
-                              }`}>
-                                {payout.status}
-                              </span>
-                            </td>
-                            <td className="py-4 px-6 text-right text-gray-600">
-                              {payout.date_paid ? new Date(payout.date_paid).toLocaleDateString() : '-'}
-                            </td>
+                {payoutJobs.length > 0 ? (
+                  <>
+                    {/* Desktop Table View */}
+                    <div className="hidden md:block bg-white rounded-2xl border-2 border-gray-100 overflow-hidden shadow-lg">
+                      <table className="w-full">
+                        <thead className="bg-gradient-to-r from-pink-50 to-purple-50">
+                          <tr>
+                            <th className="text-left py-4 px-6 font-bold text-gray-700">Date</th>
+                            <th className="text-left py-4 px-6 font-bold text-gray-700">Vendor</th>
+                            <th className="text-right py-4 px-6 font-bold text-gray-700">Your Cut</th>
+                            <th className="text-right py-4 px-6 font-bold text-gray-700">Total Amount</th>
+                            <th className="text-center py-4 px-6 font-bold text-gray-700">Status</th>
+                            <th className="text-right py-4 px-6 font-bold text-gray-700">Paid Date</th>
                           </tr>
-                        ))
-                      ) : (
-                        <tr>
-                          <td colSpan="6" className="py-20">
-                            <div className="text-center">
-                              <div className="w-20 h-20 bg-gradient-to-br from-gray-100 to-gray-200 rounded-full flex items-center justify-center mx-auto mb-4">
-                                <svg className="w-10 h-10 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                </svg>
-                              </div>
-                              <p className="text-gray-900 font-bold text-lg mb-1">No payouts yet</p>
-                              <p className="text-gray-500">Your payout history will appear here</p>
-                            </div>
-                          </td>
-                        </tr>
-                      )}
-                    </tbody>
-                  </table>
-                </div>
-              </motion.div>
-            )}
-
-            {/* Displays Tab */}
-            {activeTab === 'displays' && (
-              <motion.div
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.3 }}
-              >
-                <h3 className="text-2xl font-bold text-gray-900 mb-6">🖼️ Your Displays (UIDs)</h3>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
-                  {uids.map((uid, idx) => (
-                    <motion.div
-                      key={uid.uid}
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: idx * 0.1 }}
-                      whileHover={{ scale: 1.03, y: -5 }}
-                      className="bg-white rounded-3xl border-2 border-gray-100 p-6 shadow-lg hover:shadow-2xl hover:border-purple-200 transition-all"
-                    >
-                      <div className="flex items-start justify-between mb-4">
-                        <div className="w-14 h-14 bg-gradient-to-br from-purple-400 to-pink-500 rounded-2xl flex items-center justify-center shadow-lg">
-                          <svg className="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z" />
-                          </svg>
-                        </div>
-                        <span className="px-3 py-1.5 rounded-full text-xs font-bold bg-green-100 text-green-700">
-                          Active
-                        </span>
-                      </div>
-                      
-                      <h4 className="text-lg font-bold text-gray-900 mb-2">
-                        Display UID
-                      </h4>
-                      
-                      <div className="mb-3">
-                        <span className="text-xs text-gray-500 font-semibold">UID:</span>
-                        <p className="font-mono text-sm text-gray-900 bg-gray-100 px-3 py-1.5 rounded-lg mt-1">
-                          {uid.uid}
-                        </p>
-                      </div>
-                      
-                      <div className="text-xs text-gray-500">
-                        Registered: {new Date(uid.registered_at).toLocaleDateString()}
-                      </div>
-                    </motion.div>
-                  ))}
-                </div>
-
-                {uids.length === 0 && (
-                  <div className="bg-white rounded-3xl border-2 border-gray-100 p-12 text-center shadow-lg">
-                    <div className="w-20 h-20 bg-gradient-to-br from-gray-100 to-gray-200 rounded-full flex items-center justify-center mx-auto mb-4">
-                      <svg className="w-10 h-10 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z" />
-                      </svg>
+                        </thead>
+                        <tbody>
+                          {payoutJobs.map((payout, idx) => (
+                            <tr key={idx} className="border-t border-gray-100 hover:bg-gray-50">
+                              <td className="py-4 px-6 text-gray-900">
+                                {new Date(payout.created_at).toLocaleDateString()}
+                              </td>
+                              <td className="py-4 px-6 text-gray-700">Vendor #{payout.vendor_id?.substring(0, 8)}</td>
+                              <td className="py-4 px-6 text-right">
+                                <span className="font-bold text-green-700">${(payout.retailer_cut || 0).toFixed(2)}</span>
+                              </td>
+                              <td className="py-4 px-6 text-right">
+                                <span className="font-bold text-gray-900">${(payout.total_amount || 0).toFixed(2)}</span>
+                              </td>
+                              <td className="py-4 px-6 text-center">
+                                <span className={`inline-block px-4 py-1.5 rounded-full text-xs font-bold ${
+                                  payout.status === 'paid'
+                                    ? 'bg-green-100 text-green-700'
+                                    : 'bg-yellow-100 text-yellow-700'
+                                }`}>
+                                  {payout.status}
+                                </span>
+                              </td>
+                              <td className="py-4 px-6 text-right text-gray-600">
+                                {payout.date_paid ? new Date(payout.date_paid).toLocaleDateString() : '-'}
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
                     </div>
-                    <p className="text-gray-700 font-bold text-lg">No displays assigned yet</p>
-                    <p className="text-gray-500 mt-2">Contact support to get your first display</p>
+
+                    {/* Mobile Card View */}
+                    <div className="md:hidden space-y-3">
+                      {payoutJobs.map((payout, idx) => (
+                        <motion.div
+                          key={idx}
+                          initial={{ opacity: 0, y: 10 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{ duration: 0.3, delay: idx * 0.1 }}
+                          className="bg-white rounded-2xl border-2 border-gray-100 p-4 shadow-lg"
+                        >
+                          <div className="flex items-center justify-between mb-3">
+                            <div>
+                              <div className="text-xs text-gray-500 mb-1">Date</div>
+                              <span className="text-sm font-semibold text-gray-900">
+                                {new Date(payout.created_at).toLocaleDateString()}
+                              </span>
+                            </div>
+                            <span className={`px-3 py-1 rounded-full text-xs font-bold ${
+                              payout.status === 'paid'
+                                ? 'bg-green-100 text-green-700'
+                                : 'bg-yellow-100 text-yellow-700'
+                            }`}>
+                              {payout.status}
+                            </span>
+                          </div>
+
+                          <div className="mb-3">
+                            <div className="text-xs text-gray-500 mb-1">Vendor</div>
+                            <span className="text-sm text-gray-700">Vendor #{payout.vendor_id?.substring(0, 8)}</span>
+                          </div>
+
+                          <div className="grid grid-cols-2 gap-3 pt-3 border-t border-gray-100">
+                            <div>
+                              <div className="text-xs text-gray-500 mb-1">Your Cut</div>
+                              <span className="font-bold text-green-700 text-sm">${(payout.retailer_cut || 0).toFixed(2)}</span>
+                            </div>
+                            <div>
+                              <div className="text-xs text-gray-500 mb-1">Total Amount</div>
+                              <span className="font-bold text-gray-900 text-sm">${(payout.total_amount || 0).toFixed(2)}</span>
+                            </div>
+                          </div>
+
+                          {payout.date_paid && (
+                            <div className="mt-3 pt-3 border-t border-gray-100">
+                              <div className="text-xs text-gray-500 mb-1">Paid Date</div>
+                              <span className="text-sm text-gray-600">{new Date(payout.date_paid).toLocaleDateString()}</span>
+                            </div>
+                          )}
+                        </motion.div>
+                      ))}
+                    </div>
+                  </>
+                ) : (
+                  <div className="bg-white rounded-2xl border-2 border-gray-100 shadow-lg py-12 md:py-20 text-center">
+                    <div className="flex flex-col items-center gap-4 max-w-sm mx-auto px-4">
+                      <div className="w-20 h-20 bg-gradient-to-br from-gray-100 to-gray-200 rounded-full flex items-center justify-center">
+                        <svg className="w-10 h-10 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                      </div>
+                      <div>
+                        <p className="text-gray-900 font-bold text-lg mb-1">No payouts yet</p>
+                        <p className="text-gray-500 text-sm">Your payout history will appear here</p>
+                      </div>
+                    </div>
                   </div>
                 )}
               </motion.div>
@@ -1045,20 +1250,21 @@ export default function RetailerDashboard() {
 
             {/* Settings Tab */}
             {activeTab === 'settings' && (
-              <motion.div 
-                initial={{ opacity: 0, x: -20 }}
+              <motion.div
+                key="settings"
+                initial={{ opacity: 0, x: tabDirection * 20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.3 }}
-                className="space-y-6"
+                className="space-y-4 md:space-y-6"
               >
-                <h3 className="text-2xl font-bold text-gray-900">Store Settings</h3>
+                <h3 className="text-xl md:text-2xl font-bold text-gray-900">Store Settings</h3>
 
                 {/* Bank Connection Section */}
-                <div className="bg-gradient-to-br from-white to-gray-50 rounded-2xl p-8 border-2 border-gray-100 shadow-lg">
-                  <h4 className="font-bold text-gray-900 text-lg mb-6">Bank Connection</h4>
+                <div className="bg-gradient-to-br from-white to-gray-50 rounded-2xl p-4 md:p-8 border-2 border-gray-100 shadow-lg">
+                  <h4 className="font-bold text-gray-900 text-base md:text-lg mb-4 md:mb-6">Bank Connection</h4>
                   
                   {retailerAccount?.plaid_access_token ? (
-                    <div className="flex items-center justify-between p-6 bg-green-50 border-2 border-green-200 rounded-2xl">
+                    <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 p-4 md:p-6 bg-green-50 border-2 border-green-200 rounded-2xl">
                       <div className="flex items-center gap-4">
                         <div className="w-12 h-12 bg-gradient-to-br from-green-400 to-emerald-500 rounded-2xl flex items-center justify-center">
                           <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -1070,17 +1276,26 @@ export default function RetailerDashboard() {
                           <p className="text-sm text-gray-600">Ready to receive payouts</p>
                         </div>
                       </div>
-                      <motion.button 
-                        whileHover={{ scale: 1.05 }}
-                        whileTap={{ scale: 0.95 }}
-                        onClick={() => showToast('Bank connection feature coming soon!', 'success')}
-                        className="px-6 py-2.5 border-2 border-green-300 text-green-700 rounded-2xl text-sm font-bold hover:bg-green-50 transition-all"
+                      <motion.button
+                        whileHover={{ scale: removingBank ? 1 : 1.05 }}
+                        whileTap={{ scale: removingBank ? 1 : 0.95 }}
+                        onClick={() => setShowRemoveConfirm(true)}
+                        disabled={removingBank}
+                        className={`w-full md:w-auto px-6 py-2.5 border-2 border-red-300 text-red-700 rounded-2xl text-sm font-bold hover:bg-red-50 transition-all flex items-center justify-center gap-2 ${
+                          removingBank ? 'opacity-75 cursor-not-allowed' : ''
+                        }`}
                       >
-                        Update Bank
+                        {removingBank && (
+                          <svg className="animate-spin h-4 w-4 text-red-700" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                          </svg>
+                        )}
+                        {removingBank ? 'Removing...' : 'Remove Bank'}
                       </motion.button>
                     </div>
                   ) : (
-                    <div className="text-center py-8">
+                    <div className="text-center pt-8 pb-4">
                       <div className="w-20 h-20 bg-gradient-to-br from-gray-100 to-gray-200 rounded-full flex items-center justify-center mx-auto mb-4">
                         <svg className="w-10 h-10 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
@@ -1089,21 +1304,33 @@ export default function RetailerDashboard() {
                       <p className="text-gray-700 font-bold text-lg mb-2">No bank account connected</p>
                       <p className="text-gray-500 mb-6">Connect your bank account to receive payouts</p>
                       {retailer?.id ? (
-                        <motion.button 
-                          whileHover={{ scale: plaidLoading ? 1 : 1.05 }}
-                          whileTap={{ scale: plaidLoading ? 1 : 0.95 }}
+                        <motion.button
+                          whileHover={{ scale: (plaidLoading || connecting) ? 1 : 1.05 }}
+                          whileTap={{ scale: (plaidLoading || connecting) ? 1 : 0.95 }}
                           onClick={handlePlaidConnect}
-                          disabled={plaidLoading || !plaidScriptLoaded}
-                          className={`px-8 py-3 bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3] text-white rounded-2xl font-bold hover:shadow-xl transition-all ${
-                            plaidLoading || !plaidScriptLoaded ? 'opacity-75 cursor-not-allowed' : ''
+                          disabled={plaidLoading || connecting || !plaidScriptLoaded}
+                          className={`px-8 py-3 bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3] text-white rounded-2xl font-bold hover:shadow-xl transition-all flex items-center gap-2 mx-auto ${
+                            (plaidLoading || connecting || !plaidScriptLoaded) ? 'opacity-75 cursor-not-allowed' : ''
                           }`}
                         >
-                          {plaidLoading ? 'Connecting...' : !plaidScriptLoaded ? 'Loading...' : 'Connect Bank Account'}
+                          {(plaidLoading || connecting) && (
+                            <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                            </svg>
+                          )}
+                          {connecting ? 'Connecting...' : plaidLoading ? 'Opening...' : !plaidScriptLoaded ? 'Loading...' : 'Connect Bank Account'}
                         </motion.button>
                       ) : (
-                        <div className="px-8 py-3 bg-gray-300 text-gray-600 rounded-2xl font-bold cursor-not-allowed">
-                          Complete registration first
-                        </div>
+                        <Link href="/onboard/register">
+                          <motion.button
+                            whileHover={{ scale: 1.05 }}
+                            whileTap={{ scale: 0.95 }}
+                            className="px-8 py-3 bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3] text-white rounded-2xl font-bold hover:shadow-xl transition-all mx-auto"
+                          >
+                            Complete registration first
+                          </motion.button>
+                        </Link>
                       )}
                       
                       {/* Bank Availability Info */}
@@ -1118,109 +1345,214 @@ export default function RetailerDashboard() {
                   )}
                 </div>
 
-                {/* Store Information */}
-                <motion.div 
+                {/* Your Displays Section */}
+                <motion.div
                   whileHover={{ scale: 1.01 }}
-                  className="bg-gradient-to-br from-white to-gray-50 rounded-2xl p-8 border-2 border-gray-100 hover:border-gray-200 transition-all shadow-lg"
+                  className="bg-gradient-to-br from-white to-gray-50 rounded-2xl p-4 md:p-8 border-2 border-gray-100 shadow-lg"
                 >
-                  <h4 className="font-bold text-gray-900 text-lg mb-6">Retailer Information</h4>
+                  <h4 className="font-bold text-gray-900 text-base md:text-lg mb-4 md:mb-6">Your Displays (UIDs)</h4>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
+                    {uids.map((uid, idx) => {
+                      const displayStatus = getDisplayStatus(uid);
+                      const statusColors = {
+                        green: 'bg-green-100 text-green-700 border-green-200',
+                        blue: 'bg-blue-100 text-blue-700 border-blue-200',
+                        yellow: 'bg-yellow-100 text-yellow-700 border-yellow-200',
+                        gray: 'bg-gray-100 text-gray-700 border-gray-200'
+                      };
+                      
+                      return (
+                        <motion.div
+                          key={uid.uid}
+                          initial={{ opacity: 0, y: 20 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{ delay: idx * 0.1 }}
+                          whileHover={{ scale: 1.03, y: -5 }}
+                          className="bg-white rounded-3xl border-2 border-gray-100 p-6 shadow-lg hover:shadow-2xl hover:border-purple-200 transition-all"
+                        >
+                          <div className="flex items-start justify-between mb-4">
+                            <div className="w-14 h-14 bg-gradient-to-br from-purple-400 to-pink-500 rounded-2xl flex items-center justify-center shadow-lg">
+                              <span className="text-2xl">{displayStatus.icon}</span>
+                            </div>
+                            <span className={`px-3 py-1.5 rounded-full text-xs font-bold border-2 ${statusColors[displayStatus.color]}`}>
+                              {displayStatus.status.includes('Active') ? 'Active' : displayStatus.status.split(' ')[0]}
+                            </span>
+                          </div>
+
+                          <h5 className="text-lg font-bold text-gray-900 mb-2">Display UID</h5>
+
+                          <div className="mb-3">
+                            <span className="text-xs text-gray-500 font-semibold">UID:</span>
+                            <p className="font-mono text-sm text-gray-900 bg-gray-100 px-3 py-1.5 rounded-lg mt-1">
+                              {uid.uid}
+                            </p>
+                          </div>
+
+                          <div className="space-y-2">
+                            <div className="text-sm font-semibold text-gray-700">
+                              {displayStatus.status}
+                            </div>
+                            
+                            {uid.registered_at && (
+                              <div className="text-xs text-gray-500">
+                                Registered: {new Date(uid.registered_at).toLocaleDateString()}
+                              </div>
+                            )}
+                            
+                            {uid.claimed_at && (
+                              <div className="text-xs text-gray-500">
+                                Claimed: {new Date(uid.claimed_at).toLocaleDateString()}
+                              </div>
+                            )}
+                            
+                            {displayStatus.storeName && (
+                              <div className="text-xs text-gray-600 font-medium">
+                                📍 {displayStatus.storeName}
+                              </div>
+                            )}
+                          </div>
+                        </motion.div>
+                      );
+                    })}
+                  </div>
+
+                  {uids.length === 0 && (
+                    <div className="bg-white rounded-3xl border-2 border-gray-100 p-12 text-center shadow-lg">
+                      <div className="flex flex-col items-center gap-4 max-w-sm mx-auto px-4">
+                        <div className="w-20 h-20 bg-gradient-to-br from-gray-100 to-gray-200 rounded-full flex items-center justify-center">
+                          <svg className="w-10 h-10 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                          </svg>
+                        </div>
+                        <div>
+                          <p className="text-gray-900 font-bold text-lg mb-1">No displays assigned yet</p>
+                          <p className="text-gray-500 text-sm">Contact support to get your first display</p>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </motion.div>
+
+                {/* Store Profile */}
+                <motion.div
+                  whileHover={{ scale: 1.01 }}
+                  className="bg-gradient-to-br from-white to-gray-50 rounded-2xl p-4 md:p-8 border-2 border-gray-100 hover:border-gray-200 transition-all shadow-lg"
+                >
+                  <h4 className="font-bold text-gray-900 text-base md:text-lg mb-4 md:mb-6">Store Profile</h4>
                   <div className="space-y-4">
                     <div>
                       <label className="block text-sm font-bold text-gray-700 mb-2">Store Name</label>
-                      <input
-                        type="text"
-                        value={retailer?.name || 'Not set'}
-                        readOnly
-                        className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl bg-gray-50"
-                      />
+                      <div className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl bg-gray-50 text-gray-900">
+                        {retailer?.name || 'Not set'}
+                      </div>
                     </div>
                     <div>
-                      <label className="block text-sm font-bold text-gray-700 mb-2">Location</label>
-                      <input
-                        type="text"
-                        value={retailer?.location || 'Not set'}
-                        readOnly
-                        className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl bg-gray-50"
-                      />
+                      <label className="block text-sm font-bold text-gray-700 mb-2">Address</label>
+                      <div className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl bg-gray-50 text-gray-900">
+                        {retailer?.address || retailer?.location || 'Not set'}
+                      </div>
                     </div>
                     <div>
-                      <label className="block text-sm font-bold text-gray-700 mb-2">Linked Vendor</label>
-                      <input
-                        type="text"
-                        value={retailer?.linked_vendor_id?.substring(0, 8) || 'Not linked'}
-                        readOnly
-                        className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl bg-gray-50"
-                      />
-                      <p className="text-xs text-gray-500 mt-2">Contact support to update your information</p>
+                      <label className="block text-sm font-bold text-gray-700 mb-2">Owner Name</label>
+                      <div className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl bg-gray-50 text-gray-900">
+                        {retailer?.owner_name || 'Not set'}
+                      </div>
+                    </div>
+                    <p className="text-xs text-gray-500 mt-2">Contact support to update your store information</p>
+                  </div>
+                </motion.div>
+
+                {/* Shipping Preferences */}
+                <motion.div
+                  whileHover={{ scale: 1.01 }}
+                  className="bg-gradient-to-br from-white to-gray-50 rounded-2xl p-4 md:p-8 border-2 border-gray-100 hover:border-gray-200 transition-all shadow-lg"
+                >
+                  <h4 className="font-bold text-gray-900 text-base md:text-lg mb-4 md:mb-6">Display Shipping Preferences</h4>
+                  <div className="space-y-4">
+                    <div className="bg-blue-50 border-2 border-blue-200 rounded-xl p-4">
+                      <div className="flex items-start gap-3">
+                        <div className="flex-shrink-0 w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center">
+                          <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                          </svg>
+                        </div>
+                        <div className="flex-1">
+                          <div className="flex items-center justify-between mb-2">
+                            <h5 className="font-bold text-gray-900">Express Shipping</h5>
+                            <label className="relative inline-flex items-center cursor-pointer">
+                              <input
+                                type="checkbox"
+                                checked={retailer?.express_shipping || false}
+                                onChange={handleExpressShippingToggle}
+                                className="sr-only peer"
+                              />
+                              <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-[#ff6fb3]/20 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-gradient-to-r peer-checked:from-[#ff7a4a] peer-checked:to-[#ff6fb3]"></div>
+                            </label>
+                          </div>
+                          <p className="text-sm text-gray-600">
+                            Get your new displays delivered faster with priority shipping
+                          </p>
+                          {retailer?.express_shipping ? (
+                            <div className="mt-2 text-xs font-semibold text-green-700">
+                              ✓ Display shipping active — your display will ship priority
+                            </div>
+                          ) : (
+                            <div className="mt-2 text-xs text-gray-500">
+                              Toggle to purchase express shipping for faster delivery
+                            </div>
+                          )}
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </motion.div>
 
-                {/* Notification Preferences */}
-                <motion.div 
+                {/* Store Contact Information */}
+                <motion.div
                   whileHover={{ scale: 1.01 }}
-                  className="bg-gradient-to-br from-white to-gray-50 rounded-2xl p-8 border-2 border-gray-100 hover:border-gray-200 transition-all shadow-lg"
+                  className="bg-gradient-to-br from-white to-gray-50 rounded-2xl p-4 md:p-8 border-2 border-gray-100 hover:border-gray-200 transition-all shadow-lg"
                 >
-                  <h4 className="font-bold text-gray-900 text-lg mb-6">Notification Preferences</h4>
+                  <h4 className="font-bold text-gray-900 text-base md:text-lg mb-4 md:mb-6">Store Contact Information</h4>
                   <div className="space-y-4">
-                    <label className="flex items-center gap-3 cursor-pointer group">
-                      <input 
-                        type="checkbox" 
-                        defaultChecked 
-                        onChange={() => setSettingsChanged(true)}
-                        className="w-5 h-5 text-[#ff6fb3] rounded focus:ring-[#ff6fb3]" 
-                      />
-                      <span className="text-gray-700 font-medium group-hover:text-gray-900 transition-colors">Email me when a new order is placed</span>
-                    </label>
-                    <label className="flex items-center gap-3 cursor-pointer group">
-                      <input 
-                        type="checkbox" 
-                        defaultChecked 
-                        onChange={() => setSettingsChanged(true)}
-                        className="w-5 h-5 text-[#ff6fb3] rounded focus:ring-[#ff6fb3]" 
-                      />
-                      <span className="text-gray-700 font-medium group-hover:text-gray-900 transition-colors">Weekly performance summary</span>
-                    </label>
-                    <label className="flex items-center gap-3 cursor-pointer group">
-                      <input 
-                        type="checkbox" 
-                        onChange={() => setSettingsChanged(true)}
-                        className="w-5 h-5 text-[#ff6fb3] rounded focus:ring-[#ff6fb3]" 
-                      />
-                      <span className="text-gray-700 font-medium group-hover:text-gray-900 transition-colors">Product rotation updates</span>
-                    </label>
+                    <div>
+                      <label className="block text-sm font-bold text-gray-700 mb-2">Manager Name</label>
+                      <div className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl bg-gray-50 text-gray-900">
+                        {retailer?.manager_name || 'Not set'}
+                      </div>
+                    </div>
+                    <div>
+                      <label className="block text-sm font-bold text-gray-700 mb-2">Store Phone</label>
+                      <div className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl bg-gray-50 text-gray-900">
+                        {retailer?.phone || retailer?.store_phone || 'Not set'}
+                      </div>
+                    </div>
+                    <div>
+                      <label className="block text-sm font-bold text-gray-700 mb-2">Store Email</label>
+                      <div className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl bg-gray-50 text-gray-900">
+                        {retailer?.email || 'Not set'}
+                      </div>
+                    </div>
+                    <p className="text-xs text-gray-500">We use this information to send updates about your displays and payouts</p>
                   </div>
                 </motion.div>
 
-                {/* Payout Settings */}
-                <motion.div 
+                {/* Account Actions */}
+                <motion.div
                   whileHover={{ scale: 1.01 }}
-                  className="bg-gradient-to-br from-white to-gray-50 rounded-2xl p-8 border-2 border-gray-100 hover:border-gray-200 transition-all shadow-lg"
+                  className="bg-gradient-to-br from-white to-gray-50 rounded-2xl p-4 md:p-8 border-2 border-gray-100 hover:border-gray-200 transition-all shadow-lg"
                 >
-                  <h4 className="font-bold text-gray-900 text-lg mb-6">Payout Settings</h4>
-                  <div className="space-y-4">
+                  <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                     <div>
-                      <label className="block text-sm font-bold text-gray-700 mb-2">Payout Method</label>
-                      <select 
-                        onChange={() => setSettingsChanged(true)}
-                        className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-[#ff6fb3] focus:border-transparent transition-all"
-                      >
-                        <option>Bank Transfer (ACH)</option>
-                        <option>PayPal</option>
-                        <option>Stripe</option>
-                      </select>
+                      <h4 className="font-bold text-gray-900 text-base md:text-lg mb-2">Account</h4>
+                      <p className="text-sm text-gray-600">Sign out to switch accounts or end your session securely.</p>
                     </div>
-                    <div>
-                      <label className="block text-sm font-bold text-gray-700 mb-2">Payout Frequency</label>
-                      <select 
-                        onChange={() => setSettingsChanged(true)}
-                        className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-[#ff6fb3] focus:border-transparent transition-all"
-                      >
-                        <option>Weekly</option>
-                        <option>Bi-weekly</option>
-                        <option>Monthly</option>
-                      </select>
-                    </div>
+                    <button
+                      onClick={() => signOut()}
+                      className="px-6 py-3 font-bold text-gray-700 hover:text-gray-900 transition-all rounded-2xl border-2 border-gray-300/80 hover:border-gray-400 bg-white/80 backdrop-blur-sm hover:bg-white/90 shadow-sm hover:shadow-md"
+                    >
+                      Sign Out
+                    </button>
                   </div>
                 </motion.div>
 
@@ -1247,6 +1579,55 @@ export default function RetailerDashboard() {
             )}
           </div>
       </div>
+
+      {/* Remove Bank Confirmation Modal */}
+      <AnimatePresence>
+        {showRemoveConfirm && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+            onClick={() => setShowRemoveConfirm(false)}
+          >
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 20 }}
+              onClick={(e) => e.stopPropagation()}
+              className="bg-white rounded-3xl shadow-2xl max-w-md w-full p-6 md:p-8 border-2 border-gray-100"
+            >
+              <div className="flex items-center justify-center w-16 h-16 bg-red-100 rounded-full mx-auto mb-4">
+                <svg className="w-8 h-8 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                </svg>
+              </div>
+              <h3 className="text-xl md:text-2xl font-bold text-gray-900 text-center mb-2">Remove Bank Account?</h3>
+              <p className="text-sm md:text-base text-gray-600 text-center mb-6">
+                This will disconnect your bank account. Your payout history will be preserved, but you won't be able to receive new payouts until you connect a new bank account.
+              </p>
+              <div className="flex gap-3">
+                <motion.button
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  onClick={() => setShowRemoveConfirm(false)}
+                  className="flex-1 px-6 py-3 border-2 border-gray-200 text-gray-700 rounded-2xl font-bold hover:bg-gray-50 transition-all"
+                >
+                  Cancel
+                </motion.button>
+                <motion.button
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  onClick={handleRemoveBank}
+                  className="flex-1 px-6 py-3 bg-gradient-to-r from-red-500 to-red-600 text-white rounded-2xl font-bold hover:shadow-lg transition-all"
+                >
+                  Remove Bank
+                </motion.button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Toast Notification */}
       <AnimatePresence>

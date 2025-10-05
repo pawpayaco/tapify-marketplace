@@ -230,6 +230,8 @@ export default function Admin({
   const router = useRouter();
   const [mounted, setMounted] = useState(false);
   const [tab, setTab] = useState("Vendors");
+  const [previousTabIndex, setPreviousTabIndex] = useState(0);
+  const [tabDirection, setTabDirection] = useState(0);
   const [q, setQ] = useState("");
   const [filter, setFilter] = useState("all");
   const [payouts, setPayouts] = useState([]);
@@ -337,6 +339,18 @@ export default function Admin({
   const showToast = (message, type = 'success') => {
     setToast({ message, type });
     setTimeout(() => setToast(null), 3000);
+  };
+
+  // Handle tab change with direction calculation
+  const handleTabChange = (newTab) => {
+    const currentIndex = TABS.indexOf(tab);
+    const newIndex = TABS.indexOf(newTab);
+
+    // Calculate direction: positive = right to left, negative = left to right
+    const direction = newIndex > currentIndex ? 1 : -1;
+    setTabDirection(direction);
+    setPreviousTabIndex(currentIndex);
+    setTab(newTab);
   };
 
   // Process individual payout
@@ -540,29 +554,36 @@ export default function Admin({
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
 
         {/* Tabs */}
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.4 }}
-          className="bg-white rounded-3xl shadow-xl border-2 border-gray-100 p-4 mb-6"
+          className="mb-6"
         >
-          <div className="flex flex-wrap gap-3">
+          <div className="flex gap-2 border-b-2 border-gray-200 overflow-x-auto">
             {TABS.map((t) => {
               const active = tab === t;
               return (
                 <motion.button
                   key={t}
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  onClick={() => setTab(t)}
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  onClick={() => handleTabChange(t)}
                   className={[
-                    "rounded-2xl px-6 py-3 text-sm font-bold transition-all",
+                    "px-4 py-3 md:px-6 text-xs md:text-sm font-bold transition-all relative whitespace-nowrap",
                     active
-                      ? "bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3] text-white shadow-lg"
-                      : "text-gray-700 hover:bg-gray-100 border-2 border-gray-200",
+                      ? "text-[#ff6fb3]"
+                      : "text-gray-600 hover:text-gray-900",
                   ].join(" ")}
                 >
                   {t}
+                  {active && (
+                    <motion.div
+                      layoutId="adminActiveTab"
+                      className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3]"
+                      transition={{ type: "spring", stiffness: 380, damping: 30 }}
+                    />
+                  )}
                 </motion.button>
               );
             })}
@@ -615,8 +636,8 @@ export default function Admin({
         {/* Content */}
         <motion.div
           key={tab}
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
+          initial={{ opacity: 0, x: tabDirection * 20 }}
+          animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.4 }}
         >
           {tab === "Vendors" && (

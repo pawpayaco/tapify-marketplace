@@ -64,8 +64,28 @@ export async function completePlaidDwollaLink({
   email,
   user,
 }) {
+  console.log('[PLAID-DWOLLA-LINK] Starting with params:', {
+    has_public_token: !!public_token,
+    account_id,
+    account_type,
+    entity_id,
+    name,
+    email: email || 'generated',
+  });
+
   if (!supabaseAdmin) {
     throw new Error('Supabase admin client not configured');
+  }
+
+  // Validate environment variables
+  if (!env.PLAID_CLIENT_ID || !env.PLAID_SECRET) {
+    console.error('[PLAID-DWOLLA-LINK] Missing Plaid credentials');
+    throw new Error('Plaid credentials not configured');
+  }
+
+  if (!env.DWOLLA_KEY || !env.DWOLLA_SECRET) {
+    console.error('[PLAID-DWOLLA-LINK] Missing Dwolla credentials');
+    throw new Error('Dwolla credentials not configured');
   }
 
   const table = ACCOUNT_TABLE[account_type];
@@ -87,12 +107,21 @@ export async function completePlaidDwollaLink({
   const exchangeJson = await plaidExchange.json();
 
   if (!plaidExchange.ok) {
+    console.error('[PLAID] itemPublicTokenExchange failed', {
+      status: plaidExchange.status,
+      statusText: plaidExchange.statusText,
+      error: exchangeJson,
+      plaid_env: env.PLAID_ENV,
+      base_url: PLAID_BASE_URL,
+    });
     throw new Error(exchangeJson?.error_message || 'Plaid token exchange failed');
   }
 
+  console.log('[PLAID] Successfully exchanged public token for access token');
+
   const access_token = exchangeJson.access_token;
 
-  const processorResp = await fetch(`${PLAID_BASE_URL}/processor/dwolla/bank_account_token/create`, {
+  const processorResp = await fetch(`${PLAID_BASE_URL}/processor/dwolla/processor_token/create`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
@@ -106,8 +135,16 @@ export async function completePlaidDwollaLink({
   const processorJson = await processorResp.json();
 
   if (!processorResp.ok) {
+    console.error('[PLAID] Processor token creation failed', {
+      status: processorResp.status,
+      statusText: processorResp.statusText,
+      error: processorJson,
+      account_id,
+    });
     throw new Error(processorJson?.error_message || 'Failed to create Plaid processor token');
   }
+
+  console.log('[PLAID] Successfully created Dwolla processor token');
 
   const processor_token = processorJson.processor_token;
 
@@ -124,8 +161,15 @@ export async function completePlaidDwollaLink({
   const dwollaTokenJson = await dwollaTokenResp.json();
 
   if (!dwollaTokenResp.ok) {
+    console.error('[DWOLLA] Authentication failed', {
+      status: dwollaTokenResp.status,
+      error: dwollaTokenJson,
+      base_url: DWOLLA_BASE_URL,
+    });
     throw new Error(dwollaTokenJson?.error_description || 'Failed to authenticate with Dwolla');
   }
+
+  console.log('[DWOLLA] Successfully authenticated');
 
   const dwollaAccessToken = dwollaTokenJson.access_token;
 
@@ -140,7 +184,8 @@ export async function completePlaidDwollaLink({
   const customerResp = await fetch(`${DWOLLA_BASE_URL}/customers`, {
     method: 'POST',
     headers: {
-      'Content-Type': 'application/json',
+      'Content-Type': 'application/vnd.dwolla.v1.hal+json',
+      'Accept': 'application/vnd.dwolla.v1.hal+json',
       Authorization: `Bearer ${dwollaAccessToken}`,
     },
     body: JSON.stringify({
@@ -154,17 +199,65 @@ export async function completePlaidDwollaLink({
 
   const customerLocation = customerResp.headers.get('location');
 
+  let dwolla_customer_id;
+
   if (!customerLocation) {
     const errorJson = await customerResp.json().catch(() => ({}));
-    throw new Error(errorJson?.message || 'Failed to create Dwolla customer');
-  }
 
-  const dwolla_customer_id = customerLocation.split('/').pop();
+    // Check if customer already exists (duplicate email error)
+    const isDuplicate = errorJson?._embedded?.errors?.some(
+      (err) => err.code === 'Duplicate' || err.message?.toLowerCase().includes('duplicate')
+    );
+
+    if (isDuplicate) {
+      console.log('[DWOLLA] Customer already exists, searching for existing customer');
+
+      // Search for existing customer by email
+      const searchResp = await fetch(
+        `${DWOLLA_BASE_URL}/customers?email=${encodeURIComponent(email || `${entity_id}@tapify.local`)}`,
+        {
+          method: 'GET',
+          headers: {
+            'Accept': 'application/vnd.dwolla.v1.hal+json',
+            Authorization: `Bearer ${dwollaAccessToken}`,
+          },
+        }
+      );
+
+      if (searchResp.ok) {
+        const searchJson = await searchResp.json();
+        const existingCustomer = searchJson._embedded?.customers?.[0];
+
+        if (existingCustomer) {
+          dwolla_customer_id = existingCustomer.id;
+          console.log('[DWOLLA] Found existing customer', { dwolla_customer_id });
+        } else {
+          throw new Error('Customer exists but could not be found');
+        }
+      } else {
+        throw new Error('Failed to search for existing customer');
+      }
+    } else {
+      console.error('[DWOLLA] Customer creation failed', {
+        status: customerResp.status,
+        error: errorJson,
+        embedded_errors: errorJson?._embedded?.errors,
+        firstName: firstNameValue,
+        lastName: lastNameValue,
+        email: email || `${entity_id}@tapify.local`,
+      });
+      throw new Error(errorJson?.message || 'Failed to create Dwolla customer');
+    }
+  } else {
+    console.log('[DWOLLA] Successfully created customer', { location: customerLocation });
+    dwolla_customer_id = customerLocation.split('/').pop();
+  }
 
   const fundingResp = await fetch(`${DWOLLA_BASE_URL}/customers/${dwolla_customer_id}/funding-sources`, {
     method: 'POST',
     headers: {
-      'Content-Type': 'application/json',
+      'Content-Type': 'application/vnd.dwolla.v1.hal+json',
+      'Accept': 'application/vnd.dwolla.v1.hal+json',
       Authorization: `Bearer ${dwollaAccessToken}`,
     },
     body: JSON.stringify({
@@ -175,12 +268,37 @@ export async function completePlaidDwollaLink({
 
   const fundingLocation = fundingResp.headers.get('location');
 
+  let dwolla_funding_source_id;
+
   if (!fundingLocation) {
     const errorJson = await fundingResp.json().catch(() => ({}));
-    throw new Error(errorJson?.message || 'Failed to attach Dwolla funding source');
-  }
 
-  const dwolla_funding_source_id = fundingLocation.split('/').pop();
+    // Check if funding source already exists (duplicate bank error)
+    const isDuplicateBank = errorJson?.code === 'DuplicateResource' ||
+                           errorJson?.message?.toLowerCase().includes('bank already exists');
+
+    if (isDuplicateBank) {
+      // Extract existing funding source ID from error message
+      const match = errorJson?.message?.match(/id=([a-f0-9-]+)/);
+      if (match) {
+        dwolla_funding_source_id = match[1];
+        console.log('[DWOLLA] Funding source already exists, reusing it', { dwolla_funding_source_id });
+      } else {
+        console.error('[DWOLLA] Duplicate bank but could not extract ID from error');
+        throw new Error('Bank account already connected to this customer');
+      }
+    } else {
+      console.error('[DWOLLA] Funding source attachment failed', {
+        status: fundingResp.status,
+        error: errorJson,
+        dwolla_customer_id,
+      });
+      throw new Error(errorJson?.message || 'Failed to attach Dwolla funding source');
+    }
+  } else {
+    console.log('[DWOLLA] Successfully attached funding source', { location: fundingLocation });
+    dwolla_funding_source_id = fundingLocation.split('/').pop();
+  }
 
   const idColumn = `${account_type}_id`;
 

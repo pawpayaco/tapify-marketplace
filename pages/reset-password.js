@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/router';
 import { supabase } from '../lib/supabase';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 
 export default function ResetPassword() {
   const router = useRouter();
@@ -77,21 +77,30 @@ export default function ResetPassword() {
           </div>
 
           {/* Form */}
-          <form onSubmit={handleResetPassword} className="space-y-6">
-            <div>
-              <label htmlFor="email" className="block text-sm font-bold text-gray-700 mb-2">
-                Email Address
-              </label>
-              <input
-                type="email"
-                id="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-                className="w-full px-4 py-3 rounded-2xl border-2 border-gray-200 outline-none focus:ring-2 focus:ring-[#ff6fb3] focus:border-transparent transition-all"
-                placeholder="you@example.com"
-              />
-            </div>
+          <AnimatePresence mode="wait">
+            <motion.form
+              key="reset-form"
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -20 }}
+              transition={{ duration: 0.3 }}
+              onSubmit={handleResetPassword}
+              className="space-y-6"
+            >
+              <div>
+                <label htmlFor="email" className="block text-sm font-bold text-gray-700 mb-2">
+                  Email Address
+                </label>
+                <input
+                  type="email"
+                  id="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                  className="w-full px-4 py-3 rounded-2xl border-2 border-gray-200 outline-none focus:ring-2 focus:ring-[#ff6fb3] focus:border-transparent transition-all"
+                  placeholder="you@example.com"
+                />
+              </div>
 
             {/* Success Message */}
             {message && (
@@ -139,20 +148,21 @@ export default function ResetPassword() {
               )}
             </motion.button>
 
-            {/* Back to Login */}
-            <div className="text-center">
-              <button
-                type="button"
-                onClick={() => router.push('/login')}
-                className="text-sm text-gray-600 hover:text-[#ff6fb3] font-medium inline-flex items-center gap-2"
-              >
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-                </svg>
-                Back to login
-              </button>
-            </div>
-          </form>
+              {/* Back to Login */}
+              <div className="text-center">
+                <button
+                  type="button"
+                  onClick={() => router.push('/login')}
+                  className="text-sm text-gray-600 hover:text-[#ff6fb3] font-medium inline-flex items-center gap-2"
+                >
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                  </svg>
+                  Back to login
+                </button>
+              </div>
+            </motion.form>
+          </AnimatePresence>
         </motion.div>
 
         {/* Footer */}

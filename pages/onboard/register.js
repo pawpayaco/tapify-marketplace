@@ -430,6 +430,62 @@ export default function RegisterRetailer() {
     }
   };
 
+  const impactHighlights = [
+    {
+      icon: '🐾',
+      title: 'Inventory-Free Growth',
+      description: 'We ship a fully branded Pawpaya display with tactile samples—no wholesale order or in-store inventory required.',
+      gradient: 'from-[#ff7a4a] to-[#ff6fb3]'
+    },
+    {
+      icon: '📈',
+      title: 'Commission on Autopilot',
+      description: 'Every NFC or QR scan routes through Tapify so sales are tracked to your store and paid out automatically each month.',
+      gradient: 'from-blue-500 to-purple-500'
+    },
+    {
+      icon: '🚚',
+      title: 'Tapify Ops Handles It',
+      description: 'Printing, packaging, and shipping are covered by our team—with optional express delivery if you need it faster.',
+      gradient: 'from-purple-500 to-pink-500'
+    },
+    {
+      icon: '🗺️',
+      title: 'Multi-Location Ready',
+      description: 'Add every franchise location in one submission and we coordinate shipping, tracking, and analytics per store.',
+      gradient: 'from-emerald-400 to-green-500'
+    }
+  ];
+
+  const nextSteps = [
+    {
+      title: 'Owner Verification',
+      timing: 'Within 24 hours',
+      description: 'We match your submission to the Pet Supplies Plus record in our system so payouts route to the correct business entity.'
+    },
+    {
+      title: 'Display Goes to Print',
+      timing: 'Day 1-2',
+      description: 'Tapify prints and assembles your Pawpaya display with curated collars and signage that showcase the offer in-store.'
+    },
+    {
+      title: 'Shipping & Tracking',
+      timing: 'Day 3-5',
+      description: 'Standard shipping is free. Need it sooner? Select express shipping in the form and we fast-track fulfillment.'
+    },
+    {
+      title: 'Place, Scan & Earn',
+      timing: 'Launch Week',
+      description: 'Set the display near checkout. Customers tap or scan, order online, and Tapify handles payouts and analytics automatically.'
+    }
+  ];
+
+  const trustBadges = [
+    { icon: '🛡️', label: 'No inventory or credit card required' },
+    { icon: '📊', label: 'Realtime Tapify analytics & payouts' },
+    { icon: '🏬', label: 'Purpose-built for Pet Supplies Plus franchises' }
+  ];
+
   return (
     <div className="min-h-screen pt-28 pb-12 px-4 sm:px-6 lg:px-8 relative overflow-hidden" style={{ backgroundColor: '#faf8f3' }}>
       {/* Background decorations */}
@@ -462,131 +518,173 @@ export default function RegisterRetailer() {
             transition={{ duration: 0.6 }}
             className="lg:sticky lg:top-8 space-y-6"
           >
-            {/* Header with Badge */}
-            <div className="text-center lg:text-left">
-              <motion.div 
-                initial={{ scale: 0.8, opacity: 0 }}
+            {/* Step Indicator + Hero */}
+            <div className="text-center lg:text-left space-y-6">
+              <motion.div
+                initial={{ scale: 0.85, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
                 transition={{ duration: 0.5, delay: 0.2 }}
-                className="inline-block bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3] text-white px-6 py-3 rounded-full text-sm font-bold mb-6 shadow-2xl"
+                className="inline-flex flex-wrap items-center gap-3 bg-white/80 backdrop-blur-sm border border-white/80 shadow-xl px-5 py-3 rounded-full text-xs font-bold uppercase tracking-wider text-gray-600"
               >
-                🎁 Limited Offer - Free Display
+                <span className="text-[#ff6fb3]">Step 3 of 4</span>
+                <span className="text-gray-500">Franchise Owner Onboarding</span>
               </motion.div>
-              <motion.h1 
+              <motion.h1
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: 0.3 }}
-                className="text-5xl md:text-6xl lg:text-7xl font-black text-gray-900 mb-6 leading-none"
+                className="text-4xl md:text-5xl lg:text-6xl font-black text-gray-900 leading-tight"
               >
-                Claim Your<br />
-                <span className="bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3] bg-clip-text text-transparent">
-                  Free Display
-                </span>
+                Finalize Your Pawpaya Rollout
               </motion.h1>
-              <motion.p 
+              <motion.p
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: 0.4 }}
-                className="text-2xl text-gray-600 font-medium"
+                transition={{ duration: 0.5, delay: 0.35 }}
+                className="text-lg md:text-xl text-gray-600 font-medium max-w-2xl"
               >
-                Worth <span className="line-through text-gray-400">$50</span>{' '}
-                <span className="font-black text-green-600">FREE</span>
+                Confirm your franchise location so our team can ship the inventory-free Pawpaya display and link every tap to your store’s payouts automatically.
               </motion.p>
+              <motion.div
+                initial={{ opacity: 0, y: 25 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 0.45 }}
+                className="bg-white/70 border border-white/80 rounded-3xl p-6 shadow-lg backdrop-blur"
+              >
+                <div className="flex items-center justify-between text-xs uppercase font-bold tracking-wider text-gray-500">
+                  <span>Onboarding Progress</span>
+                  <span>Step 3 · Owner Approval</span>
+                </div>
+                <div className="mt-4 h-2 bg-gray-200 rounded-full overflow-hidden">
+                  <div
+                    className="h-full bg-gradient-to-r from-[#ff7a4a] via-[#ff6fb3] to-purple-500 rounded-full"
+                    style={{ width: '75%' }}
+                  />
+                </div>
+                <p className="mt-4 text-xs text-gray-500 font-medium">
+                  This step locks in franchise-level approval so Tapify can release shipments, analytics access, and payouts for your locations.
+                </p>
+              </motion.div>
             </div>
 
-            {/* Big Value Props */}
-            <motion.div 
+            {/* Impact Highlights */}
+            <motion.div
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.5 }}
-              className="space-y-4"
+              transition={{ duration: 0.6, delay: 0.55 }}
+              className="grid sm:grid-cols-2 gap-4"
             >
-              {[
-                { emoji: '🎁', title: 'Free NFC Display', subtitle: '$299 Value • 2-4 Curated Products', gradient: 'from-[#ff7a4a] to-[#ff6fb3]' },
-                { emoji: '📦', title: 'Free Shipping', subtitle: '5-7 Business Days • Track Every Step', gradient: 'from-blue-400 to-purple-500' },
-                { emoji: '💰', title: 'Start Earning', subtitle: 'Commission on Every Sale • Paid Monthly', gradient: 'from-purple-400 to-pink-500' },
-                { emoji: '🔄', title: 'Monthly Rotations', subtitle: 'Fresh Products • Keep Customers Engaged', gradient: 'from-pink-400 to-[#ff6fb3]' },
-                ].map((item, idx) => (
+              {impactHighlights.map((item, idx) => (
                 <motion.div
-                    key={idx}
-                  initial={{ opacity: 0, x: -30 }}
+                  key={item.title}
+                  initial={{ opacity: 0, x: -25 }}
                   animate={{ opacity: 1, x: 0 }}
-                  transition={{ duration: 0.5, delay: 0.6 + idx * 0.1 }}
-                  className="bg-white rounded-2xl p-6 shadow-xl border-2 border-gray-100 flex items-center gap-4"
+                  transition={{ duration: 0.45, delay: 0.6 + idx * 0.08 }}
+                  className="bg-white rounded-3xl p-6 shadow-xl border border-gray-100 flex flex-col gap-4"
                 >
-                  <div className={`w-16 h-16 rounded-2xl bg-gradient-to-br ${item.gradient} flex items-center justify-center text-3xl flex-shrink-0 shadow-lg`}>
-                    {item.emoji}
-                  </div>
-                  <div>
-                    <div className="font-bold text-xl text-gray-900">{item.title}</div>
-                    <div className="text-sm text-gray-600">{item.subtitle}</div>
+                  <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${item.gradient} flex items-center justify-center text-2xl text-white shadow-lg`}>{item.icon}</div>
+                  <div className="space-y-2">
+                    <div className="font-bold text-lg text-gray-900">{item.title}</div>
+                    <p className="text-sm text-gray-600 leading-relaxed">{item.description}</p>
                   </div>
                 </motion.div>
               ))}
             </motion.div>
 
-            {/* Product Shots Grid */}
-            <motion.div 
+            {/* Display Preview */}
+            <motion.div
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.8 }}
-              className="bg-gradient-to-br from-orange-50 via-pink-50 to-purple-50 rounded-2xl p-6 shadow-xl border border-white/20"
+              transition={{ duration: 0.6, delay: 0.75 }}
+              className="bg-gradient-to-br from-orange-50 via-pink-50 to-purple-50 rounded-3xl p-6 shadow-xl border border-white/40"
             >
-              <h3 className="text-lg font-bold text-gray-900 mb-6 text-center tracking-wide">Display you'll receive free</h3>
-              <ImageModalGallery 
+              <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6 text-center md:text-left">
+                <div>
+                  <h3 className="text-xl font-black text-gray-900">Meet the Pawpaya Display</h3>
+                  <p className="text-sm text-gray-600 mt-1">Printed, packed, and shipped by Tapify—arrives ready for your checkout counter.</p>
+                </div>
+                <div className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wide text-[#ff6fb3] bg-white/60 px-4 py-2 rounded-full">
+                  <span>Real production photos</span>
+                </div>
+              </div>
+              <ImageModalGallery
                 images={[
-                  { src: "/images/image28.jpg", alt: "Product display 28" },
-                  { src: "/images/image29.jpg", alt: "Product display 29" },
-                  { src: "/images/image30.jpg", alt: "Product display 30" }
+                  { src: "/images/image28.jpg", alt: "Pawpaya display hero angle" },
+                  { src: "/images/image29.jpg", alt: "Pawpaya display close up" },
+                  { src: "/images/image30.jpg", alt: "Pawpaya display lifestyle" }
                 ]}
               />
             </motion.div>
 
-            {/* Big CTA Box */}
-            <motion.div 
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.6, delay: 1 }}
-              className="bg-gradient-to-br from-[#ff7a4a] via-[#ff6fb3] to-purple-600 rounded-3xl p-8 shadow-2xl relative overflow-hidden"
+            {/* What Happens Next */}
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.85 }}
+              className="bg-white rounded-3xl p-8 shadow-2xl border border-gray-100"
             >
-              {/* Animated background */}
-              <div className="absolute inset-0">
-                <motion.div
-                  animate={{ 
-                    scale: [1, 1.2, 1],
-                    rotate: [0, 180, 0]
-                  }}
-                  transition={{ duration: 10, repeat: Infinity }}
-                  className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full blur-2xl"
-                />
+              <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
+                <div className="flex items-center gap-4">
+                  <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-[#ff7a4a] to-[#ff6fb3] flex items-center justify-center text-2xl text-white shadow-lg">⏱️</div>
+                  <div>
+                    <h3 className="text-2xl font-black text-gray-900">What happens after you submit</h3>
+                    <p className="text-sm text-gray-600">A franchise-ready operational timeline so you know exactly when to expect your display.</p>
+                  </div>
+                </div>
+                <div className="text-xs font-bold uppercase tracking-wide text-gray-400">Total time: ~1 week</div>
               </div>
-              
-              <div className="relative z-10 text-center text-white">
-                <div className="text-5xl mb-4">🎄🎁✨</div>
-                <div className="text-2xl font-black mb-2">The perfect gift for pets</div>
-                <div className="text-lg opacity-90">Q4 is our highest earning period - pet gifts are in high demand</div>
+              <div className="space-y-6">
+                {nextSteps.map((step, idx) => (
+                  <div
+                    key={step.title}
+                    className="relative pl-12 border-l border-dashed border-pink-100 pb-6 last:pb-0 last:border-none"
+                  >
+                    <div className="absolute -left-[22px] top-0 w-11 h-11 rounded-full bg-gradient-to-br from-[#ff7a4a] to-[#ff6fb3] text-white font-bold flex items-center justify-center shadow-lg">
+                      {idx + 1}
+                    </div>
+                    <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-2">
+                      <h4 className="font-bold text-lg text-gray-900">{step.title}</h4>
+                      <span className="text-xs font-bold uppercase tracking-wide text-[#ff6fb3]">{step.timing}</span>
+                    </div>
+                    <p className="text-sm text-gray-600 mt-2 leading-relaxed">{step.description}</p>
+                  </div>
+                ))}
               </div>
             </motion.div>
 
-            {/* Trust Badges */}
-            <motion.div 
+            {/* Manager Referral Callout */}
+            <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 1.2 }}
-              className="flex items-center justify-center gap-6 pt-4"
+              transition={{ duration: 0.6, delay: 0.95 }}
+              className="bg-gradient-to-br from-green-50 via-emerald-50 to-green-100 border border-green-200 rounded-3xl p-6 shadow-xl"
             >
-              {[
-                { icon: '🔒', text: 'Secure' },
-                { icon: '✓', text: 'No CC Required' },
-                { icon: '⚡', text: 'Fast Setup' },
-              ].map((badge, idx) => (
+              <div className="flex flex-col sm:flex-row gap-4 sm:items-center">
+                <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-green-400 to-emerald-500 flex items-center justify-center text-white text-2xl shadow-lg">🤝</div>
+                <div className="space-y-1">
+                  <h3 className="text-lg font-black text-green-700">Reserved by your store manager</h3>
+                  <p className="text-sm text-green-700/80 leading-relaxed">
+                    Your manager already flagged this opportunity from the Tapify manager funnel. Completing the form below confirms owner approval so we can release the Pawpaya display and reward the manager referral.
+                  </p>
+                </div>
+              </div>
+            </motion.div>
+
+            {/* Trust & Assurance Badges */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 1.05 }}
+              className="flex flex-wrap items-center justify-center gap-4 pt-2"
+            >
+              {trustBadges.map((badge) => (
                 <motion.div
-                    key={idx}
-                  whileHover={{ scale: 1.1, y: -5 }}
-                  className="flex flex-col items-center gap-1"
+                  key={badge.label}
+                  whileHover={{ scale: 1.05, y: -4 }}
+                  className="flex items-center gap-2 bg-white/80 border border-white/70 rounded-full px-4 py-2 shadow-md text-xs font-bold uppercase tracking-wide text-gray-600"
                 >
-                  <div className="text-3xl">{badge.icon}</div>
-                  <div className="text-xs font-bold text-gray-600">{badge.text}</div>
+                  <span className="text-lg">{badge.icon}</span>
+                  <span>{badge.label}</span>
                 </motion.div>
               ))}
             </motion.div>
@@ -609,7 +707,7 @@ export default function RegisterRetailer() {
                 </div>
                 <div>
                   <h2 className="text-3xl font-bold text-gray-900 mb-1">Registration Form</h2>
-                  <p className="text-gray-600 text-base">Let's get your business set up</p>
+                  <p className="text-gray-600 text-base">Let's make you more money.</p>
                 </div>
               </div>
             </div>
@@ -1114,7 +1212,8 @@ export default function RegisterRetailer() {
                   <svg className="w-5 h-5 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
                   </svg>
-                  Add Another Store Location
+                  <span className="md:hidden">Add Another Store</span>
+                  <span className="hidden md:inline">Add Another Retail Location</span>
                 </button>
 
               </motion.div>

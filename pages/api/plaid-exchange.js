@@ -31,10 +31,24 @@ export default async function handler(req, res) {
   const resolvedAccountId = fallback(account_id, metadata?.account_id, metadata?.accounts?.[0]?.id);
   const resolvedAccountType = (account_type || metadata?.account_type || 'retailer').toLowerCase();
   const resolvedEntityId = fallback(entity_id, retailer_id, metadata?.entity_id);
-  const resolvedName = fallback(name, metadata?.account?.name, metadata?.legal_name);
+  const resolvedName = fallback(name, metadata?.account?.name, metadata?.institution?.name);
   const resolvedEmail = fallback(email, metadata?.user?.email);
 
+  console.log('[PLAID-EXCHANGE] Request params:', {
+    has_public_token: !!public_token,
+    resolvedAccountId,
+    resolvedAccountType,
+    resolvedEntityId,
+    resolvedName,
+    resolvedEmail,
+  });
+
   if (!public_token || !resolvedAccountId || !resolvedEntityId) {
+    console.error('[PLAID-EXCHANGE] Missing required parameters:', {
+      has_public_token: !!public_token,
+      has_account_id: !!resolvedAccountId,
+      has_entity_id: !!resolvedEntityId,
+    });
     return res.status(400).json({ error: 'Missing required Plaid parameters' });
   }
 
