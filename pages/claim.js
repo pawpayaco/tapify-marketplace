@@ -66,10 +66,14 @@ export default function ConnectPage() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center px-6 pt-20 pb-12 bg-white">
-      <div className="max-w-lg w-full">
-        {/* Header */}
-        <div className="text-center mb-8">
+    <div className="min-h-screen" style={{ backgroundColor: '#faf8f3' }}>
+      {/* Soft background gradient */}
+      <div className="absolute inset-0 bg-gradient-to-b from-[#FFF3E8] to-transparent h-[400px] pointer-events-none"></div>
+
+      <div className="flex flex-col items-center px-6 pt-28 md:pt-32 pb-12 relative">
+        <div className="max-w-lg w-full">
+          {/* Header */}
+          <div className="text-center mb-8">
           <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-2">
             Connect your Display
           </h1>
@@ -85,13 +89,13 @@ export default function ConnectPage() {
             placeholder="Search your business name"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full px-5 py-2.5 
-             rounded-full 
-             bg-gray-100 
-             text-gray-900 placeholder-gray-500
-             border border-gray-200
-             focus:outline-none focus:ring-0 focus:border-gray-300
-             transition"
+            className="w-full px-4 py-3
+             rounded-2xl
+             bg-white
+             text-gray-900 placeholder-gray-400
+             border-2 border-gray-200
+             outline-none focus:ring-2 focus:ring-[#ff6fb3] focus:border-transparent
+             transition-all"
           />
         </div>
 
@@ -104,7 +108,7 @@ export default function ConnectPage() {
             .map((biz, idx) => (
               <div
                 key={biz.id}
-                className="flex justify-between items-center bg-white rounded-2xl shadow-md border border-gray-100 p-5 hover:shadow-lg transition-all"
+                className="flex justify-between items-center bg-white rounded-3xl shadow-xl border-2 border-gray-100 p-5 hover:shadow-2xl transition-all"
               >
                 <div>
                   <p className="font-semibold text-gray-900">{biz.name}</p>
@@ -115,10 +119,10 @@ export default function ConnectPage() {
                 <button
                   disabled={biz.is_connected || loading || connectedId === biz.id}
                   onClick={() => handleConnect(biz.id)}
-                  className={`px-5 py-2.5 rounded-full font-semibold text-sm transition-all ${
+                  className={`px-5 py-2.5 rounded-2xl font-bold text-sm transition-all ${
                     biz.is_connected || connectedId === biz.id
                       ? "bg-gray-200 text-gray-500 cursor-not-allowed"
-                      : "bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3] text-white shadow hover:shadow-lg hover:scale-105 active:scale-95"
+                      : "bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3] text-white shadow-lg hover:shadow-xl hover:scale-105 active:scale-95"
                   }`}
                 >
                   {connectedId === biz.id
@@ -134,7 +138,7 @@ export default function ConnectPage() {
           {businesses.filter((b) =>
             b.name.toLowerCase().includes(search.toLowerCase())
           ).length === 0 && (
-            <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-6 text-center text-gray-500">
+            <div className="bg-white rounded-3xl border-2 border-gray-200 shadow-xl p-6 text-center text-gray-500">
               No results found.
             </div>
           )}
@@ -146,6 +150,7 @@ export default function ConnectPage() {
             {error}
           </p>
         )}
+        </div>
       </div>
     </div>
   );
