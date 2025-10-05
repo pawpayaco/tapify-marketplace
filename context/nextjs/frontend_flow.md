@@ -1,29 +1,29 @@
-# =€ Next.js Frontend Flow & Routing
+# =ï¿½ Next.js Frontend Flow & Routing
 
 Documents user journeys, page navigation patterns, and how users move through the Tapify platform from landing to dashboard.
 
 ---
 
-## =¡ Purpose
+## =ï¿½ Purpose
 This file maps the entire frontend user experience, explaining how pages connect, what data flows between them, and how the onboarding funnels convert visitors into retailers or vendors.
 
 ---
 
-## <à Landing Page  `/` (index.js)
+## <ï¿½ Landing Page  `/` (index.js)
 
 **Purpose:** Marketing landing page for Pawpaya displays targeting retailers.
 
 **Content:**
 - Hero section with Pawpaya branding and value proposition
 - Product showcase (Friendship Collars, DIY Boxes)
-- "How Pawpaya Works" 3-step explainer (Get Display ’ Scan ’ Earn)
+- "How Pawpaya Works" 3-step explainer (Get Display ï¿½ Scan ï¿½ Earn)
 - Retailer benefits section with dashboard preview
 - Social proof stats (500+ retailers, $2M+ earnings, etc.)
 
 **Key CTAs:**
-- "Get Your Free Display =€" ’ `/onboard`
-- "Open Retailer Dashboard" ’ `/onboard/dashboard`
-- "Sign Up Now" ’ `/onboard`
+- "Get Your Free Display =ï¿½" ï¿½ `/onboard`
+- "Open Retailer Dashboard" ï¿½ `/onboard/dashboard`
+- "Sign Up Now" ï¿½ `/onboard`
 
 **Design System:**
 - Background: `#faf8f3`
@@ -32,7 +32,7 @@ This file maps the entire frontend user experience, explaining how pages connect
 
 ---
 
-## <¯ Onboarding Flow  `/onboard/*`
+## <ï¿½ Onboarding Flow  `/onboard/*`
 
 ### `/onboard/index.js`  Onboard Landing
 **Purpose:** Pre-registration landing page explaining retailer benefits.
@@ -40,12 +40,12 @@ This file maps the entire frontend user experience, explaining how pages connect
 **Content:**
 - Testimonials from existing retailers (revenue stats, quotes)
 - Benefits grid (Guaranteed Revenue, No Setup, Set & Forget)
-- 4-step process (Register ’ Receive ’ Place ’ Get Paid)
+- 4-step process (Register ï¿½ Receive ï¿½ Place ï¿½ Get Paid)
 - Value props tailored for Pet Supplies Plus franchise managers
 
 **Key CTAs:**
-- "Start Registration" ’ `/onboard/register`
-- "See Dashboard Demo" ’ `/onboard/dashboard` (requires login)
+- "Start Registration" ï¿½ `/onboard/register`
+- "See Dashboard Demo" ï¿½ `/onboard/dashboard` (requires login)
 
 ---
 
@@ -106,9 +106,9 @@ This file maps the entire frontend user experience, explaining how pages connect
 - Displays weekly trend chart (verify)
 
 **Actions:**
-- Connect bank account ’ Plaid Link flow ’ `/api/plaid-exchange`
+- Connect bank account ï¿½ Plaid Link flow ï¿½ `/api/plaid-exchange`
 - View payout details (modal with breakdown)
-- Claim new UID (verify) ’ `/claim?u=<UID>`
+- Claim new UID (verify) ï¿½ `/claim?u=<UID>`
 
 ---
 
@@ -120,8 +120,8 @@ This file maps the entire frontend user experience, explaining how pages connect
 **Flow:**
 1. User enters email + password
 2. Calls `useAuthContext().signIn(email, password)`
-3. On success ’ redirects to `/onboard/dashboard` or `/admin` (based on role)
-4. On error ’ displays error message
+3. On success ï¿½ redirects to `/onboard/dashboard` or `/admin` (based on role)
+4. On error ï¿½ displays error message
 
 **Backend:**
 - Uses `supabase.auth.signInWithPassword`
@@ -136,7 +136,7 @@ This file maps the entire frontend user experience, explaining how pages connect
 1. User enters email
 2. Calls `supabase.auth.resetPasswordForEmail(email)`
 3. Supabase sends magic link to email
-4. User clicks link ’ redirects to `/update-password`
+4. User clicks link ï¿½ redirects to `/update-password`
 
 ---
 
@@ -152,7 +152,8 @@ This file maps the entire frontend user experience, explaining how pages connect
 
 ---
 
-## =h=¼ Admin Dashboard  `/admin/*`
+## =h
+=ï¿½ Admin Dashboard  `/admin/*`
 
 ### `/admin.js`  Main Admin Command Center
 **Purpose:** Multi-tab dashboard for managing entire Tapify ecosystem.
@@ -176,8 +177,8 @@ This file maps the entire frontend user experience, explaining how pages connect
 
 **Key Actions:**
 - **Trigger Payout:** POSTs to `/api/payout` with `payoutJobId`
-- **Add Vendor:** Opens modal ’ POSTs to `/api/submit-vendor`
-- **Add Owner:** Opens modal (`AdminAddOwnerModal`) ’ POSTs to `/api/admin/add-owner`
+- **Add Vendor:** Opens modal ï¿½ POSTs to `/api/submit-vendor`
+- **Add Owner:** Opens modal (`AdminAddOwnerModal`) ï¿½ POSTs to `/api/admin/add-owner`
 - **Bulk Update Stores:** POSTs to `/api/stores/bulk-update`
 
 **Data Sources:**
@@ -196,11 +197,11 @@ This file maps the entire frontend user experience, explaining how pages connect
 
 ---
 
-## <÷ Display Claim Flow  `/claim.js`
+## <ï¿½ Display Claim Flow  `/claim.js`
 
 **Purpose:** Allow retailers to claim an unclaimed NFC display.
 
-**Entry Point:** User taps unclaimed UID ’ `/t?u=<UID>` ’ redirects to `/claim?u=<UID>`
+**Entry Point:** User taps unclaimed UID ï¿½ `/t?u=<UID>` ï¿½ redirects to `/claim?u=<UID>`
 
 **Flow:**
 1. Page loads with UID in query params
@@ -224,8 +225,8 @@ This file maps the entire frontend user experience, explaining how pages connect
 2. Browser loads `tapify.com/t?u=ABC123`
 3. Next.js rewrites to `/api/uid-redirect?u=ABC123`
 4. API checks `uids` table:
-   - If unclaimed ’ redirects to `/claim?u=ABC123`
-   - If claimed ’ redirects to `affiliate_url` (Shopify collection)
+   - If unclaimed ï¿½ redirects to `/claim?u=ABC123`
+   - If claimed ï¿½ redirects to `affiliate_url` (Shopify collection)
 5. Logs scan event in `scans` table (verify)
 
 **Configuration (next.config.js):**
@@ -240,7 +241,7 @@ rewrites: async () => [
 
 ---
 
-## =Ä Legal Pages
+## =ï¿½ Legal Pages
 
 ### `/privacy.js`  Privacy Policy
 **Purpose:** GDPR/CCPA compliance page.
@@ -253,7 +254,7 @@ rewrites: async () => [
 
 ---
 
-## >é Page Routing Summary Table
+## >ï¿½ Page Routing Summary Table
 
 | Route | Page Component | Auth Required | Purpose | Key Data |
 |-------|---------------|---------------|---------|----------|
@@ -265,7 +266,7 @@ rewrites: async () => [
 | `/login` | `login.js` | L | User login | Supabase Auth |
 | `/reset-password` | `reset-password.js` | L | Password reset request | Supabase Auth |
 | `/update-password` | `update-password.js` | = | Set new password (magic link) | Supabase Auth |
-| `/claim` | `claim.js` |   | Claim unclaimed UID | `uids`, `retailers` |
+| `/claim` | `claim.js` | ï¿½ | Claim unclaimed UID | `uids`, `retailers` |
 | `/admin` | `admin.js` |  (Admin) | Main admin dashboard | All tables |
 | `/admin/stores` | `admin/stores.js` |  (Admin) | Stores management | `businesses`, `retailers` |
 | `/privacy` | `privacy.js` | L | Privacy policy | Static |
@@ -273,12 +274,12 @@ rewrites: async () => [
 **Legend:**
 -  = Requires authentication
 - L = Public
--   = Optional (better UX if logged in)
+- ï¿½ = Optional (better UX if logged in)
 - = = Requires magic link token
 
 ---
 
-## <¨ UI/UX Patterns
+## <ï¿½ UI/UX Patterns
 
 ### Tabs Interface
 **Used in:** `/admin`, `/onboard/dashboard`
