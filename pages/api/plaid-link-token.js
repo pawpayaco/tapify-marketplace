@@ -2,6 +2,13 @@
 import { AuthError, requireSession } from '../../lib/api-auth';
 import { env } from '../../lib/env';
 
+const PLAID_BASE_URL =
+  env.PLAID_ENV === 'production'
+    ? 'https://production.plaid.com'
+    : env.PLAID_ENV === 'development'
+    ? 'https://development.plaid.com'
+    : 'https://sandbox.plaid.com';
+
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
@@ -55,10 +62,3 @@ export default async function handler(req, res) {
     return res.status(500).json({ error: error.message });
   }
 }
-
-const PLAID_BASE_URL =
-  env.PLAID_ENV === 'production'
-    ? 'https://production.plaid.com'
-    : env.PLAID_ENV === 'development'
-    ? 'https://development.plaid.com'
-    : 'https://sandbox.plaid.com';
