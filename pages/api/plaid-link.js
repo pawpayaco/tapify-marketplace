@@ -30,7 +30,7 @@ async function upsertAccountRecord(table, idColumn, entityId, payload) {
   if (existing?.id) {
     const { error } = await supabaseAdmin
       .from(table)
-      .update({ ...payload, updated_at: new Date().toISOString() })
+      .update({ ...payload })
       .eq('id', existing.id);
 
     if (error) {
@@ -129,6 +129,14 @@ export async function completePlaidDwollaLink({
 
   const dwollaAccessToken = dwollaTokenJson.access_token;
 
+  const normalizedName = (name || account_type || 'Tapify').trim();
+  const [firstNamePart, ...restNameParts] = normalizedName.split(/\s+/).filter(Boolean);
+  const firstNameValue = firstNamePart || 'Tapify';
+  const capitalizedType = account_type
+    ? `${account_type.charAt(0).toUpperCase()}${account_type.slice(1)}`
+    : 'Account';
+  const lastNameValue = restNameParts.join(' ') || `${capitalizedType} Account`;
+
   const customerResp = await fetch(`${DWOLLA_BASE_URL}/customers`, {
     method: 'POST',
     headers: {
@@ -136,9 +144,11 @@ export async function completePlaidDwollaLink({
       Authorization: `Bearer ${dwollaAccessToken}`,
     },
     body: JSON.stringify({
-      firstName: name || 'Unknown',
+      firstName: firstNameValue,
+      lastName: lastNameValue,
       email: email || `${entity_id}@tapify.local`,
       type: 'receive-only',
+      businessName: account_type === 'retailer' ? name : undefined,
     }),
   });
 

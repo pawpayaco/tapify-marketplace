@@ -13,6 +13,8 @@ export default function RetailerDashboard() {
   const [loading, setLoading] = useState(true);
   const [toast, setToast] = useState(null);
   const [settingsChanged, setSettingsChanged] = useState(false);
+  const [plaidLoading, setPlaidLoading] = useState(false);
+  const [plaidScriptLoaded, setPlaidScriptLoaded] = useState(false);
   
   // Data states
   const [retailer, setRetailer] = useState(null);
@@ -36,6 +38,31 @@ export default function RetailerDashboard() {
     setTimeout(() => setToast(null), 3000);
   };
 
+  // Load Plaid script dynamically
+  const loadPlaidScript = () => {
+    return new Promise((resolve, reject) => {
+      // Check if script already exists
+      if (document.querySelector('script[src*="plaid.com"]')) {
+        resolve();
+        return;
+      }
+
+      const script = document.createElement('script');
+      script.src = 'https://cdn.plaid.com/link/v2/stable/link-initialize.js';
+      script.onload = () => {
+        console.log('[PLAID] Script loaded dynamically');
+        setPlaidScriptLoaded(true);
+        resolve();
+      };
+      script.onerror = () => {
+        console.error('[PLAID] Failed to load script dynamically');
+        setPlaidScriptLoaded(false);
+        reject(new Error('Failed to load Plaid script'));
+      };
+      document.head.appendChild(script);
+    });
+  };
+
   // Auth protection - redirect if not logged in
   useEffect(() => {
     if (user === undefined) {
@@ -48,6 +75,22 @@ export default function RetailerDashboard() {
       router.push('/login');
     }
   }, [user, router]);
+
+  // Check if Plaid is loaded on mount
+  useEffect(() => {
+    const checkPlaid = () => {
+      if (typeof window.Plaid !== 'undefined') {
+        console.log('[PLAID] Plaid is available');
+        setPlaidScriptLoaded(true);
+      } else {
+        console.log('[PLAID] Plaid not yet available');
+        // Try again after a short delay
+        setTimeout(checkPlaid, 1000);
+      }
+    };
+    
+    checkPlaid();
+  }, []);
 
   // Fetch all retailer data
   useEffect(() => {
@@ -241,6 +284,24 @@ export default function RetailerDashboard() {
   // Handle Plaid Connect
   const handlePlaidConnect = async () => {
     try {
+      setPlaidLoading(true);
+      console.log('[PLAID CONNECT] Starting Plaid connection process');
+      
+      // Check if retailer exists
+      if (!retailer?.id) {
+        console.log('[PLAID CONNECT] No retailer found:', retailer);
+        showToast('Please complete your retailer registration first', 'error');
+        return;
+      }
+
+      if (!user?.id) {
+        console.log('[PLAID CONNECT] No user found:', user);
+        showToast('Please log in to connect your bank account', 'error');
+        return;
+      }
+
+      console.log('[PLAID CONNECT] Making API call with:', { user_id: user.id, retailer_id: retailer.id });
+
       // Get link token from backend
       const response = await fetch('/api/plaid-link-token', {
         method: 'POST',
@@ -248,22 +309,44 @@ export default function RetailerDashboard() {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          user_id: user?.id,
-          retailer_id: retailer?.id
+          user_id: user.id,
+          retailer_id: retailer.id
         })
       });
 
+      console.log('[PLAID CONNECT] API response status:', response.status);
+
       if (!response.ok) {
-        throw new Error('Failed to get link token');
+        const errorData = await response.json().catch(() => ({}));
+        console.error('[PLAID CONNECT] API error:', errorData);
+        throw new Error(errorData.error || 'Failed to get link token');
       }
 
       const { link_token } = await response.json();
+      console.log('[PLAID CONNECT] Received link token:', !!link_token);
 
+      // Check if Plaid is loaded, try to load it if not
+      if (typeof window.Plaid === 'undefined') {
+        console.log('[PLAID CONNECT] Plaid not loaded, attempting to load script');
+        await loadPlaidScript();
+        
+        // Wait a bit for script to load
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        
+        if (typeof window.Plaid === 'undefined') {
+          console.error('[PLAID CONNECT] Plaid script still not loaded after retry');
+          throw new Error('Plaid script not loaded. Please refresh the page and try again.');
+        }
+      }
+
+      console.log('[PLAID CONNECT] Creating Plaid handler');
       // Initialize Plaid Link
       const handler = window.Plaid.create({
         token: link_token,
         onSuccess: async (public_token, metadata) => {
+          console.log('[PLAID CONNECT] Success callback triggered');
           try {
+            console.log('[PLAID CONNECT] Exchanging public token');
             // Exchange public token for access token
             const exchangeResponse = await fetch('/api/plaid-exchange', {
               method: 'POST',
@@ -272,39 +355,48 @@ export default function RetailerDashboard() {
               },
               body: JSON.stringify({
                 public_token,
-                user_id: user?.id,
-                retailer_id: retailer?.id,
+                user_id: user.id,
+                retailer_id: retailer.id,
                 metadata
               })
             });
 
+            console.log('[PLAID CONNECT] Exchange response status:', exchangeResponse.status);
+
             if (exchangeResponse.ok) {
+              console.log('[PLAID CONNECT] Bank account connected successfully');
               showToast('Bank account connected successfully!', 'success');
               // Refresh the page to update the UI
               window.location.reload();
             } else {
+              const errorData = await exchangeResponse.json().catch(() => ({}));
+              console.error('[PLAID CONNECT] Exchange error:', errorData);
               throw new Error('Failed to exchange token');
             }
           } catch (error) {
-            console.error('Plaid exchange error:', error);
+            console.error('[PLAID CONNECT] Exchange error:', error);
             showToast('Failed to connect bank account', 'error');
           }
         },
         onExit: (err, metadata) => {
+          console.log('[PLAID CONNECT] Exit callback triggered:', err, metadata);
           if (err) {
-            console.error('Plaid exit error:', err);
+            console.error('[PLAID CONNECT] Exit error:', err);
             showToast('Bank connection cancelled', 'info');
           }
         },
         onEvent: (eventName, metadata) => {
-          console.log('Plaid event:', eventName, metadata);
+          console.log('[PLAID CONNECT] Event:', eventName, metadata);
         }
       });
 
+      console.log('[PLAID CONNECT] Opening Plaid handler');
       handler.open();
     } catch (error) {
       console.error('Plaid connect error:', error);
       showToast('Failed to initialize bank connection', 'error');
+    } finally {
+      setPlaidLoading(false);
     }
   };
 
@@ -346,7 +438,17 @@ export default function RetailerDashboard() {
   return (
     <>
       <Head>
-        <script src="https://cdn.plaid.com/link/v2/stable/link-initialize.js"></script>
+        <script 
+          src="https://cdn.plaid.com/link/v2/stable/link-initialize.js"
+          onLoad={() => {
+            console.log('[PLAID] Script loaded successfully');
+            setPlaidScriptLoaded(true);
+          }}
+          onError={() => {
+            console.error('[PLAID] Script failed to load');
+            setPlaidScriptLoaded(false);
+          }}
+        />
       </Head>
       <div className="min-h-screen pt-20" style={{ backgroundColor: '#faf8f3' }}>
       {/* Header */}
@@ -986,20 +1088,29 @@ export default function RetailerDashboard() {
                       </div>
                       <p className="text-gray-700 font-bold text-lg mb-2">No bank account connected</p>
                       <p className="text-gray-500 mb-6">Connect your bank account to receive payouts</p>
-                      <motion.button 
-                        whileHover={{ scale: 1.05 }}
-                        whileTap={{ scale: 0.95 }}
-                        onClick={handlePlaidConnect}
-                        className="px-8 py-3 bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3] text-white rounded-2xl font-bold hover:shadow-xl transition-all"
-                      >
-                        Connect Bank Account
-                      </motion.button>
+                      {retailer?.id ? (
+                        <motion.button 
+                          whileHover={{ scale: plaidLoading ? 1 : 1.05 }}
+                          whileTap={{ scale: plaidLoading ? 1 : 0.95 }}
+                          onClick={handlePlaidConnect}
+                          disabled={plaidLoading || !plaidScriptLoaded}
+                          className={`px-8 py-3 bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3] text-white rounded-2xl font-bold hover:shadow-xl transition-all ${
+                            plaidLoading || !plaidScriptLoaded ? 'opacity-75 cursor-not-allowed' : ''
+                          }`}
+                        >
+                          {plaidLoading ? 'Connecting...' : !plaidScriptLoaded ? 'Loading...' : 'Connect Bank Account'}
+                        </motion.button>
+                      ) : (
+                        <div className="px-8 py-3 bg-gray-300 text-gray-600 rounded-2xl font-bold cursor-not-allowed">
+                          Complete registration first
+                        </div>
+                      )}
                       
                       {/* Bank Availability Info */}
                       <div className="mt-6 p-4 bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-xl text-center">
                         <div className="flex items-center justify-center gap-2 mb-2">
                           <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                          <span className="text-sm font-semibold text-blue-800">Chase & Schwab coming in 2 weeks</span>
+                          <span className="text-sm font-semibold text-blue-800">Chase & Schwab available in 2 weeks</span>
                         </div>
                         <p className="text-xs text-blue-600">All other major banks accepted • Instant setup • Secure connection</p>
                       </div>
