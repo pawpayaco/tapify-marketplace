@@ -1,22 +1,17 @@
 // pages/api/admin/add-owner.js
 // POST - Admin adds owner info for outreach (does NOT create auth user)
 
-import { createClient } from '@supabase/supabase-js';
-
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
-
-if (!supabaseUrl || !supabaseServiceKey) {
-  console.error('[add-owner] Missing SUPABASE env vars');
-}
-
-const supabase = createClient(supabaseUrl, supabaseServiceKey, {
-  auth: { persistSession: false }
-});
+import { requireAdmin, AuthError } from '../../../lib/api-auth';
+import { supabaseAdmin } from '../../../lib/supabase';
+import { logEvent } from '../../../utils/logger';
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
+  }
+
+  if (!supabaseAdmin) {
+    return res.status(500).json({ error: 'Supabase admin client not configured' });
   }
 
   const { 
@@ -42,8 +37,10 @@ export default async function handler(req, res) {
   }
 
   try {
+    const { user } = await requireAdmin(req, res);
+
     // 1. Update the retailers table with owner info for easy access
-    const { error: updateRetailerError } = await supabase
+    const { error: updateRetailerError } = await supabaseAdmin
       .from('retailers')
       .update({
         owner_name: owner_name || null,
@@ -60,7 +57,7 @@ export default async function handler(req, res) {
     }
 
     // 2. Insert or update owner record in retailer_owners table using upsert
-    const { data: ownerData, error: ownerError } = await supabase
+    const { data: ownerData, error: ownerError } = await supabaseAdmin
       .from('retailer_owners')
       .upsert({
         retailer_id,
@@ -85,7 +82,7 @@ export default async function handler(req, res) {
     console.log('[add-owner] Owner added to retailer_owners:', ownerData);
 
     // Create outreach tracking record
-    const { error: outreachError } = await supabase
+    const { error: outreachError } = await supabaseAdmin
       .from('retailer_outreach')
       .insert({
         retailer_id,
@@ -103,6 +100,11 @@ export default async function handler(req, res) {
 
     console.log('[add-owner] Success for retailer:', retailer_id);
 
+    await logEvent(user.id, 'admin_add_owner', {
+      retailer_id,
+      owner_email,
+    });
+
     return res.status(200).json({ 
       ok: true,
       message: 'Owner information added successfully',
@@ -110,10 +112,13 @@ export default async function handler(req, res) {
     });
     
   } catch (err) {
+    if (err instanceof AuthError) {
+      return res.status(err.status).json({ error: err.message });
+    }
+
     console.error('[add-owner] Error:', err);
     return res.status(500).json({ 
       error: err.message || 'Failed to add owner information' 
     });
   }
 }
-

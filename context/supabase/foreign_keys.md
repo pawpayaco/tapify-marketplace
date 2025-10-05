@@ -1,2 +1,29 @@
-# Foreign Keys
+# Foreign Keys (explicit constraints)
 
+| table_from          | column_from      | table_to         | column_to | constraint_name                      |
+| ------------------- | ---------------- | ---------------- | --------- | ------------------------------------ |
+| auto_rotation_rules | retailer_id      | retailers        | id        | auto_rotation_rules_retailer_id_fkey |
+| bank_accounts       | retailer_id      | retailers        | id        | bank_accounts_retailer_id_fkey       |
+| displays            | retailer_id      | retailers        | id        | displays_retailer_id_fkey            |
+| leaderboards        | sourcer_id       | sourcer_accounts | id        | leaderboards_sourcer_id_fkey         |
+| leaderboards        | retailer_id      | retailers        | id        | leaderboards_retailer_id_fkey        |
+| offer_tests         | vendor_id        | vendors          | id        | offer_tests_vendor_id_fkey           |
+| orders              | retailer_id      | retailers        | id        | orders_retailer_id_fkey              |
+| orders              | vendor_id        | vendors          | id        | orders_vendor_id_fkey                |
+| orders              | business_id      | businesses       | id        | orders_business_id_fkey              |
+| payout_jobs         | retailer_id      | retailers        | id        | payout_jobs_retailer_id_fkey         |
+| payout_jobs         | sourcer_id       | sourcer_accounts | id        | payout_jobs_sourcer_id_fkey          |
+| payout_jobs         | vendor_id        | vendors          | id        | payout_jobs_vendor_id_fkey           |
+| payout_jobs         | order_id         | orders           | id        | payout_jobs_order_id_fkey            |
+| payouts             | retailer_id      | retailers        | id        | payouts_retailer_id_fkey             |
+| payouts             | payout_job_id    | payout_jobs      | id        | payouts_payout_job_id_fkey           |
+| retailer_accounts   | retailer_id      | retailers        | id        | retailer_accounts_retailer_id_fkey   |
+| retailer_outreach   | retailer_id      | retailers        | id        | retailer_outreach_retailer_id_fkey   |
+| retailer_owners     | retailer_id      | retailers        | id        | retailer_owners_retailer_id_fkey     |
+| retailers           | linked_vendor_id | vendors          | id        | retailers_linked_vendor_id_fkey      |
+| retailers           | business_id      | businesses       | id        | retailers_business_id_fkey           |
+| scans               | uid              | uids             | uid       | scans_uid_fkey                       |
+| uids                | business_id      | businesses       | id        | uids_business_id_fkey                |
+| uids                | retailer_id      | retailers        | id        | uids_retailer_id_fkey                |
+| vendor_accounts     | vendor_id        | vendors          | id        | vendor_accounts_vendor_id_fkey       |
+| vendors             | onboarded_by     | sourcer_accounts | id        | vendors_onboarded_by_fkey            |

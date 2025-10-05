@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import { createServerClient } from '@supabase/ssr';
 import { supabase, supabaseAdmin } from "../lib/supabase";
 import { formatMoney } from "../utils/formatMoney";
-import { initiatePayout } from "../services/dwolla";
+import { triggerPayout } from "../services/dwolla";
 
 const TABS = ["Vendors", "Retailers", "Stores", "Payouts", "Analytics", "Sourcers", "UIDs"];
 
@@ -344,17 +344,7 @@ export default function Admin({
     setProcessingPayouts(prev => new Set([...prev, jobId]));
     
     try {
-      const response = await fetch('/api/payout', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ payoutJobId: jobId }),
-      });
-
-      const result = await response.json();
-
-      if (!response.ok) {
-        throw new Error(result.error || 'Payout failed');
-      }
+      await triggerPayout(jobId);
 
       setPayoutJobs(prev => 
         prev.map(job => 
@@ -372,27 +362,6 @@ export default function Admin({
         newSet.delete(jobId);
         return newSet;
       });
-    }
-  };
-
-  // Test payout function
-  const handleTestPayout = async () => {
-    try {
-      const testPayoutData = {
-        sourceFundingSource: 'https://api-sandbox.dwolla.com/funding-sources/test-source',
-        destinationFundingSource: 'https://api-sandbox.dwolla.com/funding-sources/test-dest',
-        amount: 100.00,
-        currency: 'USD',
-        metadata: {
-          test: true,
-          timestamp: new Date().toISOString(),
-        }
-      };
-
-      const result = await initiatePayout(testPayoutData);
-      alert(`Payout initiated! Transfer ID: ${result.transferId || 'N/A'}`);
-    } catch (error) {
-      alert(`Payout failed: ${error.message}`);
     }
   };
 
@@ -1017,17 +986,6 @@ export default function Admin({
                   <p className="text-xl font-bold text-gray-900">Sunrise Soap Co</p>
                 </motion.div>
               </motion.div>
-
-              <div className="mb-6">
-                <motion.button
-                  onClick={handleTestPayout}
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  className="rounded-2xl bg-gradient-to-r from-blue-500 to-blue-600 px-6 py-3 text-sm font-bold text-white hover:shadow-lg transition-all"
-                >
-                  🔧 Test Payout (Dwolla)
-                </motion.button>
-              </div>
 
               <div className="rounded-3xl border-2 border-gray-100 bg-white shadow-xl overflow-hidden">
                 <div className="p-6 border-b-2 border-gray-100 bg-gradient-to-r from-pink-50 to-purple-50">

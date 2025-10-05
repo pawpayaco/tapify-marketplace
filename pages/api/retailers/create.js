@@ -1,22 +1,17 @@
 // pages/api/retailers/create.js
 // POST - Create a prospective retailer from onboarding "Add store"
 
-import { createClient } from '@supabase/supabase-js';
-
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
-
-if (!supabaseUrl || !supabaseServiceKey) {
-  console.error('[retailers/create] Missing SUPABASE env vars');
-}
-
-const supabase = createClient(supabaseUrl, supabaseServiceKey, {
-  auth: { persistSession: false }
-});
+import { requireSession, AuthError } from '../../../lib/api-auth';
+import { supabaseAdmin } from '../../../lib/supabase';
+import { logEvent } from '../../../utils/logger';
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
+  }
+
+  if (!supabaseAdmin) {
+    return res.status(500).json({ error: 'Supabase admin client not configured' });
   }
 
   const { 
@@ -35,8 +30,10 @@ export default async function handler(req, res) {
   }
 
   try {
+    const { user } = await requireSession(req, res);
+
     // Insert new retailer
-    const { data: retailer, error: retailerError } = await supabase
+    const { data: retailer, error: retailerError } = await supabaseAdmin
       .from('retailers')
       .insert({
         name,
@@ -47,7 +44,8 @@ export default async function handler(req, res) {
         phone: phone || null,
         email: email || null,
         source,
-        created_at: new Date().toISOString()
+        created_at: new Date().toISOString(),
+        created_by_user_id: user.id,
       })
       .select('id, name, address, location, email, phone, store_phone')
       .single();
@@ -60,7 +58,7 @@ export default async function handler(req, res) {
     console.log('[retailers/create] Created retailer:', retailer.id, retailer.name);
 
     // Create outreach row for tracking (not yet registered)
-    const { error: outreachError } = await supabase
+    const { error: outreachError } = await supabaseAdmin
       .from('retailer_outreach')
       .insert({
         retailer_id: retailer.id,
@@ -76,11 +74,19 @@ export default async function handler(req, res) {
       console.warn('[retailers/create] Outreach insert warning:', outreachError.message);
     }
 
+    await logEvent(user.id, 'retailer_created', {
+      retailer_id: retailer.id,
+      source,
+    });
+
     return res.status(200).json({ ok: true, retailer });
     
   } catch (err) {
+    if (err instanceof AuthError) {
+      return res.status(err.status).json({ error: err.message });
+    }
+
     console.error('[retailers/create] Error:', err);
     return res.status(500).json({ error: err.message || 'Failed to create retailer' });
   }
 }
-

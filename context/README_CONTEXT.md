@@ -51,12 +51,19 @@ Every file here exists to make the repo *explainable, scalable, and AI-readable*
 ### 🪄 Next.js (Frontend + API)
 Documents the app’s frontend logic, authentication context, and how API routes interact with Supabase and Shopify.
 
-| File | Purpose |
-|------|----------|
-| **db_calls_summary.md** | Lists every Supabase call used across client and server components. |
-| **frontend_flow.md** | Explains page navigation, onboarding flows, and how users move through Tapify. |
-| **pages_api_summary.md** | Maps `/pages/api` routes to their backend functions (payouts, onboarding, redirects, etc). |
-| **shopify_integration.md** | Describes how the frontend integrates with Shopify (OAuth, order webhooks, and checkout). |
+### ⚛️ Next.js (Frontend Layer)
+The @context/nextjs folder documents how the Tapify frontend operates.
+
+| File | Description |
+|------|--------------|
+| pages_api_summary.md | Full catalog of all API routes |
+| frontend_flow.md | Maps user journeys and routing logic |
+| auth_flow.md | Authentication architecture and SSR patterns |
+| db_calls_summary.md | Summarizes all Supabase query usage |
+| shopify_integration.md | Details Shopify data and webhook connections |
+| components_overview.md | React components and design patterns |
+| overview.md | Master index and system-level architecture |
+
 
 ---
 

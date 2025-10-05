@@ -1,22 +1,26 @@
 // pages/api/retailers/search.js
 // GET autocomplete search for retailers
 
-import { createClient } from '@supabase/supabase-js';
-
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
-
-if (!supabaseUrl || !supabaseServiceKey) {
-  console.error('Missing SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY');
-}
-
-const supabase = createClient(supabaseUrl, supabaseServiceKey, {
-  auth: { persistSession: false }
-});
+import { requireAdmin, AuthError } from '../../../lib/api-auth';
+import { supabaseAdmin } from '../../../lib/supabase';
 
 export default async function handler(req, res) {
   if (req.method !== 'GET') {
     return res.status(405).json({ error: 'Method not allowed' });
+  }
+
+  if (!supabaseAdmin) {
+    return res.status(500).json({ error: 'Supabase admin client not configured' });
+  }
+
+  try {
+    await requireAdmin(req, res);
+  } catch (error) {
+    if (error instanceof AuthError) {
+      return res.status(error.status).json({ error: error.message });
+    }
+    console.error('[retailers/search] Admin auth error:', error);
+    return res.status(500).json({ error: 'Failed to verify admin session' });
   }
 
   const q = (req.query.query || '').trim();
@@ -29,7 +33,7 @@ export default async function handler(req, res) {
 
   try {
     // Search retailers with LEFT JOIN to retailer_owners to get owner info added by admin
-    const { data, error } = await supabase
+    const { data, error } = await supabaseAdmin
       .from('retailers')
       .select(`
         id, 
@@ -81,8 +85,11 @@ export default async function handler(req, res) {
     
     return res.status(200).json({ results });
   } catch (err) {
+    if (err instanceof AuthError) {
+      return res.status(err.status).json({ error: err.message });
+    }
+
     console.error('[retailers/search] Error:', err);
     return res.status(500).json({ error: 'Search failed', details: err.message });
   }
 }
-

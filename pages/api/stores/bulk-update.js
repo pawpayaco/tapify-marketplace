@@ -2,6 +2,8 @@
 // Bulk operations for stores (mark cold email sent, etc.)
 
 import { supabaseAdmin } from '../../../lib/supabase';
+import { requireAdmin, AuthError } from '../../../lib/api-auth';
+import { logEvent } from '../../../utils/logger';
 
 /**
  * POST /api/stores/bulk-update
@@ -19,6 +21,17 @@ export default async function handler(req, res) {
   // Only allow POST
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
+  }
+
+  try {
+    await requireAdmin(req, res);
+  } catch (error) {
+    if (error instanceof AuthError) {
+      return res.status(error.status).json({ error: error.message });
+    }
+
+    console.error('[bulk-update] Admin auth error:', error);
+    return res.status(500).json({ error: 'Failed to verify admin session' });
   }
 
   const { retailer_ids, action, campaign } = req.body;
@@ -104,6 +117,11 @@ export default async function handler(req, res) {
       }
     }
 
+    await logEvent('admin', 'stores_bulk_update', {
+      action,
+      retailer_ids: retailer_ids.length,
+    });
+
     return res.status(200).json({
       ok: true,
       message: `Successfully updated ${count || retailer_ids.length} retailers`,
@@ -112,6 +130,10 @@ export default async function handler(req, res) {
     });
 
   } catch (error) {
+    if (error instanceof AuthError) {
+      return res.status(error.status).json({ error: error.message });
+    }
+
     console.error('[bulk-update] Error:', error);
     
     return res.status(500).json({
@@ -121,4 +143,3 @@ export default async function handler(req, res) {
     });
   }
 }
-

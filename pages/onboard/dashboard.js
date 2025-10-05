@@ -60,30 +60,25 @@ export default function RetailerDashboard() {
       try {
         setLoading(true);
         
-        // Get retailer profile - try multiple methods to find retailer
+        // Get retailer profile - match on email or owner email
         let retailerData = null;
-        let retailerError = null;
-        
-        // Try finding by name first
-        const nameResult = await supabase
+
+        const emailMatch = await supabase
           .from('retailers')
           .select('*')
-          .eq('name', user.email)
+          .eq('email', user.email)
           .maybeSingle();
-        
-        if (nameResult.data) {
-          retailerData = nameResult.data;
+
+        if (emailMatch.data) {
+          retailerData = emailMatch.data;
         } else {
-          // Try finding by email field if it exists
-          const emailResult = await supabase
-            .from('retailers')
-            .select('*')
-            .ilike('name', `%${user.email}%`)
-            .limit(1);
-          
-          if (emailResult.data && emailResult.data.length > 0) {
-            retailerData = emailResult.data[0];
-          }
+          const ownerMatch = await supabase
+            .from('retailer_owners')
+            .select('retailer:retailer_id(*)')
+            .eq('owner_email', user.email)
+            .maybeSingle();
+
+          retailerData = ownerMatch.data?.retailer ?? null;
         }
         
         // If no retailer found, initialize with empty data (no popup - just continue)
@@ -108,21 +103,23 @@ export default function RetailerDashboard() {
         
         setRetailer(retailerData);
         
-        // Get UIDs
+        // Get UIDs claimed by this retailer
         const { data: uidsData } = await supabase
           .from('uids')
           .select('*')
+          .eq('retailer_id', retailerData.id)
           .limit(100);
-        
+
         setUids(uidsData || []);
-        
-        // Get scans data
+
+        // Get scans data scoped to this retailer
         const { data: scansData } = await supabase
           .from('scans')
           .select('*')
+          .eq('retailer_id', retailerData.id)
           .order('timestamp', { ascending: false })
           .limit(100);
-        
+
         setScans(scansData || []);
         
         // Get payout jobs

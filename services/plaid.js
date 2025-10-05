@@ -1,51 +1,43 @@
 /**
- * Create a Plaid Link token
- * @returns {Promise<Object>} JSON response with link token
+ * Request a Plaid Link token for the current user/entity.
+ * @param {Object} payload - Payload forwarded to the API (user_id, retailer_id, etc.)
  */
-export async function createLinkToken() {
-  try {
-    const response = await fetch('/api/plaid', {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
+export async function createLinkToken(payload) {
+  const response = await fetch('/api/plaid-link-token', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(payload),
+  });
 
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
+  const data = await response.json();
 
-    const data = await response.json();
-    return data;
-  } catch (error) {
-    console.error('Error creating link token:', error);
-    throw error;
+  if (!response.ok) {
+    throw new Error(data?.error || 'Unable to create Plaid Link token');
   }
+
+  return data;
 }
 
 /**
- * Exchange Plaid public token for access token
- * @param {string} publicToken - The public token from Plaid Link
- * @returns {Promise<Object>} JSON response with access token
+ * Complete the Plaid → Dwolla linking flow once Plaid Link returns a public token.
+ * @param {Object} payload - `{ public_token, account_id, account_type, entity_id, name, email }`
  */
-export async function exchangePublicToken(publicToken) {
-  try {
-    const response = await fetch('/api/exchange-token', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ public_token: publicToken }),
-    });
+export async function completePlaidLink(payload) {
+  const response = await fetch('/api/plaid-link', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(payload),
+  });
 
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
+  const data = await response.json();
 
-    const data = await response.json();
-    return data;
-  } catch (error) {
-    console.error('Error exchanging public token:', error);
-    throw error;
+  if (!response.ok) {
+    throw new Error(data?.error || 'Unable to link bank account');
   }
+
+  return data;
 }

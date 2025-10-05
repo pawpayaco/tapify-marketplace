@@ -1,79 +1,22 @@
 /**
- * Create a Dwolla customer
- * @param {Object} userData - Customer data (firstName, lastName, email, etc.)
- * @returns {Promise<Object>} JSON response with customer details
+ * Trigger a Dwolla payout for a given payout job.
+ * Wraps the `/api/payout` endpoint which performs admin checks server-side.
  */
-export async function createCustomer(userData) {
-  try {
-    const response = await fetch('/api/dwolla-customer', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(userData),
-    });
+export async function triggerPayout(payoutJobId) {
+  const response = await fetch('/api/payout', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ payoutJobId }),
+  });
 
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
+  const payload = await response.json();
 
-    const data = await response.json();
-    return data;
-  } catch (error) {
-    console.error('Error creating Dwolla customer:', error);
-    throw error;
+  if (!response.ok) {
+    const message = payload?.error || 'Failed to process payout';
+    throw new Error(message);
   }
-}
 
-/**
- * Initiate a payout via Dwolla
- * @param {Object} payoutData - Payout details (amount, destination, etc.)
- * @returns {Promise<Object>} JSON response with payout details
- */
-export async function initiatePayout(payoutData) {
-  try {
-    const response = await fetch('/api/dwolla-payout', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(payoutData),
-    });
-
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-
-    const data = await response.json();
-    return data;
-  } catch (error) {
-    console.error('Error initiating Dwolla payout:', error);
-    throw error;
-  }
-}
-
-/**
- * Get the status of a Dwolla payout
- * @param {string} payoutId - The payout ID to check
- * @returns {Promise<Object>} JSON response with payout status
- */
-export async function getPayoutStatus(payoutId) {
-  try {
-    const response = await fetch(`/api/dwolla-status?id=${encodeURIComponent(payoutId)}`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
-
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-
-    const data = await response.json();
-    return data;
-  } catch (error) {
-    console.error('Error getting Dwolla payout status:', error);
-    throw error;
-  }
+  return payload;
 }

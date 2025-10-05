@@ -1,116 +1,62 @@
-// API endpoint to exchange Plaid public token and store bank account info
-import { createClient } from '@supabase/supabase-js';
+// Legacy endpoint retained for compatibility with older front-end flows.
+// Delegates to the unified Plaid → Dwolla onboarding helper used by /api/plaid-link.
 
-const supabase = createClient(
-  process.env.SUPABASE_URL,
-  process.env.SUPABASE_SERVICE_ROLE_KEY
-);
+import { AuthError, requireSession } from '../../lib/api-auth';
+import { completePlaidDwollaLink } from './plaid-link';
+
+const fallback = (value, ...alternatives) => {
+  if (value !== undefined && value !== null && value !== '') return value;
+  for (const alt of alternatives) {
+    if (alt !== undefined && alt !== null && alt !== '') return alt;
+  }
+  return undefined;
+};
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
+  const {
+    public_token,
+    account_id,
+    account_type,
+    entity_id,
+    metadata,
+    retailer_id,
+    name,
+    email,
+  } = req.body ?? {};
+
+  const resolvedAccountId = fallback(account_id, metadata?.account_id, metadata?.accounts?.[0]?.id);
+  const resolvedAccountType = (account_type || metadata?.account_type || 'retailer').toLowerCase();
+  const resolvedEntityId = fallback(entity_id, retailer_id, metadata?.entity_id);
+  const resolvedName = fallback(name, metadata?.account?.name, metadata?.legal_name);
+  const resolvedEmail = fallback(email, metadata?.user?.email);
+
+  if (!public_token || !resolvedAccountId || !resolvedEntityId) {
+    return res.status(400).json({ error: 'Missing required Plaid parameters' });
+  }
+
   try {
-    const { public_token, metadata, user_id, retailer_id } = req.body;
-
-    if (!public_token || !user_id || !retailer_id) {
-      return res.status(400).json({ error: 'Missing required fields' });
-    }
-
-    // Exchange public token for access token with Plaid
-    const response = await fetch('https://sandbox.plaid.com/item/public_token/exchange', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        client_id: process.env.PLAID_CLIENT_ID,
-        secret: process.env.PLAID_SECRET,
-        public_token: public_token,
-      }),
+    const { user } = await requireSession(req, res);
+    const result = await completePlaidDwollaLink({
+      public_token,
+      account_id: resolvedAccountId,
+      account_type: resolvedAccountType,
+      entity_id: resolvedEntityId,
+      name: resolvedName,
+      email: resolvedEmail,
+      user,
     });
 
-    const data = await response.json();
-
-    if (!response.ok) {
-      throw new Error(data.error_message || 'Failed to exchange token');
-    }
-
-    const { access_token, item_id } = data;
-
-    // Get account details
-    const accountsResponse = await fetch('https://sandbox.plaid.com/accounts/get', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        client_id: process.env.PLAID_CLIENT_ID,
-        secret: process.env.PLAID_SECRET,
-        access_token: access_token,
-      }),
-    });
-
-    const accountsData = await accountsResponse.json();
-
-    if (!accountsResponse.ok) {
-      throw new Error(accountsData.error_message || 'Failed to get account details');
-    }
-
-    const account = accountsData.accounts[0]; // Use first account
-    const institutionName = metadata.institution?.name || 'Bank Account';
-
-    // Get Dwolla customer ID or create one
-    // (You'll need to implement Dwolla customer creation separately)
-    // For now, just store the Plaid tokens
-    
-    // Store in retailer_accounts table
-    const { data: existingAccount } = await supabase
-      .from('retailer_accounts')
-      .select('*')
-      .eq('retailer_id', retailer_id)
-      .single();
-
-    let accountData;
-    if (existingAccount) {
-      // Update existing account
-      const { data, error } = await supabase
-        .from('retailer_accounts')
-        .update({
-          plaid_access_token: access_token,
-        })
-        .eq('retailer_id', retailer_id)
-        .select()
-        .single();
-      
-      if (error) throw error;
-      accountData = data;
-    } else {
-      // Create new account
-      const { data, error } = await supabase
-        .from('retailer_accounts')
-        .insert({
-          retailer_id: retailer_id,
-          plaid_access_token: access_token,
-          dwolla_customer_id: null, // Will be set when Dwolla customer is created
-        })
-        .select()
-        .single();
-      
-      if (error) throw error;
-      accountData = data;
-    }
-
-    return res.status(200).json({
-      success: true,
-      accountData,
-      bankName: institutionName,
-      accountMask: account.mask,
-    });
+    return res.status(200).json({ success: true, ...result });
   } catch (error) {
-    console.error('[PLAID EXCHANGE ERROR]', error);
-    return res.status(500).json({ error: error.message });
+    if (error instanceof AuthError) {
+      return res.status(error.status).json({ error: error.message });
+    }
+
+    console.error('[plaid-exchange] Error', error);
+    return res.status(500).json({ error: error.message || 'Internal server error' });
   }
 }
-

@@ -1,16 +1,14 @@
 // /pages/api/payout.js
-import { createClient } from '@supabase/supabase-js';
 import fetch from 'node-fetch';
 
-const supabase = createClient(
-  process.env.SUPABASE_URL,
-  process.env.SUPABASE_SERVICE_ROLE_KEY
-);
+import { requireAdmin, AuthError } from '../../lib/api-auth';
+import { env } from '../../lib/env';
+import { supabaseAdmin } from '../../lib/supabase';
+import { logEvent } from '../../utils/logger';
 
-const DWOLLA_BASE_URL =
-  process.env.DWOLLA_ENV === 'sandbox'
-    ? 'https://api-sandbox.dwolla.com'
-    : 'https://api.dwolla.com';
+const DWOLLA_BASE_URL = env.DWOLLA_ENV?.includes('api.dwolla.com')
+  ? (env.DWOLLA_ENV.includes('api-sandbox') ? 'https://api-sandbox.dwolla.com' : 'https://api.dwolla.com')
+  : 'https://api-sandbox.dwolla.com';
 
 // 🔑 Helper: get Dwolla auth token
 async function getDwollaToken() {
@@ -52,18 +50,27 @@ async function createDwollaTransfer(token, sourceFundingId, destFundingId, amoun
 }
 
 export default async function handler(req, res) {
+  if (!supabaseAdmin) {
+    return res.status(500).json({ error: 'Supabase admin client not configured' });
+  }
+
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
+  let adminUser = null;
+
   try {
+    const auth = await requireAdmin(req, res);
+    adminUser = auth.user;
+
     const { payoutJobId } = req.body;
     if (!payoutJobId) {
       return res.status(400).json({ error: 'Missing payoutJobId' });
     }
 
     // 1. Fetch payout job
-    const { data: job, error: jobError } = await supabase
+    const { data: job, error: jobError } = await supabaseAdmin
       .from('payout_jobs')
       .select('*')
       .eq('id', payoutJobId)
@@ -77,20 +84,20 @@ export default async function handler(req, res) {
     }
 
     // 2. Fetch linked accounts w/ funding source IDs
-    const { data: vendor } = await supabase
+    const { data: vendor } = await supabaseAdmin
       .from('vendor_accounts')
       .select('dwolla_funding_source_id')
       .eq('vendor_id', job.vendor_id)
       .single();
 
-    const { data: retailer } = await supabase
+    const { data: retailer } = await supabaseAdmin
       .from('retailer_accounts')
       .select('dwolla_funding_source_id')
       .eq('retailer_id', job.retailer_id)
       .single();
 
     const { data: sourcer } = job.sourcer_id
-      ? await supabase
+      ? await supabaseAdmin
           .from('sourcer_accounts')
           .select('dwolla_funding_source_id')
           .eq('id', job.sourcer_id)
@@ -106,53 +113,91 @@ export default async function handler(req, res) {
 
     // 4. Send transfers
     const transfers = [];
-    const sourceFundingId = process.env.DWOLLA_MASTER_FUNDING_SOURCE; // ✅ your business bank funding source
+    const sourceFundingId = env.DWOLLA_MASTER_FUNDING_SOURCE; // ✅ your business bank funding source
 
     if (job.vendor_cut > 0) {
-      transfers.push(
-        await createDwollaTransfer(
-          dwollaToken,
-          sourceFundingId,
-          vendor.dwolla_funding_source_id,
-          job.vendor_cut
-        )
+      const vendorTransfer = await createDwollaTransfer(
+        dwollaToken,
+        sourceFundingId,
+        vendor.dwolla_funding_source_id,
+        job.vendor_cut
       );
+      transfers.push({ role: 'vendor', response: vendorTransfer });
     }
 
     if (retailer?.dwolla_funding_source_id && job.retailer_cut > 0) {
-      transfers.push(
-        await createDwollaTransfer(
-          dwollaToken,
-          sourceFundingId,
-          retailer.dwolla_funding_source_id,
-          job.retailer_cut
-        )
+      const retailerTransfer = await createDwollaTransfer(
+        dwollaToken,
+        sourceFundingId,
+        retailer.dwolla_funding_source_id,
+        job.retailer_cut
       );
+      transfers.push({ role: 'retailer', response: retailerTransfer });
     }
 
     if (sourcer?.dwolla_funding_source_id && job.sourcer_cut > 0) {
-      transfers.push(
-        await createDwollaTransfer(
-          dwollaToken,
-          sourceFundingId,
-          sourcer.dwolla_funding_source_id,
-          job.sourcer_cut
-        )
+      const sourcerTransfer = await createDwollaTransfer(
+        dwollaToken,
+        sourceFundingId,
+        sourcer.dwolla_funding_source_id,
+        job.sourcer_cut
       );
+      transfers.push({ role: 'sourcer', response: sourcerTransfer });
+    }
+
+    const transferSummaries = transfers.map(({ role, response }) => ({
+      role,
+      id: response?.id ?? null,
+      status: response?.status ?? null,
+      href: response?._links?.self?.href ?? null,
+      amount: response?.amount?.value ?? null,
+    }));
+
+    const totalSent = transferSummaries.reduce((sum, transfer) => {
+      const value = parseFloat(transfer.amount ?? '0');
+      return sum + (Number.isFinite(value) ? value : 0);
+    }, 0);
+
+    const { error: payoutInsertError } = await supabaseAdmin.from('payouts').insert({
+      payout_job_id: job.id,
+      retailer_id: job.retailer_id,
+      vendor_id: job.vendor_id,
+      sourcer_id: job.sourcer_id ?? null,
+      total_amount: totalSent || job.total_amount || job.vendor_cut + job.retailer_cut + (job.sourcer_cut ?? 0),
+      transfer_summary: transferSummaries,
+      status: 'sent',
+      triggered_by: adminUser?.id ?? null,
+    });
+
+    if (payoutInsertError) {
+      console.error('[payout] Failed to record payout', payoutInsertError.message);
     }
 
     // 5. Update payout job
-    await supabase
+    await supabaseAdmin
       .from('payout_jobs')
       .update({
         status: 'paid',
         date_paid: new Date().toISOString(),
+        transfer_ids: transferSummaries.map((entry) => entry.id).filter(Boolean),
       })
       .eq('id', payoutJobId);
 
-    return res.status(200).json({ success: true, transfers });
+    await logEvent(adminUser?.id ?? 'system', 'payout_processed', {
+      payout_job_id: payoutJobId,
+      transfers: transferSummaries,
+    });
+
+    return res.status(200).json({ success: true, transfers: transferSummaries });
   } catch (err) {
+    if (err instanceof AuthError) {
+      return res.status(err.status).json({ error: err.message });
+    }
+
     console.error('[PAYOUT ERROR]', err);
+    await logEvent(adminUser?.id ?? 'system', 'payout_failed', {
+      error: err.message,
+    });
     return res.status(500).json({ error: err.message });
   }
 }

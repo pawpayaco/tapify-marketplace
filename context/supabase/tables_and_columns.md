@@ -25,6 +25,7 @@ Source: information_schema.columns. This is structure only (no data).
 | businesses                            | source                   | text                        | YES         | null               |
 | businesses                            | created_at               | timestamp with time zone    | YES         | now()              |
 | businesses                            | is_connected             | boolean                     | YES         | false              |
+| businesses                            | connected_at             | timestamp with time zone    | YES         | null               |
 | displays                              | id                       | uuid                        | NO          | uuid_generate_v4() |
 | displays                              | retailer_id              | uuid                        | YES         | null               |
 | displays                              | uid                      | text                        | NO          | null               |
@@ -32,10 +33,16 @@ Source: information_schema.columns. This is structure only (no data).
 | displays                              | status                   | text                        | YES         | 'active'::text     |
 | displays                              | created_at               | timestamp with time zone    | YES         | now()              |
 | leaderboards                          | id                       | uuid                        | NO          | gen_random_uuid()  |
+| leaderboards                          | period                   | date                        | NO          | null               |
+| leaderboards                          | retailer_id              | uuid                        | YES         | null               |
+| leaderboards                          | scan_count               | integer                     | YES         | 0                  |
+| leaderboards                          | order_count              | integer                     | YES         | 0                  |
+| leaderboards                          | revenue_total            | numeric                     | YES         | 0                  |
 | leaderboards                          | sourcer_id               | uuid                        | YES         | null               |
 | leaderboards                          | total_sourced            | integer                     | YES         | 0                  |
 | leaderboards                          | total_revenue            | numeric                     | YES         | 0                  |
 | leaderboards                          | updated_at               | timestamp with time zone    | YES         | now()              |
+> Sourcer-focused columns remain for historical reporting; daily retailer metrics now live in `period`, `scan_count`, `order_count`, and `revenue_total`.
 | logs                                  | id                       | uuid                        | NO          | gen_random_uuid()  |
 | logs                                  | user_id                  | text                        | NO          | null               |
 | logs                                  | action                   | text                        | NO          | null               |
@@ -50,17 +57,32 @@ Source: information_schema.columns. This is structure only (no data).
 | offer_tests                           | end_date                 | date                        | YES         | null               |
 | offer_tests                           | created_at               | timestamp with time zone    | YES         | now()              |
 | orders                                | id                       | uuid                        | NO          | uuid_generate_v4() |
-| orders                                | retailer_id              | uuid                        | YES         | null               |
-| orders                                | product_name             | text                        | NO          | null               |
+| orders                                | shopify_order_id         | text                        | YES         | null               |
+| orders                                | shopify_order_number     | text                        | YES         | null               |
+| orders                                | shop_domain              | text                        | YES         | null               |
+| orders                                | customer_email           | text                        | YES         | null               |
 | orders                                | customer_name            | text                        | YES         | null               |
-| orders                                | amount                   | numeric                     | NO          | null               |
-| orders                                | commission               | numeric                     | NO          | null               |
-| orders                                | status                   | text                        | YES         | 'pending'::text    |
+| orders                                | retailer_id              | uuid                        | YES         | null               |
+| orders                                | vendor_id                | uuid                        | YES         | null               |
+| orders                                | business_id              | uuid                        | YES         | null               |
+| orders                                | currency                 | text                        | YES         | 'USD'::text        |
+| orders                                | total                    | numeric                     | YES         | 0                  |
+| orders                                | subtotal                 | numeric                     | YES         | 0                  |
+| orders                                | tax_total                | numeric                     | YES         | 0                  |
+| orders                                | discount_total           | numeric                     | YES         | 0                  |
+| orders                                | financial_status         | text                        | YES         | null               |
+| orders                                | fulfillment_status       | text                        | YES         | null               |
+| orders                                | processed_at             | timestamp with time zone    | YES         | null               |
+| orders                                | source_uid               | text                        | YES         | null               |
+| orders                                | line_items               | jsonb                       | YES         | '[]'::jsonb        |
+| orders                                | raw_payload              | jsonb                       | YES         | null               |
 | orders                                | created_at               | timestamp with time zone    | YES         | now()              |
+> Legacy columns (`product_name`, `amount`, `commission`, `status`) remain for backward compatibility but are being deprecated in v2.0 flows.
 | payout_jobs                           | id                       | uuid                        | NO          | gen_random_uuid()  |
 | payout_jobs                           | vendor_id                | uuid                        | YES         | null               |
 | payout_jobs                           | retailer_id              | uuid                        | YES         | null               |
 | payout_jobs                           | sourcer_id               | uuid                        | YES         | null               |
+| payout_jobs                           | order_id                 | uuid                        | YES         | null               |
 | payout_jobs                           | total_amount             | numeric                     | YES         | 0                  |
 | payout_jobs                           | vendor_cut               | numeric                     | YES         | 0                  |
 | payout_jobs                           | retailer_cut             | numeric                     | YES         | 0                  |
@@ -69,13 +91,22 @@ Source: information_schema.columns. This is structure only (no data).
 | payout_jobs                           | status                   | text                        | YES         | 'pending'::text    |
 | payout_jobs                           | date_paid                | timestamp with time zone    | YES         | null               |
 | payout_jobs                           | plaid_token              | text                        | YES         | null               |
+| payout_jobs                           | source_uid               | text                        | YES         | null               |
+| payout_jobs                           | transfer_ids             | jsonb                       | YES         | '[]'::jsonb        |
 | payout_jobs                           | created_at               | timestamp with time zone    | YES         | now()              |
 | payouts                               | id                       | uuid                        | NO          | uuid_generate_v4() |
 | payouts                               | retailer_id              | uuid                        | YES         | null               |
-| payouts                               | amount                   | numeric                     | NO          | null               |
-| payouts                               | status                   | text                        | YES         | 'pending'::text    |
+| payouts                               | payout_job_id            | uuid                        | YES         | null               |
+| payouts                               | vendor_id                | uuid                        | YES         | null               |
+| payouts                               | sourcer_id               | uuid                        | YES         | null               |
+| payouts                               | amount                   | numeric                     | YES         | null               |
+| payouts                               | total_amount             | numeric                     | YES         | null               |
+| payouts                               | status                   | text                        | YES         | 'sent'::text       |
+| payouts                               | transfer_summary         | jsonb                       | YES         | null               |
+| payouts                               | triggered_by             | uuid                        | YES         | null               |
 | payouts                               | payout_date              | timestamp with time zone    | YES         | now()              |
 | payouts                               | created_at               | timestamp with time zone    | YES         | now()              |
+> Legacy payout columns (`amount`, `payout_date`) remain for historical data; `total_amount`, `transfer_summary`, and `triggered_by` drive v2.0 reconciliation.
 | retailer_accounts                     | id                       | uuid                        | NO          | gen_random_uuid()  |
 | retailer_accounts                     | retailer_id              | uuid                        | YES         | null               |
 | retailer_accounts                     | plaid_access_token       | text                        | YES         | null               |
@@ -105,6 +136,7 @@ Source: information_schema.columns. This is structure only (no data).
 | retailers                             | id                       | uuid                        | NO          | gen_random_uuid()  |
 | retailers                             | name                     | text                        | NO          | null               |
 | retailers                             | linked_vendor_id         | uuid                        | YES         | null               |
+| retailers                             | business_id              | uuid                        | YES         | null               |
 | retailers                             | location                 | text                        | YES         | null               |
 | retailers                             | created_at               | timestamp with time zone    | YES         | now()              |
 | retailers                             | place_id                 | text                        | YES         | null               |
@@ -126,6 +158,7 @@ Source: information_schema.columns. This is structure only (no data).
 | retailers                             | express_shipping         | boolean                     | YES         | false              |
 | retailers                             | onboarding_completed     | boolean                     | YES         | false              |
 | retailers                             | onboarding_step          | text                        | YES         | null               |
+| retailers                             | created_by_user_id       | uuid                        | YES         | null               |
 | scans                                 | id                       | uuid                        | NO          | gen_random_uuid()  |
 | scans                                 | uid                      | text                        | YES         | null               |
 | scans                                 | timestamp                | timestamp with time zone    | YES         | now()              |
@@ -133,6 +166,11 @@ Source: information_schema.columns. This is structure only (no data).
 | scans                                 | clicked                  | boolean                     | YES         | false              |
 | scans                                 | converted                | boolean                     | YES         | false              |
 | scans                                 | revenue                  | numeric                     | YES         | 0                  |
+| scans                                 | retailer_id              | uuid                        | YES         | null               |
+| scans                                 | business_id              | uuid                        | YES         | null               |
+| scans                                 | ip_address               | text                        | YES         | null               |
+| scans                                 | user_agent               | text                        | YES         | null               |
+| scans                                 | metadata                 | jsonb                       | YES         | null               |
 | sourcer_accounts                      | id                       | uuid                        | NO          | gen_random_uuid()  |
 | sourcer_accounts                      | name                     | text                        | YES         | null               |
 | sourcer_accounts                      | email                    | text                        | YES         | null               |
@@ -169,9 +207,20 @@ Source: information_schema.columns. This is structure only (no data).
 | staging_stores_imported_20251002_1658 | source                   | text                        | YES         | null               |
 | uids                                  | uid                      | text                        | NO          | null               |
 | uids                                  | business_id              | uuid                        | YES         | null               |
+| uids                                  | retailer_id              | uuid                        | YES         | null               |
 | uids                                  | affiliate_url            | text                        | YES         | null               |
 | uids                                  | registered_at            | timestamp with time zone    | YES         | now()              |
 | uids                                  | is_connected             | boolean                     | YES         | false              |
+| uids                                  | is_claimed               | boolean                     | YES         | false              |
+| uids                                  | claimed_at               | timestamp with time zone    | YES         | null               |
+| uids                                  | claimed_by_user_id       | uuid                        | YES         | null               |
+| uids                                  | last_scan_at             | timestamp with time zone    | YES         | null               |
+| uids                                  | last_scan_ip             | text                        | YES         | null               |
+| uids                                  | last_scan_user_agent     | text                        | YES         | null               |
+| uids                                  | last_scan_location       | text                        | YES         | null               |
+| uids                                  | last_order_at            | timestamp with time zone    | YES         | null               |
+| uids                                  | last_order_total         | numeric                     | YES         | null               |
+| uids                                  | scan_count               | integer                     | YES         | 0                  |
 | v_uid_redirect                        | uid                      | text                        | YES         | null               |
 | v_uid_redirect                        | affiliate_url            | text                        | YES         | null               |
 | v_uid_redirect                        | is_connected             | boolean                     | YES         | null               |

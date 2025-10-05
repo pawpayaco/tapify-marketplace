@@ -1,4 +1,10 @@
-import { supabase } from '../lib/supabase';
+import { supabase, supabaseAdmin } from '../lib/supabase';
+
+const getClient = (clientOverride) => {
+  if (clientOverride) return clientOverride;
+  if (supabaseAdmin) return supabaseAdmin;
+  return supabase;
+};
 
 /**
  * Log an event to the Supabase logs table
@@ -7,12 +13,19 @@ import { supabase } from '../lib/supabase';
  * @param {Object} metadata - Additional metadata about the event
  * @returns {Promise<Object>} Result object with data or error
  */
-export async function logEvent(userId, action, metadata = {}) {
+export async function logEvent(userId, action, metadata = {}, clientOverride) {
   try {
     // Validate required parameters
     if (!userId || !action) {
       console.error('logEvent: userId and action are required');
       return { data: null, error: 'Missing required parameters' };
+    }
+
+    const client = getClient(clientOverride);
+
+    if (!client) {
+      console.warn('logEvent: Supabase client unavailable');
+      return { data: null, error: 'Supabase client unavailable' };
     }
 
     // Create log entry
@@ -24,7 +37,7 @@ export async function logEvent(userId, action, metadata = {}) {
     };
 
     // Insert into logs table
-    const { data, error } = await supabase
+    const { data, error } = await client
       .from('logs')
       .insert([logEntry])
       .select();

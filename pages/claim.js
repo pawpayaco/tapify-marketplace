@@ -45,23 +45,20 @@ export default function ConnectPage() {
     setError("");
 
     try {
-      // Mark business as connected
-      const { error: bizError } = await supabase
-        .from("businesses")
-        .update({ is_connected: true })
-        .eq("id", bizId);
+      const response = await fetch('/api/claim-uid', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ uid, businessId: bizId }),
+      });
 
-      if (bizError) throw bizError;
+      const result = await response.json();
 
-      // Link UID → business
-      const { error: uidError } = await supabase
-        .from("uids")
-        .update({ business_id: bizId })
-        .eq("uid", uid);
-
-      if (uidError) throw uidError;
+      if (!response.ok) {
+        throw new Error(result?.error || 'Failed to claim display.');
+      }
 
       setConnectedId(bizId);
+      setBusinesses(prev => prev.map(biz => biz.id === bizId ? { ...biz, is_connected: true } : biz));
     } catch (err) {
       setError(err.message || "Error connecting business.");
     }

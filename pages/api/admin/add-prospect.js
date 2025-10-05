@@ -1,22 +1,17 @@
 // pages/api/admin/add-prospect.js
 // POST - Admin adds a prospect store to the outreach list
 
-import { createClient } from '@supabase/supabase-js';
-
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
-
-if (!supabaseUrl || !supabaseServiceKey) {
-  console.error('[add-prospect] Missing SUPABASE env vars');
-}
-
-const supabase = createClient(supabaseUrl, supabaseServiceKey, {
-  auth: { persistSession: false }
-});
+import { requireAdmin, AuthError } from '../../../lib/api-auth';
+import { supabaseAdmin } from '../../../lib/supabase';
+import { logEvent } from '../../../utils/logger';
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
+  }
+
+  if (!supabaseAdmin) {
+    return res.status(500).json({ error: 'Supabase admin client not configured' });
   }
 
   const { 
@@ -46,8 +41,10 @@ export default async function handler(req, res) {
   }
 
   try {
+    const { user } = await requireAdmin(req, res);
+
     // Create retailer record
-    const { data: retailer, error: retailerError } = await supabase
+    const { data: retailer, error: retailerError } = await supabaseAdmin
       .from('retailers')
       .insert({
         name: storeName,
@@ -74,7 +71,7 @@ export default async function handler(req, res) {
 
     // Create retailer_owners record if owner info provided
     if (ownerEmail) {
-      const { error: ownerError } = await supabase
+      const { error: ownerError } = await supabaseAdmin
         .from('retailer_owners')
         .insert({
           retailer_id: retailer.id,
@@ -92,7 +89,7 @@ export default async function handler(req, res) {
     }
 
     // Create outreach tracking record
-    const { error: outreachError } = await supabase
+    const { error: outreachError } = await supabaseAdmin
       .from('retailer_outreach')
       .insert({
         retailer_id: retailer.id,
@@ -109,6 +106,11 @@ export default async function handler(req, res) {
 
     console.log('[add-prospect] Success for retailer:', retailer.id);
 
+    await logEvent(user.id, 'admin_add_prospect', {
+      retailer_id: retailer.id,
+      email: ownerEmail,
+    });
+
     return res.status(200).json({ 
       ok: true,
       message: 'Prospect added successfully',
@@ -116,10 +118,13 @@ export default async function handler(req, res) {
     });
     
   } catch (err) {
+    if (err instanceof AuthError) {
+      return res.status(err.status).json({ error: err.message });
+    }
+
     console.error('[add-prospect] Error:', err);
     return res.status(500).json({ 
       error: err.message || 'Failed to add prospect' 
     });
   }
 }
-
