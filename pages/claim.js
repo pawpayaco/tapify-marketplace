@@ -81,7 +81,7 @@ export default function ConnectPage() {
     setError("");
 
     try {
-      const response = await fetch('/api/claim-uid', {
+      const response = await fetch('/api/claim-display', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ uid, retailerId }),
