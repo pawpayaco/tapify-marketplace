@@ -1,7 +1,6 @@
 // pages/api/retailers/search.js
 // GET autocomplete search for retailers
 
-import { requireAdmin, AuthError } from '../../../lib/api-auth';
 import { supabaseAdmin, supabaseServerAnon } from '../../../lib/supabase';
 
 export default async function handler(req, res) {
@@ -13,12 +12,16 @@ export default async function handler(req, res) {
   // service role client is available we verify the caller; otherwise we fall
   // back to a read-only anon client and skip admin enforcement.
   const hasAdminClient = Boolean(supabaseAdmin);
+  let AuthErrorClass = null;
+  let requireAdminFn = null;
 
   if (hasAdminClient) {
+    ({ AuthError: AuthErrorClass, requireAdmin: requireAdminFn } = await import('../../../lib/api-auth'));
+
     try {
-      await requireAdmin(req, res);
+      await requireAdminFn(req, res);
     } catch (error) {
-      if (error instanceof AuthError) {
+      if (AuthErrorClass && error instanceof AuthErrorClass) {
         if (error.status === 401 || error.status === 403) {
           console.log('[retailers/search] No admin session detected, continuing in public mode');
         } else {
@@ -34,6 +37,14 @@ export default async function handler(req, res) {
   const q = (req.query.query || '').trim();
   
   console.log('[retailers/search] Query:', q);
+  console.log('[retailers/search] Supabase config', {
+    hasAdminClient,
+    hasServerAnon: Boolean(supabaseServerAnon),
+    hasPublicUrl: Boolean(process.env.NEXT_PUBLIC_SUPABASE_URL),
+    hasServiceUrl: Boolean(process.env.SUPABASE_URL),
+    hasAnonKey: Boolean(process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY),
+    hasServiceRoleKey: Boolean(process.env.SUPABASE_SERVICE_ROLE_KEY),
+  });
   
   if (!q) {
     return res.status(200).json({ results: [] });
@@ -120,7 +131,7 @@ export default async function handler(req, res) {
     
     return res.status(200).json({ results });
   } catch (err) {
-    if (err instanceof AuthError) {
+    if (AuthErrorClass && err instanceof AuthErrorClass) {
       return res.status(err.status).json({ error: err.message });
     }
 
