@@ -11,8 +11,11 @@
 
 import { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
+import { verifyPriorityDisplay } from '../lib/client/verifyPriorityDisplay';
+import { useToast } from '../context/ui/useToast';
 
 export default function DashboardSettings({ retailerId }) {
+  const { toast, Toast } = useToast();
   const [retailer, setRetailer] = useState(null);
   const [uid, setUid] = useState(null);
   const [priorityDisplayActive, setPriorityDisplayActive] = useState(false);
@@ -39,7 +42,9 @@ export default function DashboardSettings({ retailerId }) {
       if (retailerError) throw retailerError;
 
       setRetailer(retailerData);
-      setPriorityDisplayActive(retailerData?.priority_display_active || false);
+
+      // Store previous state to detect changes
+      const wasPreviouslyActive = priorityDisplayActive;
 
       // Load retailer's primary UID
       const { data: uidData, error: uidError } = await supabase
@@ -54,23 +59,42 @@ export default function DashboardSettings({ retailerId }) {
         setUid(uidData.uid);
       }
 
-      // Check orders table for priority display purchase
-      const { data: orderData } = await supabase
-        .from('orders')
-        .select('is_priority_display')
-        .eq('retailer_id', retailerId)
-        .eq('is_priority_display', true)
-        .maybeSingle();
+      // Verify priority display status using the verification helper
+      const isActive = await verifyPriorityDisplay(retailerId);
 
-      if (orderData) {
+      // If not active in retailer record but found in orders, sync it
+      if (!isActive) {
+        const { data: orderData } = await supabase
+          .from('orders')
+          .select('is_priority_display')
+          .eq('retailer_id', retailerId)
+          .eq('is_priority_display', true)
+          .maybeSingle();
+
+        if (orderData) {
+          // Update retailer record if not already marked
+          if (!retailerData.priority_display_active) {
+            await supabase
+              .from('retailers')
+              .update({ priority_display_active: true })
+              .eq('id', retailerId);
+          }
+
+          setPriorityDisplayActive(true);
+
+          // Show toast if this is a new activation
+          if (!wasPreviouslyActive) {
+            toast('🎉 Your Priority Display is now active!');
+          }
+        } else {
+          setPriorityDisplayActive(false);
+        }
+      } else {
         setPriorityDisplayActive(true);
 
-        // Update retailer record if not already marked
-        if (!retailerData.priority_display_active) {
-          await supabase
-            .from('retailers')
-            .update({ priority_display_active: true })
-            .eq('id', retailerId);
+        // Show toast if this is a new activation
+        if (!wasPreviouslyActive) {
+          toast('🎉 Your Priority Display is now active!');
         }
       }
 
@@ -129,6 +153,7 @@ export default function DashboardSettings({ retailerId }) {
 
   return (
     <div className="max-w-4xl mx-auto p-6 space-y-6">
+      <Toast />
       <div>
         <h1 className="text-3xl font-bold mb-2">Settings</h1>
         <p className="text-gray-600">Manage your account and upgrade options</p>

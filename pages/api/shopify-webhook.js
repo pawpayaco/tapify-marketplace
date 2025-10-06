@@ -234,7 +234,7 @@ export default async function handler(req, res) {
 
     // Update retailer priority_display_active flag if Priority Display was purchased
     if (hasPriorityDisplay && retailerId) {
-      console.log('[shopify-webhook] Priority Display detected, updating retailer flag');
+      console.log('[shopify-webhook] Priority Display detected, updating retailer flag for retailer:', retailerId);
       const { error: retailerUpdateError } = await supabaseAdmin
         .from('retailers')
         .update({ priority_display_active: true })
@@ -243,7 +243,7 @@ export default async function handler(req, res) {
       if (retailerUpdateError) {
         console.error('[shopify-webhook] Failed to update retailer priority flag', retailerUpdateError.message);
       } else {
-        console.log('[shopify-webhook] ✅ Retailer priority display activated:', retailerId);
+        console.log('[shopify-webhook] ✅ Priority Display order processed for retailer:', retailerId);
       }
     }
 

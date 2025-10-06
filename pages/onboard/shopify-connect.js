@@ -3,6 +3,8 @@ import { useRouter } from 'next/router';
 import { motion, AnimatePresence } from 'framer-motion';
 import { supabase } from '../../lib/supabase';
 import AddressInput from '../../components/AddressInput';
+import { verifyPriorityDisplay } from '../../lib/client/verifyPriorityDisplay';
+import { useToast } from '../../context/ui/useToast';
 
 const SHIPPING_OPTIONS = [
   {
@@ -93,6 +95,7 @@ const hydrateAddressFromRaw = (raw = '') => {
 
 export default function ShopifyConnect() {
   const router = useRouter();
+  const { toast, Toast } = useToast();
   const [selectedOption, setSelectedOption] = useState('expedited');
   const [loading, setLoading] = useState(false);
   const [standardProcessing, setStandardProcessing] = useState(false);
@@ -141,9 +144,6 @@ export default function ShopifyConnect() {
           return;
         }
 
-        // Check priority display status from retailer
-        setPriorityDisplayActive(retailerData.priority_display_active || false);
-
         // Get retailer's UID
         const { data: uidData } = await supabase
           .from('uids')
@@ -157,23 +157,29 @@ export default function ShopifyConnect() {
           setRetailerUid(uidData.uid);
         }
 
-        // Check if priority display was purchased in orders
-        const { data: orderData } = await supabase
-          .from('orders')
-          .select('is_priority_display')
-          .eq('retailer_id', storedRetailerId)
-          .eq('is_priority_display', true)
-          .maybeSingle();
+        // Verify priority display status using the verification helper
+        const isActive = await verifyPriorityDisplay(storedRetailerId);
+        setPriorityDisplayActive(isActive);
 
-        if (orderData) {
-          setPriorityDisplayActive(true);
+        // If not active in retailer record but found in orders, sync it
+        if (!isActive) {
+          const { data: orderData } = await supabase
+            .from('orders')
+            .select('is_priority_display')
+            .eq('retailer_id', storedRetailerId)
+            .eq('is_priority_display', true)
+            .maybeSingle();
 
-          // Update retailer record if not already marked
-          if (!retailerData.priority_display_active) {
-            await supabase
-              .from('retailers')
-              .update({ priority_display_active: true })
-              .eq('id', storedRetailerId);
+          if (orderData) {
+            setPriorityDisplayActive(true);
+
+            // Update retailer record if not already marked
+            if (!retailerData.priority_display_active) {
+              await supabase
+                .from('retailers')
+                .update({ priority_display_active: true })
+                .eq('id', storedRetailerId);
+            }
           }
         }
       } catch (err) {
@@ -186,18 +192,27 @@ export default function ShopifyConnect() {
     // Check for Shopify return parameters
     const checkShopifyReturn = () => {
       const urlParams = new URLSearchParams(window.location.search);
+      const success = urlParams.get('success');
       const shopifyConfirmed = urlParams.get('shopify_confirmed');
       const orderConfirmed = urlParams.get('order_confirmed');
 
-      if (shopifyConfirmed === 'true' || orderConfirmed === 'true') {
+      // Detect Shopify redirect after checkout
+      if (success === '1' || shopifyConfirmed === 'true' || orderConfirmed === 'true') {
         setPriorityDisplayConfirmed(true);
+        toast('🎉 Display ordered successfully!');
+
         // Clear URL parameters
         window.history.replaceState({}, document.title, window.location.pathname);
+
+        // Redirect to dashboard after short delay
+        setTimeout(() => {
+          router.push('/onboard/dashboard');
+        }, 2000);
       }
     };
 
     checkShopifyReturn();
-  }, []);
+  }, [router, toast]);
 
   const activeOption = SHIPPING_OPTIONS.find((option) => option.id === selectedOption) || SHIPPING_OPTIONS[0];
   const isExpedited = activeOption.id === 'expedited';
@@ -287,6 +302,7 @@ export default function ShopifyConnect() {
 
   return (
     <div className="min-h-screen" style={{ backgroundColor: '#faf8f3' }}>
+      <Toast />
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 pb-16">
         <motion.div
           initial={{ opacity: 0, y: -20 }}
