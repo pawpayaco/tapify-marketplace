@@ -1,6 +1,6 @@
 import { supabaseAdmin } from '../../../lib/supabase';
 
-const CLAIMABLE_DISPLAY_STATUSES = ['priority_queue', 'standard_queue', 'active', 'shipped'];
+const CLAIMABLE_DISPLAY_STATUSES = ['priority_queue', 'standard_queue', 'active', 'shipped', 'requested'];
 
 export default async function handler(req, res) {
   if (req.method !== 'GET') {
@@ -29,7 +29,6 @@ export default async function handler(req, res) {
       `)
       .in('status', CLAIMABLE_DISPLAY_STATUSES)
       .eq('retailers.converted', true)
-      .eq('retailers.onboarding_completed', true)
       .order('created_at', { ascending: true });
 
     if (error) {
@@ -49,7 +48,13 @@ export default async function handler(req, res) {
         return;
       }
 
-      if (!retailer.converted || !retailer.onboarding_completed) {
+      if (!retailer || retailer.converted === false) {
+        return;
+      }
+
+      const onboardingCompleted = retailer.onboarding_completed;
+
+      if (typeof onboardingCompleted === 'boolean' && onboardingCompleted === false && display.status !== 'requested') {
         return;
       }
 
@@ -75,6 +80,7 @@ export default async function handler(req, res) {
         shipped: 3,
         priority_queue: 2,
         standard_queue: 1,
+        requested: 0,
       };
 
       const currentRank = statusRank[existing.shippingStatus] ?? 0;
@@ -93,4 +99,3 @@ export default async function handler(req, res) {
     return res.status(500).json({ error: 'Failed to load claimable retailers' });
   }
 }
-

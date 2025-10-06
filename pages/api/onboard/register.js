@@ -4,6 +4,7 @@
 
 import { Pool } from 'pg';
 import { createClient } from '@supabase/supabase-js';
+import { randomUUID } from 'crypto';
 
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL || process.env.SUPABASE_URL;
 const SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
@@ -36,6 +37,19 @@ function getPool() {
     });
   }
   return pool;
+}
+
+async function ensureDisplayRecord(client, retailerId, location) {
+  const displayUid = `disp-${randomUUID()}`;
+
+  await client.query(
+    `INSERT INTO public.displays (retailer_id, uid, location, status, created_at)
+     SELECT $1, $2, $3, 'requested', now()
+     WHERE NOT EXISTS (
+       SELECT 1 FROM public.displays WHERE retailer_id = $1
+     )`,
+    [retailerId, displayUid, location || null]
+  );
 }
 
 /**
@@ -173,6 +187,8 @@ export default async function handler(req, res) {
       console.log('[onboard/register] Updated existing retailer:', rId);
     }
 
+    await ensureDisplayRecord(client, rId, address || store_name);
+
     // Note: owner data is now stored directly in retailers table
     // No need for separate retailer_owners entry (deprecated)
 
@@ -253,17 +269,7 @@ export default async function handler(req, res) {
           ]
         );
         
-        // Create display request for this location
-        await client.query(
-          `INSERT INTO public.displays 
-            (retailer_id, uid, location, status, created_at)
-          VALUES ($1, $2, $3, 'requested', now())`,
-          [
-            additionalRetailerId,
-            `disp-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
-            store.address || store.storeName
-          ]
-        );
+        await ensureDisplayRecord(client, additionalRetailerId, store.address || store.storeName);
       }
     }
 
