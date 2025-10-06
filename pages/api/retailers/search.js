@@ -13,14 +13,23 @@ export default async function handler(req, res) {
     return res.status(500).json({ error: 'Supabase admin client not configured' });
   }
 
+  // Allow both admin-authenticated and public onboarding requests.
+  // Admin routes will succeed the check below; public onboarding callers
+  // will hit the AuthError which we deliberately downgrade so the
+  // autocomplete can still return results.
   try {
     await requireAdmin(req, res);
   } catch (error) {
     if (error instanceof AuthError) {
-      return res.status(error.status).json({ error: error.message });
+      if (error.status === 401 || error.status === 403) {
+        console.log('[retailers/search] No admin session detected, continuing in public mode');
+      } else {
+        return res.status(error.status).json({ error: error.message });
+      }
+    } else {
+      console.error('[retailers/search] Admin auth error:', error);
+      return res.status(500).json({ error: 'Failed to verify admin session' });
     }
-    console.error('[retailers/search] Admin auth error:', error);
-    return res.status(500).json({ error: 'Failed to verify admin session' });
   }
 
   const q = (req.query.query || '').trim();

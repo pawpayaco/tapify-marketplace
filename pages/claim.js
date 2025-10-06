@@ -1,14 +1,14 @@
 "use client";
-import { useState, useEffect } from "react";
-import { supabase } from "../lib/supabase";
+import { useState, useEffect, useMemo } from "react";
 
 export default function ConnectPage() {
   const [uid, setUid] = useState("");
-  const [businesses, setBusinesses] = useState([]);
+  const [retailers, setRetailers] = useState([]);
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(false);
   const [connectedId, setConnectedId] = useState(null);
   const [error, setError] = useState("");
+  const [loadingList, setLoadingList] = useState(false);
 
   useEffect(() => {
     // Ensure page loads at top
@@ -19,24 +19,60 @@ export default function ConnectPage() {
     const u = params.get("u");
     if (u) setUid(u);
 
-    // Load businesses
-    const fetchBusinesses = async () => {
-      const { data, error } = await supabase
-        .from("businesses")
-        .select("id, name, is_connected, created_at")
-        .order("created_at", { ascending: true });
+    const fetchRetailers = async () => {
+      try {
+        setLoadingList(true);
+        setError("");
 
-      if (error) {
-        console.error("Error fetching businesses:", error.message);
-        setError("Could not load businesses.");
-      } else {
-        setBusinesses(data || []);
+        const response = await fetch('/api/retailers/ready-for-claim');
+        const payload = await response.json();
+
+        if (!response.ok) {
+          throw new Error(payload?.error || 'Failed to load stores');
+        }
+
+        setRetailers(payload?.results || []);
+      } catch (err) {
+        console.error('[claim] Failed to load retailers:', err);
+        setError(err.message || 'Could not load stores.');
+      } finally {
+        setLoadingList(false);
       }
     };
-    fetchBusinesses();
+
+    fetchRetailers();
   }, []);
 
-  const handleConnect = async (bizId) => {
+  const filteredRetailers = useMemo(() => {
+    const term = search.trim().toLowerCase();
+    if (!term) return retailers;
+
+    return retailers.filter(retailer => {
+      const composite = [retailer.name, retailer.address, retailer.displayLocation]
+        .filter(Boolean)
+        .join(' ')
+        .toLowerCase();
+      return composite.includes(term);
+    });
+  }, [retailers, search]);
+
+  const shippingBadge = (status) => {
+    const normalized = (status || '').toLowerCase();
+    switch (normalized) {
+      case 'priority_queue':
+        return { label: 'Priority Shipping', tone: 'bg-purple-100 text-purple-700' };
+      case 'standard_queue':
+        return { label: 'Queued to Ship', tone: 'bg-blue-100 text-blue-700' };
+      case 'active':
+        return { label: 'Active Display', tone: 'bg-green-100 text-green-700' };
+      case 'shipped':
+        return { label: 'In Transit', tone: 'bg-blue-100 text-blue-700' };
+      default:
+        return { label: 'Preparing', tone: 'bg-gray-100 text-gray-600' };
+    }
+  };
+
+  const handleConnect = async (retailerId) => {
     if (!uid) {
       setError("No UID detected in URL.");
       return;
@@ -48,7 +84,7 @@ export default function ConnectPage() {
       const response = await fetch('/api/claim-uid', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ uid, businessId: bizId }),
+        body: JSON.stringify({ uid, retailerId }),
       });
 
       const result = await response.json();
@@ -57,8 +93,8 @@ export default function ConnectPage() {
         throw new Error(result?.error || 'Failed to claim display.');
       }
 
-      setConnectedId(bizId);
-      setBusinesses(prev => prev.map(biz => biz.id === bizId ? { ...biz, is_connected: true } : biz));
+      setConnectedId(retailerId);
+      setRetailers(prev => prev.filter(store => store.id !== retailerId));
     } catch (err) {
       setError(err.message || "Error connecting business.");
     }
@@ -101,45 +137,49 @@ export default function ConnectPage() {
 
         {/* Business List */}
         <div className="space-y-4">
-          {businesses
-            .filter((b) =>
-              b.name.toLowerCase().includes(search.toLowerCase())
-            )
-            .map((biz, idx) => (
+          {filteredRetailers.map((store) => {
+            const badge = shippingBadge(store.shippingStatus);
+            return (
               <div
-                key={biz.id}
+                key={store.id}
                 className="flex justify-between items-center bg-white rounded-3xl shadow-xl border-2 border-gray-100 p-5 hover:shadow-2xl transition-all"
               >
                 <div>
-                  <p className="font-semibold text-gray-900">{biz.name}</p>
-                  <p className="text-sm text-gray-500">
-                    ID: b-{idx + 1001}
-                  </p>
+                  <p className="font-semibold text-gray-900">{store.name}</p>
+                  {store.address && (
+                    <p className="text-sm text-gray-500 truncate max-w-[240px]">
+                      {store.address}
+                    </p>
+                  )}
+                  <div className={`inline-flex items-center px-3 py-1 mt-2 rounded-full text-xs font-bold ${badge.tone}`}>
+                    {badge.label}
+                  </div>
                 </div>
                 <button
-                  disabled={biz.is_connected || loading || connectedId === biz.id}
-                  onClick={() => handleConnect(biz.id)}
+                  disabled={loading || connectedId === store.id}
+                  onClick={() => handleConnect(store.id)}
                   className={`px-5 py-2.5 rounded-2xl font-bold text-sm transition-all ${
-                    biz.is_connected || connectedId === biz.id
+                    connectedId === store.id
                       ? "bg-gray-200 text-gray-500 cursor-not-allowed"
                       : "bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3] text-white shadow-lg hover:shadow-xl hover:scale-105 active:scale-95"
                   }`}
                 >
-                  {connectedId === biz.id
-                    ? "✅ Connected"
-                    : biz.is_connected
-                    ? "Unavailable"
-                    : "Connect"}
+                  {connectedId === store.id ? "✅ Connected" : "Connect"}
                 </button>
               </div>
-            ))}
+            );
+          })}
 
           {/* Empty state */}
-          {businesses.filter((b) =>
-            b.name.toLowerCase().includes(search.toLowerCase())
-          ).length === 0 && (
+          {!loadingList && filteredRetailers.length === 0 && (
             <div className="bg-white rounded-3xl border-2 border-gray-200 shadow-xl p-6 text-center text-gray-500">
-              No results found.
+              No stores ready for claim yet.
+            </div>
+          )}
+          {loadingList && (
+            <div className="bg-white rounded-3xl border-2 border-gray-200 shadow-xl p-6 text-center text-gray-500 flex items-center justify-center gap-2">
+              <div className="animate-spin rounded-full h-5 w-5 border-2 border-gray-400 border-t-transparent"></div>
+              Loading stores…
             </div>
           )}
         </div>

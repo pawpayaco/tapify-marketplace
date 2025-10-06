@@ -152,13 +152,31 @@ export async function getServerSideProps(context) {
     const [
       { data: payoutJobs, error: payoutError },
       { data: vendors, error: vendorsError },
-      { data: retailers, error: retailersError },
+      { data: retailersData, error: retailersError },
       { data: sourcers, error: sourcersError },
       { data: uids, error: uidsError },
     ] = await Promise.all([
       supabaseAdmin.from('payout_jobs').select('*').order('created_at', { ascending: false }).limit(100),
       supabaseAdmin.from('vendors').select('*').order('created_at', { ascending: false }),
-      supabaseAdmin.from('retailers').select('*').order('created_at', { ascending: false }),
+      supabaseAdmin
+        .from('retailers')
+        .select(`
+          id,
+          name,
+          location,
+          address,
+          converted,
+          onboarding_completed,
+          express_shipping,
+          created_at,
+          displays:displays (
+            id,
+            status
+          )
+        `)
+        .eq('converted', true)
+        .eq('onboarding_completed', true)
+        .order('created_at', { ascending: false }),
       supabaseAdmin.from('sourcer_accounts').select('*').order('created_at', { ascending: false }),
       supabaseAdmin.from('uids').select('*').order('registered_at', { ascending: false }).limit(100),
     ]);
@@ -168,6 +186,31 @@ export async function getServerSideProps(context) {
     if (retailersError) console.error('[ADMIN] Retailers error:', retailersError.message);
     if (sourcersError) console.error('[ADMIN] Sourcers error:', sourcersError.message);
     if (uidsError) console.error('[ADMIN] UIDs error:', uidsError.message);
+
+    const statusRank = {
+      active: 3,
+      shipped: 3,
+      priority_queue: 2,
+      standard_queue: 1,
+    };
+
+    const normalizedRetailers = (retailersData || [])
+      .map((retailer) => {
+        const displayList = Array.isArray(retailer.displays) ? retailer.displays : [];
+        const displayCount = displayList.length;
+
+        const primaryStatus = displayList.reduce((best, display) => {
+          const currentRank = statusRank[best?.status] ?? 0;
+          const incomingRank = statusRank[display.status] ?? 0;
+          return incomingRank > currentRank ? display : best;
+        }, null);
+
+        return {
+          ...retailer,
+          display_count: displayCount,
+          primary_display_status: primaryStatus?.status ?? null,
+        };
+      });
 
     return {
       props: {
@@ -179,7 +222,7 @@ export async function getServerSideProps(context) {
         error: null,
         initialPayoutJobs: payoutJobs || [],
         initialVendors: vendors || [],
-        initialRetailers: retailers || [],
+        initialRetailers: normalizedRetailers,
         initialSourcers: sourcers || [],
         initialUids: uids || [],
         debugInfo: {
@@ -188,7 +231,7 @@ export async function getServerSideProps(context) {
           dataLoaded: {
             payoutJobs: payoutJobs?.length || 0,
             vendors: vendors?.length || 0,
-            retailers: retailers?.length || 0,
+            retailers: normalizedRetailers?.length || 0,
             sourcers: sourcers?.length || 0,
             uids: uids?.length || 0,
           },
@@ -383,6 +426,22 @@ export default function Admin({
   const retailers = useMemo(() => initialRetailers, [initialRetailers]);
   const sourcers = useMemo(() => initialSourcers, [initialSourcers]);
   const uids = useMemo(() => initialUids, [initialUids]);
+
+  const retailerShippingBadge = (status) => {
+    const normalized = (status || '').toLowerCase();
+    switch (normalized) {
+      case 'priority_queue':
+        return { label: 'Priority Shipping', tone: 'bg-purple-100 text-purple-700' };
+      case 'standard_queue':
+        return { label: 'Queued to Ship', tone: 'bg-blue-100 text-blue-700' };
+      case 'active':
+        return { label: 'Active Display', tone: 'bg-green-100 text-green-700' };
+      case 'shipped':
+        return { label: 'In Transit', tone: 'bg-blue-100 text-blue-700' };
+      default:
+        return { label: 'Preparing', tone: 'bg-gray-100 text-gray-600' };
+    }
+  };
 
   const qlc = q.trim().toLowerCase();
   const filtVendors = vendors.filter(
@@ -701,7 +760,9 @@ export default function Admin({
               animate="visible"
               className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
             >
-              {retailers.map((r) => (
+              {retailers.map((r) => {
+                const badge = retailerShippingBadge(r.primary_display_status);
+                return (
                 <motion.article
                   key={r.id}
                   variants={fadeInUp}
@@ -716,15 +777,21 @@ export default function Admin({
                     </div>
                     <div className="flex-1">
                       <h3 className="text-lg font-bold text-gray-900 mb-1">{r.name}</h3>
-                      <div className="text-sm text-gray-600">{r.location}</div>
+                      <div className="text-sm text-gray-600">
+                        {r.address || r.location || 'Address to be assigned'}
+                      </div>
+                      <div className={`inline-flex items-center px-3 py-1 mt-2 rounded-full text-xs font-bold ${badge.tone}`}>
+                        {badge.label}
+                      </div>
                     </div>
                   </div>
                   <div className="rounded-2xl bg-gradient-to-r from-blue-50 to-cyan-50 px-4 py-3">
                     <div className="text-xs text-gray-600 mb-1">Active Displays</div>
-                    <div className="text-2xl font-bold text-blue-700">{r.displays}</div>
+                    <div className="text-2xl font-bold text-blue-700">{r.display_count}</div>
                   </div>
                 </motion.article>
-              ))}
+              );
+            })}
             </motion.div>
           )}
 

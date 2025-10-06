@@ -12,10 +12,10 @@ export default async function handler(req, res) {
     return res.status(500).json({ error: 'Supabase admin client not configured' });
   }
 
-  const { uid, businessId } = req.body ?? {};
+  const { uid, businessId: rawBusinessId, retailerId: rawRetailerId } = req.body ?? {};
 
-  if (!uid || !businessId) {
-    return res.status(400).json({ error: 'uid and businessId are required' });
+  if (!uid || (!rawBusinessId && !rawRetailerId)) {
+    return res.status(400).json({ error: 'uid and retailerId (or businessId) are required' });
   }
 
   try {
@@ -40,30 +40,63 @@ export default async function handler(req, res) {
       return res.status(409).json({ error: 'UID already claimed' });
     }
 
-    const { data: business, error: businessError } = await supabaseAdmin
-      .from('businesses')
-      .select('id')
-      .eq('id', businessId)
-      .maybeSingle();
+    const businessId = rawBusinessId || null;
+    let retailerId = rawRetailerId || uidRecord?.retailer_id || null;
+    let retailerRecord = null;
 
-    if (businessError) {
-      console.error('[claim-uid] Business lookup error:', businessError.message);
-      return res.status(500).json({ error: 'Failed to fetch business' });
+    if (businessId) {
+      const { data: business, error: businessError } = await supabaseAdmin
+        .from('businesses')
+        .select('id')
+        .eq('id', businessId)
+        .maybeSingle();
+
+      if (businessError) {
+        console.error('[claim-uid] Business lookup error:', businessError.message);
+        return res.status(500).json({ error: 'Failed to fetch business' });
+      }
+
+      if (!business) {
+        return res.status(404).json({ error: 'Business not found' });
+      }
+
+      // Business object stored only for validation; no further action needed here.
     }
 
-    if (!business) {
-      return res.status(404).json({ error: 'Business not found' });
+    if (retailerId) {
+      const { data: retailer, error: retailerError } = await supabaseAdmin
+        .from('retailers')
+        .select('id, email, business_id')
+        .eq('id', retailerId)
+        .maybeSingle();
+
+      if (retailerError) {
+        console.error('[claim-uid] Retailer lookup error:', retailerError.message);
+        return res.status(500).json({ error: 'Failed to fetch retailer' });
+      }
+
+      if (!retailer) {
+        return res.status(404).json({ error: 'Retailer not found' });
+      }
+
+      retailerRecord = retailer;
     }
 
-    let retailerId = uidRecord?.retailer_id ?? null;
+    if (!retailerId && businessId) {
+      const { data: retailer, error: retailerError } = await supabaseAdmin
+        .from('retailers')
+        .select('id, email, business_id')
+        .eq('business_id', businessId)
+        .maybeSingle();
 
-    const { data: retailer } = await supabaseAdmin
-      .from('retailers')
-      .select('id, email')
-      .eq('business_id', businessId)
-      .maybeSingle();
+      if (retailerError) {
+        console.error('[claim-uid] Retailer lookup error:', retailerError.message);
+        return res.status(500).json({ error: 'Failed to fetch retailer' });
+      }
 
-    retailerId = retailer?.id ?? null;
+      retailerId = retailer?.id ?? null;
+      retailerRecord = retailer;
+    }
 
     if (!retailerId) {
       const { data: owner } = await supabaseAdmin
@@ -75,22 +108,36 @@ export default async function handler(req, res) {
       retailerId = owner?.retailer_id ?? null;
     }
 
+    if (!retailerId) {
+      return res.status(400).json({ error: 'Unable to determine retailer for this claim' });
+    }
+
     const defaultAffiliateUrl = env.NEXT_PUBLIC_SHOPIFY_DOMAIN
       ? `https://${env.NEXT_PUBLIC_SHOPIFY_DOMAIN}/collections/all?ref=${uid}`
       : null;
 
     const affiliateUrl = uidRecord?.affiliate_url ?? defaultAffiliateUrl;
 
+    const updatePayload = {
+      is_claimed: true,
+      claimed_at: new Date().toISOString(),
+      claimed_by_user_id: user.id,
+      affiliate_url: affiliateUrl,
+    };
+
+    if (retailerId) {
+      updatePayload.retailer_id = retailerId;
+    }
+
+    if (businessId) {
+      updatePayload.business_id = businessId;
+    } else if (retailerRecord?.business_id) {
+      updatePayload.business_id = retailerRecord.business_id;
+    }
+
     const { error: updateError } = await supabaseAdmin
       .from('uids')
-      .update({
-        business_id: businessId,
-        retailer_id: retailerId,
-        is_claimed: true,
-        claimed_at: new Date().toISOString(),
-        claimed_by_user_id: user.id,
-        affiliate_url: affiliateUrl,
-      })
+      .update(updatePayload)
       .eq('uid', uid);
 
     if (updateError) {
@@ -98,16 +145,30 @@ export default async function handler(req, res) {
       return res.status(500).json({ error: 'Failed to claim UID' });
     }
 
-    const { error: businessUpdateError } = await supabaseAdmin
-      .from('businesses')
-      .update({
-        is_connected: true,
-        connected_at: new Date().toISOString(),
-      })
-      .eq('id', businessId);
+    if (retailerId) {
+      const { error: displayUpdateError } = await supabaseAdmin
+        .from('displays')
+        .update({ status: 'active' })
+        .eq('retailer_id', retailerId)
+        .in('status', ['priority_queue', 'standard_queue']);
 
-    if (businessUpdateError) {
-      console.warn('[claim-uid] Business update warning:', businessUpdateError.message);
+      if (displayUpdateError) {
+        console.warn('[claim-uid] Display status update warning:', displayUpdateError.message);
+      }
+    }
+
+    if (businessId) {
+      const { error: businessUpdateError } = await supabaseAdmin
+        .from('businesses')
+        .update({
+          is_connected: true,
+          connected_at: new Date().toISOString(),
+        })
+        .eq('id', businessId);
+
+      if (businessUpdateError) {
+        console.warn('[claim-uid] Business update warning:', businessUpdateError.message);
+      }
     }
 
     await logEvent(user.id, 'uid_claimed', {
@@ -116,7 +177,7 @@ export default async function handler(req, res) {
       retailer_id: retailerId,
     });
 
-    return res.status(200).json({ success: true, retailer_id: retailerId });
+    return res.status(200).json({ success: true, retailer_id: retailerId, business_id: businessId });
   } catch (error) {
     if (error instanceof AuthError) {
       return res.status(error.status).json({ error: error.message });

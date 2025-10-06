@@ -310,3 +310,11 @@ This file maps every API route in `/pages/api` to its backend function, explaini
 - See **@context/nextjs/auth_flow.md** for authentication logic
 - See **@context/payouts_flow.md** for payout sequence diagrams
 - See **@context/shopify/webhooks.md** for Shopify integration details
+
+### /api/retailers/ready-for-claim.js - Claimable Retailers
+**Purpose:** Returns fully onboarded retailers with displays queued or active so store managers can claim UIDs.
+
+**Database Calls:**
+- `SELECT displays.status, retailers.* FROM displays JOIN retailers ON displays.retailer_id = retailers.id`
+
+---

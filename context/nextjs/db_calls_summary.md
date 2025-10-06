@@ -571,3 +571,6 @@ const subscription = supabase
 - See **@context/supabase/foreign_keys.md** for relationships
 - See **@context/nextjs/auth_flow.md** for auth-based queries
 - See **@context/nextjs/pages_api_summary.md** for API route queries
+
+// pages/api/retailers/ready-for-claim.js
+// SELECT displays.status, retailers.* FROM displays JOIN retailers ON displays.retailer_id = retailers.id

@@ -29,8 +29,20 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: 'Store name is required' });
   }
 
+  let actor = null;
+
   try {
     const { user } = await requireSession(req, res);
+    actor = user;
+  } catch (authError) {
+    if (authError instanceof AuthError && (authError.status === 401 || authError.status === 403)) {
+      console.log('[retailers/create] No session detected, continuing with public onboarding context');
+    } else {
+      throw authError;
+    }
+  }
+
+  try {
 
     // Insert new retailer
     const { data: retailer, error: retailerError } = await supabaseAdmin
@@ -45,7 +57,7 @@ export default async function handler(req, res) {
         email: email || null,
         source,
         created_at: new Date().toISOString(),
-        created_by_user_id: user.id,
+        created_by_user_id: actor?.id || null,
       })
       .select('id, name, address, location, email, phone, store_phone')
       .single();
@@ -74,10 +86,12 @@ export default async function handler(req, res) {
       console.warn('[retailers/create] Outreach insert warning:', outreachError.message);
     }
 
-    await logEvent(user.id, 'retailer_created', {
-      retailer_id: retailer.id,
-      source,
-    });
+    if (actor?.id) {
+      await logEvent(actor.id, 'retailer_created', {
+        retailer_id: retailer.id,
+        source,
+      });
+    }
 
     return res.status(200).json({ ok: true, retailer });
     
