@@ -16,21 +16,29 @@ export default async function handler(req, res) {
   let requireAdminFn = null;
 
   if (hasAdminClient) {
-    ({ AuthError: AuthErrorClass, requireAdmin: requireAdminFn } = await import('../../../lib/api-auth'));
-
     try {
-      await requireAdminFn(req, res);
-    } catch (error) {
-      if (AuthErrorClass && error instanceof AuthErrorClass) {
-        if (error.status === 401 || error.status === 403) {
-          console.log('[retailers/search] No admin session detected, continuing in public mode');
+      const authModule = await import('../../../lib/api-auth');
+      AuthErrorClass = authModule.AuthError;
+      requireAdminFn = authModule.requireAdmin;
+
+      try {
+        await requireAdminFn(req, res);
+      } catch (error) {
+        if (AuthErrorClass && error instanceof AuthErrorClass) {
+          if (error.status === 401 || error.status === 403) {
+            console.log('[retailers/search] No admin session detected, continuing in public mode');
+          } else {
+            return res.status(error.status).json({ error: error.message });
+          }
         } else {
-          return res.status(error.status).json({ error: error.message });
+          console.error('[retailers/search] Admin auth error:', error);
+          return res.status(500).json({ error: 'Failed to verify admin session' });
         }
-      } else {
-        console.error('[retailers/search] Admin auth error:', error);
-        return res.status(500).json({ error: 'Failed to verify admin session' });
       }
+    } catch (importError) {
+      AuthErrorClass = null;
+      requireAdminFn = null;
+      console.warn('[retailers/search] Failed to load admin auth helpers, continuing without admin enforcement', importError?.message || importError);
     }
   }
 
