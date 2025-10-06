@@ -87,10 +87,19 @@ export default function ConnectPage() {
         body: JSON.stringify({ uid, retailerId }),
       });
 
-      const result = await response.json();
+      let result = null;
+      const raw = await response.text();
+      if (raw) {
+        try {
+          result = JSON.parse(raw);
+        } catch (parseError) {
+          console.warn('[claim] Non-JSON response from /api/claim-uid', parseError, raw);
+        }
+      }
 
       if (!response.ok) {
-        throw new Error(result?.error || 'Failed to claim display.');
+        const message = result?.error || `Failed to claim display (status ${response.status}).`;
+        throw new Error(message);
       }
 
       setConnectedId(retailerId);
