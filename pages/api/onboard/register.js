@@ -7,27 +7,32 @@ import { createClient } from '@supabase/supabase-js';
 
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL || process.env.SUPABASE_URL;
 const SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
+const DATABASE_URL = process.env.DATABASE_URL;
 
 if (!SERVICE_ROLE_KEY || !SUPABASE_URL) {
   console.error('[onboard/register] Missing SUPABASE_SERVICE_ROLE_KEY or SUPABASE_URL in env');
 }
 
+if (!DATABASE_URL) {
+  console.error('[onboard/register] Missing DATABASE_URL in env');
+}
+
 // Create Supabase admin client (server-side only)
 const supabaseAdmin = SERVICE_ROLE_KEY && SUPABASE_URL
   ? createClient(SUPABASE_URL, SERVICE_ROLE_KEY, {
-      auth: { 
+      auth: {
         autoRefreshToken: false,
-        persistSession: false 
-      }
+        persistSession: false,
+      },
     })
   : null;
 
 let pool;
 function getPool() {
   if (!pool) {
-    pool = new Pool({ 
-      connectionString: process.env.DATABASE_URL, 
-      ssl: { rejectUnauthorized: false } 
+    pool = new Pool({
+      connectionString: DATABASE_URL,
+      ssl: { rejectUnauthorized: false },
     });
   }
   return pool;
@@ -90,6 +95,22 @@ export default async function handler(req, res) {
   // Validate password length
   if (password.length < 6) {
     return res.status(400).json({ error: 'Password must be at least 6 characters' });
+  }
+
+  if (!supabaseAdmin || !SERVICE_ROLE_KEY || !SUPABASE_URL || !DATABASE_URL) {
+    console.error('[onboard/register] Configuration error', {
+      hasSupabaseUrl: Boolean(SUPABASE_URL),
+      hasServiceRoleKey: Boolean(SERVICE_ROLE_KEY),
+      hasDatabaseUrl: Boolean(DATABASE_URL),
+    });
+    return res.status(500).json({
+      error: 'Server configuration error. Please contact support.',
+      missing: {
+        supabaseUrl: !SUPABASE_URL,
+        serviceRoleKey: !SERVICE_ROLE_KEY,
+        databaseUrl: !DATABASE_URL,
+      },
+    });
   }
 
   const client = await getPool().connect();
@@ -279,4 +300,3 @@ export default async function handler(req, res) {
     client.release();
   }
 }
-
