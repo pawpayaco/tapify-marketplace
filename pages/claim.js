@@ -73,7 +73,12 @@ export default function ConnectPage() {
   };
 
   const handleConnect = async (retailerId) => {
+    console.log('[CLAIM] ========== CONNECT FLOW START ==========');
+    console.log('[CLAIM] UID:', uid);
+    console.log('[CLAIM] Retailer ID:', retailerId);
+
     if (!uid) {
+      console.error('[CLAIM] ERROR: No UID in URL');
       setError("No UID detected in URL.");
       return;
     }
@@ -81,33 +86,49 @@ export default function ConnectPage() {
     setError("");
 
     try {
+      const requestBody = { uid, retailerId };
+      console.log('[CLAIM] Request body:', requestBody);
+      console.log('[CLAIM] Sending POST to /api/claim-display');
+
       const response = await fetch('/api/claim-display', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ uid, retailerId }),
+        body: JSON.stringify(requestBody),
       });
+
+      console.log('[CLAIM] Response status:', response.status);
+      console.log('[CLAIM] Response headers:', Object.fromEntries(response.headers.entries()));
 
       let result = null;
       const raw = await response.text();
+      console.log('[CLAIM] Raw response:', raw);
+
       if (raw) {
         try {
           result = JSON.parse(raw);
+          console.log('[CLAIM] Parsed response:', result);
         } catch (parseError) {
-          console.warn('[claim] Non-JSON response from /api/claim-uid', parseError, raw);
+          console.error('[CLAIM] Failed to parse JSON response:', parseError);
+          console.error('[CLAIM] Raw response was:', raw);
         }
       }
 
       if (!response.ok) {
         const message = result?.error || `Failed to claim display (status ${response.status}).`;
+        console.error('[CLAIM] Request failed:', message);
+        console.error('[CLAIM] Full error details:', result);
         throw new Error(message);
       }
 
+      console.log('[CLAIM] SUCCESS: Display claimed successfully');
       setConnectedId(retailerId);
       setRetailers(prev => prev.filter(store => store.id !== retailerId));
     } catch (err) {
+      console.error('[CLAIM] Exception caught:', err);
       setError(err.message || "Error connecting business.");
     }
     setLoading(false);
+    console.log('[CLAIM] ========== CONNECT FLOW END ==========');
   };
 
   return (
