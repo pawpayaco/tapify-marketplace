@@ -574,3 +574,74 @@ const subscription = supabase
 
 // pages/api/retailers/ready-for-claim.js
 // SELECT displays.status, retailers.* FROM displays JOIN retailers ON displays.retailer_id = retailers.id
+
+---
+
+## 🔄 Migration Changes (October 2025)
+
+### Updated Query Patterns
+
+**Dashboard Auth Lookup (BEFORE):**
+```js
+// ❌ Fragile - string matching on email
+const { data } = await supabase
+  .from('retailers')
+  .select('*')
+  .eq('name', user.email)  // or eq('email', user.email)
+  .maybeSingle();
+```
+
+**Dashboard Auth Lookup (AFTER):**
+```js
+// ✅ Proper FK relationship
+const { data } = await supabase
+  .from('retailers')
+  .select('*')
+  .eq('created_by_user_id', user.id)
+  .maybeSingle();
+```
+
+**Registration - Retailer Creation (BEFORE):**
+```js
+// Created duplicate data in two tables
+INSERT INTO retailers (name, address, location, onboarding_completed, ...)
+INSERT INTO retailer_owners (retailer_id, owner_name, owner_phone, owner_email, ...)
+```
+
+**Registration - Retailer Creation (AFTER):**
+```js
+// Single source of truth
+INSERT INTO retailers (
+  name, address, email, owner_name, phone,
+  created_by_user_id,  // ✅ Links to auth.users
+  ...
+)
+// No retailer_owners insert - data consolidated
+```
+
+**Payout Job Creation (BEFORE):**
+```js
+INSERT INTO payout_jobs (
+  order_id, retailer_id, vendor_id,
+  retailer_cut, vendor_cut
+)
+```
+
+**Payout Job Creation (AFTER):**
+```js
+// Lookup sourcer from retailer first
+const { data: retailer } = await supabase
+  .from('retailers')
+  .select('recruited_by_sourcer_id')
+  .eq('id', retailer_id)
+  .single();
+
+// Include sourcer in payout
+INSERT INTO payout_jobs (
+  order_id, retailer_id, vendor_id,
+  sourcer_id,  // ✅ Now tracked for Phase 2
+  retailer_cut, vendor_cut, sourcer_cut
+)
+```
+
+---

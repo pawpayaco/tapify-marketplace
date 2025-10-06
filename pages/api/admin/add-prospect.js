@@ -49,7 +49,6 @@ export default async function handler(req, res) {
       .insert({
         name: storeName,
         address: address || null,
-        location: address || null,
         email: ownerEmail || null,
         owner_name: ownerName || null,
         phone: ownerPhone || null,
@@ -69,24 +68,8 @@ export default async function handler(req, res) {
 
     console.log('[add-prospect] Created retailer:', retailer.id);
 
-    // Create retailer_owners record if owner info provided
-    if (ownerEmail) {
-      const { error: ownerError } = await supabaseAdmin
-        .from('retailer_owners')
-        .insert({
-          retailer_id: retailer.id,
-          owner_name: ownerName || null,
-          owner_phone: ownerPhone || null,
-          owner_email: ownerEmail,
-          collected_by: 'admin',
-          collected_at: new Date().toISOString(),
-          notes: notes || null
-        });
-
-      if (ownerError) {
-        console.warn('[add-prospect] Owner insert warning:', ownerError.message);
-      }
-    }
+    // Note: owner data is now stored directly in retailers table (consolidated)
+    // No need for separate retailer_owners entry
 
     // Create outreach tracking record
     const { error: outreachError } = await supabaseAdmin

@@ -125,3 +125,64 @@ All three communicate through lightweight, auditable APIs (`/api/...`) that act 
 - Supabase automates onboarding, tracking, and payouts
 
 ---
+---
+
+## 🔄 October 2025 Migration Updates
+
+### New Relationships Added
+
+**Retailer → Sourcer:**
+```
+retailers.recruited_by_sourcer_id → sourcer_accounts.id
+```
+Purpose: Track which sourcing agent recruited this retailer (Phase 2 commission tracking)
+
+**Retailer → Auth User:**
+```
+retailers.created_by_user_id → auth.users.id
+```
+Purpose: Proper FK relationship for auth (replaces fragile email string matching)
+
+**Vendor → Auth User:**
+```
+vendors.created_by_user_id → auth.users.id
+```
+Purpose: Proper FK relationship for auth
+
+### Data Consolidation
+
+**Before Migration:**
+```
+Retailer Contact Data:
+├── retailers.phone
+├── retailers.email
+├── retailer_owners.owner_phone  (DUPLICATE!)
+└── retailer_owners.owner_email  (DUPLICATE!)
+```
+
+**After Migration:**
+```
+Retailer Contact Data:
+└── retailers.phone (single source of truth)
+└── retailers.email (single source of truth)
+
+retailer_owners table: DEPRECATED (data consolidated)
+```
+
+### Payout Job Flow (Updated)
+
+```
+Order Created
+    ↓
+Lookup retailer.recruited_by_sourcer_id  ← NEW!
+    ↓
+Create payout_job with:
+    - retailer_id
+    - vendor_id
+    - sourcer_id  ← NEW! (Phase 2 ready)
+    - retailer_cut
+    - vendor_cut
+    - sourcer_cut  ← NEW! (5% if sourcer exists)
+```
+
+---

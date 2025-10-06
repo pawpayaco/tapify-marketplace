@@ -60,14 +60,52 @@ export default function StoresDataGrid({ onRefresh }) {
     setError(null);
 
     try {
-      const { data, error } = await supabase
+      // First try to get retailers data (including both phone and store_phone)
+      const { data: retailersData, error: retailersError } = await supabase
         .from('retailers')
-        .select('id, name, address, phone, email, owner_name, cold_email_sent, cold_email_sent_at, converted, converted_at, created_at')
+        .select('id, name, address, phone, store_phone, email, owner_name, cold_email_sent, cold_email_sent_at, converted, converted_at, created_at')
         .order('created_at', { ascending: false });
 
-      if (error) throw error;
+      if (retailersError) throw retailersError;
 
-      setStores(data || []);
+      console.log('[StoresDataGrid] Fetched retailers:', retailersData?.length, 'Sample:', retailersData?.[0]);
+
+      // Then get all retailer_owners data separately (to avoid RLS issues with joins)
+      const { data: ownersData, error: ownersError } = await supabase
+        .from('retailer_owners')
+        .select('retailer_id, owner_phone, owner_email, owner_name');
+
+      // Don't throw on owners error, just log it
+      if (ownersError) {
+        console.warn('[StoresDataGrid] retailer_owners query warning:', ownersError);
+      }
+
+      // Create a map of retailer_id -> owner data for quick lookup
+      const ownersMap = {};
+      if (ownersData && Array.isArray(ownersData)) {
+        ownersData.forEach(owner => {
+          if (owner.retailer_id) {
+            ownersMap[owner.retailer_id] = owner;
+          }
+        });
+      }
+
+      // Merge the data
+      const processedData = (retailersData || []).map(store => {
+        const ownerData = ownersMap[store.id];
+
+        return {
+          ...store,
+          // Use retailer phone/email if available, check multiple sources
+          phone: store.phone || store.store_phone || ownerData?.owner_phone || '',
+          email: store.email || ownerData?.owner_email || '',
+          owner_name: store.owner_name || ownerData?.owner_name || ''
+        };
+      });
+
+      console.log('[StoresDataGrid] Processed data:', processedData?.length, 'Sample:', processedData?.[0]);
+
+      setStores(processedData);
     } catch (err) {
       console.error('[StoresDataGrid] Error fetching stores:', err);
       setError(err.message);

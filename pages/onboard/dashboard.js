@@ -117,33 +117,22 @@ export default function RetailerDashboard() {
       
       try {
         setLoading(true);
-        
-        // Get retailer profile - match on email or owner email
-        let retailerData = null;
 
-        const emailMatch = await supabase
+        // Get retailer profile using proper user ID foreign key
+        const { data: retailerData, error: retailerError } = await supabase
           .from('retailers')
           .select('*')
-          .eq('email', user.email)
+          .eq('created_by_user_id', user.id)
           .maybeSingle();
 
-        if (emailMatch.data) {
-          retailerData = emailMatch.data;
-        } else {
-          const ownerMatch = await supabase
-            .from('retailer_owners')
-            .select('retailer:retailer_id(*)')
-            .eq('owner_email', user.email)
-            .maybeSingle();
-
-          retailerData = ownerMatch.data?.retailer ?? null;
+        if (retailerError) {
+          console.error('Error fetching retailer:', retailerError);
         }
-        
+
         // If no retailer found, initialize with empty data (no popup - just continue)
         if (!retailerData) {
-          console.warn('No retailer profile found for user:', user.email);
+          console.warn('No retailer profile found for user:', user.id);
           // Don't show popup - let them finish onboarding in registration flow
-          // showToast('No retailer profile found. Contact support to get set up.', 'error');
           setLoading(false);
           
           // Initialize with empty weekly data so charts don't break

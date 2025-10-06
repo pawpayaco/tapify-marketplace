@@ -2,6 +2,33 @@
 
 Source: information_schema.columns. This is structure only (no data).
 
+**Last Updated:** 2025-10-06 (Post-consolidation migration)
+
+## Recent Schema Changes (October 2025)
+
+### ✅ New Columns Added:
+- `retailers.recruited_by_sourcer_id` - Links to sourcer who recruited retailer (Phase 2)
+- `retailers.created_by_user_id` - Proper FK to auth.users
+- `vendors.created_by_user_id` - Proper FK to auth.users
+
+### ⚠️ Deprecated Columns (Not Dropped Yet):
+- `retailers.location` - Use `address` instead (always identical)
+- `retailers.store_phone` - Use `phone` instead
+- `retailers.onboarding_completed` - Use `converted` instead
+- `retailers.cold_email_sent` - Moved to `retailer_outreach` table
+- `retailers.cold_email_sent_at` - Moved to `retailer_outreach` table
+
+### 🗑️ Tables Dropped:
+- `staging_stores` (data migrated)
+- `staging_stores_imported_*` (temp import tables)
+
+### 📦 Backup Tables Created:
+- `retailers_backup_migration` - Pre-migration backup
+- `retailers_archived_demo` - Old test/demo data
+- `retailer_owners_backup` - Pre-migration backup
+
+---
+
 | table_name                            | column_name              | data_type                   | is_nullable | column_default     |
 | ------------------------------------- | ------------------------ | --------------------------- | ----------- | ------------------ |
 | admins                                | id                       | uuid                        | NO          | uuid_generate_v4() |
@@ -159,6 +186,7 @@ Source: information_schema.columns. This is structure only (no data).
 | retailers                             | onboarding_completed     | boolean                     | YES         | false              |
 | retailers                             | onboarding_step          | text                        | YES         | null               |
 | retailers                             | created_by_user_id       | uuid                        | YES         | null               |
+| retailers                             | recruited_by_sourcer_id  | uuid                        | YES         | null               |
 | scans                                 | id                       | uuid                        | NO          | gen_random_uuid()  |
 | scans                                 | uid                      | text                        | YES         | null               |
 | scans                                 | timestamp                | timestamp with time zone    | YES         | now()              |
@@ -241,4 +269,5 @@ Source: information_schema.columns. This is structure only (no data).
 | vendors                               | collection_name          | text                        | YES         | null               |
 | vendors                               | product_photo_url        | text                        | YES         | null               |
 | vendors                               | onboarded_by             | uuid                        | YES         | null               |
+| vendors                               | created_by_user_id       | uuid                        | YES         | null               |
 | vendors                               | created_at               | timestamp with time zone    | YES         | now()              |

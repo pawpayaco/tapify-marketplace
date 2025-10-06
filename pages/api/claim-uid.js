@@ -98,14 +98,15 @@ export default async function handler(req, res) {
       retailerRecord = retailer;
     }
 
+    // Try lookup by created_by_user_id (proper foreign key)
     if (!retailerId) {
-      const { data: owner } = await supabaseAdmin
-        .from('retailer_owners')
-        .select('retailer_id')
-        .eq('owner_email', user.email)
+      const { data: retailer } = await supabaseAdmin
+        .from('retailers')
+        .select('id')
+        .eq('created_by_user_id', user.id)
         .maybeSingle();
 
-      retailerId = owner?.retailer_id ?? null;
+      retailerId = retailer?.id ?? null;
     }
 
     if (!retailerId) {

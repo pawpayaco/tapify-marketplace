@@ -66,8 +66,18 @@ async function markLatestScanConverted(uid, revenue) {
 async function createPayoutJob(orderId, retailerId, vendorId, total, sourceUid) {
   if (!retailerId || !vendorId) return null;
 
+  // Get sourcer_id from retailer (for Phase 2 commission tracking)
+  const { data: retailer } = await supabaseAdmin
+    .from('retailers')
+    .select('recruited_by_sourcer_id')
+    .eq('id', retailerId)
+    .maybeSingle();
+
+  const sourcerId = retailer?.recruited_by_sourcer_id ?? null;
+
   const retailerCut = Number((total * 0.2).toFixed(2));
   const vendorCut = Number((total - retailerCut).toFixed(2));
+  const sourcerCut = sourcerId ? Number((total * 0.05).toFixed(2)) : 0;  // 5% for sourcer if exists
 
   const { data, error } = await supabaseAdmin
     .from('payout_jobs')
@@ -75,8 +85,10 @@ async function createPayoutJob(orderId, retailerId, vendorId, total, sourceUid) 
       order_id: orderId,
       retailer_id: retailerId,
       vendor_id: vendorId,
+      sourcer_id: sourcerId,
       retailer_cut: retailerCut,
       vendor_cut: vendorCut,
+      sourcer_cut: sourcerCut,
       total_amount: total,
       status: 'pending',
       source_uid: sourceUid ?? null,

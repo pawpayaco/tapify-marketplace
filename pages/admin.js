@@ -465,88 +465,208 @@ export default function Admin({
   // ACCESS DENIED STATE
   if (!isAdmin) {
     return (
-      <div className="min-h-screen p-4 md:p-8 pt-24" style={{ backgroundColor: '#faf8f3' }}>
-        {/* ACCESS DENIED BANNER */}
-        <div className="max-w-4xl mx-auto">
-          <div className="bg-red-100 border-l-4 border-red-500 rounded-lg shadow-lg p-6 mb-6">
-            <div className="flex items-start">
-              <svg className="w-8 h-8 text-red-500 mr-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-              </svg>
-              <div className="flex-1">
-                <h1 className="text-2xl md:text-3xl font-bold text-red-900 mb-2">🚫 Access Denied</h1>
-                <p className="text-red-800 mb-4">You are not authorized to access the admin panel.</p>
-                
-                {error && (
-                  <div className="bg-red-50 border border-red-200 rounded p-4 mb-4">
-                    <p className="font-bold text-red-900 mb-1">Error:</p>
-                    <p className="text-sm text-red-800 font-mono">{error}</p>
-                  </div>
-                )}
-
-                {user && (
-                  <div className="bg-white border border-gray-300 rounded-lg p-4 mb-4">
-                    <p className="font-bold text-gray-900 mb-2">Your Account:</p>
-                    <p className="text-sm text-gray-700">Email: <span className="font-mono bg-gray-100 px-2 py-1 rounded">{user.email}</span></p>
-                    <p className="text-sm text-gray-700 mt-1">User ID: <span className="font-mono bg-gray-100 px-2 py-1 rounded text-xs">{user.id}</span></p>
-                  </div>
-                )}
-
-                {sqlCommand && (
-                  <div className="bg-yellow-50 border-2 border-yellow-400 rounded-lg p-4 mb-4">
-                    <p className="font-bold text-yellow-900 mb-2">💡 To Grant Admin Access:</p>
-                    <p className="text-sm text-yellow-800 mb-2">Run this SQL command in your Supabase SQL Editor:</p>
-                    <pre className="bg-gray-900 text-green-400 p-3 rounded overflow-x-auto text-xs md:text-sm font-mono">
-{sqlCommand}
-                    </pre>
-                    <p className="text-xs text-yellow-700 mt-2">After running this command, refresh this page.</p>
-                  </div>
-                )}
-
-                {!user && (
-                  <div className="bg-blue-50 border border-blue-300 rounded-lg p-4 mb-4">
-                    <p className="text-blue-900 mb-2">You need to log in to access the admin panel.</p>
-                    <button
-                      onClick={() => router.push('/login?redirect=/admin')}
-                      className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-bold transition-all"
-                    >
-                      Log In →
-                    </button>
-                  </div>
-                )}
-
-                <div className="flex flex-wrap gap-3 mt-4">
-                  <button
-                    onClick={() => router.push('/')}
-                    className="bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3] text-white px-6 py-3 rounded-lg font-bold hover:shadow-lg transition-all"
-                  >
-                    ← Back to Home
-                  </button>
-                  {user && (
-                    <button
-                      onClick={() => router.reload()}
-                      className="bg-gray-600 hover:bg-gray-700 text-white px-6 py-3 rounded-lg font-bold transition-all"
-                    >
-                      🔄 Refresh Page
-                    </button>
-                  )}
-                </div>
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 flex items-center justify-center p-4">
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, ease: "easeOut" }}
+          className="max-w-2xl w-full"
+        >
+          {/* Main Error Card */}
+          <div className="bg-white/80 backdrop-blur-sm rounded-3xl shadow-2xl border border-white/20 overflow-hidden">
+            {/* Header with Icon */}
+            <div className="bg-gradient-to-r from-red-500 to-pink-500 p-8 text-center relative overflow-hidden">
+              <div className="absolute inset-0 bg-white/10"></div>
+              <div className="relative">
+                <motion.div
+                  initial={{ scale: 0 }}
+                  animate={{ scale: 1 }}
+                  transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
+                  className="w-20 h-20 mx-auto mb-4 bg-white/20 rounded-full flex items-center justify-center"
+                >
+                  <svg className="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                  </svg>
+                </motion.div>
+                <motion.h1 
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.3 }}
+                  className="text-3xl font-bold text-white mb-2"
+                >
+                  Access Denied
+                </motion.h1>
+                <motion.p 
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.4 }}
+                  className="text-white/90 text-lg"
+                >
+                  You don't have permission to access this area
+                </motion.p>
               </div>
+            </div>
+
+            {/* Content */}
+            <div className="p-8 space-y-6">
+              {/* Error Message */}
+              {error && (
+                <motion.div 
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.5 }}
+                  className="bg-red-50 border-l-4 border-red-400 rounded-xl p-4"
+                >
+                  <div className="flex items-start">
+                    <svg className="w-5 h-5 text-red-500 mt-0.5 mr-3 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+                    </svg>
+                    <div>
+                      <p className="font-semibold text-red-800 mb-1">Authentication Error</p>
+                      <p className="text-sm text-red-700 font-mono bg-red-100 px-3 py-2 rounded-lg">{error}</p>
+                    </div>
+                  </div>
+                </motion.div>
+              )}
+
+              {/* User Info */}
+              {user && (
+                <motion.div 
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.6 }}
+                  className="bg-blue-50 border border-blue-200 rounded-xl p-4"
+                >
+                  <div className="flex items-start">
+                    <svg className="w-5 h-5 text-blue-500 mt-0.5 mr-3 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd" />
+                    </svg>
+                    <div className="flex-1">
+                      <p className="font-semibold text-blue-800 mb-2">Your Account</p>
+                      <div className="space-y-1">
+                        <p className="text-sm text-blue-700">
+                          <span className="font-medium">Email:</span> 
+                          <span className="ml-2 font-mono bg-blue-100 px-2 py-1 rounded text-xs">{user.email}</span>
+                        </p>
+                        <p className="text-sm text-blue-700">
+                          <span className="font-medium">User ID:</span> 
+                          <span className="ml-2 font-mono bg-blue-100 px-2 py-1 rounded text-xs">{user.id}</span>
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </motion.div>
+              )}
+
+              {/* SQL Command Helper */}
+              {sqlCommand && (
+                <motion.div 
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.7 }}
+                  className="bg-amber-50 border border-amber-200 rounded-xl p-4"
+                >
+                  <div className="flex items-start">
+                    <svg className="w-5 h-5 text-amber-500 mt-0.5 mr-3 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
+                    </svg>
+                    <div className="flex-1">
+                      <p className="font-semibold text-amber-800 mb-2">Grant Admin Access</p>
+                      <p className="text-sm text-amber-700 mb-3">Run this SQL command in your Supabase SQL Editor:</p>
+                      <div className="bg-gray-900 rounded-lg p-3 overflow-x-auto">
+                        <pre className="text-green-400 text-xs font-mono">{sqlCommand}</pre>
+                      </div>
+                      <p className="text-xs text-amber-600 mt-2">After running this command, refresh this page.</p>
+                    </div>
+                  </div>
+                </motion.div>
+              )}
+
+              {/* Login Prompt */}
+              {!user && (
+                <motion.div 
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.8 }}
+                  className="bg-indigo-50 border border-indigo-200 rounded-xl p-4"
+                >
+                  <div className="flex items-start">
+                    <svg className="w-5 h-5 text-indigo-500 mt-0.5 mr-3 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V5a1 1 0 011-1h4a1 1 0 011 1z" clipRule="evenodd" />
+                    </svg>
+                    <div className="flex-1">
+                      <p className="font-semibold text-indigo-800 mb-3">Authentication Required</p>
+                      <p className="text-sm text-indigo-700 mb-4">You need to log in to access the admin panel.</p>
+                      <button
+                        onClick={() => router.push('/login?redirect=/admin')}
+                        className="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3 rounded-xl font-semibold transition-all duration-200 hover:shadow-lg hover:scale-105 flex items-center gap-2"
+                      >
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" />
+                        </svg>
+                        Log In
+                      </button>
+                    </div>
+                  </div>
+                </motion.div>
+              )}
+
+              {/* Action Buttons */}
+              <motion.div 
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.9 }}
+                className="flex flex-wrap gap-3 pt-4"
+              >
+                <button
+                  onClick={() => router.push('/')}
+                  className="flex-1 bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3] hover:from-[#ff6b3a] hover:to-[#ff5aa3] text-white px-6 py-4 rounded-xl font-semibold transition-all duration-200 hover:shadow-lg hover:scale-105 flex items-center justify-center gap-2"
+                >
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                  </svg>
+                  Back to Home
+                </button>
+                {user && (
+                  <button
+                    onClick={() => router.reload()}
+                    className="flex-1 bg-gray-600 hover:bg-gray-700 text-white px-6 py-4 rounded-xl font-semibold transition-all duration-200 hover:shadow-lg hover:scale-105 flex items-center justify-center gap-2"
+                  >
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                    </svg>
+                    Refresh Page
+                  </button>
+                )}
+              </motion.div>
             </div>
           </div>
 
-          {/* DEBUG INFO */}
-          <div className="bg-white rounded-lg shadow-lg p-6">
-            <details>
-              <summary className="text-lg font-bold text-gray-900 cursor-pointer mb-4">
-                🐛 Debug Information (Click to expand)
+          {/* Debug Information */}
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 1.0 }}
+            className="mt-6 bg-white/60 backdrop-blur-sm rounded-2xl shadow-lg border border-white/20 overflow-hidden"
+          >
+            <details className="group">
+              <summary className="p-6 cursor-pointer hover:bg-white/20 transition-colors duration-200 flex items-center gap-3">
+                <svg className="w-5 h-5 text-gray-600 group-open:rotate-90 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                </svg>
+                <span className="font-semibold text-gray-800">Debug Information</span>
+                <span className="text-sm text-gray-500">(Click to expand)</span>
               </summary>
-              <pre className="bg-gray-100 p-4 rounded overflow-auto text-xs font-mono max-h-96">
+              <div className="px-6 pb-6">
+                <div className="bg-gray-900 rounded-xl p-4 overflow-auto max-h-96">
+                  <pre className="text-green-400 text-xs font-mono">
 {JSON.stringify({ isAdmin, user, error, sqlCommand, debugInfo }, null, 2)}
-              </pre>
+                  </pre>
+                </div>
+              </div>
             </details>
-          </div>
-        </div>
+          </motion.div>
+        </motion.div>
       </div>
     );
   }

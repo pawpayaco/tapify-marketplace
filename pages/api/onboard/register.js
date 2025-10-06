@@ -114,59 +114,44 @@ export default async function handler(req, res) {
     if (!rId) {
       // Create new retailer
       const insertRetailerSql = `
-        INSERT INTO public.retailers 
-          (name, address, location, place_id, email, owner_name, phone, source, 
-           created_at, converted, converted_at, onboarding_completed)
-        VALUES ($1, $2, $2, $3, $4, $5, $6, 'onboard', now(), true, now(), true)
+        INSERT INTO public.retailers
+          (name, address, place_id, email, owner_name, phone, source,
+           created_by_user_id, created_at, converted, converted_at)
+        VALUES ($1, $2, $3, $4, $5, $6, 'onboard', $7, now(), true, now())
         RETURNING id, name, email
       `;
-      
+
       const retailerResult = await client.query(insertRetailerSql, [
-        store_name, 
-        address || null, 
-        place_id, 
-        owner_email, 
-        owner_name || null, 
-        owner_phone || null
+        store_name,
+        address || null,
+        place_id,
+        owner_email,
+        owner_name || null,
+        owner_phone || null,
+        user.id  // Link to auth user
       ]);
-      
+
       rId = retailerResult.rows[0].id;
       console.log('[onboard/register] Created new retailer:', rId);
-      
+
     } else {
       // Update existing retailer
       await client.query(
-        `UPDATE public.retailers 
-         SET converted = true, 
-             converted_at = now(), 
-             email = COALESCE(email, $2), 
-             owner_name = COALESCE(owner_name, $3), 
+        `UPDATE public.retailers
+         SET converted = true,
+             converted_at = now(),
+             email = COALESCE(email, $2),
+             owner_name = COALESCE(owner_name, $3),
              phone = COALESCE(phone, $4),
-             onboarding_completed = true
+             created_by_user_id = COALESCE(created_by_user_id, $5)
          WHERE id = $1`,
-        [rId, owner_email, owner_name, owner_phone]
+        [rId, owner_email, owner_name, owner_phone, user.id]
       );
       console.log('[onboard/register] Updated existing retailer:', rId);
     }
 
-    // Insert/update owner record
-    const ownerUpsert = `
-      INSERT INTO public.retailer_owners 
-        (retailer_id, owner_name, owner_phone, owner_email, collected_by, collected_at)
-      VALUES ($1, $2, $3, $4, 'onboard', now())
-      ON CONFLICT (retailer_id, owner_email) 
-      DO UPDATE SET
-        owner_name = COALESCE(EXCLUDED.owner_name, retailer_owners.owner_name),
-        owner_phone = COALESCE(EXCLUDED.owner_phone, retailer_owners.owner_phone),
-        collected_at = now()
-    `;
-    
-    await client.query(ownerUpsert, [
-      rId, 
-      owner_name || null, 
-      owner_phone || null, 
-      owner_email
-    ]);
+    // Note: owner data is now stored directly in retailers table
+    // No need for separate retailer_owners entry (deprecated)
 
     // Mark/create outreach row as registered
     const outreachInsert = `
@@ -193,55 +178,45 @@ export default async function handler(req, res) {
           console.log('[onboard/register] Linking existing retailer:', store.retailer_id);
           
           await client.query(
-            `UPDATE public.retailers 
-             SET converted = true, 
-                 converted_at = now(), 
-                 email = COALESCE(email, $1), 
-                 owner_name = COALESCE(owner_name, $2), 
+            `UPDATE public.retailers
+             SET converted = true,
+                 converted_at = now(),
+                 email = COALESCE(email, $1),
+                 owner_name = COALESCE(owner_name, $2),
                  manager_name = COALESCE(manager_name, $3),
-                 onboarding_completed = true
-             WHERE id = $4`,
-            [owner_email, owner_name, store.managerName, store.retailer_id]
+                 created_by_user_id = COALESCE(created_by_user_id, $4)
+             WHERE id = $5`,
+            [owner_email, owner_name, store.managerName, user.id, store.retailer_id]
           );
-          
+
           additionalRetailerId = store.retailer_id;
         } else {
           // NEW RETAILER: Create it
           console.log('[onboard/register] Creating new retailer:', store.storeName);
-          
+
           const additionalRetailerSql = `
-            INSERT INTO public.retailers 
-              (name, address, location, email, owner_name, manager_name, source, 
-               created_at, converted, converted_at, onboarding_completed)
-            VALUES ($1, $2, $2, $3, $4, $5, 'onboard-additional', now(), true, now(), true)
+            INSERT INTO public.retailers
+              (name, address, email, owner_name, manager_name, source,
+               created_by_user_id, created_at, converted, converted_at)
+            VALUES ($1, $2, $3, $4, $5, 'onboard-additional', $6, now(), true, now())
             RETURNING id
           `;
-          
+
           const additionalResult = await client.query(additionalRetailerSql, [
             store.storeName,
             store.address || null,
             owner_email,
             owner_name || null,
-            store.managerName || null
+            store.managerName || null,
+            user.id  // Link to auth user
           ]);
-          
+
           additionalRetailerId = additionalResult.rows[0].id;
         }
-        
+
         console.log('[onboard/register] Processing retailer:', additionalRetailerId);
-        
-        // Link retailer to owner (for payout aggregation)
-        await client.query(
-          `INSERT INTO public.retailer_owners 
-            (retailer_id, owner_name, owner_phone, owner_email, collected_by, collected_at)
-          VALUES ($1, $2, $3, $4, 'onboard', now())
-          ON CONFLICT (retailer_id, owner_email) 
-          DO UPDATE SET
-            owner_name = COALESCE(EXCLUDED.owner_name, retailer_owners.owner_name),
-            owner_phone = COALESCE(EXCLUDED.owner_phone, retailer_owners.owner_phone),
-            collected_at = now()`,
-          [additionalRetailerId, owner_name, owner_phone, owner_email]
-        );
+
+        // Note: owner data now stored directly in retailers table (consolidated)
         
         // Create outreach row for tracking
         await client.query(

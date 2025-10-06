@@ -8,6 +8,38 @@ Tapify is a marketplace platform connecting vendors, retailers, and sourcers thr
 
 **Tech Stack**: Next.js (React), Supabase (PostgreSQL + Auth), Dwolla (payouts), Plaid (bank connections), Tailwind CSS, Framer Motion
 
+## ⚠️ IMPORTANT: Recent Database Migration (October 2025)
+
+The database underwent a **major consolidation migration** on 2025-10-06. Key changes:
+
+### ✅ What Changed:
+1. **New Columns Added:**
+   - `retailers.recruited_by_sourcer_id` - Sourcer tracking (Phase 2 ready)
+   - `retailers.created_by_user_id` - Proper FK to auth.users
+   - `vendors.created_by_user_id` - Proper FK to auth.users
+
+2. **Data Consolidated:**
+   - Phone/email moved from `retailer_owners` → `retailers` (single source of truth)
+   - `retailer_owners` table is now DEPRECATED (do not use for new code)
+
+3. **Query Pattern Changes:**
+   - **Auth Lookups:** Use `created_by_user_id` FK (NOT email string matching)
+   - **Registrations:** Only insert into `retailers` (NOT retailer_owners)
+   - **Payout Jobs:** Auto-include `sourcer_id` from retailer lookup
+
+### ❌ Deprecated (Do Not Use):
+- `retailers.location` → Use `address` instead
+- `retailers.store_phone` → Use `phone` instead
+- `retailers.onboarding_completed` → Use `converted` instead
+- `retailer_owners` inserts → Data now in `retailers` table
+
+### 📚 Migration Documentation:
+- See `MIGRATION_SCRIPT.sql` for SQL changes
+- See `CHANGES_SUMMARY.md` for complete changelog
+- See `DATABASE_CONSOLIDATION_PLAN.md` for analysis
+
+---
+
 ## Development Commands
 
 ```bash
