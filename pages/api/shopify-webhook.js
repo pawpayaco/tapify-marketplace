@@ -1,19 +1,16 @@
 import crypto from 'crypto';
-
+import { fillMissingDefaults } from '../../utils/fillDefaults';
 import { supabaseAdmin } from '../../lib/supabase';
 import { env } from '../../lib/env';
 import { logEvent } from '../../utils/logger';
 
 export const config = {
-  api: {
-    bodyParser: false,
-  },
+  api: { bodyParser: false },
 };
 
 async function getRawBody(req) {
   return new Promise((resolve, reject) => {
     const chunks = [];
-
     req.on('data', (chunk) => chunks.push(Buffer.from(chunk)));
     req.on('end', () => resolve(Buffer.concat(chunks)));
     req.on('error', (err) => reject(err));
@@ -66,7 +63,6 @@ async function markLatestScanConverted(uid, revenue) {
 async function createPayoutJob(orderId, retailerId, vendorId, total, sourceUid) {
   if (!retailerId || !vendorId) return null;
 
-  // Get sourcer_id from retailer (for Phase 2 commission tracking)
   const { data: retailer } = await supabaseAdmin
     .from('retailers')
     .select('recruited_by_sourcer_id')
@@ -74,10 +70,9 @@ async function createPayoutJob(orderId, retailerId, vendorId, total, sourceUid) 
     .maybeSingle();
 
   const sourcerId = retailer?.recruited_by_sourcer_id ?? null;
-
   const retailerCut = Number((total * 0.2).toFixed(2));
   const vendorCut = Number((total - retailerCut).toFixed(2));
-  const sourcerCut = sourcerId ? Number((total * 0.05).toFixed(2)) : 0;  // 5% for sourcer if exists
+  const sourcerCut = sourcerId ? Number((total * 0.05).toFixed(2)) : 0;
 
   const { data, error } = await supabaseAdmin
     .from('payout_jobs')
@@ -96,31 +91,27 @@ async function createPayoutJob(orderId, retailerId, vendorId, total, sourceUid) 
     .select('id')
     .maybeSingle();
 
-  if (error) {
-    console.error('[shopify-webhook] Failed to create payout job', error.message);
-  }
-
+  if (error) console.error('[shopify-webhook] Failed to create payout job', error.message);
   return data;
 }
 
 export default async function handler(req, res) {
-  if (!supabaseAdmin) {
+  if (!supabaseAdmin)
     return res.status(500).json({ error: 'Supabase admin client not configured' });
-  }
 
-  if (req.method !== 'POST') {
+  if (req.method !== 'POST')
     return res.status(405).json({ error: 'Method not allowed' });
-  }
 
   try {
     const rawBody = await getRawBody(req);
     const hmacHeader = req.headers['x-shopify-hmac-sha256'];
 
-    if (!hmacHeader) {
-      return res.status(401).json({ error: 'Missing HMAC signature' });
-    }
+    if (!hmacHeader) return res.status(401).json({ error: 'Missing HMAC signature' });
 
-    const digest = crypto.createHmac('sha256', env.SHOPIFY_WEBHOOK_SECRET).update(rawBody).digest('base64');
+    const digest = crypto
+      .createHmac('sha256', env.SHOPIFY_WEBHOOK_SECRET)
+      .update(rawBody)
+      .digest('base64');
 
     const signatureBuffer = Buffer.from(hmacHeader, 'base64');
     const digestBuffer = Buffer.from(digest, 'base64');
@@ -136,7 +127,6 @@ export default async function handler(req, res) {
 
     const order = JSON.parse(rawBody.toString('utf8'));
     const shopDomain = req.headers['x-shopify-shop-domain'] || null;
-
     const refAttr = order?.note_attributes?.find?.((attr) => attr?.name === 'ref');
     const uid = refAttr?.value ?? null;
 
@@ -150,9 +140,9 @@ export default async function handler(req, res) {
         .eq('uid', uid)
         .maybeSingle();
 
-      if (uidError) {
+      if (uidError)
         console.error('[shopify-webhook] Failed to fetch UID record', uidError.message);
-      } else {
+      else {
         retailerId = uidRecord?.retailer_id ?? null;
         businessId = uidRecord?.business_id ?? null;
       }
@@ -165,12 +155,17 @@ export default async function handler(req, res) {
       shopify_order_number: order.order_number ? String(order.order_number) : null,
       shop_domain: shopDomain,
       customer_email: order.email ?? order.customer?.email ?? null,
-      customer_name: order.customer ? `${order.customer.first_name ?? ''} ${order.customer.last_name ?? ''}`.trim() : null,
+      customer_name: order.customer
+        ? `${order.customer.first_name ?? ''} ${order.customer.last_name ?? ''}`.trim()
+        : null,
       currency: order.currency ?? 'USD',
       total: toNumber(order.total_price),
       subtotal: toNumber(order.subtotal_price),
       tax_total: toNumber(order.total_tax),
       discount_total: toNumber(order.total_discounts),
+      product_name: order?.line_items?.[0]?.title ?? 'Unknown Product',
+      amount: toNumber(order.total_price ?? order.subtotal_price ?? 0),
+      commission: Number((order.total_price * 0.2).toFixed(2)),
       financial_status: order.financial_status ?? null,
       fulfillment_status: order.fulfillment_status ?? null,
       processed_at: order.created_at ?? new Date().toISOString(),
@@ -195,14 +190,15 @@ export default async function handler(req, res) {
         .from('orders')
         .update(orderRecord)
         .eq('id', existingOrder.id);
-
-      if (updateError) {
+      if (updateError)
         console.error('[shopify-webhook] Failed to update existing order', updateError.message);
-      }
     } else {
+      // ✅ Automatically fill missing NOT NULL columns before inserting
+      const safeOrderRecord = await fillMissingDefaults('orders', orderRecord);
+
       const { data: insertedOrder, error: insertError } = await supabaseAdmin
         .from('orders')
-        .insert(orderRecord)
+        .insert(safeOrderRecord)
         .select('id')
         .maybeSingle();
 
@@ -210,19 +206,16 @@ export default async function handler(req, res) {
         console.error('[shopify-webhook] Failed to insert order', insertError.message);
         throw insertError;
       }
-
       orderId = insertedOrder?.id ?? null;
     }
 
-    if (orderId && orderRecord.total > 0) {
+    if (orderId && orderRecord.total > 0)
       await createPayoutJob(orderId, retailerId, pawpayaVendorId, orderRecord.total, uid);
-    }
 
-    if (uid && orderRecord.total > 0) {
+    if (uid && orderRecord.total > 0)
       await markLatestScanConverted(uid, orderRecord.total);
-    }
 
-    if (uid) {
+    if (uid)
       await supabaseAdmin
         .from('uids')
         .update({
@@ -230,29 +223,25 @@ export default async function handler(req, res) {
           last_order_total: orderRecord.total,
         })
         .eq('uid', uid);
-    }
 
-    // Check for express shipping purchase and update business record
-    const hasExpressShipping = order.line_items?.some(item => 
-      item.product_id && item.variant_id && 
-      (item.title?.toLowerCase().includes('express') || 
-       item.title?.toLowerCase().includes('priority') ||
-       item.sku?.toLowerCase().includes('priority'))
+    // Optional: business express shipping flag
+    const hasExpressShipping = order.line_items?.some(
+      (item) =>
+        item.product_id &&
+        item.variant_id &&
+        (item.title?.toLowerCase().includes('express') ||
+          item.title?.toLowerCase().includes('priority') ||
+          item.sku?.toLowerCase().includes('priority'))
     );
 
     if (hasExpressShipping && businessId) {
-      console.log('[shopify-webhook] Express shipping purchase detected, updating business record');
-      
+      console.log('[shopify-webhook] Express shipping purchase detected');
       const { error: businessUpdateError } = await supabaseAdmin
         .from('businesses')
         .update({ display_shipping: true })
         .eq('id', businessId);
-
-      if (businessUpdateError) {
-        console.error('[shopify-webhook] Failed to update business express shipping', businessUpdateError.message);
-      } else {
-        console.log('[shopify-webhook] Business express shipping updated successfully');
-      }
+      if (businessUpdateError)
+        console.error('[shopify-webhook] Failed to update business', businessUpdateError.message);
     }
 
     await logEvent('shopify-webhook', 'order_received', {
