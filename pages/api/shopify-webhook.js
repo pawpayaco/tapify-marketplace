@@ -60,7 +60,7 @@ async function markLatestScanConverted(uid, revenue) {
     .eq('id', scan.id);
 }
 
-async function createPayoutJob(orderId, retailerId, vendorId, total, sourceUid) {
+async function createPayoutJob(orderId, retailerId, vendorId, total, sourceUid, hasPriorityDisplay = false) {
   if (!retailerId || !vendorId) return null;
 
   const { data: retailer } = await supabaseAdmin
@@ -85,7 +85,7 @@ async function createPayoutJob(orderId, retailerId, vendorId, total, sourceUid) 
       vendor_cut: vendorCut,
       sourcer_cut: sourcerCut,
       total_amount: total,
-      status: 'pending',
+      status: hasPriorityDisplay ? 'priority_display' : 'pending',
       source_uid: sourceUid ?? null,
     })
     .select('id')
@@ -150,6 +150,14 @@ export default async function handler(req, res) {
 
     const pawpayaVendorId = await ensurePawpayaVendor();
 
+    // Detect Priority Display product
+    const hasPriorityDisplay = order.line_items?.some(item =>
+      item.title?.toLowerCase().includes('priority display') ||
+      item.title?.toLowerCase().includes('priority placement')
+    );
+
+    console.log('[shopify-webhook] Priority Display detected:', hasPriorityDisplay);
+
     const orderRecord = {
       shopify_order_id: String(order.id),
       shopify_order_number: order.order_number ? String(order.order_number) : null,
@@ -173,6 +181,7 @@ export default async function handler(req, res) {
       retailer_id: retailerId,
       business_id: businessId,
       vendor_id: pawpayaVendorId,
+      is_priority_display: hasPriorityDisplay,
       line_items: order.line_items ?? [],
       raw_payload: order,
     };
@@ -209,8 +218,23 @@ export default async function handler(req, res) {
       orderId = insertedOrder?.id ?? null;
     }
 
+    // Update retailer priority_display_active flag if Priority Display was purchased
+    if (hasPriorityDisplay && retailerId) {
+      console.log('[shopify-webhook] Priority Display detected, updating retailer flag');
+      const { error: retailerUpdateError } = await supabaseAdmin
+        .from('retailers')
+        .update({ priority_display_active: true })
+        .eq('id', retailerId);
+
+      if (retailerUpdateError) {
+        console.error('[shopify-webhook] Failed to update retailer priority flag', retailerUpdateError.message);
+      } else {
+        console.log('[shopify-webhook] Retailer priority display activated:', retailerId);
+      }
+    }
+
     if (orderId && orderRecord.total > 0)
-      await createPayoutJob(orderId, retailerId, pawpayaVendorId, orderRecord.total, uid);
+      await createPayoutJob(orderId, retailerId, pawpayaVendorId, orderRecord.total, uid, hasPriorityDisplay);
 
     if (uid && orderRecord.total > 0)
       await markLatestScanConverted(uid, orderRecord.total);
