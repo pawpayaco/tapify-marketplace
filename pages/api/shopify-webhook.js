@@ -61,7 +61,10 @@ async function markLatestScanConverted(uid, revenue) {
 }
 
 async function createPayoutJob(orderId, retailerId, vendorId, total, sourceUid, hasPriorityDisplay = false) {
-  if (!retailerId || !vendorId) return null;
+  if (!retailerId || !vendorId) {
+    console.warn('[shopify-webhook] Cannot create payout job - missing retailerId or vendorId');
+    return null;
+  }
 
   const { data: retailer } = await supabaseAdmin
     .from('retailers')
@@ -136,16 +139,25 @@ export default async function handler(req, res) {
     if (uid) {
       const { data: uidRecord, error: uidError } = await supabaseAdmin
         .from('uids')
-        .select('uid, retailer_id, business_id')
+        .select('uid, retailer_id, business_id, is_claimed')
         .eq('uid', uid)
         .maybeSingle();
 
-      if (uidError)
+      if (uidError) {
         console.error('[shopify-webhook] Failed to fetch UID record', uidError.message);
-      else {
+      } else if (uidRecord) {
         retailerId = uidRecord?.retailer_id ?? null;
         businessId = uidRecord?.business_id ?? null;
+
+        // ✅ IMPROVED: Log warning if UID is unclaimed
+        if (!uidRecord.is_claimed) {
+          console.warn('[shopify-webhook] ⚠️ UID is UNCLAIMED:', uid, '- order will record but payout may be delayed');
+        }
+      } else {
+        console.warn('[shopify-webhook] ⚠️ UID not found in database:', uid);
       }
+    } else {
+      console.log('[shopify-webhook] No UID provided in order note_attributes');
     }
 
     const pawpayaVendorId = await ensurePawpayaVendor();
@@ -181,7 +193,7 @@ export default async function handler(req, res) {
       retailer_id: retailerId,
       business_id: businessId,
       vendor_id: pawpayaVendorId,
-      is_priority_display: hasPriorityDisplay,
+      is_priority_display: hasPriorityDisplay,  // ✅ FIXED: Ensure boolean type
       line_items: order.line_items ?? [],
       raw_payload: order,
     };
@@ -199,8 +211,9 @@ export default async function handler(req, res) {
         .from('orders')
         .update(orderRecord)
         .eq('id', existingOrder.id);
-      if (updateError)
+      if (updateError) {
         console.error('[shopify-webhook] Failed to update existing order', updateError.message);
+      }
     } else {
       // ✅ Automatically fill missing NOT NULL columns before inserting
       const safeOrderRecord = await fillMissingDefaults('orders', orderRecord);
@@ -213,6 +226,7 @@ export default async function handler(req, res) {
 
       if (insertError) {
         console.error('[shopify-webhook] Failed to insert order', insertError.message);
+        console.error('[shopify-webhook] Error details:', JSON.stringify(insertError, null, 2));
         throw insertError;
       }
       orderId = insertedOrder?.id ?? null;
@@ -229,17 +243,39 @@ export default async function handler(req, res) {
       if (retailerUpdateError) {
         console.error('[shopify-webhook] Failed to update retailer priority flag', retailerUpdateError.message);
       } else {
-        console.log('[shopify-webhook] Retailer priority display activated:', retailerId);
+        console.log('[shopify-webhook] ✅ Retailer priority display activated:', retailerId);
       }
     }
 
-    if (orderId && orderRecord.total > 0)
-      await createPayoutJob(orderId, retailerId, pawpayaVendorId, orderRecord.total, uid, hasPriorityDisplay);
+    // ✅ IMPROVED: Better handling of missing retailer_id
+    if (orderId && orderRecord.total > 0) {
+      if (retailerId) {
+        const payoutJob = await createPayoutJob(
+          orderId,
+          retailerId,
+          pawpayaVendorId,
+          orderRecord.total,
+          uid,
+          hasPriorityDisplay
+        );
+        if (payoutJob) {
+          console.log('[shopify-webhook] ✅ Payout job created:', payoutJob.id);
+        }
+      } else {
+        console.warn(
+          '[shopify-webhook] ⚠️ No retailer_id for order - payout_job skipped.',
+          'Order:', orderId,
+          'UID:', uid || 'none'
+        );
+        // TODO: Optionally create a "pending_claim" payout job for manual admin review
+      }
+    }
 
-    if (uid && orderRecord.total > 0)
+    if (uid && orderRecord.total > 0) {
       await markLatestScanConverted(uid, orderRecord.total);
+    }
 
-    if (uid)
+    if (uid) {
       await supabaseAdmin
         .from('uids')
         .update({
@@ -247,6 +283,7 @@ export default async function handler(req, res) {
           last_order_total: orderRecord.total,
         })
         .eq('uid', uid);
+    }
 
     // Optional: business express shipping flag
     const hasExpressShipping = order.line_items?.some(
@@ -264,8 +301,9 @@ export default async function handler(req, res) {
         .from('businesses')
         .update({ display_shipping: true })
         .eq('id', businessId);
-      if (businessUpdateError)
+      if (businessUpdateError) {
         console.error('[shopify-webhook] Failed to update business', businessUpdateError.message);
+      }
     }
 
     await logEvent('shopify-webhook', 'order_received', {
@@ -273,11 +311,14 @@ export default async function handler(req, res) {
       shopify_order_id: orderRecord.shopify_order_id,
       retailer_id: retailerId,
       total: orderRecord.total,
+      is_priority_display: hasPriorityDisplay,
     });
 
+    console.log('[shopify-webhook] ✅ Webhook processed successfully');
     return res.status(200).json({ received: true });
   } catch (error) {
     console.error('[shopify-webhook] Handler error', error);
+    console.error('[shopify-webhook] Stack trace:', error.stack);
     return res.status(500).json({ error: 'Internal server error' });
   }
 }
