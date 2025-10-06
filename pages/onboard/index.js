@@ -1,6 +1,8 @@
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
+import { useEffect } from 'react';
+import { useRouter } from 'next/router';
 
 const highlightStats = [
   {
@@ -167,6 +169,29 @@ const staggerContainer = {
 };
 
 export default function RetailerOnboardLanding() {
+  const router = useRouter();
+
+  // Track referral 'view' event when page loads with ref parameter
+  useEffect(() => {
+    const { ref } = router.query;
+
+    if (ref) {
+      console.log('[Referral] Tracking view event for manager:', ref);
+
+      fetch('/api/track-referral', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          manager_phone: ref,
+          event_type: 'view'
+        })
+      })
+        .then(res => res.json())
+        .then(data => console.log('[Referral] View event logged:', data))
+        .catch(err => console.error('[Referral] Failed to log view event:', err));
+    }
+  }, [router.query]);
+
   return (
     <div className="min-h-screen bg-[#faf8f3] pt-20 text-gray-900 overflow-x-hidden">
       <section className="relative overflow-hidden py-12 md:py-24 px-4 sm:px-6 lg:px-8 max-w-full">

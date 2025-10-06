@@ -136,7 +136,7 @@ export default async function handler(req, res) {
     if (uid) {
       const { data: uidRecord, error: uidError } = await supabaseAdmin
         .from('uids')
-        .select('id, retailer_id, business_id')
+        .select('uid, retailer_id, business_id')
         .eq('uid', uid)
         .maybeSingle();
 
