@@ -115,17 +115,19 @@ This file maps the entire frontend user experience, explaining how pages connect
 ## = Authentication Pages
 
 ### `/login.js`  User Login
-**Purpose:** Email/password login for retailers, vendors, admins.
+**Purpose:** Auth entry point for retailers, vendors, admins (email/password + Google OAuth).
 
 **Flow:**
-1. User enters email + password
-2. Calls `useAuthContext().signIn(email, password)`
-3. On success � redirects to `/onboard/dashboard` or `/admin` (based on role)
-4. On error � displays error message
+1. User signs in via email/password form or clicks "Sign in with Google"
+2. Email path -> calls `useAuthContext().signIn(email, password)`
+3. Google path -> calls `useAuthContext().signInWithGoogle({ redirectTo })`
+4. On success -> redirect to `/onboard/dashboard` or `/admin` (role-based)
+5. On error -> display error message inline
 
 **Backend:**
-- Uses `supabase.auth.signInWithPassword`
-- Sets session cookies via `@supabase/ssr`
+- Email/password: `supabase.auth.signInWithPassword`
+- Google: `supabase.auth.signInWithOAuth({ provider: 'google' })`
+- Sessions persist via `@supabase/ssr`
 
 ---
 
@@ -263,7 +265,7 @@ rewrites: async () => [
 | `/onboard/register` | `onboard/register.js` | L | Multi-step registration | Form data |
 | `/onboard/shopify-connect` | `onboard/shopify-connect.js` |  | Shopify OAuth | Vendor auth |
 | `/onboard/dashboard` | `onboard/dashboard.js` |  | Retailer dashboard | `retailers`, `scans`, `uids`, `payout_jobs` |
-| `/login` | `login.js` | L | User login | Supabase Auth |
+| `/login` | `login.js` | L | User login | Supabase Auth (email/password + Google OAuth) |
 | `/reset-password` | `reset-password.js` | L | Password reset request | Supabase Auth |
 | `/update-password` | `update-password.js` | = | Set new password (magic link) | Supabase Auth |
 | `/claim` | `claim.js` | � | Claim unclaimed UID | `uids`, `retailers` |

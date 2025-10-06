@@ -111,9 +111,69 @@ export default function useAuth() {
     }
   };
 
+  const signInWithGoogle = async ({ redirectTo, skipBrowserRedirect = false, queryParams } = {}) => {
+    console.log('🔑 [useAuth.signInWithGoogle] Attempting Google sign in');
+
+    if (!supabase) {
+      console.error('❌ [useAuth.signInWithGoogle] Supabase client not initialized');
+      return { data: null, error: new Error('Supabase client not initialized') };
+    }
+
+    try {
+      setLoading(true);
+
+      const resolvedRedirectTo = redirectTo ?? (
+        typeof window !== 'undefined'
+          ? `${window.location.origin}/onboard/dashboard`
+          : undefined
+      );
+
+      const oauthOptions = {
+        skipBrowserRedirect,
+      };
+
+      if (resolvedRedirectTo) {
+        oauthOptions.redirectTo = resolvedRedirectTo;
+      }
+
+      if (queryParams) {
+        oauthOptions.queryParams = queryParams;
+      }
+
+      console.log('📡 [useAuth.signInWithGoogle] Calling supabase.auth.signInWithOAuth...', {
+        hasRedirect: !!oauthOptions.redirectTo,
+        skipBrowserRedirect,
+      });
+
+      const { data, error } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: oauthOptions,
+      });
+
+      if (error) {
+        console.error('❌ [useAuth.signInWithGoogle] OAuth error:', error);
+        throw error;
+      }
+
+      if (skipBrowserRedirect) {
+        setLoading(false);
+      }
+
+      console.log('✅ [useAuth.signInWithGoogle] OAuth request successful');
+      return { data, error: null };
+    } catch (error) {
+      console.error('❌ [useAuth.signInWithGoogle] Exception during OAuth sign in:', error);
+      setLoading(false);
+      return { data: null, error };
+    }
+  };
+
   // Sign up with email and password
-  const signUp = async (email, password) => {
-    console.log('📝 [useAuth.signUp] Attempting sign up:', { email });
+  const signUp = async (email, password, options = {}) => {
+    console.log('📝 [useAuth.signUp] Attempting sign up:', {
+      email,
+      hasRedirect: !!options?.emailRedirectTo,
+    });
     
     if (!supabase) {
       console.error('❌ [useAuth.signUp] Supabase client not initialized');
@@ -127,6 +187,7 @@ export default function useAuth() {
       const { data, error } = await supabase.auth.signUp({
         email,
         password,
+        options,
       });
 
       if (error) {
@@ -202,6 +263,7 @@ export default function useAuth() {
     user,
     loading,
     signIn,
+    signInWithGoogle,
     signUp,
     signOut,
   };

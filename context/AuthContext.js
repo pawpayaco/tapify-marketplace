@@ -36,6 +36,10 @@ export function AuthProvider({ children }) {
         console.error('❌ [AuthProvider] signUp called on fallback auth');
         return { user: null, error: 'Auth not configured' };
       },
+      signInWithGoogle: async () => {
+        console.error('❌ [AuthProvider] signInWithGoogle called on fallback auth');
+        return { data: null, error: 'Auth not configured' };
+      },
       signOut: async () => {
         console.error('❌ [AuthProvider] signOut called on fallback auth');
         return { error: 'Auth not configured' };
@@ -69,6 +73,10 @@ export function useAuthContext() {
       signUp: async () => {
         console.error('❌ [useAuthContext] signUp called outside provider');
         return { user: null, error: 'No auth context' };
+      },
+      signInWithGoogle: async () => {
+        console.error('❌ [useAuthContext] signInWithGoogle called outside provider');
+        return { data: null, error: 'No auth context' };
       },
       signOut: async () => {
         console.error('❌ [useAuthContext] signOut called outside provider');

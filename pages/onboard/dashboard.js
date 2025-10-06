@@ -220,11 +220,11 @@ export default function RetailerDashboard() {
     };
     
     fetchRetailerData();
-    
-    // Refresh data every 30 seconds to catch webhook updates
-    const refreshInterval = setInterval(fetchRetailerData, 30000);
-    
-    return () => clearInterval(refreshInterval);
+
+    // Auto-refresh disabled to prevent animation resets
+    // Users can manually refresh by navigating away and back
+    // Webhook updates will be visible on next page load
+
   }, [user]);
 
   // Calculate statistics from scans

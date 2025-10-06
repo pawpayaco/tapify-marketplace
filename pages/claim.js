@@ -1,7 +1,10 @@
 "use client";
 import { useState, useEffect, useMemo } from "react";
+import { useRouter } from "next/router";
+import { motion, AnimatePresence } from "framer-motion";
 
 export default function ConnectPage() {
+  const router = useRouter();
   const [uid, setUid] = useState("");
   const [retailers, setRetailers] = useState([]);
   const [search, setSearch] = useState("");
@@ -9,6 +12,7 @@ export default function ConnectPage() {
   const [connectedId, setConnectedId] = useState(null);
   const [error, setError] = useState("");
   const [loadingList, setLoadingList] = useState(false);
+  const [showSuccess, setShowSuccess] = useState(false);
 
   useEffect(() => {
     // Ensure page loads at top
@@ -122,12 +126,17 @@ export default function ConnectPage() {
 
       console.log('[CLAIM] SUCCESS: Display claimed successfully');
       setConnectedId(retailerId);
-      setRetailers(prev => prev.filter(store => store.id !== retailerId));
+      setShowSuccess(true);
+
+      // Redirect to claimed page after animation
+      setTimeout(() => {
+        router.push('/claimed');
+      }, 1500);
     } catch (err) {
       console.error('[CLAIM] Exception caught:', err);
       setError(err.message || "Error connecting business.");
+      setLoading(false);
     }
-    setLoading(false);
     console.log('[CLAIM] ========== CONNECT FLOW END ==========');
   };
 
@@ -167,38 +176,54 @@ export default function ConnectPage() {
 
         {/* Business List */}
         <div className="space-y-4">
-          {filteredRetailers.map((store) => {
-            const badge = shippingBadge(store.shippingStatus);
-            return (
-              <div
-                key={store.id}
-                className="flex justify-between items-center bg-white rounded-3xl shadow-xl border-2 border-gray-100 p-5 hover:shadow-2xl transition-all"
-              >
-                <div>
-                  <p className="font-semibold text-gray-900">{store.name}</p>
-                  {store.address && (
-                    <p className="text-sm text-gray-500 truncate max-w-[240px]">
-                      {store.address}
-                    </p>
-                  )}
-                  <div className={`inline-flex items-center px-3 py-1 mt-2 rounded-full text-xs font-bold ${badge.tone}`}>
-                    {badge.label}
-                  </div>
-                </div>
-                <button
-                  disabled={loading || connectedId === store.id}
-                  onClick={() => handleConnect(store.id)}
-                  className={`px-5 py-2.5 rounded-2xl font-bold text-sm transition-all ${
-                    connectedId === store.id
-                      ? "bg-gray-200 text-gray-500 cursor-not-allowed"
-                      : "bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3] text-white shadow-lg hover:shadow-xl hover:scale-105 active:scale-95"
-                  }`}
+          <AnimatePresence mode="popLayout">
+            {filteredRetailers.map((store) => {
+              const badge = shippingBadge(store.shippingStatus);
+              const isSuccess = connectedId === store.id && showSuccess;
+
+              return (
+                <motion.div
+                  key={store.id}
+                  layout
+                  initial={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.9, transition: { duration: 0.4 } }}
+                  className="flex justify-between items-center bg-white rounded-3xl shadow-xl border-2 border-gray-100 p-5 hover:shadow-2xl transition-all"
                 >
-                  {connectedId === store.id ? "✅ Connected" : "Connect"}
-                </button>
-              </div>
-            );
-          })}
+                  <div>
+                    <p className="font-semibold text-gray-900">{store.name}</p>
+                    {store.address && (
+                      <p className="text-sm text-gray-500 truncate max-w-[240px]">
+                        {store.address}
+                      </p>
+                    )}
+                    <div className={`inline-flex items-center px-3 py-1 mt-2 rounded-full text-xs font-bold ${badge.tone}`}>
+                      {badge.label}
+                    </div>
+                  </div>
+                  <button
+                    disabled={loading || connectedId === store.id}
+                    onClick={() => handleConnect(store.id)}
+                    className={`px-5 py-2.5 rounded-2xl font-bold text-sm transition-all ${
+                      connectedId === store.id
+                        ? "bg-gray-200 text-gray-500 cursor-not-allowed"
+                        : "bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3] text-white shadow-lg hover:shadow-xl hover:scale-105 active:scale-95"
+                    }`}
+                  >
+                    {loading && connectedId === store.id ? (
+                      <div className="flex items-center gap-2">
+                        <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent"></div>
+                        Claiming...
+                      </div>
+                    ) : connectedId === store.id ? (
+                      "✅ Claimed"
+                    ) : (
+                      "Claim Display"
+                    )}
+                  </button>
+                </motion.div>
+              );
+            })}
+          </AnimatePresence>
 
           {/* Empty state */}
           {!loadingList && filteredRetailers.length === 0 && (

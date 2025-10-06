@@ -97,6 +97,10 @@ export default function ShopifyConnect() {
   const [loading, setLoading] = useState(false);
   const [standardProcessing, setStandardProcessing] = useState(false);
   const [error, setError] = useState('');
+  const [priorityDisplayActive, setPriorityDisplayActive] = useState(false);
+  const [priorityDisplayConfirmed, setPriorityDisplayConfirmed] = useState(false);
+  const [retailerId, setRetailerId] = useState(null);
+  const [retailerUid, setRetailerUid] = useState(null);
   const [shippingAddress, setShippingAddress] = useState({
     name: '',
     email: '',
@@ -118,108 +122,102 @@ export default function ShopifyConnect() {
 
     window.scrollTo(0, 0);
 
-    const savedEmail = sessionStorage.getItem('onboarding_email') || '';
-    const savedName = sessionStorage.getItem('onboarding_owner_name') || '';
-    const savedPhone = sessionStorage.getItem('onboarding_phone') || '';
-    const savedAddress = sessionStorage.getItem('onboarding_address') || '';
-
-    setShippingAddress((prev) => {
-      const hydrated = savedAddress ? hydrateAddressFromRaw(savedAddress) : {};
-      return {
-        ...prev,
-        name: savedName || prev.name,
-        email: savedEmail || prev.email,
-        phone: savedPhone || prev.phone,
-        address1: hydrated.address1 || prev.address1,
-        address2: hydrated.address2 || prev.address2,
-        city: hydrated.city || prev.city,
-        state: hydrated.state || prev.state,
-        zip: hydrated.zip || prev.zip,
-        raw: hydrated.raw || prev.raw
-      };
-    });
-
     const loadRetailerData = async () => {
-      const retailerId = sessionStorage.getItem('onboarding_retailer_id');
-      if (!retailerId || !supabase) return;
+      const storedRetailerId = sessionStorage.getItem('onboarding_retailer_id');
+      if (!storedRetailerId || !supabase) return;
 
-      const { data, error: supabaseError } = await supabase
-        .from('retailers')
-        .select('name, email, phone, address, location')
-        .eq('id', retailerId)
-        .single();
+      setRetailerId(storedRetailerId);
 
-      if (supabaseError || !data) return;
+      try {
+        // Load retailer data
+        const { data: retailerData, error: retailerError } = await supabase
+          .from('retailers')
+          .select('id, name, email, phone, priority_display_active')
+          .eq('id', storedRetailerId)
+          .single();
 
-      setShippingAddress((prev) => {
-        const fallbackAddress = data.address || data.location || '';
-        const hydrated = fallbackAddress ? hydrateAddressFromRaw(fallbackAddress) : {};
-        return {
-          ...prev,
-          name: prev.name || data.name || '',
-          email: prev.email || data.email || '',
-          phone: prev.phone || data.phone || '',
-          address1: prev.address1 || hydrated.address1 || '',
-          address2: prev.address2 || hydrated.address2 || '',
-          city: prev.city || hydrated.city || '',
-          state: prev.state || hydrated.state || '',
-          zip: prev.zip || hydrated.zip || '',
-          raw: prev.raw || hydrated.raw || ''
-        };
-      });
+        if (retailerError || !retailerData) {
+          console.error('Error loading retailer:', retailerError);
+          return;
+        }
+
+        // Check priority display status from retailer
+        setPriorityDisplayActive(retailerData.priority_display_active || false);
+
+        // Get retailer's UID
+        const { data: uidData } = await supabase
+          .from('uids')
+          .select('uid')
+          .eq('retailer_id', storedRetailerId)
+          .eq('is_claimed', true)
+          .limit(1)
+          .single();
+
+        if (uidData) {
+          setRetailerUid(uidData.uid);
+        }
+
+        // Check if priority display was purchased in orders
+        const { data: orderData } = await supabase
+          .from('orders')
+          .select('is_priority_display')
+          .eq('retailer_id', storedRetailerId)
+          .eq('is_priority_display', true)
+          .maybeSingle();
+
+        if (orderData) {
+          setPriorityDisplayActive(true);
+
+          // Update retailer record if not already marked
+          if (!retailerData.priority_display_active) {
+            await supabase
+              .from('retailers')
+              .update({ priority_display_active: true })
+              .eq('id', storedRetailerId);
+          }
+        }
+      } catch (err) {
+        console.error('Error loading retailer data:', err);
+      }
     };
 
     loadRetailerData();
+
+    // Check for Shopify return parameters
+    const checkShopifyReturn = () => {
+      const urlParams = new URLSearchParams(window.location.search);
+      const shopifyConfirmed = urlParams.get('shopify_confirmed');
+      const orderConfirmed = urlParams.get('order_confirmed');
+
+      if (shopifyConfirmed === 'true' || orderConfirmed === 'true') {
+        setPriorityDisplayConfirmed(true);
+        // Clear URL parameters
+        window.history.replaceState({}, document.title, window.location.pathname);
+      }
+    };
+
+    checkShopifyReturn();
   }, []);
 
   const activeOption = SHIPPING_OPTIONS.find((option) => option.id === selectedOption) || SHIPPING_OPTIONS[0];
   const isExpedited = activeOption.id === 'expedited';
   const shippingPrice = activeOption.price;
 
-  const normalizeAddress = () => {
-    const hydrated = hydrateAddressFromRaw(shippingAddress.raw);
-    return {
-      address1: shippingAddress.address1 || hydrated.address1,
-      address2: shippingAddress.address2 || hydrated.address2,
-      city: shippingAddress.city || hydrated.city,
-      state: shippingAddress.state || hydrated.state,
-      zip: shippingAddress.zip || hydrated.zip
-    };
-  };
-
-  const handleCheckout = async () => {
-    if (!isExpedited) return;
-
-    setLoading(true);
-    setError('');
-
-    const trimmedName = shippingAddress.name.trim();
-    if (!trimmedName || !shippingAddress.email.trim()) {
-      setError('Add the owner name and email so Shopify can pre-fill the checkout.');
-      setLoading(false);
+  const handlePriorityDisplayUpgrade = () => {
+    if (!retailerUid) {
+      setError('Please complete your onboarding first to get your unique tracking ID.');
       return;
     }
 
-    const normalized = normalizeAddress();
+    // Redirect to Shopify Priority Display product with retailer attribution
+    const shopifyUrl = `https://pawpayaco.com/products/priority-display?ref=${retailerUid}`;
 
-    if (!normalized.address1 || !normalized.city || !normalized.state || !normalized.zip) {
-      setError('Add the shipping address so we can guarantee Halloween delivery.');
-      setLoading(false);
-      return;
-    }
+    // Store return URL for after purchase
+    const returnUrl = `${window.location.origin}/onboard/shopify-connect?shopify_confirmed=true`;
+    sessionStorage.setItem('shopify_return_url', returnUrl);
 
-    try {
-      const [firstName, ...rest] = trimmedName.split(/\s+/);
-      const lastName = rest.join(' ') || firstName;
-
-      // Redirect to the same Shopify product as the toggle
-      window.open('https://pawpayaco.com/products/display-setup-for-affiliate', '_blank');
-      setLoading(false);
-    } catch (checkoutError) {
-      console.error('Checkout error:', checkoutError);
-      setError('We could not start the Shopify checkout. Please try again.');
-      setLoading(false);
-    }
+    // Open Shopify in new tab
+    window.open(shopifyUrl, '_blank');
   };
 
   const handleReserveStandard = async () => {
@@ -310,6 +308,111 @@ export default function ShopifyConnect() {
 
         <div className="grid lg:grid-cols-[1.6fr,1fr] gap-8 lg:gap-12">
           <div className="space-y-6">
+            {/* Priority Display Success Message */}
+            {priorityDisplayConfirmed && (
+              <motion.div
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.5 }}
+                className="bg-gradient-to-r from-green-50 to-emerald-50 border-2 border-green-300 rounded-3xl p-6 shadow-xl"
+              >
+                <div className="flex items-start gap-4">
+                  <div className="flex-shrink-0 w-12 h-12 bg-green-500 rounded-full flex items-center justify-center">
+                    <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    </svg>
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="text-xl font-bold text-green-900 mb-2">
+                      ✅ Priority Display Upgrade Confirmed
+                    </h3>
+                    <p className="text-green-800 mb-3">
+                      Your Priority Display upgrade has been processed! Display shipping info is now visible in your dashboard.
+                    </p>
+                    <p className="text-sm text-green-700">
+                      Check your email for order confirmation and tracking details.
+                    </p>
+                  </div>
+                </div>
+              </motion.div>
+            )}
+
+            {/* Priority Display Upgrade Card */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4 }}
+              className="bg-white rounded-3xl border-2 border-gray-100 shadow-xl p-6 md:p-8"
+            >
+              <div className="flex items-start justify-between gap-4 mb-6">
+                <div className="flex items-center gap-3">
+                  <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-[#ff7a4a] to-[#ff6fb3] flex items-center justify-center text-white text-2xl">
+                    ⭐
+                  </div>
+                  <div>
+                    <h2 className="text-2xl font-bold text-gray-900">Priority Display Upgrade</h2>
+                    <p className="text-sm text-gray-500">Featured placement in marketplace</p>
+                  </div>
+                </div>
+                {priorityDisplayActive && (
+                  <span className="px-4 py-2 bg-green-100 text-green-800 text-sm font-bold rounded-full whitespace-nowrap">
+                    Active ✓
+                  </span>
+                )}
+              </div>
+
+              <p className="text-gray-700 mb-4">
+                Get your products featured in prime placement on our marketplace for just{' '}
+                <span className="font-bold text-2xl text-[#ff6fb3]">$50</span>.
+              </p>
+
+              {priorityDisplayActive ? (
+                <div className="bg-green-50 border-2 border-green-200 rounded-2xl p-4 flex items-center gap-3">
+                  <svg className="w-8 h-8 text-green-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  <div>
+                    <p className="font-bold text-green-900">Priority Display Active</p>
+                    <p className="text-sm text-green-700">Your store has premium marketplace placement</p>
+                  </div>
+                </div>
+              ) : (
+                <>
+                  <div className="mb-4">
+                    <h3 className="font-semibold mb-2 text-gray-900">Benefits:</h3>
+                    <ul className="space-y-2 text-sm text-gray-700">
+                      <li className="flex items-center gap-2">
+                        <span className="text-green-500 font-bold">✓</span>
+                        Featured placement in marketplace
+                      </li>
+                      <li className="flex items-center gap-2">
+                        <span className="text-green-500 font-bold">✓</span>
+                        Increased visibility to customers
+                      </li>
+                      <li className="flex items-center gap-2">
+                        <span className="text-green-500 font-bold">✓</span>
+                        Higher conversion rates
+                      </li>
+                      <li className="flex items-center gap-2">
+                        <span className="text-green-500 font-bold">✓</span>
+                        One-time payment, ongoing benefits
+                      </li>
+                    </ul>
+                  </div>
+                  <button
+                    onClick={handlePriorityDisplayUpgrade}
+                    disabled={!retailerUid}
+                    className="w-full px-6 py-4 bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3] text-white font-bold text-lg rounded-2xl hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed shadow-lg"
+                  >
+                    Upgrade & Register on Shopify
+                  </button>
+                  {error && (
+                    <p className="mt-3 text-sm text-red-600">{error}</p>
+                  )}
+                </>
+              )}
+            </motion.div>
+
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -429,99 +532,6 @@ export default function ShopifyConnect() {
               </div>
             </motion.div>
 
-            <AnimatePresence>
-              {isExpedited && (
-                <motion.div
-                  key="address-form"
-                  initial={{ opacity: 0, height: 0, y: 10 }}
-                  animate={{ opacity: 1, height: 'auto', y: 0 }}
-                  exit={{ opacity: 0, height: 0, y: 10 }}
-                  transition={{ duration: 0.3 }}
-                  className="bg-white rounded-3xl border-2 border-gray-100 shadow-xl p-6 md:p-8"
-                >
-                  <div className="flex items-center gap-3 mb-6">
-                    <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-green-500 to-emerald-600 flex items-center justify-center text-white">
-                      <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 7l8.89 5.26L21 7M5 19h14a2 2 0 002-2V7a2 2 0 00-1-1.73M4 6.27A2 2 0 003 7v10a2 2 0 002 2" />
-                      </svg>
-                    </div>
-                    <div>
-                      <h2 className="text-2xl font-bold text-gray-900">Where should we ship?</h2>
-                      <p className="text-sm text-gray-500">We pre-fill everything in Shopify so checkout takes seconds.</p>
-                    </div>
-                  </div>
-
-                  <div className="grid md:grid-cols-2 gap-6">
-                    <div className="md:col-span-2">
-                      <label className="block text-sm font-bold text-gray-700 mb-2">
-                        Store owner name <span className="text-red-500">*</span>
-                      </label>
-                      <input
-                        type="text"
-                        value={shippingAddress.name}
-                        onChange={(event) => setShippingAddress((prev) => ({ ...prev, name: event.target.value }))}
-                        className="w-full px-4 py-3 border-2 border-gray-300 rounded-2xl focus:ring-2 focus:ring-[#ff6fb3] focus:border-transparent text-gray-900"
-                        placeholder="Jane Doe"
-                        autoComplete="name"
-                      />
-                    </div>
-
-                    <div>
-                      <label className="block text-sm font-bold text-gray-700 mb-2">
-                        Email <span className="text-red-500">*</span>
-                      </label>
-                      <input
-                        type="email"
-                        value={shippingAddress.email}
-                        onChange={(event) => setShippingAddress((prev) => ({ ...prev, email: event.target.value }))}
-                        className="w-full px-4 py-3 border-2 border-gray-300 rounded-2xl focus:ring-2 focus:ring-[#ff6fb3] focus:border-transparent text-gray-900"
-                        placeholder="owner@yourstore.com"
-                        autoComplete="email"
-                      />
-                    </div>
-
-                    <div>
-                      <label className="block text-sm font-bold text-gray-700 mb-2">Phone</label>
-                      <input
-                        type="tel"
-                        value={shippingAddress.phone}
-                        onChange={(event) => setShippingAddress((prev) => ({ ...prev, phone: event.target.value }))}
-                        className="w-full px-4 py-3 border-2 border-gray-300 rounded-2xl focus:ring-2 focus:ring-[#ff6fb3] focus:border-transparent text-gray-900"
-                        placeholder="(555) 123-4567"
-                        autoComplete="tel"
-                      />
-                    </div>
-
-                    <div className="md:col-span-2">
-                      <AddressInput
-                        value={shippingAddress.raw}
-                        onChange={(raw) => setShippingAddress((prev) => ({ ...prev, raw }))}
-                        onValidated={(validated) => {
-                          setShippingAddress((prev) => ({
-                            ...prev,
-                            address1: validated.address1 || prev.address1,
-                            address2: validated.address2 || prev.address2,
-                            city: validated.city || prev.city,
-                            state: validated.state || prev.state,
-                            zip: validated.zip5 || prev.zip,
-                            raw: [
-                              validated.address1,
-                              validated.address2,
-                              validated.city,
-                              validated.state,
-                              validated.zip5
-                            ].filter(Boolean).join(', ')
-                          }));
-                        }}
-                        required
-                        googleApiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}
-                        label="Shipping address"
-                      />
-                    </div>
-                  </div>
-                </motion.div>
-              )}
-            </AnimatePresence>
 
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -623,45 +633,7 @@ export default function ShopifyConnect() {
                 </p>
               </div>
 
-              {error && (
-                <motion.div
-                  initial={{ opacity: 0, y: -10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  className="mt-4 rounded-2xl bg-red-50 border border-red-200 px-4 py-3 text-sm text-red-700"
-                >
-                  {error}
-                </motion.div>
-              )}
-
               <div className="mt-6 space-y-3">
-                <motion.button
-                  whileHover={{ scale: isExpedited && !loading ? 1.02 : 1 }}
-                  whileTap={{ scale: isExpedited && !loading ? 0.98 : 1 }}
-                  type="button"
-                  onClick={handleCheckout}
-                  disabled={!isExpedited || loading}
-                  className={[
-                    'w-full py-4 rounded-2xl font-black text-lg flex items-center justify-center gap-3 transition-all',
-                    isExpedited
-                      ? 'bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3] text-white shadow-xl disabled:opacity-60 disabled:cursor-not-allowed'
-                      : 'bg-gray-200 text-gray-500 cursor-not-allowed'
-                  ].join(' ')}
-                >
-                  {loading ? (
-                    <>
-                      <div className="animate-spin h-5 w-5 border-2 border-white border-t-transparent rounded-full"></div>
-                      Starting Shopify checkout...
-                    </>
-                  ) : (
-                    <>
-                      <span>Upgrade & checkout on Shopify</span>
-                      <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
-                      </svg>
-                    </>
-                  )}
-                </motion.button>
-
                 <button
                   type="button"
                   onClick={handleReserveStandard}
@@ -675,8 +647,8 @@ export default function ShopifyConnect() {
                     </div>
                   ) : (
                     <>
-                      <span className="text-lg font-black text-gray-900">Reserve my display</span>
-                      <span className="text-xs font-medium text-gray-500">Ships after Black Friday</span>
+                      <span className="text-lg font-black text-gray-900">Continue to Dashboard</span>
+                      <span className="text-xs font-medium text-gray-500">Complete onboarding</span>
                     </>
                   )}
                 </button>

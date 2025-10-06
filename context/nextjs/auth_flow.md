@@ -77,7 +77,25 @@ sb-{projectRef}-auth-token = {
 
 ---
 
-### 3. Password Reset
+### 3. Google OAuth Login
+**Files:** `hooks/useAuth.js:114-169`, `pages/login.js:140-188`
+
+**Flow:**
+1. User clicks "Sign in with Google" on `/login`
+2. Frontend calls `useAuthContext().signInWithGoogle({ redirectTo })`
+3. `useAuth` hook calls `supabase.auth.signInWithOAuth({ provider: 'google' })`
+4. Supabase handles the Google consent screen and redirects back to the app
+5. Auth state listener emits `SIGNED_IN`, updating the context user/session
+
+**Default Redirect:**
+- If no `redirectTo` is provided, the hook sends users to `/onboard/dashboard`
+
+**Customization:**
+- Supports `skipBrowserRedirect` + `queryParams` for future flows (see hook args)
+
+---
+
+### 4. Password Reset
 **File:** `pages/reset-password.js`
 
 **Flow:**
@@ -91,7 +109,7 @@ sb-{projectRef}-auth-token = {
 
 ---
 
-### 4. Sign Out
+### 5. Sign Out
 **File:** `hooks/useAuth.js:156-199`
 
 **Flow:**
@@ -197,7 +215,7 @@ export async function getServerSideProps(context) {
 const AuthContext = createContext(undefined);
 
 export function AuthProvider({ children }) {
-  const auth = useAuth(); // { user, loading, signIn, signUp, signOut }
+  const auth = useAuth(); // { user, loading, signIn, signInWithGoogle, signUp, signOut }
 
   return (
     <AuthContext.Provider value={auth}>

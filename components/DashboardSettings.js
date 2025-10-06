@@ -245,6 +245,82 @@ export default function DashboardSettings({ retailerId }) {
         </div>
       </div>
 
+      {/* Display Shipping Preferences */}
+      <div className="bg-white rounded-lg shadow-md overflow-hidden">
+        <div className="bg-gradient-to-r from-blue-500 to-indigo-600 p-4">
+          <h2 className="text-2xl font-bold text-white">Display Shipping Preferences</h2>
+        </div>
+
+        <div className="p-6">
+          {priorityDisplayActive ? (
+            <div>
+              <div className="flex items-center gap-3 mb-4 p-4 bg-green-50 border border-green-200 rounded-lg">
+                <svg
+                  className="w-6 h-6 text-green-600 flex-shrink-0"
+                  fill="none"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+                <div>
+                  <p className="font-bold text-green-900">Priority Display Active</p>
+                  <p className="text-sm text-green-700">Your display shipping is managed through Shopify</p>
+                </div>
+              </div>
+
+              <div className="space-y-4">
+                <div>
+                  <h3 className="font-semibold text-gray-900 mb-2">Shipping Status</h3>
+                  <p className="text-gray-700 text-sm">
+                    Your Priority Display upgrade includes expedited shipping. Track your order through your Shopify confirmation email.
+                  </p>
+                </div>
+
+                <div>
+                  <h3 className="font-semibold text-gray-900 mb-2">Need Help?</h3>
+                  <p className="text-gray-700 text-sm">
+                    Contact support if you have questions about your display shipment or tracking information.
+                  </p>
+                </div>
+              </div>
+            </div>
+          ) : (
+            <div className="text-center py-8">
+              <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <svg
+                  className="w-8 h-8 text-gray-400"
+                  fill="none"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
+                </svg>
+              </div>
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                Priority Display Shipping Not Active
+              </h3>
+              <p className="text-gray-600 mb-4">
+                Upgrade to Priority Display to access premium shipping options and featured marketplace placement.
+              </p>
+              <button
+                onClick={handleUpgradeClick}
+                disabled={!uid}
+                className="px-6 py-3 bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3] text-white font-bold rounded-lg hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed shadow-lg"
+              >
+                Upgrade to Priority Display
+              </button>
+            </div>
+          )}
+        </div>
+      </div>
+
       {/* Account Settings Form */}
       <div className="bg-white rounded-lg shadow-md p-6">
         <h2 className="text-2xl font-bold mb-4">Account Information</h2>
