@@ -113,9 +113,11 @@ export default async function handler(req, res) {
     });
   }
 
-  const client = await getPool().connect();
-  
+  let client;
+
   try {
+    client = await getPool().connect();
+
     console.log('[onboard/register] Starting registration for:', owner_email);
 
     // 1) Create Supabase auth user first
@@ -280,7 +282,9 @@ export default async function handler(req, res) {
     });
     
   } catch (err) {
-    await client.query('ROLLBACK').catch(() => {});
+    if (client) {
+      await client.query('ROLLBACK').catch(() => {});
+    }
     console.error('[onboard/register] Registration failed:', err);
     
     // Provide user-friendly error messages
@@ -297,6 +301,8 @@ export default async function handler(req, res) {
       details: process.env.NODE_ENV === 'development' ? err.message : undefined
     });
   } finally {
-    client.release();
+    if (client) {
+      client.release();
+    }
   }
 }
