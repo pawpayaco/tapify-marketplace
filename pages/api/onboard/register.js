@@ -285,19 +285,40 @@ export default async function handler(req, res) {
     if (client) {
       await client.query('ROLLBACK').catch(() => {});
     }
-    console.error('[onboard/register] Registration failed:', err);
+
+    const dbHost = (() => {
+      try {
+        return new URL(DATABASE_URL).hostname;
+      } catch (e) {
+        return 'unknown-host';
+      }
+    })();
+
+    console.error('[onboard/register] Registration failed:', {
+      message: err?.message,
+      code: err?.code,
+      dbHost,
+    });
     
     // Provide user-friendly error messages
     let errorMessage = err.message;
-    
-    if (err.message.includes('already registered')) {
+    let errorCode = err.code || null;
+
+    if (err.message?.includes('already registered')) {
       errorMessage = 'This email is already registered. Please log in instead.';
-    } else if (err.message.includes('auth user')) {
+    } else if (err.message?.includes('auth user')) {
       errorMessage = 'Failed to create account. The email may already be in use.';
+    } else if (err.code === 'ENOTFOUND') {
+      errorMessage = `Unable to reach the database host (${dbHost}). Double-check DATABASE_URL in your environment configuration.`;
+      errorCode = 'DB_HOST_NOT_FOUND';
+    } else if (err.code === 'ECONNREFUSED') {
+      errorMessage = 'Database refused the connection. Verify DATABASE_URL credentials and that the pooler is enabled.';
+      errorCode = 'DB_CONNECTION_REFUSED';
     }
     
     return res.status(500).json({ 
       error: errorMessage,
+      code: errorCode,
       details: process.env.NODE_ENV === 'development' ? err.message : undefined
     });
   } finally {
