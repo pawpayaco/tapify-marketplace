@@ -20,15 +20,51 @@ export default function ShopifyConnect() {
     window.scrollTo(0, 0);
 
     const loadRetailerData = async () => {
-      const storedRetailerId = sessionStorage.getItem('onboarding_retailer_id');
-      if (!storedRetailerId || !supabase) return;
+      if (!supabase) return;
+
+      // First, check if user is authenticated
+      const { data: { user }, error: authError } = await supabase.auth.getUser();
+
+      if (authError || !user) {
+        console.error('[shopify-connect] Not authenticated:', authError);
+        // Redirect to login if not authenticated
+        router.push('/login?message=Please log in to continue your registration');
+        return;
+      }
+
+      // Get retailer ID from either sessionStorage OR from database via user ID
+      let retailerId = sessionStorage.getItem('onboarding_retailer_id');
+
+      if (!retailerId) {
+        console.log('[shopify-connect] No retailer_id in sessionStorage, looking up by user_id');
+
+        // Look up retailer by created_by_user_id
+        const { data: retailerLookup, error: lookupError } = await supabase
+          .from('retailers')
+          .select('id')
+          .eq('created_by_user_id', user.id)
+          .order('created_at', { ascending: false })
+          .limit(1)
+          .maybeSingle();
+
+        if (lookupError || !retailerLookup) {
+          console.error('[shopify-connect] Could not find retailer for user:', lookupError);
+          setError('We could not find your registration. Please contact support or try registering again.');
+          return;
+        }
+
+        retailerId = retailerLookup.id;
+        // Store it for future use
+        sessionStorage.setItem('onboarding_retailer_id', retailerId);
+        sessionStorage.setItem('onboarding_email', user.email);
+      }
 
       try {
         // Load retailer data
         const { data: retailerData, error: retailerError } = await supabase
           .from('retailers')
           .select('id, name, email, phone, priority_display_active')
-          .eq('id', storedRetailerId)
+          .eq('id', retailerId)
           .single();
 
         if (retailerError || !retailerData) {
@@ -36,14 +72,26 @@ export default function ShopifyConnect() {
           return;
         }
 
-        // Get retailer's UID
-        const { data: uidData } = await supabase
+        // Get retailer's UID - Try claimed first, then any UID
+        let { data: uidData } = await supabase
           .from('uids')
           .select('uid')
-          .eq('retailer_id', storedRetailerId)
+          .eq('retailer_id', retailerId)
           .eq('is_claimed', true)
           .limit(1)
-          .single();
+          .maybeSingle();
+
+        // If no claimed UID, check for any UID assigned to this retailer
+        if (!uidData) {
+          const { data: anyUidData } = await supabase
+            .from('uids')
+            .select('uid')
+            .eq('retailer_id', retailerId)
+            .limit(1)
+            .maybeSingle();
+
+          uidData = anyUidData;
+        }
 
         if (uidData) {
           setRetailerUid(uidData.uid);
@@ -107,13 +155,19 @@ export default function ShopifyConnect() {
   }, [router, toast]);
 
   const handlePriorityDisplayUpgrade = () => {
-    if (!retailerUid) {
-      setError('Please complete your onboarding first to get your unique tracking ID.');
+    const storedRetailerId = sessionStorage.getItem('onboarding_retailer_id');
+
+    if (!storedRetailerId) {
+      setError('Please complete your registration first.');
       return;
     }
 
+    // Use UID if available, otherwise use retailer_id as fallback
+    // The webhook will handle both UID-based and retailer_id-based attribution
+    const attributionRef = retailerUid || `retailer-${storedRetailerId}`;
+
     // Redirect to Shopify Priority Display product with retailer attribution
-    const shopifyUrl = `https://pawpayaco.com/products/priority-display?ref=${retailerUid}`;
+    const shopifyUrl = `https://pawpayaco.com/products/priority-display?ref=${attributionRef}`;
 
     // Open Shopify in new tab
     window.open(shopifyUrl, '_blank');
@@ -130,12 +184,35 @@ export default function ShopifyConnect() {
         throw new Error('Client context unavailable');
       }
 
-      const retailerId = window.sessionStorage.getItem('onboarding_retailer_id');
+      let retailerId = window.sessionStorage.getItem('onboarding_retailer_id');
 
+      // If no retailer ID in sessionStorage, look it up from the authenticated user
       if (!retailerId) {
-        setError('We could not find your onboarding record. Please restart your Tapify registration.');
-        setLoading(false);
-        return;
+        const { data: { user }, error: authError } = await supabase.auth.getUser();
+
+        if (authError || !user) {
+          setError('Please log in to continue your registration.');
+          setLoading(false);
+          return;
+        }
+
+        const { data: retailerLookup, error: lookupError } = await supabase
+          .from('retailers')
+          .select('id')
+          .eq('created_by_user_id', user.id)
+          .order('created_at', { ascending: false })
+          .limit(1)
+          .maybeSingle();
+
+        if (lookupError || !retailerLookup) {
+          setError('We could not find your onboarding record. Please contact support.');
+          setLoading(false);
+          return;
+        }
+
+        retailerId = retailerLookup.id;
+        sessionStorage.setItem('onboarding_retailer_id', retailerId);
+        sessionStorage.setItem('onboarding_email', user.email);
       }
 
       const actorId = window.sessionStorage.getItem('onboarding_email');
@@ -302,8 +379,7 @@ export default function ShopifyConnect() {
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
                     onClick={handlePriorityDisplayUpgrade}
-                    disabled={!retailerUid}
-                    className="w-full px-6 py-4 bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3] text-white font-bold text-lg rounded-2xl hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed shadow-lg flex items-center justify-center gap-2"
+                    className="w-full px-6 py-4 bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3] text-white font-bold text-lg rounded-2xl hover:opacity-90 transition-opacity shadow-lg flex items-center justify-center gap-2"
                   >
                     <span>💎</span>
                     <span>Upgrade Display ($50)</span>

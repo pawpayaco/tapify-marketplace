@@ -151,24 +151,48 @@ export default async function handler(req, res) {
     let businessId = null;
 
     if (uid) {
-      const { data: uidRecord, error: uidError } = await supabaseAdmin
-        .from('uids')
-        .select('uid, retailer_id, business_id, is_claimed')
-        .eq('uid', uid)
-        .maybeSingle();
+      // Check if ref is in retailer-{id} format (fallback for new registrations without claimed UIDs)
+      if (uid.startsWith('retailer-')) {
+        const extractedRetailerId = uid.replace('retailer-', '');
+        console.log('[shopify-webhook] Detected retailer-id format ref:', extractedRetailerId);
 
-      if (uidError) {
-        console.error('[shopify-webhook] Failed to fetch UID record', uidError.message);
-      } else if (uidRecord) {
-        retailerId = uidRecord?.retailer_id ?? null;
-        businessId = uidRecord?.business_id ?? null;
+        // Verify retailer exists
+        const { data: retailerRecord, error: retailerError } = await supabaseAdmin
+          .from('retailers')
+          .select('id, business_id')
+          .eq('id', extractedRetailerId)
+          .maybeSingle();
 
-        // ✅ IMPROVED: Log warning if UID is unclaimed
-        if (!uidRecord.is_claimed) {
-          console.warn('[shopify-webhook] ⚠️ UID is UNCLAIMED:', uid, '- order will record but payout may be delayed');
+        if (retailerError) {
+          console.error('[shopify-webhook] Failed to fetch retailer record', retailerError.message);
+        } else if (retailerRecord) {
+          retailerId = retailerRecord.id;
+          businessId = retailerRecord.business_id ?? null;
+          console.log('[shopify-webhook] ✅ Retailer attribution via retailer-id format:', retailerId);
+        } else {
+          console.warn('[shopify-webhook] ⚠️ Retailer ID not found in database:', extractedRetailerId);
         }
       } else {
-        console.warn('[shopify-webhook] ⚠️ UID not found in database:', uid);
+        // Standard UID format - lookup in uids table
+        const { data: uidRecord, error: uidError } = await supabaseAdmin
+          .from('uids')
+          .select('uid, retailer_id, business_id, is_claimed')
+          .eq('uid', uid)
+          .maybeSingle();
+
+        if (uidError) {
+          console.error('[shopify-webhook] Failed to fetch UID record', uidError.message);
+        } else if (uidRecord) {
+          retailerId = uidRecord?.retailer_id ?? null;
+          businessId = uidRecord?.business_id ?? null;
+
+          // ✅ IMPROVED: Log warning if UID is unclaimed
+          if (!uidRecord.is_claimed) {
+            console.warn('[shopify-webhook] ⚠️ UID is UNCLAIMED:', uid, '- order will record but payout may be delayed');
+          }
+        } else {
+          console.warn('[shopify-webhook] ⚠️ UID not found in database:', uid);
+        }
       }
     } else {
       console.log('[shopify-webhook] No UID provided in order note_attributes');
