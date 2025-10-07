@@ -73,9 +73,22 @@ async function createPayoutJob(orderId, retailerId, vendorId, total, sourceUid, 
     .maybeSingle();
 
   const sourcerId = retailer?.recruited_by_sourcer_id ?? null;
+
+  // Phase 1 (No Sourcer): Retailer 20%, Vendor 80%
+  // Phase 2 (With Sourcer): Retailer 20%, Vendor 60%, Sourcer 10%, Tapify 10%
   const retailerCut = Number((total * 0.2).toFixed(2));
-  const vendorCut = Number((total - retailerCut).toFixed(2));
-  const sourcerCut = sourcerId ? Number((total * 0.05).toFixed(2)) : 0;
+
+  const vendorCut = sourcerId
+    ? Number((total * 0.60).toFixed(2))  // Phase 2: 60%
+    : Number((total - retailerCut).toFixed(2));  // Phase 1: 80%
+
+  const sourcerCut = sourcerId
+    ? Number((total * 0.10).toFixed(2))  // Phase 2: 10%
+    : 0;
+
+  const tapifyCut = sourcerId
+    ? Number((total * 0.10).toFixed(2))  // Phase 2: 10%
+    : 0;
 
   const { data, error } = await supabaseAdmin
     .from('payout_jobs')
@@ -87,6 +100,7 @@ async function createPayoutJob(orderId, retailerId, vendorId, total, sourceUid, 
       retailer_cut: retailerCut,
       vendor_cut: vendorCut,
       sourcer_cut: sourcerCut,
+      tapify_cut: tapifyCut,  // Added for Phase 2 four-party splits
       total_amount: total,
       status: hasPriorityDisplay ? 'priority_display' : 'pending',
       source_uid: sourceUid ?? null,
@@ -319,6 +333,20 @@ export default async function handler(req, res) {
   } catch (error) {
     console.error('[shopify-webhook] Handler error', error);
     console.error('[shopify-webhook] Stack trace:', error.stack);
-    return res.status(500).json({ error: 'Internal server error' });
+
+    // Log to error tracking
+    await logEvent('shopify-webhook', 'processing_error', {
+      error: error.message,
+      stack: error.stack,
+      order_id: order?.id
+    });
+
+    // CRITICAL: Always return 200 to prevent Shopify retry spam
+    // Returning 500 causes Shopify to retry for 48 hours
+    return res.status(200).json({
+      received: true,
+      error: 'processing_error',
+      message: 'Order received but processing failed'
+    });
   }
 }

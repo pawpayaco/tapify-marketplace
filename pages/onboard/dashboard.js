@@ -1497,6 +1497,76 @@ export default function RetailerDashboard() {
                   </div>
                 </motion.div>
 
+                {/* Display Confirmation */}
+                <motion.div
+                  whileHover={{ scale: 1.01 }}
+                  className="bg-gradient-to-br from-white to-gray-50 rounded-2xl p-4 md:p-8 border-2 border-gray-100 hover:border-gray-200 transition-all shadow-lg"
+                >
+                  <h4 className="font-bold text-gray-900 text-base md:text-lg mb-4 md:mb-6">Display Confirmation</h4>
+                  <div className="space-y-4">
+                    <div className="bg-gradient-to-br from-purple-50 to-pink-50 border-2 border-purple-200 rounded-xl p-4">
+                      <div className="flex items-start gap-3">
+                        <div className="flex-shrink-0 w-10 h-10 bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3] rounded-full flex items-center justify-center">
+                          <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                          </svg>
+                        </div>
+                        <div className="flex-1">
+                          <div className="flex items-center justify-between mb-2">
+                            <h5 className="font-bold text-gray-900">Displays Owned</h5>
+                            <span className="text-2xl font-black bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3] bg-clip-text text-transparent">
+                              {uids.length}
+                            </span>
+                          </div>
+                          <p className="text-sm text-gray-600 mb-3">
+                            You have {uids.length} {uids.length === 1 ? 'display' : 'displays'} registered to your store
+                          </p>
+
+                          {/* Priority Display Status */}
+                          {retailer?.priority_display_active ? (
+                            <div className="mt-3 p-3 bg-gradient-to-r from-amber-50 to-yellow-50 border-2 border-amber-300 rounded-lg">
+                              <div className="flex items-center gap-2">
+                                <span className="text-2xl">💎</span>
+                                <div>
+                                  <p className="font-bold text-amber-900">Priority Display Active</p>
+                                  <p className="text-xs text-amber-700">Premium marketplace placement enabled</p>
+                                </div>
+                              </div>
+                            </div>
+                          ) : (
+                            <div className="mt-3 p-3 bg-blue-50 border-2 border-blue-200 rounded-lg">
+                              <div className="flex items-center gap-2">
+                                <span className="text-lg">📦</span>
+                                <div>
+                                  <p className="font-bold text-blue-900">Standard Display</p>
+                                  <p className="text-xs text-blue-700">
+                                    <Link href="/onboard/shopify-connect" className="underline hover:text-blue-900">
+                                      Upgrade to Priority Display
+                                    </Link> for premium placement
+                                  </p>
+                                </div>
+                              </div>
+                            </div>
+                          )}
+
+                          {/* Shipping Status */}
+                          <div className="mt-3 p-3 bg-green-50 border-2 border-green-200 rounded-lg">
+                            <div className="flex items-center gap-2">
+                              <span className="text-lg">🚚</span>
+                              <div>
+                                <p className="font-bold text-green-900">Shipping Status</p>
+                                <p className="text-xs text-green-700">
+                                  {retailer?.express_shipping ? 'Express shipping enabled - faster delivery' : 'Standard shipping - free delivery'}
+                                </p>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </motion.div>
+
                 {/* Store Contact Information */}
                 <motion.div
                   whileHover={{ scale: 1.01 }}

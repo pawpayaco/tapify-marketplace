@@ -1,0 +1,641 @@
+table_schema,table_name,column_name,data_type
+auth,audit_log_entries,instance_id,uuid
+auth,audit_log_entries,id,uuid
+auth,audit_log_entries,payload,json
+auth,audit_log_entries,created_at,timestamp with time zone
+auth,audit_log_entries,ip_address,character varying
+auth,flow_state,id,uuid
+auth,flow_state,user_id,uuid
+auth,flow_state,auth_code,text
+auth,flow_state,code_challenge_method,USER-DEFINED
+auth,flow_state,code_challenge,text
+auth,flow_state,provider_type,text
+auth,flow_state,provider_access_token,text
+auth,flow_state,provider_refresh_token,text
+auth,flow_state,created_at,timestamp with time zone
+auth,flow_state,updated_at,timestamp with time zone
+auth,flow_state,authentication_method,text
+auth,flow_state,auth_code_issued_at,timestamp with time zone
+auth,identities,provider_id,text
+auth,identities,user_id,uuid
+auth,identities,identity_data,jsonb
+auth,identities,provider,text
+auth,identities,last_sign_in_at,timestamp with time zone
+auth,identities,created_at,timestamp with time zone
+auth,identities,updated_at,timestamp with time zone
+auth,identities,email,text
+auth,identities,id,uuid
+auth,instances,id,uuid
+auth,instances,uuid,uuid
+auth,instances,raw_base_config,text
+auth,instances,created_at,timestamp with time zone
+auth,instances,updated_at,timestamp with time zone
+auth,mfa_amr_claims,session_id,uuid
+auth,mfa_amr_claims,created_at,timestamp with time zone
+auth,mfa_amr_claims,updated_at,timestamp with time zone
+auth,mfa_amr_claims,authentication_method,text
+auth,mfa_amr_claims,id,uuid
+auth,mfa_challenges,id,uuid
+auth,mfa_challenges,factor_id,uuid
+auth,mfa_challenges,created_at,timestamp with time zone
+auth,mfa_challenges,verified_at,timestamp with time zone
+auth,mfa_challenges,ip_address,inet
+auth,mfa_challenges,otp_code,text
+auth,mfa_challenges,web_authn_session_data,jsonb
+auth,mfa_factors,id,uuid
+auth,mfa_factors,user_id,uuid
+auth,mfa_factors,friendly_name,text
+auth,mfa_factors,factor_type,USER-DEFINED
+auth,mfa_factors,status,USER-DEFINED
+auth,mfa_factors,created_at,timestamp with time zone
+auth,mfa_factors,updated_at,timestamp with time zone
+auth,mfa_factors,secret,text
+auth,mfa_factors,phone,text
+auth,mfa_factors,last_challenged_at,timestamp with time zone
+auth,mfa_factors,web_authn_credential,jsonb
+auth,mfa_factors,web_authn_aaguid,uuid
+auth,oauth_clients,id,uuid
+auth,oauth_clients,client_id,text
+auth,oauth_clients,client_secret_hash,text
+auth,oauth_clients,registration_type,USER-DEFINED
+auth,oauth_clients,redirect_uris,text
+auth,oauth_clients,grant_types,text
+auth,oauth_clients,client_name,text
+auth,oauth_clients,client_uri,text
+auth,oauth_clients,logo_uri,text
+auth,oauth_clients,created_at,timestamp with time zone
+auth,oauth_clients,updated_at,timestamp with time zone
+auth,oauth_clients,deleted_at,timestamp with time zone
+auth,one_time_tokens,id,uuid
+auth,one_time_tokens,user_id,uuid
+auth,one_time_tokens,token_type,USER-DEFINED
+auth,one_time_tokens,token_hash,text
+auth,one_time_tokens,relates_to,text
+auth,one_time_tokens,created_at,timestamp without time zone
+auth,one_time_tokens,updated_at,timestamp without time zone
+auth,refresh_tokens,instance_id,uuid
+auth,refresh_tokens,id,bigint
+auth,refresh_tokens,token,character varying
+auth,refresh_tokens,user_id,character varying
+auth,refresh_tokens,revoked,boolean
+auth,refresh_tokens,created_at,timestamp with time zone
+auth,refresh_tokens,updated_at,timestamp with time zone
+auth,refresh_tokens,parent,character varying
+auth,refresh_tokens,session_id,uuid
+auth,saml_providers,id,uuid
+auth,saml_providers,sso_provider_id,uuid
+auth,saml_providers,entity_id,text
+auth,saml_providers,metadata_xml,text
+auth,saml_providers,metadata_url,text
+auth,saml_providers,attribute_mapping,jsonb
+auth,saml_providers,created_at,timestamp with time zone
+auth,saml_providers,updated_at,timestamp with time zone
+auth,saml_providers,name_id_format,text
+auth,saml_relay_states,id,uuid
+auth,saml_relay_states,sso_provider_id,uuid
+auth,saml_relay_states,request_id,text
+auth,saml_relay_states,for_email,text
+auth,saml_relay_states,redirect_to,text
+auth,saml_relay_states,created_at,timestamp with time zone
+auth,saml_relay_states,updated_at,timestamp with time zone
+auth,saml_relay_states,flow_state_id,uuid
+auth,schema_migrations,version,character varying
+auth,sessions,id,uuid
+auth,sessions,user_id,uuid
+auth,sessions,created_at,timestamp with time zone
+auth,sessions,updated_at,timestamp with time zone
+auth,sessions,factor_id,uuid
+auth,sessions,aal,USER-DEFINED
+auth,sessions,not_after,timestamp with time zone
+auth,sessions,refreshed_at,timestamp without time zone
+auth,sessions,user_agent,text
+auth,sessions,ip,inet
+auth,sessions,tag,text
+auth,sso_domains,id,uuid
+auth,sso_domains,sso_provider_id,uuid
+auth,sso_domains,domain,text
+auth,sso_domains,created_at,timestamp with time zone
+auth,sso_domains,updated_at,timestamp with time zone
+auth,sso_providers,id,uuid
+auth,sso_providers,resource_id,text
+auth,sso_providers,created_at,timestamp with time zone
+auth,sso_providers,updated_at,timestamp with time zone
+auth,sso_providers,disabled,boolean
+auth,users,instance_id,uuid
+auth,users,id,uuid
+auth,users,aud,character varying
+auth,users,role,character varying
+auth,users,email,character varying
+auth,users,encrypted_password,character varying
+auth,users,email_confirmed_at,timestamp with time zone
+auth,users,invited_at,timestamp with time zone
+auth,users,confirmation_token,character varying
+auth,users,confirmation_sent_at,timestamp with time zone
+auth,users,recovery_token,character varying
+auth,users,recovery_sent_at,timestamp with time zone
+auth,users,email_change_token_new,character varying
+auth,users,email_change,character varying
+auth,users,email_change_sent_at,timestamp with time zone
+auth,users,last_sign_in_at,timestamp with time zone
+auth,users,raw_app_meta_data,jsonb
+auth,users,raw_user_meta_data,jsonb
+auth,users,is_super_admin,boolean
+auth,users,created_at,timestamp with time zone
+auth,users,updated_at,timestamp with time zone
+auth,users,phone,text
+auth,users,phone_confirmed_at,timestamp with time zone
+auth,users,phone_change,text
+auth,users,phone_change_token,character varying
+auth,users,phone_change_sent_at,timestamp with time zone
+auth,users,confirmed_at,timestamp with time zone
+auth,users,email_change_token_current,character varying
+auth,users,email_change_confirm_status,smallint
+auth,users,banned_until,timestamp with time zone
+auth,users,reauthentication_token,character varying
+auth,users,reauthentication_sent_at,timestamp with time zone
+auth,users,is_sso_user,boolean
+auth,users,deleted_at,timestamp with time zone
+auth,users,is_anonymous,boolean
+backups,retailers_backup_now,id,uuid
+backups,retailers_backup_now,name,text
+backups,retailers_backup_now,linked_vendor_id,uuid
+backups,retailers_backup_now,location,text
+backups,retailers_backup_now,created_at,timestamp with time zone
+backups,retailers_backup_now,place_id,text
+backups,retailers_backup_now,address,text
+backups,retailers_backup_now,lat,numeric
+backups,retailers_backup_now,lng,numeric
+backups,retailers_backup_now,store_phone,text
+backups,retailers_backup_now,store_website,text
+backups,retailers_backup_now,source,text
+backups,retailers_backup_now,cold_email_sent,boolean
+backups,retailers_backup_now,cold_email_sent_at,timestamp with time zone
+backups,retailers_backup_now,converted,boolean
+backups,retailers_backup_now,converted_at,timestamp with time zone
+backups,retailers_backup_now,outreach_notes,text
+extensions,pg_stat_statements,userid,oid
+extensions,pg_stat_statements,dbid,oid
+extensions,pg_stat_statements,toplevel,boolean
+extensions,pg_stat_statements,queryid,bigint
+extensions,pg_stat_statements,query,text
+extensions,pg_stat_statements,plans,bigint
+extensions,pg_stat_statements,total_plan_time,double precision
+extensions,pg_stat_statements,min_plan_time,double precision
+extensions,pg_stat_statements,max_plan_time,double precision
+extensions,pg_stat_statements,mean_plan_time,double precision
+extensions,pg_stat_statements,stddev_plan_time,double precision
+extensions,pg_stat_statements,calls,bigint
+extensions,pg_stat_statements,total_exec_time,double precision
+extensions,pg_stat_statements,min_exec_time,double precision
+extensions,pg_stat_statements,max_exec_time,double precision
+extensions,pg_stat_statements,mean_exec_time,double precision
+extensions,pg_stat_statements,stddev_exec_time,double precision
+extensions,pg_stat_statements,rows,bigint
+extensions,pg_stat_statements,shared_blks_hit,bigint
+extensions,pg_stat_statements,shared_blks_read,bigint
+extensions,pg_stat_statements,shared_blks_dirtied,bigint
+extensions,pg_stat_statements,shared_blks_written,bigint
+extensions,pg_stat_statements,local_blks_hit,bigint
+extensions,pg_stat_statements,local_blks_read,bigint
+extensions,pg_stat_statements,local_blks_dirtied,bigint
+extensions,pg_stat_statements,local_blks_written,bigint
+extensions,pg_stat_statements,temp_blks_read,bigint
+extensions,pg_stat_statements,temp_blks_written,bigint
+extensions,pg_stat_statements,shared_blk_read_time,double precision
+extensions,pg_stat_statements,shared_blk_write_time,double precision
+extensions,pg_stat_statements,local_blk_read_time,double precision
+extensions,pg_stat_statements,local_blk_write_time,double precision
+extensions,pg_stat_statements,temp_blk_read_time,double precision
+extensions,pg_stat_statements,temp_blk_write_time,double precision
+extensions,pg_stat_statements,wal_records,bigint
+extensions,pg_stat_statements,wal_fpi,bigint
+extensions,pg_stat_statements,wal_bytes,numeric
+extensions,pg_stat_statements,jit_functions,bigint
+extensions,pg_stat_statements,jit_generation_time,double precision
+extensions,pg_stat_statements,jit_inlining_count,bigint
+extensions,pg_stat_statements,jit_inlining_time,double precision
+extensions,pg_stat_statements,jit_optimization_count,bigint
+extensions,pg_stat_statements,jit_optimization_time,double precision
+extensions,pg_stat_statements,jit_emission_count,bigint
+extensions,pg_stat_statements,jit_emission_time,double precision
+extensions,pg_stat_statements,jit_deform_count,bigint
+extensions,pg_stat_statements,jit_deform_time,double precision
+extensions,pg_stat_statements,stats_since,timestamp with time zone
+extensions,pg_stat_statements,minmax_stats_since,timestamp with time zone
+extensions,pg_stat_statements_info,dealloc,bigint
+extensions,pg_stat_statements_info,stats_reset,timestamp with time zone
+net,_http_response,id,bigint
+net,_http_response,status_code,integer
+net,_http_response,content_type,text
+net,_http_response,headers,jsonb
+net,_http_response,content,text
+net,_http_response,timed_out,boolean
+net,_http_response,error_msg,text
+net,_http_response,created,timestamp with time zone
+net,http_request_queue,id,bigint
+net,http_request_queue,method,text
+net,http_request_queue,url,text
+net,http_request_queue,headers,jsonb
+net,http_request_queue,body,bytea
+net,http_request_queue,timeout_milliseconds,integer
+public,admins,id,uuid
+public,admins,email,text
+public,admins,created_at,timestamp without time zone
+public,auto_rotation_rules,id,uuid
+public,auto_rotation_rules,retailer_id,uuid
+public,auto_rotation_rules,rotate_every_days,integer
+public,auto_rotation_rules,next_rotation_date,date
+public,auto_rotation_rules,created_at,timestamp with time zone
+public,bank_accounts,id,uuid
+public,bank_accounts,retailer_id,uuid
+public,bank_accounts,plaid_account_id,text
+public,bank_accounts,bank_name,text
+public,bank_accounts,account_last4,text
+public,bank_accounts,status,text
+public,bank_accounts,created_at,timestamp with time zone
+public,businesses,id,uuid
+public,businesses,name,text
+public,businesses,affiliate_url,text
+public,businesses,source,text
+public,businesses,created_at,timestamp with time zone
+public,businesses,is_connected,boolean
+public,businesses,connected_at,timestamp with time zone
+public,displays,id,uuid
+public,displays,retailer_id,uuid
+public,displays,uid,text
+public,displays,location,text
+public,displays,status,text
+public,displays,created_at,timestamp with time zone
+public,leaderboards,id,uuid
+public,leaderboards,sourcer_id,uuid
+public,leaderboards,total_sourced,integer
+public,leaderboards,total_revenue,numeric
+public,leaderboards,updated_at,timestamp with time zone
+public,leaderboards,period,date
+public,leaderboards,retailer_id,uuid
+public,leaderboards,scan_count,integer
+public,leaderboards,order_count,integer
+public,leaderboards,revenue_total,numeric
+public,logs,id,uuid
+public,logs,user_id,text
+public,logs,action,text
+public,logs,metadata,jsonb
+public,logs,timestamp,timestamp with time zone
+public,logs,created_at,timestamp with time zone
+public,managers,id,uuid
+public,managers,phone,text
+public,managers,reward_sent,boolean
+public,managers,reward_type,text
+public,managers,reward_date,timestamp with time zone
+public,managers,total_referrals,integer
+public,managers,successful_referrals,integer
+public,managers,created_at,timestamp with time zone
+public,managers,updated_at,timestamp with time zone
+public,offer_tests,id,uuid
+public,offer_tests,vendor_id,uuid
+public,offer_tests,offer_a,text
+public,offer_tests,offer_b,text
+public,offer_tests,start_date,date
+public,offer_tests,end_date,date
+public,offer_tests,created_at,timestamp with time zone
+public,orders,id,uuid
+public,orders,retailer_id,uuid
+public,orders,product_name,text
+public,orders,customer_name,text
+public,orders,amount,numeric
+public,orders,commission,numeric
+public,orders,status,text
+public,orders,created_at,timestamp with time zone
+public,orders,shopify_order_id,text
+public,orders,shopify_order_number,text
+public,orders,shop_domain,text
+public,orders,customer_email,text
+public,orders,currency,text
+public,orders,total,numeric
+public,orders,subtotal,numeric
+public,orders,tax_total,numeric
+public,orders,discount_total,numeric
+public,orders,financial_status,text
+public,orders,fulfillment_status,text
+public,orders,processed_at,timestamp with time zone
+public,orders,source_uid,text
+public,orders,vendor_id,uuid
+public,orders,business_id,uuid
+public,orders,line_items,jsonb
+public,orders,raw_payload,jsonb
+public,orders,is_priority_display,boolean
+public,payout_jobs,id,uuid
+public,payout_jobs,vendor_id,uuid
+public,payout_jobs,retailer_id,uuid
+public,payout_jobs,sourcer_id,uuid
+public,payout_jobs,total_amount,numeric
+public,payout_jobs,vendor_cut,numeric
+public,payout_jobs,retailer_cut,numeric
+public,payout_jobs,sourcer_cut,numeric
+public,payout_jobs,tapify_cut,numeric
+public,payout_jobs,status,text
+public,payout_jobs,date_paid,timestamp with time zone
+public,payout_jobs,plaid_token,text
+public,payout_jobs,created_at,timestamp with time zone
+public,payout_jobs,order_id,uuid
+public,payout_jobs,source_uid,text
+public,payout_jobs,transfer_ids,jsonb
+public,payouts,id,uuid
+public,payouts,retailer_id,uuid
+public,payouts,amount,numeric
+public,payouts,status,text
+public,payouts,payout_date,timestamp with time zone
+public,payouts,created_at,timestamp with time zone
+public,payouts,payout_job_id,uuid
+public,payouts,vendor_id,uuid
+public,payouts,sourcer_id,uuid
+public,payouts,total_amount,numeric
+public,payouts,transfer_summary,jsonb
+public,payouts,triggered_by,uuid
+public,retailer_accounts,id,uuid
+public,retailer_accounts,retailer_id,uuid
+public,retailer_accounts,plaid_access_token,text
+public,retailer_accounts,dwolla_customer_id,text
+public,retailer_accounts,created_at,timestamp with time zone
+public,retailer_accounts,dwolla_funding_source_id,text
+public,retailer_outreach,id,uuid
+public,retailer_outreach,retailer_id,uuid
+public,retailer_outreach,campaign,text
+public,retailer_outreach,channel,text
+public,retailer_outreach,email_sent,boolean
+public,retailer_outreach,email_sent_at,timestamp with time zone
+public,retailer_outreach,contacted,boolean
+public,retailer_outreach,contacted_at,timestamp with time zone
+public,retailer_outreach,registered,boolean
+public,retailer_outreach,registered_at,timestamp with time zone
+public,retailer_outreach,notes,text
+public,retailer_outreach,created_at,timestamp with time zone
+public,retailer_outreach_backup,id,uuid
+public,retailer_outreach_backup,retailer_id,uuid
+public,retailer_outreach_backup,campaign,text
+public,retailer_outreach_backup,channel,text
+public,retailer_outreach_backup,email_sent,boolean
+public,retailer_outreach_backup,email_sent_at,timestamp with time zone
+public,retailer_outreach_backup,contacted,boolean
+public,retailer_outreach_backup,contacted_at,timestamp with time zone
+public,retailer_outreach_backup,registered,boolean
+public,retailer_outreach_backup,registered_at,timestamp with time zone
+public,retailer_outreach_backup,notes,text
+public,retailer_outreach_backup,created_at,timestamp with time zone
+public,retailer_owners,id,uuid
+public,retailer_owners,retailer_id,uuid
+public,retailer_owners,owner_name,text
+public,retailer_owners,owner_phone,text
+public,retailer_owners,owner_email,text
+public,retailer_owners,collected_by,text
+public,retailer_owners,collected_at,timestamp with time zone
+public,retailer_owners,notes,text
+public,retailer_owners_backup,id,uuid
+public,retailer_owners_backup,retailer_id,uuid
+public,retailer_owners_backup,owner_name,text
+public,retailer_owners_backup,owner_phone,text
+public,retailer_owners_backup,owner_email,text
+public,retailer_owners_backup,collected_by,text
+public,retailer_owners_backup,collected_at,timestamp with time zone
+public,retailer_owners_backup,notes,text
+public,retailers,id,uuid
+public,retailers,name,text
+public,retailers,linked_vendor_id,uuid
+public,retailers,location,text
+public,retailers,created_at,timestamp with time zone
+public,retailers,place_id,text
+public,retailers,address,text
+public,retailers,lat,numeric
+public,retailers,lng,numeric
+public,retailers,store_phone,text
+public,retailers,store_website,text
+public,retailers,source,text
+public,retailers,cold_email_sent,boolean
+public,retailers,cold_email_sent_at,timestamp with time zone
+public,retailers,converted,boolean
+public,retailers,converted_at,timestamp with time zone
+public,retailers,outreach_notes,text
+public,retailers,email,text
+public,retailers,owner_name,text
+public,retailers,manager_name,text
+public,retailers,phone,text
+public,retailers,express_shipping,boolean
+public,retailers,onboarding_completed,boolean
+public,retailers,onboarding_step,text
+public,retailers,business_id,uuid
+public,retailers,created_by_user_id,uuid
+public,retailers,recruited_by_sourcer_id,uuid
+public,retailers,priority_display_active,boolean
+public,retailers_archived_demo,id,uuid
+public,retailers_archived_demo,name,text
+public,retailers_archived_demo,linked_vendor_id,uuid
+public,retailers_archived_demo,location,text
+public,retailers_archived_demo,created_at,timestamp with time zone
+public,retailers_archived_demo,place_id,text
+public,retailers_archived_demo,address,text
+public,retailers_archived_demo,lat,numeric
+public,retailers_archived_demo,lng,numeric
+public,retailers_archived_demo,store_phone,text
+public,retailers_archived_demo,store_website,text
+public,retailers_archived_demo,source,text
+public,retailers_archived_demo,cold_email_sent,boolean
+public,retailers_archived_demo,cold_email_sent_at,timestamp with time zone
+public,retailers_archived_demo,converted,boolean
+public,retailers_archived_demo,converted_at,timestamp with time zone
+public,retailers_archived_demo,outreach_notes,text
+public,retailers_archived_demo,email,text
+public,retailers_archived_demo,owner_name,text
+public,retailers_archived_demo,manager_name,text
+public,retailers_archived_demo,phone,text
+public,retailers_archived_demo,express_shipping,boolean
+public,retailers_archived_demo,onboarding_completed,boolean
+public,retailers_archived_demo,onboarding_step,text
+public,retailers_archived_demo,business_id,uuid
+public,retailers_archived_demo,created_by_user_id,uuid
+public,retailers_archived_demo,recruited_by_sourcer_id,uuid
+public,retailers_backup_migration,id,uuid
+public,retailers_backup_migration,name,text
+public,retailers_backup_migration,linked_vendor_id,uuid
+public,retailers_backup_migration,location,text
+public,retailers_backup_migration,created_at,timestamp with time zone
+public,retailers_backup_migration,place_id,text
+public,retailers_backup_migration,address,text
+public,retailers_backup_migration,lat,numeric
+public,retailers_backup_migration,lng,numeric
+public,retailers_backup_migration,store_phone,text
+public,retailers_backup_migration,store_website,text
+public,retailers_backup_migration,source,text
+public,retailers_backup_migration,cold_email_sent,boolean
+public,retailers_backup_migration,cold_email_sent_at,timestamp with time zone
+public,retailers_backup_migration,converted,boolean
+public,retailers_backup_migration,converted_at,timestamp with time zone
+public,retailers_backup_migration,outreach_notes,text
+public,retailers_backup_migration,email,text
+public,retailers_backup_migration,owner_name,text
+public,retailers_backup_migration,manager_name,text
+public,retailers_backup_migration,phone,text
+public,retailers_backup_migration,express_shipping,boolean
+public,retailers_backup_migration,onboarding_completed,boolean
+public,retailers_backup_migration,onboarding_step,text
+public,retailers_backup_migration,business_id,uuid
+public,retailers_backup_migration,created_by_user_id,uuid
+public,scans,id,uuid
+public,scans,uid,text
+public,scans,timestamp,timestamp with time zone
+public,scans,location,text
+public,scans,clicked,boolean
+public,scans,converted,boolean
+public,scans,revenue,numeric
+public,scans,retailer_id,uuid
+public,scans,business_id,uuid
+public,scans,ip_address,text
+public,scans,user_agent,text
+public,scans,metadata,jsonb
+public,sourcer_accounts,id,uuid
+public,sourcer_accounts,name,text
+public,sourcer_accounts,email,text
+public,sourcer_accounts,plaid_access_token,text
+public,sourcer_accounts,dwolla_customer_id,text
+public,sourcer_accounts,created_at,timestamp with time zone
+public,sourcer_accounts,dwolla_funding_source_id,text
+public,uids,uid,text
+public,uids,business_id,uuid
+public,uids,affiliate_url,text
+public,uids,registered_at,timestamp with time zone
+public,uids,is_connected,boolean
+public,uids,retailer_id,uuid
+public,uids,is_claimed,boolean
+public,uids,claimed_at,timestamp with time zone
+public,uids,claimed_by_user_id,uuid
+public,uids,last_scan_at,timestamp with time zone
+public,uids,last_scan_ip,text
+public,uids,last_scan_user_agent,text
+public,uids,last_scan_location,text
+public,uids,last_order_at,timestamp with time zone
+public,uids,last_order_total,numeric
+public,uids,scan_count,integer
+public,v_uid_redirect,uid,text
+public,v_uid_redirect,affiliate_url,text
+public,v_uid_redirect,is_connected,boolean
+public,vendor_accounts,id,uuid
+public,vendor_accounts,vendor_id,uuid
+public,vendor_accounts,plaid_access_token,text
+public,vendor_accounts,dwolla_customer_id,text
+public,vendor_accounts,created_at,timestamp with time zone
+public,vendor_accounts,dwolla_funding_source_id,text
+public,vendors,id,uuid
+public,vendors,name,text
+public,vendors,email,text
+public,vendors,store_type,text
+public,vendors,website_url,text
+public,vendors,platform_url,text
+public,vendors,fulfillment_speed,text
+public,vendors,inventory_cap,integer
+public,vendors,collection_name,text
+public,vendors,product_photo_url,text
+public,vendors,onboarded_by,uuid
+public,vendors,created_at,timestamp with time zone
+public,vendors,created_by_user_id,uuid
+realtime,messages,topic,text
+realtime,messages,extension,text
+realtime,messages,payload,jsonb
+realtime,messages,event,text
+realtime,messages,private,boolean
+realtime,messages,updated_at,timestamp without time zone
+realtime,messages,inserted_at,timestamp without time zone
+realtime,messages,id,uuid
+realtime,schema_migrations,version,bigint
+realtime,schema_migrations,inserted_at,timestamp without time zone
+realtime,subscription,id,bigint
+realtime,subscription,subscription_id,uuid
+realtime,subscription,entity,regclass
+realtime,subscription,filters,ARRAY
+realtime,subscription,claims,jsonb
+realtime,subscription,claims_role,regrole
+realtime,subscription,created_at,timestamp without time zone
+storage,buckets,id,text
+storage,buckets,name,text
+storage,buckets,owner,uuid
+storage,buckets,created_at,timestamp with time zone
+storage,buckets,updated_at,timestamp with time zone
+storage,buckets,public,boolean
+storage,buckets,avif_autodetection,boolean
+storage,buckets,file_size_limit,bigint
+storage,buckets,allowed_mime_types,ARRAY
+storage,buckets,owner_id,text
+storage,buckets,type,USER-DEFINED
+storage,buckets_analytics,id,text
+storage,buckets_analytics,type,USER-DEFINED
+storage,buckets_analytics,format,text
+storage,buckets_analytics,created_at,timestamp with time zone
+storage,buckets_analytics,updated_at,timestamp with time zone
+storage,migrations,id,integer
+storage,migrations,name,character varying
+storage,migrations,hash,character varying
+storage,migrations,executed_at,timestamp without time zone
+storage,objects,id,uuid
+storage,objects,bucket_id,text
+storage,objects,name,text
+storage,objects,owner,uuid
+storage,objects,created_at,timestamp with time zone
+storage,objects,updated_at,timestamp with time zone
+storage,objects,last_accessed_at,timestamp with time zone
+storage,objects,metadata,jsonb
+storage,objects,path_tokens,ARRAY
+storage,objects,version,text
+storage,objects,owner_id,text
+storage,objects,user_metadata,jsonb
+storage,objects,level,integer
+storage,prefixes,bucket_id,text
+storage,prefixes,name,text
+storage,prefixes,level,integer
+storage,prefixes,created_at,timestamp with time zone
+storage,prefixes,updated_at,timestamp with time zone
+storage,s3_multipart_uploads,id,text
+storage,s3_multipart_uploads,in_progress_size,bigint
+storage,s3_multipart_uploads,upload_signature,text
+storage,s3_multipart_uploads,bucket_id,text
+storage,s3_multipart_uploads,key,text
+storage,s3_multipart_uploads,version,text
+storage,s3_multipart_uploads,owner_id,text
+storage,s3_multipart_uploads,created_at,timestamp with time zone
+storage,s3_multipart_uploads,user_metadata,jsonb
+storage,s3_multipart_uploads_parts,id,uuid
+storage,s3_multipart_uploads_parts,upload_id,text
+storage,s3_multipart_uploads_parts,size,bigint
+storage,s3_multipart_uploads_parts,part_number,integer
+storage,s3_multipart_uploads_parts,bucket_id,text
+storage,s3_multipart_uploads_parts,key,text
+storage,s3_multipart_uploads_parts,etag,text
+storage,s3_multipart_uploads_parts,owner_id,text
+storage,s3_multipart_uploads_parts,version,text
+storage,s3_multipart_uploads_parts,created_at,timestamp with time zone
+supabase_functions,hooks,id,bigint
+supabase_functions,hooks,hook_table_id,integer
+supabase_functions,hooks,hook_name,text
+supabase_functions,hooks,created_at,timestamp with time zone
+supabase_functions,hooks,request_id,bigint
+supabase_functions,migrations,version,text
+supabase_functions,migrations,inserted_at,timestamp with time zone
+supabase_migrations,schema_migrations,version,text
+supabase_migrations,schema_migrations,statements,ARRAY
+supabase_migrations,schema_migrations,name,text
+supabase_migrations,seed_files,path,text
+supabase_migrations,seed_files,hash,text
+vault,decrypted_secrets,id,uuid
+vault,decrypted_secrets,name,text
+vault,decrypted_secrets,description,text
+vault,decrypted_secrets,secret,text
+vault,decrypted_secrets,decrypted_secret,text
+vault,decrypted_secrets,key_id,uuid
+vault,decrypted_secrets,nonce,bytea
+vault,decrypted_secrets,created_at,timestamp with time zone
+vault,decrypted_secrets,updated_at,timestamp with time zone
+vault,secrets,id,uuid
+vault,secrets,name,text
+vault,secrets,description,text
+vault,secrets,secret,text
+vault,secrets,key_id,uuid
+vault,secrets,nonce,bytea
+vault,secrets,created_at,timestamp with time zone
+vault,secrets,updated_at,timestamp with time zone
