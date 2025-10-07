@@ -90,7 +90,8 @@ export default async function handler(req, res) {
     password,
     campaign = `onboard-${new Date().toISOString().slice(0, 7)}`,
     notes = '',
-    additional_stores = []
+    additional_stores = [],
+    manager_referral = null // Manager phone from ?ref= parameter
   } = req.body;
 
   // Validate required fields
@@ -276,6 +277,50 @@ export default async function handler(req, res) {
     await client.query('COMMIT');
 
     console.log('[onboard/register] Registration complete for retailer:', rId);
+
+    // ✅ MARK MANAGER REFERRAL AS CONVERTED (outside transaction)
+    if (manager_referral) {
+      const cleanManagerPhone = manager_referral.replace(/\D/g, '');
+      console.log('[onboard/register] Processing manager referral from:', cleanManagerPhone);
+
+      try {
+        // Insert conversion event
+        await supabaseAdmin
+          .from('referral_events')
+          .insert({
+            manager_phone: cleanManagerPhone,
+            retailer_id: rId,
+            event_type: 'register',
+            metadata: {
+              owner_email,
+              store_name,
+              registered_at: new Date().toISOString()
+            }
+          });
+
+        // Update manager's successful_referrals count
+        const { data: managerData } = await supabaseAdmin
+          .from('managers')
+          .select('successful_referrals')
+          .eq('phone', cleanManagerPhone)
+          .single();
+
+        if (managerData) {
+          await supabaseAdmin
+            .from('managers')
+            .update({
+              successful_referrals: (managerData.successful_referrals || 0) + 1,
+              updated_at: new Date().toISOString()
+            })
+            .eq('phone', cleanManagerPhone);
+
+          console.log('[onboard/register] ✅ Manager referral marked as converted');
+        }
+      } catch (referralError) {
+        console.error('[onboard/register] Failed to track manager referral:', referralError);
+        // Don't fail the registration if referral tracking fails
+      }
+    }
 
     return res.status(200).json({
       ok: true,

@@ -13,6 +13,17 @@ export default function RegisterRetailer() {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
 
+  // Capture manager referral from URL (?ref=phone)
+  const [managerReferral, setManagerReferral] = useState(null);
+
+  useEffect(() => {
+    if (router.query.ref) {
+      const ref = router.query.ref;
+      console.log('[register] Manager referral detected:', ref);
+      setManagerReferral(ref);
+    }
+  }, [router.query.ref]);
+
   // Store search/autocomplete state
   const [storeQuery, setStoreQuery] = useState('');
   const [storeSuggestions, setStoreSuggestions] = useState([]);
@@ -361,7 +372,8 @@ export default function RegisterRetailer() {
           storeName: store.selectedRetailer?.name,
           managerName: store.managerName || null,
           address: store.address || store.selectedRetailer?.address || null
-        })) : null
+        })) : null,
+        manager_referral: managerReferral // Pass manager phone for referral tracking
       };
 
       const response = await fetch('/api/onboard/register', {
