@@ -444,62 +444,62 @@ export default function RegisterRetailer() {
 
   const impactHighlights = [
     {
-      icon: '🐾',
-      title: 'Inventory-Free Growth',
-      description: 'We ship a fully branded Pawpaya display with tactile samples—no wholesale order or in-store inventory required.',
-      gradient: 'from-[#ff7a4a] to-[#ff6fb3]'
+      icon: '📦',
+      title: 'Free Display Shipped',
+      description: 'Beautiful NFC-enabled display arrives ready to place. No upfront costs, no inventory to buy.',
+      gradient: 'from-[#FFA08A] to-[#FF8FCF]'
     },
     {
-      icon: '📈',
-      title: 'Commission on Autopilot',
-      description: 'Every NFC or QR scan routes through Tapify so sales are tracked to your store and paid out automatically each month.',
-      gradient: 'from-blue-500 to-purple-500'
+      icon: '💰',
+      title: 'Earn on Every Tap',
+      description: 'Customers tap their phone, order instantly. You earn commission automatically—no extra work.',
+      gradient: 'from-[#FF8FCF] to-[#FFD4B8]'
     },
     {
-      icon: '🚚',
-      title: 'Tapify Ops Handles It',
-      description: 'Printing, packaging, and shipping are covered by our team—with optional express delivery if you need it faster.',
-      gradient: 'from-purple-500 to-pink-500'
+      icon: '🚀',
+      title: 'We Handle Everything',
+      description: 'Fulfillment, shipping, customer service—all managed by us. You just place the display and earn.',
+      gradient: 'from-[#FFD4B8] to-[#FFA08A]'
     },
     {
-      icon: '🗺️',
-      title: 'Multi-Location Ready',
-      description: 'Add every franchise location in one submission and we coordinate shipping, tracking, and analytics per store.',
-      gradient: 'from-emerald-400 to-green-500'
+      icon: '📊',
+      title: 'Real-Time Analytics',
+      description: 'Track every sale, view your commissions, and see customer engagement in your dashboard.',
+      gradient: 'from-[#FFA08A] to-[#FF8FCF]'
     }
   ];
 
   const nextSteps = [
     {
-      title: 'Owner Verification',
-      timing: 'Within 24 hours',
-      description: 'We match your submission to the Pet Supplies Plus record in our system so payouts route to the correct business entity.'
+      title: 'Instant Confirmation',
+      timing: 'Right away',
+      description: 'Get immediate confirmation via email. Your display order is locked in and ready for production.'
     },
     {
-      title: 'Display Goes to Print',
-      timing: 'Day 1-2',
-      description: 'Tapify prints and assembles your Pawpaya display with curated collars and signage that showcase the offer in-store.'
+      title: 'Production & Quality Check',
+      timing: '1-2 days',
+      description: 'We print, assemble, and quality-check your custom Pawpaya display with sample products.'
     },
     {
-      title: 'Shipping & Tracking',
-      timing: 'Day 3-5',
-      description: 'Standard shipping is free. Need it sooner? Select express shipping in the form and we fast-track fulfillment.'
+      title: 'Ships to Your Door',
+      timing: '3-5 days',
+      description: 'Free standard shipping to your store. Track your package in real-time via email updates.'
     },
     {
-      title: 'Place, Scan & Earn',
-      timing: 'Launch Week',
-      description: 'Set the display near checkout. Customers tap or scan, order online, and Tapify handles payouts and analytics automatically.'
+      title: 'Start Earning',
+      timing: 'Day 1',
+      description: 'Place display near checkout. Customers tap to order, you earn commissions. It\'s that simple.'
     }
   ];
 
   const trustBadges = [
-    { icon: '🛡️', label: 'No inventory or credit card required' },
-    { icon: '📊', label: 'Realtime Tapify analytics & payouts' },
-    { icon: '🏬', label: 'Purpose-built for Pet Supplies Plus franchises' }
+    { icon: '🎁', label: 'Free forever. No hidden fees.' },
+    { icon: '⚡', label: 'Setup in under 5 minutes' },
+    { icon: '🏆', label: 'Trusted by 100+ pet stores' }
   ];
 
   return (
-    <div className="min-h-screen pt-28 pb-12 px-4 sm:px-6 lg:px-8 relative overflow-hidden" style={{ backgroundColor: '#faf8f3' }}>
+    <div className="min-h-screen pt-28 pb-12 px-4 sm:px-6 lg:px-8 relative overflow-hidden" style={{ backgroundColor: '#FFF1E6' }}>
       {/* Background decorations */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <motion.div
@@ -508,7 +508,8 @@ export default function RegisterRetailer() {
             rotate: [0, 90, 0]
           }}
           transition={{ duration: 20, repeat: Infinity }}
-          className="absolute -top-40 -right-40 w-64 h-64 md:w-96 md:h-96 bg-gradient-to-br from-pink-200 to-purple-200 rounded-full blur-3xl opacity-30"
+          className="absolute -top-40 -right-40 w-96 h-96 rounded-full blur-3xl opacity-20"
+          style={{ background: 'linear-gradient(to bottom right, #FFD4B8, #FF8FCF)' }}
         />
         <motion.div
           animate={{
@@ -516,7 +517,8 @@ export default function RegisterRetailer() {
             rotate: [0, -90, 0]
           }}
           transition={{ duration: 25, repeat: Infinity }}
-          className="absolute -bottom-40 -left-40 w-64 h-64 md:w-96 md:h-96 bg-gradient-to-br from-blue-200 to-purple-200 rounded-full blur-3xl opacity-30"
+          className="absolute -bottom-40 -left-40 w-96 h-96 rounded-full blur-3xl opacity-20"
+          style={{ background: 'linear-gradient(to bottom right, #FFA08A, #FFD4B8)' }}
         />
       </div>
 
@@ -536,10 +538,11 @@ export default function RegisterRetailer() {
                 initial={{ scale: 0.85, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
                 transition={{ duration: 0.5, delay: 0.2 }}
-                className="inline-flex flex-wrap items-center gap-3 bg-white/80 backdrop-blur-sm border border-white/80 shadow-xl px-5 py-3 rounded-full text-xs font-bold uppercase tracking-wider text-gray-600"
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-bold"
+                style={{ background: 'linear-gradient(to right, #FFA08A, #FF8FCF)', color: 'white' }}
               >
-                <span className="text-[#ff6fb3]">Step 3 of 4</span>
-                <span className="text-gray-500">Franchise Owner Onboarding</span>
+                <span>🎉</span>
+                <span>Final Step — Claim Your Display</span>
               </motion.div>
               <motion.h1
                 initial={{ opacity: 0, y: 20 }}
@@ -547,35 +550,50 @@ export default function RegisterRetailer() {
                 transition={{ duration: 0.5, delay: 0.3 }}
                 className="text-4xl md:text-5xl lg:text-6xl font-black text-gray-900 leading-tight"
               >
-                Finalize Your Pawpaya Rollout
+                Start Earning Passive Income{' '}
+                <span style={{ background: 'linear-gradient(to right, #FFA08A, #FF8FCF)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
+                  With Zero Inventory
+                </span>
               </motion.h1>
               <motion.p
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: 0.35 }}
-                className="text-lg md:text-xl text-gray-600 font-medium max-w-2xl"
+                className="text-xl text-gray-700 font-medium max-w-2xl leading-relaxed"
               >
-                Confirm your franchise location so our team can ship the inventory-free Pawpaya display and link every tap to your store's payouts automatically.
+                Complete the form to get your free Pawpaya display shipped within 5-7 days.
+                Every customer tap earns you money—automatically.
               </motion.p>
               <motion.div
                 initial={{ opacity: 0, y: 25 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: 0.45 }}
-                className="bg-white/70 border border-white/80 rounded-3xl p-6 shadow-lg backdrop-blur"
+                className="bg-white rounded-3xl p-6 shadow-xl border-2 border-gray-100"
               >
-                <div className="flex items-center justify-between text-xs uppercase font-bold tracking-wider text-gray-500">
-                  <span>Onboarding Progress</span>
-                  <span>Step 3 · Owner Approval</span>
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-10 h-10 rounded-full flex items-center justify-center text-white text-xl"
+                       style={{ background: 'linear-gradient(to right, #FFA08A, #FF8FCF)' }}>
+                    ✓
+                  </div>
+                  <div>
+                    <div className="font-bold text-gray-900">Almost There!</div>
+                    <div className="text-sm text-gray-600">Just 2 minutes to complete</div>
+                  </div>
                 </div>
-                <div className="mt-4 h-2 bg-gray-200 rounded-full overflow-hidden">
-                  <div
-                    className="h-full bg-gradient-to-r from-[#ff7a4a] via-[#ff6fb3] to-purple-500 rounded-full"
-                    style={{ width: '75%' }}
-                  />
+                <div className="space-y-2 text-sm text-gray-700">
+                  <div className="flex items-center gap-2">
+                    <span className="text-green-600">✓</span>
+                    <span>No credit card required</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-green-600">✓</span>
+                    <span>100% free display shipped to you</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-green-600">✓</span>
+                    <span>Start earning within 7 days</span>
+                  </div>
                 </div>
-                <p className="mt-4 text-xs text-gray-500 font-medium">
-                  This step locks in franchise-level approval so Tapify can release shipments, analytics access, and payouts for your locations.
-                </p>
               </motion.div>
             </div>
 
@@ -589,15 +607,20 @@ export default function RegisterRetailer() {
               {impactHighlights.map((item, idx) => (
                 <motion.div
                   key={item.title}
-                  initial={{ opacity: 0, x: -25 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ duration: 0.45, delay: 0.6 + idx * 0.08 }}
-                  className="bg-white rounded-3xl p-6 shadow-xl border border-gray-100 flex flex-col gap-4"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.4, delay: 0.6 + idx * 0.1 }}
+                  whileHover={{ y: -5 }}
+                  className="bg-white rounded-2xl p-5 shadow-lg border-2 border-gray-100 hover:border-gray-200 transition-all"
                 >
-                  <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${item.gradient} flex items-center justify-center text-2xl text-white shadow-lg`}>{item.icon}</div>
-                  <div className="space-y-2">
-                    <div className="font-bold text-lg text-gray-900">{item.title}</div>
-                    <p className="text-sm text-gray-600 leading-relaxed">{item.description}</p>
+                  <div className="flex items-start gap-3">
+                    <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${item.gradient} flex items-center justify-center text-2xl shadow-md flex-shrink-0`}>
+                      {item.icon}
+                    </div>
+                    <div className="space-y-1 flex-1">
+                      <div className="font-black text-base text-gray-900">{item.title}</div>
+                      <p className="text-sm text-gray-600 leading-snug">{item.description}</p>
+                    </div>
                   </div>
                 </motion.div>
               ))}
@@ -608,16 +631,15 @@ export default function RegisterRetailer() {
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.75 }}
-              className="bg-gradient-to-br from-orange-50 via-pink-50 to-purple-50 rounded-3xl p-6 shadow-xl border border-white/40"
+              className="rounded-3xl p-6 shadow-xl border-2"
+              style={{
+                background: 'linear-gradient(135deg, #FFD4B8 0%, #FF8FCF 100%)',
+                borderColor: '#FFA08A'
+              }}
             >
-              <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6 text-center md:text-left">
-                <div>
-                  <h3 className="text-xl font-black text-gray-900">Meet the Pawpaya Display</h3>
-                  <p className="text-sm text-gray-600 mt-1">Printed, packed, and shipped by Tapify—arrives ready for your checkout counter.</p>
-                </div>
-                <div className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wide text-[#ff6fb3] bg-white/60 px-4 py-2 rounded-full">
-                  <span>Real production photos</span>
-                </div>
+              <div className="mb-6">
+                <h3 className="text-2xl font-black text-white mb-2">See What You're Getting</h3>
+                <p className="text-white/90 text-sm">Premium NFC display with sample products. Arrives ready to earn.</p>
               </div>
               <ImageModalGallery
                 images={[
@@ -633,51 +655,64 @@ export default function RegisterRetailer() {
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.85 }}
-              className="bg-white rounded-3xl p-8 shadow-2xl border border-gray-100"
+              className="bg-white rounded-3xl p-8 shadow-2xl border-2 border-gray-100"
             >
-              <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
-                <div className="flex items-center gap-4">
-                  <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-[#ff7a4a] to-[#ff6fb3] flex items-center justify-center text-2xl text-white shadow-lg">⏱️</div>
-                  <div>
-                    <h3 className="text-2xl font-black text-gray-900">What happens after you submit</h3>
-                    <p className="text-sm text-gray-600">A franchise-ready operational timeline so you know exactly when to expect your display.</p>
-                  </div>
-                </div>
-                <div className="text-xs font-bold uppercase tracking-wide text-gray-400">Total time: ~1 week</div>
+              <div className="mb-8">
+                <h3 className="text-3xl font-black text-gray-900 mb-2">What Happens Next</h3>
+                <p className="text-gray-600">Your display ships within 5-7 days. Here's the timeline:</p>
               </div>
-              <div className="space-y-6">
+              <div className="space-y-8">
                 {nextSteps.map((step, idx) => (
                   <div
                     key={step.title}
-                    className="relative pl-12 border-l border-dashed border-pink-100 pb-6 last:pb-0 last:border-none"
+                    className="relative"
                   >
-                    <div className="absolute -left-[22px] top-0 w-11 h-11 rounded-full bg-gradient-to-br from-[#ff7a4a] to-[#ff6fb3] text-white font-bold flex items-center justify-center shadow-lg">
-                      {idx + 1}
+                    <div className="flex items-start gap-4">
+                      <div className="flex-shrink-0 w-12 h-12 rounded-xl flex items-center justify-center text-white text-xl font-black shadow-lg"
+                           style={{ background: 'linear-gradient(to right, #FFA08A, #FF8FCF)' }}>
+                        {idx + 1}
+                      </div>
+                      <div className="flex-1">
+                        <div className="flex items-center gap-3 mb-2">
+                          <h4 className="font-black text-lg text-gray-900">{step.title}</h4>
+                          <span className="px-3 py-1 rounded-full text-xs font-bold"
+                                style={{ background: 'linear-gradient(to right, #FFD4B8, #FF8FCF)', color: 'white' }}>
+                            {step.timing}
+                          </span>
+                        </div>
+                        <p className="text-gray-600 leading-relaxed">{step.description}</p>
+                      </div>
                     </div>
-                    <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-2">
-                      <h4 className="font-bold text-lg text-gray-900">{step.title}</h4>
-                      <span className="text-xs font-bold uppercase tracking-wide text-[#ff6fb3]">{step.timing}</span>
-                    </div>
-                    <p className="text-sm text-gray-600 mt-2 leading-relaxed">{step.description}</p>
                   </div>
                 ))}
               </div>
             </motion.div>
 
-            {/* Manager Referral Callout */}
+            {/* Social Proof */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.95 }}
-              className="bg-gradient-to-br from-green-50 via-emerald-50 to-green-100 border border-green-200 rounded-3xl p-6 shadow-xl"
+              className="bg-white rounded-3xl p-6 shadow-xl border-2 border-gray-100"
             >
-              <div className="flex flex-col sm:flex-row gap-4 sm:items-center">
-                <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-green-400 to-emerald-500 flex items-center justify-center text-white text-2xl shadow-lg">🤝</div>
-                <div className="space-y-1">
-                  <h3 className="text-lg font-black text-green-700">Reserved by your store manager</h3>
-                  <p className="text-sm text-green-700/80 leading-relaxed">
-                    Your manager already flagged this opportunity from the Tapify manager funnel. Completing the form below confirms owner approval so we can release the Pawpaya display and reward the manager referral.
-                  </p>
+              <div className="flex items-center gap-4 mb-4">
+                <div className="w-12 h-12 rounded-xl flex items-center justify-center text-2xl"
+                     style={{ background: 'linear-gradient(to right, #FFA08A, #FF8FCF)' }}>
+                  ⭐
+                </div>
+                <div>
+                  <h3 className="font-black text-gray-900">Join 100+ Pet Stores</h3>
+                  <p className="text-sm text-gray-600">Earning passive income with Pawpaya</p>
+                </div>
+              </div>
+              <div className="space-y-3 text-sm">
+                <div className="bg-gray-50 rounded-xl p-3">
+                  <p className="text-gray-700 italic">"Added $500/month in passive income. Customers love it!"</p>
+                  <p className="text-gray-500 text-xs mt-1">— Pet Store Owner, Dallas TX</p>
+                </div>
+                <div className="bg-gray-50 rounded-xl p-3">
+                  <p className="text-gray-700 italic">"Setup took 5 minutes. Earning commissions the same day!"</p>
+                  <p className="text-gray-500 text-xs mt-1">— Franchise Owner, Miami FL</p>
                 </div>
               </div>
             </motion.div>
@@ -687,15 +722,18 @@ export default function RegisterRetailer() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 1.05 }}
-              className="flex flex-wrap items-center justify-center gap-4 pt-2"
+              className="flex flex-wrap items-center justify-center lg:justify-start gap-3"
             >
-              {trustBadges.map((badge) => (
+              {trustBadges.map((badge, idx) => (
                 <motion.div
                   key={badge.label}
-                  whileHover={{ scale: 1.05, y: -4 }}
-                  className="flex items-center gap-2 bg-white/80 border border-white/70 rounded-full px-4 py-2 shadow-md text-xs font-bold uppercase tracking-wide text-gray-600"
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ delay: 1.1 + idx * 0.1 }}
+                  whileHover={{ scale: 1.05, y: -2 }}
+                  className="flex items-center gap-2 bg-white border-2 border-gray-200 rounded-full px-4 py-2 shadow-md text-xs font-bold text-gray-700"
                 >
-                  <span className="text-lg">{badge.icon}</span>
+                  <span className="text-base">{badge.icon}</span>
                   <span>{badge.label}</span>
                 </motion.div>
               ))}
