@@ -20,8 +20,224 @@ export default function AboutPawpaya() {
   };
 
   return (
-    <div className="min-h-screen pt-20" style={{ backgroundColor: '#faf8f3' }}>
+    <div className="min-h-screen pt-20" style={{ backgroundColor: '#FFF1E6' }}>
       {/* Background decorations */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <motion.div
+          animate={{
+            scale: [1, 1.2, 1],
+            rotate: [0, 90, 0]
+          }}
+          transition={{ duration: 20, repeat: Infinity }}
+          className="absolute -top-40 -right-40 w-64 h-64 md:w-96 md:h-96 rounded-full blur-3xl opacity-30"
+          style={{ background: 'linear-gradient(to bottom right, #FFD4B8, #FF8FCF)' }}
+        />
+        <motion.div
+          animate={{
+            scale: [1, 1.3, 1],
+            rotate: [0, -90, 0]
+          }}
+          transition={{ duration: 25, repeat: Infinity }}
+          className="absolute -bottom-40 -left-40 w-64 h-64 md:w-96 md:h-96 rounded-full blur-3xl opacity-30"
+          style={{ background: 'linear-gradient(to bottom right, #FFA08A, #FFD4B8)' }}
+        />
+      </div>
+
+      <div className="max-w-6xl mx-auto px-6 py-16 relative z-10">
+        {/* Hero Section */}
+        <motion.section
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          className="text-center mb-20"
+        >
+          <h1 className="text-5xl md:text-7xl font-black text-gray-900 mb-6 leading-tight">
+            The Future of Retail{' '}
+            <span className="block mt-2">
+              Starts With a Tap{' '}
+              <span className="inline-block">🐾</span>
+            </span>
+          </h1>
+          <p className="text-xl md:text-2xl text-gray-700 max-w-3xl mx-auto leading-relaxed mb-8">
+            We built Pawpaya from a college dorm, bootstrapped to factory-scale production,
+            and now we're bringing zero-inventory retail to stores nationwide.
+          </p>
+          <Link href="/onboard">
+            <motion.button
+              whileHover={{ scale: 1.05, y: -5 }}
+              whileTap={{ scale: 0.95 }}
+              className="px-10 py-4 rounded-2xl text-lg md:text-xl font-black shadow-xl hover:shadow-2xl transition-all text-white"
+              style={{ background: 'linear-gradient(to right, #FFA08A, #FF8FCF)' }}
+            >
+              Get Started →
+            </motion.button>
+          </Link>
+        </motion.section>
+
+        {/* Story Section */}
+        <motion.section
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+          className="mb-20"
+        >
+          <div className="bg-white rounded-3xl p-8 md:p-12 shadow-2xl border-2 border-gray-100">
+            <h2 className="text-4xl md:text-5xl font-black text-gray-900 mb-6 text-center">
+              From Handmade Collars to a Nationwide Movement
+            </h2>
+            <div className="grid lg:grid-cols-2 gap-8 items-center">
+              <div className="space-y-4 text-lg text-gray-700 leading-relaxed">
+                <p>
+                  Six months ago, we were just college students with four 3D printers crammed into our living room,
+                  hand-finishing every single Pawpaya collar.
+                </p>
+                <p>
+                  We filmed our own content, hosted neighborhood dogs for photoshoots, and built a supply chain
+                  from scratch—all without outside funding.
+                </p>
+                <p>
+                  Now we're scaling that same scrappy energy into a plug-and-play retail system that lets
+                  stores showcase premium products without buying inventory upfront.
+                </p>
+              </div>
+              <div className="relative h-80 rounded-2xl overflow-hidden shadow-2xl">
+                <Image
+                  src="/images/image4.webp"
+                  alt="Pawpaya story"
+                  fill
+                  className="object-cover"
+                />
+              </div>
+            </div>
+          </div>
+        </motion.section>
+
+        {/* 3-Column Value Section */}
+        <motion.section
+          variants={staggerContainer}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true }}
+          className="mb-20"
+        >
+          <h2 className="text-4xl md:text-5xl font-black text-gray-900 mb-12 text-center">
+            Why Stores Love Tapify
+          </h2>
+          <div className="grid md:grid-cols-3 gap-8">
+            {[
+              {
+                title: 'Free',
+                description: 'Zero cost to get started. We ship the display, you place it in your store.',
+                icon: '🎁',
+                gradient: 'from-[#FFD4B8] to-[#FFA08A]'
+              },
+              {
+                title: 'No Risk',
+                description: 'No inventory to buy. No commitment. Customers order online, we fulfill and ship.',
+                icon: '🛡️',
+                gradient: 'from-[#FF8FCF] to-[#FFD4B8]'
+              },
+              {
+                title: 'Earn Automatically',
+                description: 'Every tap-to-order sale earns your store a commission. Paid directly to your account.',
+                icon: '💰',
+                gradient: 'from-[#FFA08A] to-[#FF8FCF]'
+              }
+            ].map((item, idx) => (
+              <motion.div
+                key={idx}
+                variants={fadeInUp}
+                whileHover={{ y: -10 }}
+                className="bg-white rounded-3xl p-8 shadow-xl border-2 border-gray-100 text-center"
+              >
+                <div className={`w-20 h-20 mx-auto mb-6 rounded-2xl bg-gradient-to-br ${item.gradient} flex items-center justify-center text-4xl shadow-lg`}>
+                  {item.icon}
+                </div>
+                <h3 className="text-2xl font-bold text-gray-900 mb-3">{item.title}</h3>
+                <p className="text-gray-600 leading-relaxed">{item.description}</p>
+              </motion.div>
+            ))}
+          </div>
+        </motion.section>
+
+        {/* Expansion Section */}
+        <motion.section
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+          className="mb-20"
+        >
+          <div className="rounded-3xl p-8 md:p-12 shadow-2xl text-white text-center"
+               style={{ background: 'linear-gradient(to bottom right, #FFA08A, #FF8FCF)' }}>
+            <h2 className="text-4xl md:text-5xl font-black mb-6">
+              Join the Movement
+            </h2>
+            <p className="text-xl md:text-2xl mb-10 max-w-3xl mx-auto opacity-90">
+              We're building a network of independent retailers who want to offer premium products
+              without the overhead. Be part of wave one.
+            </p>
+            <Link href="/onboard">
+              <motion.button
+                whileHover={{ scale: 1.05, y: -5 }}
+                whileTap={{ scale: 0.95 }}
+                className="bg-white px-12 py-5 rounded-2xl text-xl font-black hover:bg-gray-50 transition-all shadow-2xl"
+                style={{ color: '#FF8FCF' }}
+              >
+                Get Your Free Display →
+              </motion.button>
+            </Link>
+          </div>
+        </motion.section>
+
+        {/* Final CTA */}
+        <motion.section
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+          className="text-center"
+        >
+          <Link href="/onboard" className="text-gray-600 hover:text-gray-900 font-bold inline-flex items-center gap-2 hover:gap-3 transition-all">
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+            </svg>
+            Continue to Registration
+          </Link>
+        </motion.section>
+      </div>
+    </div>
+  );
+}
+
+{/* ---- OLD PAGE BELOW ---- */}
+{/*
+
+import Link from 'next/link';
+import { motion } from 'framer-motion';
+import Image from 'next/image';
+
+export default function AboutPawpaya() {
+  // Animation variants
+  const fadeInUp = {
+    hidden: { opacity: 0, y: 30 },
+    visible: { opacity: 1, y: 0 }
+  };
+
+  const staggerContainer = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1
+      }
+    }
+  };
+
+  return (
+    <div className="min-h-screen pt-20" style={{ backgroundColor: '#faf8f3' }}>
+      {/* Background decorations *\/}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <motion.div
           animate={{
@@ -42,7 +258,7 @@ export default function AboutPawpaya() {
       </div>
 
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16 relative z-10">
-        {/* Hero Section - Who We Are */}
+        {/* Hero Section - Who We Are *\/}
         <motion.section
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
@@ -87,7 +303,7 @@ export default function AboutPawpaya() {
           </div>
         </motion.section>
 
-        {/* The Problem & Solution Grid */}
+        {/* The Problem & Solution Grid *\/}
         <motion.section
           variants={staggerContainer}
           initial="hidden"
@@ -96,7 +312,7 @@ export default function AboutPawpaya() {
           className="mb-20"
         >
           <div className="grid md:grid-cols-2 gap-8 mb-12">
-            {/* The Problem */}
+            {/* The Problem *\/}
             <motion.div
               variants={fadeInUp}
               className="bg-white rounded-3xl p-8 shadow-xl border-2 border-gray-100"
@@ -110,7 +326,7 @@ export default function AboutPawpaya() {
               </p>
             </motion.div>
 
-            {/* The Solution */}
+            {/* The Solution *\/}
             <motion.div
               variants={fadeInUp}
               className="bg-gradient-to-br from-green-50 to-emerald-50 rounded-3xl p-8 shadow-xl border-2 border-green-200"
@@ -126,7 +342,7 @@ export default function AboutPawpaya() {
           </div>
         </motion.section>
 
-        {/* Product Showcase with Story */}
+        {/* Product Showcase with Story *\/}
         <motion.section
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -136,7 +352,7 @@ export default function AboutPawpaya() {
         >
           <div className="bg-gradient-to-br from-purple-50 via-pink-50 to-orange-50 rounded-3xl p-8 md:p-12 shadow-2xl border-2 border-purple-200">
             <div className="grid lg:grid-cols-2 gap-12 items-center">
-              {/* Left: Image */}
+              {/* Left: Image *\/}
               <motion.div
                 initial={{ opacity: 0, x: -30 }}
                 whileInView={{ opacity: 1, x: 0 }}
@@ -152,7 +368,7 @@ export default function AboutPawpaya() {
                 />
               </motion.div>
 
-              {/* Right: Text */}
+              {/* Right: Text *\/}
               <div>
                 <h2 className="text-4xl md:text-5xl font-black text-gray-900 mb-6">
                   It Started With Pet Collars
@@ -179,7 +395,7 @@ export default function AboutPawpaya() {
           </div>
         </motion.section>
 
-        {/* How It Works - Simple Version */}
+        {/* How It Works - Simple Version *\/}
         <motion.section
           variants={staggerContainer}
           initial="hidden"
@@ -237,7 +453,7 @@ export default function AboutPawpaya() {
           </div>
         </motion.section>
 
-        {/* Product Gallery */}
+        {/* Product Gallery *\/}
         <motion.section
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -284,7 +500,7 @@ export default function AboutPawpaya() {
           </div>
         </motion.section>
 
-        {/* The Mission - Authentic & Personal */}
+        {/* The Mission - Authentic & Personal *\/}
         <motion.section
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -294,7 +510,7 @@ export default function AboutPawpaya() {
         >
           <div className="bg-white rounded-3xl p-8 md:p-12 shadow-2xl border-2 border-gray-100">
             <div className="grid lg:grid-cols-2 gap-12 items-center">
-              {/* Left: Oscar's photo or logo */}
+              {/* Left: Oscar's photo or logo *\/}
               <motion.div
                 initial={{ opacity: 0, x: -30 }}
                 whileInView={{ opacity: 1, x: 0 }}
@@ -310,7 +526,7 @@ export default function AboutPawpaya() {
                 />
               </motion.div>
 
-              {/* Right: Mission Statement */}
+              {/* Right: Mission Statement *\/}
               <div>
                 <h2 className="text-4xl md:text-5xl font-black text-gray-900 mb-6">
                   Why I'm Doing This
@@ -339,7 +555,7 @@ export default function AboutPawpaya() {
           </div>
         </motion.section>
 
-        {/* Social Proof - Real Results */}
+        {/* Social Proof - Real Results *\/}
         <motion.section
           variants={staggerContainer}
           initial="hidden"
@@ -388,7 +604,7 @@ export default function AboutPawpaya() {
           </div>
         </motion.section>
 
-        {/* Final CTA */}
+        {/* Final CTA *\/}
         <motion.section
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -397,7 +613,7 @@ export default function AboutPawpaya() {
           className="text-center"
         >
           <div className="bg-gradient-to-br from-[#ff7a4a] via-[#ff6fb3] to-purple-600 rounded-3xl p-12 md:p-16 shadow-2xl relative overflow-hidden">
-            {/* Animated background */}
+            {/* Animated background *\/}
             <div className="absolute inset-0">
               <motion.div
                 animate={{
@@ -449,7 +665,7 @@ export default function AboutPawpaya() {
           </div>
         </motion.section>
 
-        {/* Back Link */}
+        {/* Back Link *\/}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -467,3 +683,5 @@ export default function AboutPawpaya() {
     </div>
   );
 }
+
+*/}

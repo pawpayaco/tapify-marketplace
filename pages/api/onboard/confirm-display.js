@@ -29,7 +29,7 @@ export default async function handler(req, res) {
 
   const expressShipping = shippingOption === 'expedited';
   const onboardingStep = expressShipping ? 'priority_shipping_selected' : 'standard_shipping_selected';
-  const displayStatus = expressShipping ? 'priority_queue' : 'standard_queue';
+  const displayStatus = 'requested';  // Fixed: use 'requested' instead of 'standard_queue' or 'priority_queue'
   const logAction = expressShipping
     ? 'retailer_shipping_priority_selected'
     : 'retailer_display_reserved_standard';
