@@ -26,23 +26,29 @@ export default function Navbar() {
           </div>
 
           {/* Desktop Navigation & Auth */}
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 sm:gap-3">
+            {/* See Products Button - Always visible */}
+            <Link
+              href="https://pawpayaco.com/products/diy-builder-kit-copy"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="px-3 sm:px-6 py-2 sm:py-3 font-bold text-sm sm:text-base text-[#ff7a4a] bg-white border-2 border-[#ff7a4a] rounded-xl hover:bg-gradient-to-r hover:from-[#ff7a4a] hover:to-[#ff6fb3] hover:text-white hover:border-transparent shadow-md hover:shadow-lg transition-all hover:scale-105 whitespace-nowrap"
+            >
+              <span className="hidden sm:inline">See Products</span>
+              <span className="sm:hidden">Products</span>
+            </Link>
+
             {user ? (
-              <>
-                <span className="hidden md:block text-sm text-gray-700 bg-gray-100 px-4 py-2 rounded-xl font-semibold border border-gray-200">
-                  {user.email}
-                </span>
-                <Link
-                  href="/onboard/dashboard"
-                  className="px-6 py-3 font-bold text-white bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3] rounded-xl shadow-lg hover:shadow-xl transition-all hover:scale-105"
-                >
-                  Dashboard
-                </Link>
-              </>
+              <Link
+                href="/onboard/dashboard"
+                className="px-3 sm:px-6 py-2 sm:py-3 font-bold text-sm sm:text-base text-white bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3] rounded-xl shadow-lg hover:shadow-xl transition-all hover:scale-105 whitespace-nowrap"
+              >
+                Dashboard
+              </Link>
             ) : (
               <Link
                 href="/login"
-                className="px-6 py-3 font-bold text-white bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3] rounded-xl shadow-lg hover:shadow-xl transition-all hover:scale-105"
+                className="px-3 sm:px-6 py-2 sm:py-3 font-bold text-sm sm:text-base text-white bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3] rounded-xl shadow-lg hover:shadow-xl transition-all hover:scale-105 whitespace-nowrap"
               >
                 Login
               </Link>
