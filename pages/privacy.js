@@ -72,7 +72,7 @@ export default function PrivacyPolicies() {
   };
 
   return (
-    <div className="min-h-screen" style={{ backgroundColor: '#faf8f3' }}>
+    <div className="min-h-screen" style={{ backgroundColor: '#FFFFFF' }}>
       {/* Header */}
       <motion.div 
         initial={{ opacity: 0, y: -20 }}

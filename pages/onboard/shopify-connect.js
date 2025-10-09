@@ -42,7 +42,7 @@ export default function ShopifyConnect() {
   };
 
   return (
-    <div className="min-h-screen pt-20" style={{ backgroundColor: '#FFF1E6' }}>
+    <div className="min-h-screen pt-20" style={{ backgroundColor: '#FFFFFF' }}>
       <div className="max-w-4xl mx-auto px-6 py-16">
         {/* Success Hero */}
         <motion.div

@@ -141,7 +141,7 @@ export default function ConnectPage() {
   };
 
   return (
-    <div className="min-h-screen" style={{ backgroundColor: '#faf8f3' }}>
+    <div className="min-h-screen" style={{ backgroundColor: '#FFFFFF' }}>
       {/* Soft background gradient */}
       <div className="absolute inset-0 bg-gradient-to-b from-[#FFF3E8] to-transparent h-[400px] pointer-events-none"></div>
 

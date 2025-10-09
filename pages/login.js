@@ -87,7 +87,7 @@ export default function Login() {
   // Show loading or nothing if already authenticated
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center pt-20" style={{ backgroundColor: '#faf8f3' }}>
+      <div className="min-h-screen flex items-center justify-center pt-20" style={{ backgroundColor: '#FFFFFF' }}>
         <div className="text-gray-600">Loading...</div>
       </div>
     );
@@ -98,7 +98,7 @@ export default function Login() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-4 pt-20 relative overflow-hidden" style={{ backgroundColor: '#faf8f3' }}>
+    <div className="min-h-screen flex items-center justify-center px-4 pt-20 relative overflow-hidden" style={{ backgroundColor: '#FFFFFF' }}>
       {/* Background decorations */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <motion.div

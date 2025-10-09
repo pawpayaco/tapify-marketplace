@@ -453,7 +453,7 @@ export default function Admin({
   // LOADING STATE - Show before mount to prevent hydration mismatch
   if (!mounted) {
     return (
-      <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: '#faf8f3' }}>
+      <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: '#FFFFFF' }}>
         <div className="text-center">
           <div className="animate-spin rounded-full h-16 w-16 border-4 border-purple-500 border-t-transparent mx-auto mb-4"></div>
           <p className="text-gray-600 text-lg font-semibold">Loading admin panel...</p>
@@ -673,7 +673,7 @@ export default function Admin({
 
   // AUTHORIZED ADMIN STATE
   return (
-    <div className="min-h-screen pt-20" style={{ backgroundColor: '#faf8f3' }}>
+    <div className="min-h-screen pt-20" style={{ backgroundColor: '#FFFFFF' }}>
       
       {/* Header */}
       <motion.div 

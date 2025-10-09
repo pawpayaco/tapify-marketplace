@@ -20,7 +20,7 @@ export default function AboutPawpaya() {
   };
 
   return (
-    <div className="min-h-screen pt-20" style={{ backgroundColor: '#FFF1E6' }}>
+    <div className="min-h-screen pt-20" style={{ backgroundColor: '#FFFFFF' }}>
       {/* Background decorations */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <motion.div

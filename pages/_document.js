@@ -21,7 +21,7 @@ export default function Document() {
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
       </Head>
-      <body style={{ backgroundColor: '#faf8f3' }}>
+      <body style={{ backgroundColor: '#FFFFFF' }}>
         <Main />
         <NextScript />
       </body>

@@ -544,7 +544,7 @@ export default function RetailerDashboard() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center pt-20" style={{ backgroundColor: '#faf8f3' }}>
+      <div className="min-h-screen flex items-center justify-center pt-20" style={{ backgroundColor: '#FFFFFF' }}>
         <motion.div 
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
@@ -586,7 +586,7 @@ export default function RetailerDashboard() {
           console.error('[PLAID] Script failed to load');
         }}
       />
-      <div className="min-h-screen pt-20" style={{ backgroundColor: '#faf8f3' }}>
+      <div className="min-h-screen pt-20" style={{ backgroundColor: '#FFFFFF' }}>
       {/* Header */}
       <motion.div 
         initial={{ opacity: 0, y: -20 }}
