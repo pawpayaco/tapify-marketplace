@@ -16,9 +16,9 @@ export default function Navbar() {
                 <Image
                   src="/tapify-logo.png"
                   alt="Tapify"
-                  width={160}
-                  height={45}
-                  className="h-[45px] w-auto transition-all"
+                  width={128}
+                  height={36}
+                  className="h-[36px] w-auto transition-all"
                   priority
                 />
               </div>
