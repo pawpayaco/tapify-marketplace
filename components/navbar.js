@@ -15,7 +15,7 @@ export default function Navbar() {
               href="https://pawpayaco.com/products/diy-builder-kit-copy"
               target="_blank"
               rel="noopener noreferrer"
-              className="px-4 sm:px-6 py-2 sm:py-3 font-bold text-sm sm:text-base text-[#ff7a4a] bg-white border-2 border-[#ff7a4a] rounded-xl hover:bg-gradient-to-r hover:from-[#ff7a4a] hover:to-[#ff6fb3] hover:text-white hover:border-transparent shadow-md hover:shadow-lg transition-all hover:scale-105 whitespace-nowrap"
+              className="px-5 sm:px-7 py-2.5 sm:py-3.5 font-bold text-sm sm:text-base text-[#ff7a4a] bg-white border-2 border-[#ff7a4a] rounded-xl hover:bg-orange-50 hover:border-[#ff6b3d] shadow-md hover:shadow-lg transition-all hover:scale-105 whitespace-nowrap"
             >
               <span className="hidden sm:inline">See Products</span>
               <span className="sm:hidden">Products</span>
@@ -43,14 +43,14 @@ export default function Navbar() {
             {user ? (
               <Link
                 href="/onboard/dashboard"
-                className="px-4 sm:px-6 py-2 sm:py-3 font-bold text-sm sm:text-base text-white bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3] rounded-xl shadow-lg hover:shadow-xl transition-all hover:scale-105 whitespace-nowrap"
+                className="px-5 sm:px-7 py-2.5 sm:py-3.5 font-bold text-sm sm:text-base text-white bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3] rounded-xl shadow-lg hover:shadow-xl transition-all hover:scale-105 whitespace-nowrap"
               >
                 Dashboard
               </Link>
             ) : (
               <Link
                 href="/login"
-                className="px-4 sm:px-6 py-2 sm:py-3 font-bold text-sm sm:text-base text-white bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3] rounded-xl shadow-lg hover:shadow-xl transition-all hover:scale-105 whitespace-nowrap"
+                className="px-5 sm:px-7 py-2.5 sm:py-3.5 font-bold text-sm sm:text-base text-white bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3] rounded-xl shadow-lg hover:shadow-xl transition-all hover:scale-105 whitespace-nowrap"
               >
                 Login
               </Link>
