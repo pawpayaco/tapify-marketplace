@@ -141,11 +141,8 @@ export default function ConnectPage() {
   };
 
   return (
-    <div className="min-h-screen" style={{ backgroundColor: '#FFFFFF' }}>
-      {/* Soft background gradient */}
-      <div className="absolute inset-0 bg-gradient-to-b from-[#FFF3E8] to-transparent h-[400px] pointer-events-none"></div>
-
-      <div className="flex flex-col items-center px-6 pt-28 md:pt-32 pb-12 relative">
+    <div className="min-h-screen bg-white pt-32 pb-16">
+      <div className="flex flex-col items-center px-6 pb-12">
         <div className="max-w-lg w-full">
           {/* Header */}
           <div className="text-center mb-8">
@@ -168,7 +165,7 @@ export default function ConnectPage() {
              rounded-2xl
              bg-white
              text-gray-900 placeholder-gray-400
-             border-2 border-gray-200
+             border border-transparent
              outline-none focus:ring-2 focus:ring-[#ff6fb3] focus:border-transparent
              transition-all"
           />
@@ -187,7 +184,7 @@ export default function ConnectPage() {
                   layout
                   initial={{ opacity: 1, scale: 1 }}
                   exit={{ opacity: 0, scale: 0.9, transition: { duration: 0.4 } }}
-                  className="flex justify-between items-center bg-white rounded-3xl shadow-xl border-2 border-gray-100 p-5 hover:shadow-2xl transition-all"
+                  className="flex justify-between items-center bg-white rounded-3xl shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_1px_-0.5px_rgba(0,0,0,0.06),0px_3px_3px_-1.5px_rgba(0,0,0,0.06),0px_6px_6px_-3px_rgba(0,0,0,0.06),0px_12px_12px_-6px_rgba(0,0,0,0.06),0px_24px_24px_-12px_rgba(0,0,0,0.06)] border border-transparent p-5 hover:shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_1px_-0.5px_rgba(0,0,0,0.06),0px_3px_3px_-1.5px_rgba(0,0,0,0.06),0px_6px_6px_-3px_rgba(0,0,0,0.06),0px_12px_12px_-6px_rgba(0,0,0,0.06),0px_24px_24px_-12px_rgba(0,0,0,0.06)] transition-all"
                 >
                   <div>
                     <p className="font-semibold text-gray-900">{store.name}</p>
@@ -206,12 +203,12 @@ export default function ConnectPage() {
                     className={`px-5 py-2.5 rounded-2xl font-bold text-sm transition-all ${
                       connectedId === store.id
                         ? "bg-gray-200 text-gray-500 cursor-not-allowed"
-                        : "bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3] text-white shadow-lg hover:shadow-xl hover:scale-105 active:scale-95"
+                        : "bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3] text-white shadow-lg hover:shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_1px_-0.5px_rgba(0,0,0,0.06),0px_3px_3px_-1.5px_rgba(0,0,0,0.06),0px_6px_6px_-3px_rgba(0,0,0,0.06),0px_12px_12px_-6px_rgba(0,0,0,0.06),0px_24px_24px_-12px_rgba(0,0,0,0.06)] hover:scale-105 active:scale-95"
                     }`}
                   >
                     {loading && connectedId === store.id ? (
                       <div className="flex items-center gap-2">
-                        <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent"></div>
+                        <div className="animate-spin rounded-full h-4 w-4 border border-transparent border-t-transparent"></div>
                         Claiming...
                       </div>
                     ) : connectedId === store.id ? (
@@ -227,12 +224,12 @@ export default function ConnectPage() {
 
           {/* Empty state */}
           {!loadingList && filteredRetailers.length === 0 && (
-            <div className="bg-white rounded-3xl border-2 border-gray-200 shadow-xl p-6 text-center text-gray-500">
+            <div className="bg-white rounded-3xl border border-transparent shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_1px_-0.5px_rgba(0,0,0,0.06),0px_3px_3px_-1.5px_rgba(0,0,0,0.06),0px_6px_6px_-3px_rgba(0,0,0,0.06),0px_12px_12px_-6px_rgba(0,0,0,0.06),0px_24px_24px_-12px_rgba(0,0,0,0.06)] p-6 text-center text-gray-500">
               No stores ready for claim yet.
             </div>
           )}
           {loadingList && (
-            <div className="bg-white rounded-3xl border-2 border-gray-200 shadow-xl p-6 text-center text-gray-500 flex items-center justify-center gap-2">
+            <div className="bg-white rounded-3xl border border-transparent shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_1px_-0.5px_rgba(0,0,0,0.06),0px_3px_3px_-1.5px_rgba(0,0,0,0.06),0px_6px_6px_-3px_rgba(0,0,0,0.06),0px_12px_12px_-6px_rgba(0,0,0,0.06),0px_24px_24px_-12px_rgba(0,0,0,0.06)] p-6 text-center text-gray-500 flex items-center justify-center gap-2">
               <div className="animate-spin rounded-full h-5 w-5 border-2 border-gray-400 border-t-transparent"></div>
               Loading stores…
             </div>

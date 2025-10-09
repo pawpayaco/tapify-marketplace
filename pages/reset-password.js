@@ -59,7 +59,7 @@ export default function ResetPassword() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
-          className="bg-white rounded-3xl shadow-2xl border-2 border-gray-100 p-8"
+          className="bg-white rounded-3xl shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_1px_-0.5px_rgba(0,0,0,0.06),0px_3px_3px_-1.5px_rgba(0,0,0,0.06),0px_6px_6px_-3px_rgba(0,0,0,0.06),0px_12px_12px_-6px_rgba(0,0,0,0.06),0px_24px_24px_-12px_rgba(0,0,0,0.06)] border border-transparent p-8"
         >
           {/* Header */}
           <div className="text-center mb-8">
@@ -97,7 +97,7 @@ export default function ResetPassword() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
-                  className="w-full px-4 py-3 rounded-2xl border-2 border-gray-200 outline-none focus:ring-2 focus:ring-[#ff6fb3] focus:border-transparent transition-all"
+                  className="w-full px-4 py-3 rounded-2xl border border-transparent outline-none focus:ring-2 focus:ring-[#ff6fb3] focus:border-transparent transition-all"
                   placeholder="you@example.com"
                 />
               </div>
@@ -140,7 +140,7 @@ export default function ResetPassword() {
             >
               {loading ? (
                 <span className="flex items-center justify-center gap-2">
-                  <div className="animate-spin rounded-full h-5 w-5 border-2 border-white border-t-transparent"></div>
+                  <div className="animate-spin rounded-full h-5 w-5 border border-transparent border-t-transparent"></div>
                   Sending reset link...
                 </span>
               ) : (

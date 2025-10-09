@@ -473,7 +473,7 @@ export default function Admin({
           className="max-w-2xl w-full"
         >
           {/* Main Error Card */}
-          <div className="bg-white/80 backdrop-blur-sm rounded-3xl shadow-2xl border border-white/20 overflow-hidden">
+          <div className="bg-white/80 backdrop-blur-sm rounded-3xl shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_1px_-0.5px_rgba(0,0,0,0.06),0px_3px_3px_-1.5px_rgba(0,0,0,0.06),0px_6px_6px_-3px_rgba(0,0,0,0.06),0px_12px_12px_-6px_rgba(0,0,0,0.06),0px_24px_24px_-12px_rgba(0,0,0,0.06)] border border-white/20 overflow-hidden">
             {/* Header with Icon */}
             <div className="bg-gradient-to-r from-red-500 to-pink-500 p-8 text-center relative overflow-hidden">
               <div className="absolute inset-0 bg-white/10"></div>
@@ -721,7 +721,7 @@ export default function Admin({
                 transition={{ duration: 0.5, delay: 0.4 }}
                 className="flex-shrink-0 self-start"
               >
-                <span className="inline-flex items-center rounded-full bg-white/20 backdrop-blur-sm px-3 sm:px-4 py-1.5 sm:py-2 text-xs font-bold text-white border-2 border-white/30 whitespace-nowrap shadow-lg">
+                <span className="inline-flex items-center rounded-full bg-white/20 backdrop-blur-sm px-3 sm:px-4 py-1.5 sm:py-2 text-xs font-bold text-white border border-transparent/30 whitespace-nowrap shadow-lg">
                   v1.2
                 </span>
               </motion.div>
@@ -774,7 +774,7 @@ export default function Admin({
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.5 }}
-          className="bg-white rounded-3xl shadow-xl border-2 border-gray-100 p-6 mb-6"
+          className="bg-white rounded-3xl shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_1px_-0.5px_rgba(0,0,0,0.06),0px_3px_3px_-1.5px_rgba(0,0,0,0.06),0px_6px_6px_-3px_rgba(0,0,0,0.06),0px_12px_12px_-6px_rgba(0,0,0,0.06),0px_24px_24px_-12px_rgba(0,0,0,0.06)] border border-transparent p-6 mb-6"
         >
           <div className="flex flex-wrap items-center gap-4">
             <div className="flex-1 min-w-[200px]">
@@ -786,7 +786,7 @@ export default function Admin({
                   value={q}
                   onChange={(e) => setQ(e.target.value)}
                   placeholder={`Search ${tab.toLowerCase()}…`}
-                  className="w-full h-12 pl-12 pr-4 rounded-2xl border-2 border-gray-200 bg-white outline-none focus:ring-2 focus:ring-[#ff6fb3] focus:border-transparent transition-all font-medium"
+                  className="w-full h-12 pl-12 pr-4 rounded-2xl border border-transparent bg-white outline-none focus:ring-2 focus:ring-[#ff6fb3] focus:border-transparent transition-all font-medium"
                 />
               </div>
             </div>
@@ -794,7 +794,7 @@ export default function Admin({
               <select
                 value={filter}
                 onChange={(e) => setFilter(e.target.value)}
-                className="h-12 rounded-2xl border-2 border-gray-200 bg-white px-4 outline-none focus:ring-2 focus:ring-[#ff6fb3] focus:border-transparent transition-all font-medium"
+                className="h-12 rounded-2xl border border-transparent bg-white px-4 outline-none focus:ring-2 focus:ring-[#ff6fb3] focus:border-transparent transition-all font-medium"
               >
                 <option value="all">All platforms</option>
                 <option value="shopify">Shopify</option>
@@ -831,7 +831,7 @@ export default function Admin({
                   key={v.id}
                   variants={fadeInUp}
                   whileHover={{ scale: 1.03, y: -5 }}
-                  className="bg-white rounded-3xl border-2 border-gray-100 p-6 shadow-lg hover:shadow-2xl hover:border-pink-200 transition-all"
+                  className="bg-white rounded-3xl border border-transparent p-6 shadow-lg hover:shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_1px_-0.5px_rgba(0,0,0,0.06),0px_3px_3px_-1.5px_rgba(0,0,0,0.06),0px_6px_6px_-3px_rgba(0,0,0,0.06),0px_12px_12px_-6px_rgba(0,0,0,0.06),0px_24px_24px_-12px_rgba(0,0,0,0.06)] hover:border-pink-200 transition-all"
                 >
                   <div className="flex items-start justify-between mb-3">
                     <h3 className="text-lg font-bold text-gray-900">{v.name}</h3>
@@ -855,7 +855,7 @@ export default function Admin({
                       href={`/vendor/${v.id}`}
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
-                      className="flex-1 text-center rounded-2xl border-2 border-gray-200 bg-white px-4 py-2.5 text-sm font-bold text-gray-900 hover:bg-gray-50 transition-all"
+                      className="flex-1 text-center rounded-2xl border border-transparent bg-white px-4 py-2.5 text-sm font-bold text-gray-900 hover:bg-gray-50 transition-all"
                     >
                       View
                     </motion.a>
@@ -887,7 +887,7 @@ export default function Admin({
                   key={r.id}
                   variants={fadeInUp}
                   whileHover={{ scale: 1.03, y: -5 }}
-                  className="bg-white rounded-3xl border-2 border-gray-100 p-6 shadow-lg hover:shadow-2xl hover:border-purple-200 transition-all"
+                  className="bg-white rounded-3xl border border-transparent p-6 shadow-lg hover:shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_1px_-0.5px_rgba(0,0,0,0.06),0px_3px_3px_-1.5px_rgba(0,0,0,0.06),0px_6px_6px_-3px_rgba(0,0,0,0.06),0px_12px_12px_-6px_rgba(0,0,0,0.06),0px_24px_24px_-12px_rgba(0,0,0,0.06)] hover:border-purple-200 transition-all"
                 >
                   <div className="flex items-start gap-4 mb-4">
                     <div className="w-14 h-14 bg-gradient-to-br from-purple-400 to-pink-500 rounded-2xl flex items-center justify-center shadow-lg">
@@ -916,7 +916,7 @@ export default function Admin({
           )}
 
           {tab === "Stores" && (
-            <div className="bg-white rounded-3xl shadow-xl border-2 border-gray-100 p-8 text-center">
+            <div className="bg-white rounded-3xl shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_1px_-0.5px_rgba(0,0,0,0.06),0px_3px_3px_-1.5px_rgba(0,0,0,0.06),0px_6px_6px_-3px_rgba(0,0,0,0.06),0px_12px_12px_-6px_rgba(0,0,0,0.06),0px_24px_24px_-12px_rgba(0,0,0,0.06)] border border-transparent p-8 text-center">
               <div className="w-20 h-20 bg-gradient-to-br from-purple-400 to-pink-500 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg">
                 <span className="text-4xl">🏪</span>
               </div>
@@ -930,7 +930,7 @@ export default function Admin({
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={() => router.push('/admin/stores')}
-                className="inline-flex items-center gap-2 px-8 py-4 rounded-2xl bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3] text-white font-bold text-lg hover:shadow-xl transition-all"
+                className="inline-flex items-center gap-2 px-8 py-4 rounded-2xl bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3] text-white font-bold text-lg hover:shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_1px_-0.5px_rgba(0,0,0,0.06),0px_3px_3px_-1.5px_rgba(0,0,0,0.06),0px_6px_6px_-3px_rgba(0,0,0,0.06),0px_12px_12px_-6px_rgba(0,0,0,0.06),0px_24px_24px_-12px_rgba(0,0,0,0.06)] transition-all"
               >
                 <span>Open Stores Dashboard</span>
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -963,7 +963,7 @@ export default function Admin({
               <motion.div 
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="bg-white rounded-3xl shadow-xl border-2 border-gray-100 p-4 mb-6"
+                className="bg-white rounded-3xl shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_1px_-0.5px_rgba(0,0,0,0.06),0px_3px_3px_-1.5px_rgba(0,0,0,0.06),0px_6px_6px_-3px_rgba(0,0,0,0.06),0px_12px_12px_-6px_rgba(0,0,0,0.06),0px_24px_24px_-12px_rgba(0,0,0,0.06)] border border-transparent p-4 mb-6"
               >
                 <div className="flex items-center gap-3">
                   <span className="text-sm font-bold text-gray-700">Show:</span>
@@ -975,7 +975,7 @@ export default function Admin({
                       "rounded-2xl px-6 py-2.5 text-sm font-bold transition-all",
                       payoutFilter === 'pending'
                         ? "bg-gradient-to-r from-yellow-400 to-orange-500 text-white shadow-lg"
-                        : "text-gray-700 hover:bg-gray-100 border-2 border-gray-200",
+                        : "text-gray-700 hover:bg-gray-100 border border-transparent",
                     ].join(" ")}
                   >
                     Pending
@@ -988,7 +988,7 @@ export default function Admin({
                       "rounded-2xl px-6 py-2.5 text-sm font-bold transition-all",
                       payoutFilter === 'paid'
                         ? "bg-gradient-to-r from-green-400 to-emerald-500 text-white shadow-lg"
-                        : "text-gray-700 hover:bg-gray-100 border-2 border-gray-200",
+                        : "text-gray-700 hover:bg-gray-100 border border-transparent",
                     ].join(" ")}
                   >
                     Paid
@@ -996,7 +996,7 @@ export default function Admin({
                 </div>
               </motion.div>
 
-              <div className="rounded-3xl border-2 border-gray-100 bg-white shadow-xl overflow-hidden">
+              <div className="rounded-3xl border border-transparent bg-white shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_1px_-0.5px_rgba(0,0,0,0.06),0px_3px_3px_-1.5px_rgba(0,0,0,0.06),0px_6px_6px_-3px_rgba(0,0,0,0.06),0px_12px_12px_-6px_rgba(0,0,0,0.06),0px_24px_24px_-12px_rgba(0,0,0,0.06)] overflow-hidden">
                 <div className="p-6 border-b-2 border-gray-100 bg-gradient-to-r from-pink-50 to-purple-50">
                   <div className="flex items-center justify-between">
                     <div>
@@ -1101,7 +1101,7 @@ export default function Admin({
                                   >
                                     {isProcessing ? (
                                       <span className="flex items-center gap-2">
-                                        <div className="animate-spin rounded-full h-3 w-3 border-2 border-white border-t-transparent"></div>
+                                        <div className="animate-spin rounded-full h-3 w-3 border border-transparent border-t-transparent"></div>
                                         Processing...
                                       </span>
                                     ) : (
@@ -1132,7 +1132,7 @@ export default function Admin({
                 <motion.div 
                   variants={fadeInUp}
                   whileHover={{ scale: 1.05, y: -5 }}
-                  className="bg-white rounded-3xl p-6 shadow-lg border-2 border-gray-100 hover:border-blue-200 hover:shadow-xl transition-all"
+                  className="bg-white rounded-3xl p-6 shadow-lg border border-transparent hover:border-blue-200 hover:shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_1px_-0.5px_rgba(0,0,0,0.06),0px_3px_3px_-1.5px_rgba(0,0,0,0.06),0px_6px_6px_-3px_rgba(0,0,0,0.06),0px_12px_12px_-6px_rgba(0,0,0,0.06),0px_24px_24px_-12px_rgba(0,0,0,0.06)] transition-all"
                 >
                   <div className="flex items-start justify-between mb-4">
                     <div className="w-14 h-14 bg-gradient-to-br from-blue-400 to-blue-600 rounded-2xl flex items-center justify-center shadow-lg">
@@ -1149,7 +1149,7 @@ export default function Admin({
                 <motion.div 
                   variants={fadeInUp}
                   whileHover={{ scale: 1.05, y: -5 }}
-                  className="bg-white rounded-3xl p-6 shadow-lg border-2 border-gray-100 hover:border-green-200 hover:shadow-xl transition-all"
+                  className="bg-white rounded-3xl p-6 shadow-lg border border-transparent hover:border-green-200 hover:shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_1px_-0.5px_rgba(0,0,0,0.06),0px_3px_3px_-1.5px_rgba(0,0,0,0.06),0px_6px_6px_-3px_rgba(0,0,0,0.06),0px_12px_12px_-6px_rgba(0,0,0,0.06),0px_24px_24px_-12px_rgba(0,0,0,0.06)] transition-all"
                 >
                   <div className="flex items-start justify-between mb-4">
                     <div className="w-14 h-14 bg-gradient-to-br from-green-400 to-green-600 rounded-2xl flex items-center justify-center shadow-lg">
@@ -1165,7 +1165,7 @@ export default function Admin({
                 <motion.div 
                   variants={fadeInUp}
                   whileHover={{ scale: 1.05, y: -5 }}
-                  className="bg-white rounded-3xl p-6 shadow-lg border-2 border-gray-100 hover:border-pink-200 hover:shadow-xl transition-all"
+                  className="bg-white rounded-3xl p-6 shadow-lg border border-transparent hover:border-pink-200 hover:shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_1px_-0.5px_rgba(0,0,0,0.06),0px_3px_3px_-1.5px_rgba(0,0,0,0.06),0px_6px_6px_-3px_rgba(0,0,0,0.06),0px_12px_12px_-6px_rgba(0,0,0,0.06),0px_24px_24px_-12px_rgba(0,0,0,0.06)] transition-all"
                 >
                   <div className="flex items-start justify-between mb-4">
                     <div className="w-14 h-14 bg-gradient-to-br from-[#ff7a4a] to-[#ff6fb3] rounded-2xl flex items-center justify-center shadow-lg">
@@ -1181,7 +1181,7 @@ export default function Admin({
                 <motion.div 
                   variants={fadeInUp}
                   whileHover={{ scale: 1.05, y: -5 }}
-                  className="bg-white rounded-3xl p-6 shadow-lg border-2 border-gray-100 hover:border-purple-200 hover:shadow-xl transition-all"
+                  className="bg-white rounded-3xl p-6 shadow-lg border border-transparent hover:border-purple-200 hover:shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_1px_-0.5px_rgba(0,0,0,0.06),0px_3px_3px_-1.5px_rgba(0,0,0,0.06),0px_6px_6px_-3px_rgba(0,0,0,0.06),0px_12px_12px_-6px_rgba(0,0,0,0.06),0px_24px_24px_-12px_rgba(0,0,0,0.06)] transition-all"
                 >
                   <div className="flex items-start justify-between mb-4">
                     <div className="w-14 h-14 bg-gradient-to-br from-purple-400 to-purple-600 rounded-2xl flex items-center justify-center shadow-lg">
@@ -1195,7 +1195,7 @@ export default function Admin({
                 </motion.div>
               </motion.div>
 
-              <div className="rounded-3xl border-2 border-gray-100 bg-white shadow-xl overflow-hidden">
+              <div className="rounded-3xl border border-transparent bg-white shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_1px_-0.5px_rgba(0,0,0,0.06),0px_3px_3px_-1.5px_rgba(0,0,0,0.06),0px_6px_6px_-3px_rgba(0,0,0,0.06),0px_12px_12px_-6px_rgba(0,0,0,0.06),0px_24px_24px_-12px_rgba(0,0,0,0.06)] overflow-hidden">
                 <div className="p-6 border-b-2 border-gray-100 bg-gradient-to-r from-pink-50 to-purple-50">
                   <h3 className="text-2xl font-bold text-gray-900">Recent Payouts</h3>
                 </div>
@@ -1266,7 +1266,7 @@ export default function Admin({
                   key={s.id}
                   variants={fadeInUp}
                   whileHover={{ scale: 1.03, y: -5 }}
-                  className="bg-white rounded-3xl border-2 border-gray-100 p-6 shadow-lg hover:shadow-2xl hover:border-green-200 transition-all"
+                  className="bg-white rounded-3xl border border-transparent p-6 shadow-lg hover:shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_1px_-0.5px_rgba(0,0,0,0.06),0px_3px_3px_-1.5px_rgba(0,0,0,0.06),0px_6px_6px_-3px_rgba(0,0,0,0.06),0px_12px_12px_-6px_rgba(0,0,0,0.06),0px_24px_24px_-12px_rgba(0,0,0,0.06)] hover:border-green-200 transition-all"
                 >
                   <div className="flex items-start gap-4 mb-4">
                     <div className="w-14 h-14 bg-gradient-to-br from-green-400 to-emerald-500 rounded-2xl flex items-center justify-center shadow-lg">
@@ -1289,7 +1289,7 @@ export default function Admin({
           )}
 
           {tab === "UIDs" && (
-            <div className="overflow-auto rounded-3xl border-2 border-gray-100 bg-white shadow-xl">
+            <div className="overflow-auto rounded-3xl border border-transparent bg-white shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_1px_-0.5px_rgba(0,0,0,0.06),0px_3px_3px_-1.5px_rgba(0,0,0,0.06),0px_6px_6px_-3px_rgba(0,0,0,0.06),0px_12px_12px_-6px_rgba(0,0,0,0.06),0px_24px_24px_-12px_rgba(0,0,0,0.06)]">
               <table className="w-full text-sm">
                 <thead>
                   <tr className="text-left bg-gradient-to-r from-pink-50 to-purple-50">
@@ -1346,7 +1346,7 @@ export default function Admin({
           className="fixed bottom-8 right-8 z-50"
         >
           <div className={[
-            "rounded-2xl px-6 py-4 shadow-2xl border-2 flex items-center gap-3 min-w-[300px]",
+            "rounded-2xl px-6 py-4 shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_1px_-0.5px_rgba(0,0,0,0.06),0px_3px_3px_-1.5px_rgba(0,0,0,0.06),0px_6px_6px_-3px_rgba(0,0,0,0.06),0px_12px_12px_-6px_rgba(0,0,0,0.06),0px_24px_24px_-12px_rgba(0,0,0,0.06)] border-2 flex items-center gap-3 min-w-[300px]",
             toast.type === 'success' 
               ? "bg-gradient-to-r from-green-400 to-emerald-500 border-green-300 text-white" 
               : "bg-gradient-to-r from-red-400 to-rose-500 border-red-300 text-white"

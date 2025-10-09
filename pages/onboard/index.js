@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { useState } from 'react';
+import ImageModalGallery from '../../components/ImageModalGallery';
 
 export default function OnboardIndex() {
   const [shareError, setShareError] = useState('');
@@ -40,38 +41,27 @@ export default function OnboardIndex() {
   };
 
   return (
-    <div className="min-h-screen pt-20" style={{ backgroundColor: '#FFFFFF' }}>
-      {/* Background decorations */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <motion.div
-          animate={{
-            scale: [1, 1.2, 1],
-            rotate: [0, 90, 0]
-          }}
-          transition={{ duration: 20, repeat: Infinity }}
-          className="absolute -top-40 -right-40 w-64 h-64 md:w-96 md:h-96 rounded-full blur-3xl opacity-30"
-          style={{ background: 'linear-gradient(to bottom right, #FFD4B8, #FF8FCF)' }}
-        />
-        <motion.div
-          animate={{
-            scale: [1, 1.3, 1],
-            rotate: [0, -90, 0]
-          }}
-          transition={{ duration: 25, repeat: Infinity }}
-          className="absolute -bottom-40 -left-40 w-64 h-64 md:w-96 md:h-96 rounded-full blur-3xl opacity-30"
-          style={{ background: 'linear-gradient(to bottom right, #FFA08A, #FFD4B8)' }}
-        />
-      </div>
-
-      <div className="max-w-6xl mx-auto px-6 py-16 relative z-10">
-        {/* Hero Section */}
+    <div className="min-h-screen bg-white pt-40 pb-20">
+      {/* Hero Content */}
+      <div className="max-w-[1400px] mx-auto px-8 pb-24 md:pb-32">
         <motion.section
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
-          className="text-center mb-20"
+          className="text-center"
         >
-          <h1 className="text-5xl md:text-7xl font-black text-gray-900 mb-6 leading-tight">
+          {/* Trust Badge */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: 0.2 }}
+            className="inline-flex items-center gap-2 bg-gray-100 px-4 py-2 rounded-full mb-12 text-sm font-bold text-gray-700"
+          >
+            <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
+            Free display • Zero inventory • Automatic commissions
+          </motion.div>
+
+          <h1 className="text-7xl md:text-9xl font-black text-gray-900 mb-10 leading-tight">
             Your Store Can{' '}
             <span className="block mt-2">
               Earn More — With{' '}
@@ -80,18 +70,18 @@ export default function OnboardIndex() {
               </span>
             </span>
           </h1>
-          <p className="text-xl md:text-2xl text-gray-700 max-w-3xl mx-auto leading-relaxed mb-12">
+          <p className="text-2xl md:text-4xl text-gray-700 max-w-4xl mx-auto leading-relaxed mb-16">
             Free displays. Zero risk. Automatic commissions on every sale.
             Choose your path below.
           </p>
 
           {/* Two-Path CTA Buttons */}
-          <div className="flex flex-col md:flex-row gap-6 justify-center items-center mb-16">
+          <div className="flex flex-col md:flex-row gap-6 justify-center items-center mb-20">
             <Link href="/onboard/register">
               <motion.button
                 whileHover={{ scale: 1.05, y: -5 }}
                 whileTap={{ scale: 0.95 }}
-                className="px-10 py-5 rounded-2xl text-xl font-black shadow-xl hover:shadow-2xl transition-all text-white w-full md:w-auto"
+                className="px-10 py-5 rounded-2xl text-xl md:text-2xl font-black shadow-xl hover:shadow-2xl transition-all text-white w-full md:w-auto"
                 style={{ background: 'linear-gradient(to right, #FFA08A, #FF8FCF)' }}
               >
                 I'm a Franchise Owner →
@@ -101,7 +91,7 @@ export default function OnboardIndex() {
               whileHover={{ scale: 1.05, y: -5 }}
               whileTap={{ scale: 0.95 }}
               onClick={handleManagerShare}
-              className="px-10 py-5 rounded-2xl text-xl font-black shadow-xl hover:shadow-2xl transition-all bg-white border-4 w-full md:w-auto"
+              className="px-10 py-5 rounded-2xl text-xl md:text-2xl font-black shadow-xl hover:shadow-2xl transition-all bg-white border-4 w-full md:w-auto"
               style={{ borderColor: '#FF8FCF', color: '#FF8FCF' }}
             >
               I'm a Manager — Share This
@@ -109,25 +99,99 @@ export default function OnboardIndex() {
           </div>
           {shareError && <p className="text-red-600 text-sm">{shareError}</p>}
         </motion.section>
+      </div>
 
-        {/* What You'll Get Section */}
+      {/* Subtle Divider */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-16 md:mb-20">
+        <motion.div
+          initial={{ opacity: 0, scaleX: 0 }}
+          whileInView={{ opacity: 1, scaleX: 1 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+          className="h-0.5 bg-gradient-to-r from-transparent via-gray-400 to-transparent max-w-5xl mx-auto"
+        />
+      </div>
+
+      {/* Main Content */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* See What You're Getting Section */}
+        <motion.section
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+          className="mb-16 md:mb-20"
+        >
+          <div className="text-center mb-8 md:mb-12">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-gray-900 mb-4">
+              See What You're Getting
+            </h2>
+            {/* FREE Tag */}
+            <div className="inline-flex items-center px-5 py-2.5 rounded-full text-base font-black text-white shadow-lg"
+                 style={{ background: 'linear-gradient(to right, #FFA08A, #FF8FCF)' }}>
+              100% FREE
+            </div>
+          </div>
+          <div className="max-w-7xl mx-auto">
+            <div className="bg-gradient-to-br from-gray-50 to-white border-2 border-gray-200 rounded-3xl p-8 md:p-12 lg:p-16">
+              <ImageModalGallery
+                images={[
+                  { src: "/images/image28.jpg", alt: "Pawpaya display hero angle" },
+                  { src: "/images/image29.jpg", alt: "Pawpaya display close up" },
+                  { src: "/images/image30.jpg", alt: "Pawpaya display lifestyle" }
+                ]}
+              />
+            </div>
+          </div>
+        </motion.section>
+
+        {/* How It Works - Moved to top */}
+        <motion.section
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+          className="mb-16 md:mb-20"
+        >
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-gray-900 text-center mb-8 md:mb-12">
+            How It Works
+          </h2>
+
+          <div className="bg-white rounded-3xl md:rounded-[2rem] py-6 md:py-8 px-8 md:px-10 shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_1px_-0.5px_rgba(0,0,0,0.06),0px_3px_3px_-1.5px_rgba(0,0,0,0.06),0px_6px_6px_-3px_rgba(0,0,0,0.06),0px_12px_12px_-6px_rgba(0,0,0,0.06),0px_24px_24px_-12px_rgba(0,0,0,0.06)] border border-transparent">
+            <div className="flex flex-col md:flex-row items-center justify-between gap-6 md:gap-3">
+              {[
+                { step: '1', text: 'Customer sees display' },
+                { step: '2', text: 'Taps phone to order' },
+                { step: '3', text: 'We ship product' },
+                { step: '4', text: 'You earn commission' }
+              ].map((item, idx) => (
+                <div key={idx} className="flex items-center gap-3 md:gap-4 flex-1">
+                  <div className="flex flex-col items-center text-center flex-1">
+                    <div className="w-16 h-16 md:w-20 md:h-20 rounded-full flex items-center justify-center text-2xl md:text-3xl font-black text-white mb-3 shadow-lg"
+                         style={{ background: 'linear-gradient(to bottom right, #FFA08A, #FF8FCF)' }}>
+                      {item.step}
+                    </div>
+                    <p className="text-gray-900 font-bold text-base md:text-lg">{item.text}</p>
+                  </div>
+                  {idx < 3 && (
+                    <div className="hidden md:block text-4xl text-gray-300">→</div>
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
+        </motion.section>
+
+        {/* Three Column Cards Section */}
         <motion.section
           variants={staggerContainer}
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true }}
-          className="mb-20"
+          className="mb-16 md:mb-20"
         >
-          <h2 className="text-4xl md:text-5xl font-black text-gray-900 mb-12 text-center">
-            What You'll Get
-          </h2>
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
             {[
-              {
-                title: 'Free Display',
-                description: 'Professional NFC-enabled display shipped to your store',
-                icon: '📦'
-              },
               {
                 title: 'Zero Inventory',
                 description: 'No products to buy, stock, or manage',
@@ -147,122 +211,88 @@ export default function OnboardIndex() {
               <motion.div
                 key={idx}
                 variants={fadeInUp}
-                className="bg-white rounded-2xl p-6 shadow-xl border-2 border-gray-100 text-center"
+                whileHover={{ y: -5, scale: 1.02 }}
+                className="relative overflow-hidden rounded-3xl md:rounded-[2rem] p-8 md:p-10 shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_1px_-0.5px_rgba(0,0,0,0.06),0px_3px_3px_-1.5px_rgba(0,0,0,0.06),0px_6px_6px_-3px_rgba(0,0,0,0.06),0px_12px_12px_-6px_rgba(0,0,0,0.06),0px_24px_24px_-12px_rgba(0,0,0,0.06)] border border-transparent text-center hover:shadow-xl transition-all"
+                style={{
+                  backgroundImage: 'url(/gradient-bg.png)',
+                  backgroundSize: 'cover',
+                  backgroundPosition: 'center'
+                }}
               >
-                <div className="text-4xl mb-4">{item.icon}</div>
-                <h3 className="text-xl font-bold text-gray-900 mb-2">{item.title}</h3>
-                <p className="text-gray-600 text-sm">{item.description}</p>
+                <div className="absolute inset-0 bg-white opacity-40"></div>
+                <div className="relative z-10">
+                  <div className="text-4xl md:text-5xl mb-4 md:mb-5">{item.icon}</div>
+                  <h3 className="text-xl md:text-2xl font-bold text-gray-900 mb-2 md:mb-3">{item.title}</h3>
+                  <p className="text-gray-700 text-base md:text-lg">{item.description}</p>
+                </div>
               </motion.div>
             ))}
           </div>
         </motion.section>
 
-        {/* Why It Works */}
+        {/* For Managers and For Owners - Unified Block */}
         <motion.section
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
-          className="mb-20"
+          className="mb-12 md:mb-16"
         >
-          <div className="bg-white rounded-3xl p-8 md:p-12 shadow-2xl border-2 border-gray-100">
-            <h2 className="text-4xl md:text-5xl font-black text-gray-900 mb-8 text-center">
-              Why It Works
-            </h2>
-            <div className="flex flex-col md:flex-row items-center justify-between gap-8">
-              {[
-                { step: '1', text: 'Customer sees display' },
-                { step: '2', text: 'Taps phone to order' },
-                { step: '3', text: 'We ship product' },
-                { step: '4', text: 'You earn commission' }
-              ].map((item, idx) => (
-                <div key={idx} className="flex flex-col items-center text-center">
-                  <div className="w-16 h-16 rounded-full flex items-center justify-center text-2xl font-black text-white mb-3"
-                       style={{ background: 'linear-gradient(to bottom right, #FFA08A, #FF8FCF)' }}>
-                    {item.step}
-                  </div>
-                  <p className="text-gray-700 font-semibold">{item.text}</p>
-                  {idx < 3 && (
-                    <div className="hidden md:block text-3xl text-gray-300 mt-4">→</div>
-                  )}
-                </div>
-              ))}
+          <div className="bg-white rounded-3xl md:rounded-[2rem] p-8 md:p-10 shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_1px_-0.5px_rgba(0,0,0,0.06),0px_3px_3px_-1.5px_rgba(0,0,0,0.06),0px_6px_6px_-3px_rgba(0,0,0,0.06),0px_12px_12px_-6px_rgba(0,0,0,0.06),0px_24px_24px_-12px_rgba(0,0,0,0.06)] border border-transparent">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-0">
+              {/* For Managers */}
+              <div className="flex flex-col md:pr-8 md:border-r md:border-gray-200">
+                <h2 className="text-2xl sm:text-3xl md:text-4xl font-black text-gray-900 mb-4 md:mb-5">
+                  For Managers
+                </h2>
+                <p className="text-base md:text-lg text-gray-700 mb-5 md:mb-6 leading-relaxed flex-grow">
+                  Love this idea? Share it with your owner using the button above.
+                  When they approve, you'll be the hero who brought in passive revenue.
+                </p>
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={handleManagerShare}
+                  className="px-6 md:px-8 py-3 md:py-4 rounded-2xl md:rounded-3xl text-base md:text-lg font-black shadow-lg bg-white border-2"
+                  style={{ borderColor: '#FF8FCF', color: '#FF8FCF' }}
+                >
+                  Share With Owner
+                </motion.button>
+              </div>
+
+              {/* For Franchise Owners */}
+              <div className="flex flex-col border-t md:border-t-0 pt-8 md:pt-0 md:pl-8">
+                <h2 className="text-2xl sm:text-3xl md:text-4xl font-black mb-4 md:mb-5 text-gray-900">
+                  For Franchise Owners
+                </h2>
+                <p className="text-base md:text-lg mb-5 md:mb-6 leading-relaxed text-gray-700 flex-grow">
+                  Ready to add a new revenue stream with zero upfront cost?
+                  Register now and we'll ship your free display within 5-7 days.
+                </p>
+                <Link href="/onboard/register">
+                  <motion.button
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    className="px-8 md:px-10 py-3 md:py-4 rounded-2xl md:rounded-3xl text-base md:text-lg font-black transition-all shadow-xl text-white"
+                    style={{ background: 'linear-gradient(to right, #FFA08A, #FF8FCF)' }}
+                  >
+                    Register Now →
+                  </motion.button>
+                </Link>
+              </div>
             </div>
           </div>
-        </motion.section>
 
-        {/* For Managers */}
-        <motion.section
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-          className="mb-20"
-        >
-          <div className="rounded-3xl p-8 md:p-12 shadow-2xl border-2 border-blue-200 bg-gradient-to-br from-blue-50 to-indigo-50">
-            <h2 className="text-3xl md:text-4xl font-black text-gray-900 mb-4">
-              For Managers
-            </h2>
-            <p className="text-lg text-gray-700 mb-6 leading-relaxed">
-              Love this idea? Share it with your owner using the button above.
-              When they approve, you'll be the hero who brought in passive revenue.
-            </p>
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              onClick={handleManagerShare}
-              className="px-8 py-4 rounded-2xl text-lg font-black shadow-lg bg-white border-2"
-              style={{ borderColor: '#FF8FCF', color: '#FF8FCF' }}
-            >
-              Share With Owner
-            </motion.button>
-          </div>
-        </motion.section>
-
-        {/* For Owners */}
-        <motion.section
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-          className="mb-20"
-        >
-          <div className="rounded-3xl p-8 md:p-12 shadow-2xl text-white"
-               style={{ background: 'linear-gradient(to bottom right, #FFA08A, #FF8FCF)' }}>
-            <h2 className="text-3xl md:text-4xl font-black mb-4">
-              For Franchise Owners
-            </h2>
-            <p className="text-lg mb-6 leading-relaxed opacity-95">
-              Ready to add a new revenue stream with zero upfront cost?
-              Register now and we'll ship your free display within 5-7 days.
-            </p>
-            <Link href="/onboard/register">
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                className="bg-white px-10 py-4 rounded-2xl text-lg font-black hover:bg-gray-50 transition-all shadow-xl"
-                style={{ color: '#FF8FCF' }}
-              >
-                Register Now →
-              </motion.button>
+          {/* Back Link */}
+          <div className="text-center pt-12 md:pt-16">
+            <Link href="/onboard/about" className="text-gray-600 hover:text-gray-900 font-bold inline-flex items-center gap-2 hover:gap-3 transition-all">
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+              </svg>
+              Learn More About Pawpaya
             </Link>
           </div>
         </motion.section>
-
-        {/* Back Link */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          className="text-center"
-        >
-          <Link href="/onboard/about" className="text-gray-600 hover:text-gray-900 font-bold inline-flex items-center gap-2 hover:gap-3 transition-all">
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-            </svg>
-            Learn More About Pawpaya
-          </Link>
-        </motion.div>
       </div>
     </div>
   );

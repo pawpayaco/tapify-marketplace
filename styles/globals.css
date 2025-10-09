@@ -2,6 +2,145 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Font Face Declarations */
+@font-face {
+  font-family: 'Articulat CF';
+  src: url('/fonts/ArticulatCF-Heavy.otf') format('opentype');
+  font-weight: 800;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Geist';
+  src: url('/fonts/Geist-Regular.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Geist';
+  src: url('/fonts/Geist-Medium.woff2') format('woff2');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Geist';
+  src: url('/fonts/Geist-SemiBold.woff2') format('woff2');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Global Typography Styles with Expanded Letter Spacing */
+@layer base {
+  html {
+    font-family: 'Geist', system-ui, -apple-system, sans-serif !important;
+    letter-spacing: 0.01em !important;
+  }
+
+  body {
+    font-family: 'Geist', system-ui, -apple-system, sans-serif !important;
+    letter-spacing: 0.01em !important;
+  }
+
+  /* All headings use Articulat CF Heavy with expanded letter spacing */
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Articulat CF', -apple-system, system-ui, sans-serif !important;
+    font-weight: 800 !important;
+    letter-spacing: 0.02em !important;
+  }
+
+  /* Heading sizes: 48-64px range */
+  h1 {
+    font-size: clamp(48px, 5vw, 64px) !important;
+    line-height: 1.2 !important;
+    letter-spacing: 0.02em !important;
+    font-weight: 800 !important;
+  }
+
+  h2 {
+    font-size: clamp(40px, 4vw, 56px) !important;
+    line-height: 1.2 !important;
+    letter-spacing: 0.02em !important;
+    font-weight: 800 !important;
+  }
+
+  h3 {
+    font-size: clamp(32px, 3.5vw, 48px) !important;
+    line-height: 1.2 !important;
+    letter-spacing: 0.02em !important;
+    font-weight: 800 !important;
+  }
+
+  /* Subheading sizes: 24-28px range */
+  h4, h5, h6 {
+    font-size: clamp(24px, 2.5vw, 28px) !important;
+    line-height: 1.4 !important;
+    letter-spacing: 0.01em !important;
+    font-weight: 800 !important;
+  }
+
+  /* All body text uses Geist with expanded letter spacing */
+  p, span, a, li, td, th, label, div {
+    font-family: 'Geist', system-ui, -apple-system, sans-serif !important;
+    letter-spacing: 0.01em !important;
+  }
+
+  /* Form elements use Geist */
+  input, textarea, select, button {
+    font-family: 'Geist', system-ui, -apple-system, sans-serif !important;
+    letter-spacing: 0.01em !important;
+  }
+
+  /* Colored text utilities for multi-color headings */
+  .text-gradient-coral {
+    background: linear-gradient(135deg, #FF9A8B 0%, #FF6A88 50%, #FF99AC 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .text-gradient-pink {
+    background: linear-gradient(135deg, #FFB8D8 0%, #FFA8C8 50%, #FFC4E8 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .text-coral {
+    color: #FF9A8B !important;
+  }
+
+  .text-pink {
+    color: #FFB8D8 !important;
+  }
+
+  .text-rose {
+    color: #FF6A88 !important;
+  }
+
+  .text-peach {
+    color: #FFC4A0 !important;
+  }
+
+  .text-dark {
+    color: #1a1a1a !important;
+  }
+
+  /* Preserve font settings for colored spans */
+  h1 span, h2 span, h3 span, h4 span, h5 span, h6 span {
+    font-family: inherit !important;
+    font-weight: inherit !important;
+    letter-spacing: inherit !important;
+    font-size: inherit !important;
+    line-height: inherit !important;
+  }
+}
+
 /* Prevent iOS Safari zoom on input focus */
 @media screen and (max-width: 768px) {
   input[type="text"],
@@ -27,28 +166,35 @@
 .glow-button {
   position: relative;
   display: inline-block;
+  border-radius: 9999px;
 }
 
 .glow-button::before {
   content: '';
   position: absolute;
   z-index: 0;
-  inset: -4px;
+  inset: -6px;
   border-radius: 9999px;
   pointer-events: none;
   background: conic-gradient(
     from var(--rotation-angle),
-    #FFB3D9,
-    #FFCCB3,
-    #FFE0CC,
-    #FFB3D9,
-    #FFC4E6,
-    #FFDAB3,
-    #FFB3D9
+    #FFB8D8,
+    #FFC4A0,
+    #FFD9B3,
+    #FFCCEE,
+    #FFA8C8,
+    #FFD4B8,
+    #FFC4E8,
+    #FFBB99,
+    #FFB8D8
   );
-  filter: blur(16px);
-  opacity: 0.7;
+  filter: blur(24px);
+  opacity: 0.8;
   animation: rotate-glow 4s linear infinite;
+  box-shadow:
+    0 0 32px 12px rgba(255, 184, 216, 0.25),
+    0 0 48px 16px rgba(255, 196, 160, 0.20),
+    0 0 64px 20px rgba(255, 204, 238, 0.15);
 }
 
 @keyframes rotate-glow {
@@ -60,4 +206,63 @@
 .glow-button > * {
   position: relative;
   z-index: 1;
+  background: white !important;
+}
+
+/* AGGRESSIVE TYPOGRAPHY OVERRIDES - HIGHEST PRIORITY */
+/* These are outside @layer to ensure they override everything */
+
+/* Default body text */
+html {
+  font-family: 'Geist', system-ui, -apple-system, sans-serif !important;
+  letter-spacing: 0.01em !important;
+}
+
+body {
+  font-family: 'Geist', system-ui, -apple-system, sans-serif !important;
+  letter-spacing: 0.01em !important;
+}
+
+p, span:not(h1 *, h2 *, h3 *, h4 *, h5 *, h6 *), a:not(h1 *, h2 *, h3 *, h4 *, h5 *, h6 *),
+li, td, th, label, div:not(h1 *, h2 *, h3 *, h4 *, h5 *, h6 *) {
+  font-family: 'Geist', system-ui, -apple-system, sans-serif !important;
+  letter-spacing: 0.01em !important;
+}
+
+/* Force Articulat CF Heavy on ALL headings site-wide */
+h1, h1 span, h1 a, h1 div,
+h2, h2 span, h2 a, h2 div,
+h3, h3 span, h3 a, h3 div,
+h4, h4 span, h4 a, h4 div,
+h5, h5 span, h5 a, h5 div,
+h6, h6 span, h6 a, h6 div {
+  font-family: 'Articulat CF', -apple-system, system-ui, sans-serif !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.02em !important;
+}
+
+/* Force heading sizes - SUPER BOLD */
+h1 {
+  font-size: clamp(48px, 5vw, 64px) !important;
+  line-height: 1.2 !important;
+  font-weight: 800 !important;
+}
+
+h2 {
+  font-size: clamp(40px, 4vw, 56px) !important;
+  line-height: 1.2 !important;
+  font-weight: 800 !important;
+}
+
+h3 {
+  font-size: clamp(32px, 3.5vw, 48px) !important;
+  line-height: 1.2 !important;
+  font-weight: 800 !important;
+}
+
+h4, h5, h6 {
+  font-size: clamp(24px, 2.5vw, 28px) !important;
+  line-height: 1.4 !important;
+  letter-spacing: 0.01em !important;
+  font-weight: 800 !important;
 }

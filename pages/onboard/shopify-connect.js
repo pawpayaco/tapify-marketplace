@@ -6,6 +6,7 @@ import Link from 'next/link';
 export default function ShopifyConnect() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
+  const [showSuccessModal, setShowSuccessModal] = useState(true);
 
   const handlePriorityUpgrade = () => {
     // Open Shopify in new tab
@@ -14,7 +15,7 @@ export default function ShopifyConnect() {
 
   const handleSkipToDashboard = async () => {
     setLoading(true);
-    
+
     // Confirm standard display
     try {
       const retailerId = sessionStorage.getItem('onboarding_retailer_id');
@@ -42,96 +43,197 @@ export default function ShopifyConnect() {
   };
 
   return (
-    <div className="min-h-screen pt-20" style={{ backgroundColor: '#FFFFFF' }}>
-      <div className="max-w-4xl mx-auto px-6 py-16">
-        {/* Success Hero */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="text-center mb-12"
+    <div className="min-h-screen bg-white pt-32 pb-16">
+      {/* Success Modal Popup */}
+      {showSuccessModal && (
+        <div
+          className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 px-4"
+          onClick={() => setShowSuccessModal(false)}
         >
-          <div className="text-6xl mb-4">🐾</div>
-          <h1 className="text-4xl md:text-6xl font-black text-gray-900 mb-4">
-            Success! Your Display Order Is Being Processed
-          </h1>
-          <p className="text-xl text-gray-700">
-            Your free Pawpaya display will ship within 5-7 days.
-          </p>
-        </motion.div>
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9, y: 20 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            transition={{ duration: 0.3 }}
+            className="bg-white rounded-3xl p-8 md:p-12 max-w-2xl w-full relative shadow-2xl"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Close Button */}
+            <button
+              onClick={() => setShowSuccessModal(false)}
+              className="absolute top-6 right-6 text-gray-400 hover:text-gray-600 transition-colors"
+            >
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
 
-        {/* Offer Section */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2 }}
-          className="bg-white rounded-3xl p-8 md:p-12 shadow-2xl border-2 mb-8"
-          style={{ borderColor: '#FF8FCF' }}
-        >
-          <h2 className="text-3xl md:text-4xl font-black text-gray-900 mb-4">
-            Upgrade to Priority Shipping for Just $50
-          </h2>
-          <p className="text-lg text-gray-700 mb-6">
-            Get your display before Black Friday and start earning 4× faster.
-            Priority shipping means early arrival and maximum ROI during the busiest shopping season.
-          </p>
+            {/* Success Content */}
+            <div className="text-center">
+              <div className="mb-6">
+                <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <svg className="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  </svg>
+                </div>
+              </div>
 
-          <div className="bg-gradient-to-br from-green-50 to-emerald-50 rounded-2xl p-6 border-2 border-green-200 mb-8">
-            <h3 className="font-black text-xl text-gray-900 mb-3">Priority Benefits:</h3>
-            <ul className="space-y-2 text-gray-700">
-              <li className="flex items-start gap-2">
-                <span className="text-green-600 font-bold">✓</span>
-                <span>2-3 day delivery (vs. 5-7 days standard)</span>
-              </li>
-              <li className="flex items-start gap-2">
-                <span className="text-green-600 font-bold">✓</span>
-                <span>Arrives before Black Friday rush</span>
-              </li>
-              <li className="flex items-start gap-2">
-                <span className="text-green-600 font-bold">✓</span>
-                <span>Start earning commissions sooner</span>
-              </li>
-              <li className="flex items-start gap-2">
-                <span className="text-green-600 font-bold">✓</span>
-                <span>Priority placement in our marketplace</span>
-              </li>
-            </ul>
-          </div>
+              <h1 className="text-3xl sm:text-4xl md:text-5xl font-black text-gray-900 mb-4 leading-tight">
+                Success!{' '}
+                <span style={{ background: 'linear-gradient(to right, #FFA08A, #FF8FCF)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
+                  Your Display Order Is Being Processed
+                </span>
+              </h1>
+              <p className="text-lg md:text-xl text-gray-700 font-medium mb-8">
+                Your free Pawpaya display will ship within 5-7 days.
+              </p>
 
-          <div className="flex flex-col md:flex-row gap-4">
+              {/* OK Button */}
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={() => setShowSuccessModal(false)}
+                className="px-8 py-3 rounded-2xl font-black text-lg text-white shadow-lg"
+                style={{ background: 'linear-gradient(to right, #FFA08A, #FF8FCF)' }}
+              >
+                Got it! →
+              </motion.button>
+            </div>
+          </motion.div>
+        </div>
+      )}
+
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pb-12 md:pb-16">
+        {/* Two Column Layout */}
+        <div className="grid md:grid-cols-2 gap-6 md:gap-8 mb-12">
+
+          {/* LEFT COLUMN - Priority Upgrade */}
+          <motion.div
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.2 }}
+            className="bg-gradient-to-br from-gray-50 to-white border-2 border-gray-200 rounded-3xl p-8 md:p-10"
+          >
+            <div className="mb-6">
+              <h2 className="text-3xl md:text-4xl font-black text-gray-900 mb-3">
+                Upgrade to{' '}
+                <span style={{ background: 'linear-gradient(to right, #FFA08A, #FF8FCF)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
+                  Priority Shipping
+                </span>{' '}
+                for Just $50
+              </h2>
+              <p className="text-base md:text-lg text-gray-700 leading-relaxed">
+                Get your display before Black Friday and start earning 4× faster.
+                Priority shipping means early arrival and maximum ROI during the busiest shopping season.
+              </p>
+            </div>
+
+            <div className="rounded-2xl p-6 mb-8" style={{ background: 'linear-gradient(135deg, #FFF5F0 0%, #FFF0F8 100%)' }}>
+              <h3 className="font-black text-lg text-gray-900 mb-4">Priority Benefits:</h3>
+              <ul className="space-y-3 text-gray-700 text-sm md:text-base">
+                <li className="flex items-start gap-3">
+                  <span className="font-bold text-xl flex-shrink-0" style={{ color: '#FF8FCF' }}>✓</span>
+                  <span>2-3 day delivery (vs. 5-7 days standard)</span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <span className="font-bold text-xl flex-shrink-0" style={{ color: '#FF8FCF' }}>✓</span>
+                  <span>Arrives before Black Friday rush</span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <span className="font-bold text-xl flex-shrink-0" style={{ color: '#FF8FCF' }}>✓</span>
+                  <span>Start earning commissions sooner</span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <span className="font-bold text-xl flex-shrink-0" style={{ color: '#FF8FCF' }}>✓</span>
+                  <span>Priority placement in our marketplace</span>
+                </li>
+              </ul>
+            </div>
+
             <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
+              whileHover={{ scale: 1.02, y: -2 }}
+              whileTap={{ scale: 0.98 }}
               onClick={handlePriorityUpgrade}
-              className="flex-1 py-4 rounded-2xl font-black text-lg text-white shadow-xl"
+              className="w-full py-4 rounded-2xl font-black text-lg text-white shadow-lg"
               style={{ background: 'linear-gradient(to right, #FFA08A, #FF8FCF)' }}
             >
               Upgrade for $50 →
             </motion.button>
+          </motion.div>
+
+          {/* RIGHT COLUMN - Skip to Dashboard */}
+          <motion.div
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.3 }}
+            className="bg-gradient-to-br from-gray-50 to-white border-2 border-gray-200 rounded-3xl p-8 md:p-10"
+          >
+            <div className="mb-6">
+              <h2 className="text-3xl md:text-4xl font-black text-gray-900 mb-3">
+                Continue with Standard Shipping
+              </h2>
+              <p className="text-base md:text-lg text-gray-700 leading-relaxed mb-6">
+                Your display will arrive in 5-7 business days with free standard shipping.
+                You'll still get all the benefits of the Pawpaya program.
+              </p>
+            </div>
+
+            <div className="bg-white rounded-2xl p-6 border border-gray-200 mb-8">
+              <h3 className="font-black text-lg text-gray-900 mb-4">What's Included:</h3>
+              <ul className="space-y-3 text-gray-700 text-sm md:text-base">
+                <li className="flex items-start gap-3">
+                  <span className="text-gray-600 font-bold text-xl flex-shrink-0">✓</span>
+                  <span>Free premium NFC display</span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <span className="text-gray-600 font-bold text-xl flex-shrink-0">✓</span>
+                  <span>Free standard shipping (5-7 days)</span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <span className="text-gray-600 font-bold text-xl flex-shrink-0">✓</span>
+                  <span>Full commission tracking</span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <span className="text-gray-600 font-bold text-xl flex-shrink-0">✓</span>
+                  <span>Access to retailer dashboard</span>
+                </li>
+              </ul>
+            </div>
+
             <motion.button
-              whileHover={{ scale: 1.02 }}
+              whileHover={{ scale: 1.02, y: -2 }}
               whileTap={{ scale: 0.98 }}
               onClick={handleSkipToDashboard}
               disabled={loading}
-              className="flex-1 py-4 rounded-2xl font-bold text-lg bg-white border-2 border-gray-300 text-gray-700 hover:bg-gray-50 disabled:opacity-50"
+              className="w-full py-4 rounded-2xl font-bold text-lg bg-gray-900 text-white hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
             >
-              {loading ? 'Loading...' : 'Skip & Continue to Dashboard'}
+              {loading ? (
+                <span className="flex items-center justify-center gap-2">
+                  <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  </svg>
+                  Loading...
+                </span>
+              ) : 'Skip & Continue to Dashboard'}
             </motion.button>
-          </div>
-        </motion.div>
+          </motion.div>
+        </div>
 
         {/* Final Reassurance */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ delay: 0.4 }}
-          className="text-center text-gray-600"
+          transition={{ delay: 0.5 }}
+          className="text-center"
         >
-          <p className="mb-4">
-            Either way, you're all set! We'll send tracking info to your email as soon as your display ships.
-          </p>
-          <p className="font-bold text-gray-900">
-            Welcome to the Tapify network. 🎉
-          </p>
+          <div className="bg-white rounded-2xl p-6 shadow-md inline-block">
+            <p className="text-gray-600 text-base md:text-lg mb-2">
+              Either way, you're all set! We'll send tracking info to your email as soon as your display ships.
+            </p>
+            <p className="font-black text-gray-900 text-lg md:text-xl">
+              Welcome to the Tapify network. 🎉
+            </p>
+          </div>
         </motion.div>
       </div>
     </div>

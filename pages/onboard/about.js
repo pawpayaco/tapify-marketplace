@@ -1,6 +1,5 @@
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import Image from 'next/image';
 
 export default function AboutPawpaya() {
   // Animation variants
@@ -20,142 +19,176 @@ export default function AboutPawpaya() {
   };
 
   return (
-    <div className="min-h-screen" style={{ backgroundColor: '#FFFFFF' }}>
-      {/* Hero Section with Gradient Header */}
-      <div className="relative overflow-hidden">
-        {/* Gradient Background Image */}
-        <div className="absolute inset-0 w-full h-full">
-          <Image
-            src="/images/gradient-header.png"
-            alt="Header background"
-            fill
-            className="object-cover"
-            priority
-          />
-          {/* Overlay for better text readability */}
-          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-white/20 to-white"></div>
-        </div>
-
-        {/* Hero Content */}
-        <div className="relative z-10 max-w-6xl mx-auto px-6 py-32 md:py-40">
-          <motion.section
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            className="text-center"
+    <div className="min-h-screen bg-white pt-32 pb-16">
+      {/* Hero Content */}
+      <div className="max-w-[1400px] mx-auto px-6 md:px-8 pb-20 md:pb-32">
+        <motion.section
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          className="text-center"
+        >
+          {/* Trust Badge */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: 0.2 }}
+            className="inline-flex items-center gap-2 bg-gray-100 px-4 py-2 rounded-full mb-8 text-sm font-bold text-gray-700"
           >
-            <h1 className="text-5xl md:text-7xl font-black text-gray-900 mb-6 leading-tight drop-shadow-sm">
-              The Future of Retail{' '}
-              <span className="block mt-2">
-                Starts With a Tap{' '}
-                <span className="inline-block">🐾</span>
-              </span>
-            </h1>
-            <p className="text-xl md:text-2xl text-gray-800 max-w-3xl mx-auto leading-relaxed mb-8 drop-shadow-sm">
-              We built Pawpaya from a college dorm, bootstrapped to factory-scale production,
-              and now we're bringing zero-inventory retail to stores nationwide.
-            </p>
+            <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
+            Expanding nationwide • Proven retail system • Join wave one
+          </motion.div>
+
+          <h1 className="text-6xl sm:text-7xl md:text-8xl font-black text-gray-900 mb-8 leading-[1.1]">
+            Meet Pawpaya
+            <span className="block mt-3 bg-gradient-to-r from-[#FFA08A] to-[#FF8FCF] bg-clip-text text-transparent">
+              The Future of Retail
+            </span>
+          </h1>
+
+          <p className="text-2xl sm:text-2xl md:text-3xl text-gray-600 max-w-4xl mx-auto leading-relaxed mb-14 font-medium">
+            We're a pet product brand revolutionizing how customers discover and buy in stores—through tap-to-order displays that turn your counter space into commission-earning real estate.
+          </p>
+
+          {/* CTA Buttons */}
+          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-16">
             <Link href="/onboard">
               <motion.button
-                whileHover={{ scale: 1.05, y: -5 }}
-                whileTap={{ scale: 0.95 }}
-                className="px-10 py-4 rounded-2xl text-lg md:text-xl font-black shadow-xl hover:shadow-2xl transition-all text-white"
+                whileHover={{ scale: 1.05, y: -2 }}
+                whileTap={{ scale: 0.98 }}
+                className="px-12 py-6 rounded-2xl text-2xl font-black shadow-2xl hover:shadow-3xl transition-all text-white w-full sm:w-auto"
                 style={{ background: 'linear-gradient(to right, #FFA08A, #FF8FCF)' }}
               >
-                Get Started →
+                Learn About Partnership →
               </motion.button>
             </Link>
-          </motion.section>
-        </div>
+            <motion.a
+              href="#how-it-works"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.98 }}
+              className="px-10 py-5 rounded-2xl text-xl font-bold border-2 border-gray-300 text-gray-700 hover:border-gray-400 transition-all w-full sm:w-auto inline-block cursor-pointer"
+              onClick={(e) => {
+                e.preventDefault();
+                document.getElementById('how-it-works')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+              }}
+            >
+              See How It Works ↓
+            </motion.a>
+          </div>
+
+          {/* Stats Row */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8 max-w-4xl mx-auto">
+            {[
+              { number: '2025', label: 'Founded' },
+              { number: 'NFC', label: 'Tap Technology' },
+              { number: '750+', label: 'Target Stores' },
+              { number: '100%', label: 'Free to Join' }
+            ].map((stat, idx) => (
+              <motion.div
+                key={idx}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.3 + idx * 0.1 }}
+                className="text-center"
+              >
+                <div className="text-4xl md:text-5xl font-black text-gray-900 mb-1">{stat.number}</div>
+                <div className="text-base md:text-lg text-gray-600 font-semibold">{stat.label}</div>
+              </motion.div>
+            ))}
+          </div>
+        </motion.section>
+      </div>
+
+      {/* Subtle Divider */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-16 md:mb-20">
+        <motion.div
+          initial={{ opacity: 0, scaleX: 0 }}
+          whileInView={{ opacity: 1, scaleX: 1 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+          className="h-0.5 bg-gradient-to-r from-transparent via-gray-400 to-transparent max-w-5xl mx-auto"
+        />
       </div>
 
       {/* Main Content */}
-      <div className="max-w-6xl mx-auto px-6 py-16 relative z-10">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
-        {/* Story Section */}
+        {/* Scroll anchor with padding */}
+        <div id="how-it-works" className="pt-24 md:pt-32 -mt-24 md:-mt-32"></div>
+
+        {/* The Opportunity Section */}
         <motion.section
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
-          className="mb-20"
+          className="mb-16 md:mb-20"
         >
-          <div className="bg-white rounded-3xl p-8 md:p-12 shadow-2xl border-2 border-gray-100">
-            <h2 className="text-4xl md:text-5xl font-black text-gray-900 mb-6 text-center">
-              From Handmade Collars to a Nationwide Movement
+          <div className="text-center mb-12 md:mb-16">
+            <h2 className="text-4xl sm:text-5xl md:text-6xl font-black text-gray-900 mb-6 leading-tight">
+              Our Story & What We Do
             </h2>
-            <div className="grid lg:grid-cols-2 gap-8 items-center">
-              <div className="space-y-4 text-lg text-gray-700 leading-relaxed">
-                <p>
-                  Six months ago, we were just college students with four 3D printers crammed into our living room,
-                  hand-finishing every single Pawpaya collar.
-                </p>
-                <p>
-                  We filmed our own content, hosted neighborhood dogs for photoshoots, and built a supply chain
-                  from scratch—all without outside funding.
-                </p>
-                <p>
-                  Now we're scaling that same scrappy energy into a plug-and-play retail system that lets
-                  stores showcase premium products without buying inventory upfront.
-                </p>
+            <p className="text-xl md:text-2xl text-gray-600 max-w-3xl mx-auto">
+              We created Pawpaya to bring the joy of premium pet products to stores everywhere—using NFC tap technology to make discovering and buying our collars effortless for customers and profitable for you
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-2 gap-8 md:gap-12">
+            {/* Left: What You Get */}
+            <div className="bg-gradient-to-br from-gray-50 to-white border-2 border-gray-200 rounded-3xl p-8 md:p-10">
+              <h3 className="text-2xl md:text-3xl font-black text-gray-900 mb-6">Who We Are</h3>
+              <div className="space-y-5">
+                {[
+                  { icon: '🐾', title: 'Pawpaya Pet Collars', desc: 'Adorable, high-quality pet collars crafted to make tails wag and customers smile' },
+                  { icon: '💝', title: 'The Friendship Collar', desc: 'Matching collars for pets and bracelets for humans—celebrating the bond between best friends' },
+                  { icon: '🚀', title: 'Nationwide Rollout', desc: 'Rolling out to 750+ Pet Supplies Plus stores through innovative NFC displays' },
+                  { icon: '✨', title: 'Built on Joy', desc: 'Designed to spread happiness and strengthen the pet-parent bond' }
+                ].map((item, idx) => (
+                  <div key={idx} className="flex gap-4 items-start">
+                    <div className="text-3xl flex-shrink-0">{item.icon}</div>
+                    <div>
+                      <div className="font-bold text-gray-900 text-lg mb-1">{item.title}</div>
+                      <div className="text-gray-600 leading-relaxed">{item.desc}</div>
+                    </div>
+                  </div>
+                ))}
               </div>
-              <div className="relative h-80 rounded-2xl overflow-hidden shadow-2xl">
-                <Image
-                  src="/images/image4.webp"
-                  alt="Pawpaya story"
-                  fill
-                  className="object-cover"
-                />
+            </div>
+
+            {/* Right: How It Works */}
+            <div className="bg-gradient-to-br from-gray-50 to-white border-2 border-gray-200 rounded-3xl p-8 md:p-10">
+              <h3 className="text-2xl md:text-3xl font-black text-gray-900 mb-6">What We Offer</h3>
+              <div className="space-y-6">
+                {[
+                  { step: '1', title: 'NFC Tap Displays', desc: 'Beautiful displays featuring our Friendship Collars—customers tap their phone to browse and buy' },
+                  { step: '2', title: 'Zero Inventory Risk', desc: 'Sample collars for customers to see and touch. Orders ship from us—you never handle inventory' },
+                  { step: '3', title: 'Earn Per Sale', desc: 'Earn commission on every Pawpaya product ordered from your display—completely automatic' },
+                  { step: '4', title: 'Automatic Payouts', desc: 'We track every sale and deposit earnings directly to your account—completely hands-free' }
+                ].map((item, idx) => (
+                  <div key={idx} className="flex gap-4 items-start">
+                    <div className="w-10 h-10 flex-shrink-0 rounded-full bg-gradient-to-br from-[#FFA08A] to-[#FF8FCF] flex items-center justify-center text-white font-black text-lg shadow-lg">
+                      {item.step}
+                    </div>
+                    <div className="flex-1">
+                      <div className="font-black text-gray-900 text-lg mb-1">{item.title}</div>
+                      <div className="text-gray-700 leading-relaxed">{item.desc}</div>
+                    </div>
+                  </div>
+                ))}
               </div>
             </div>
           </div>
-        </motion.section>
 
-        {/* 3-Column Value Section */}
-        <motion.section
-          variants={staggerContainer}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true }}
-          className="mb-20"
-        >
-          <h2 className="text-4xl md:text-5xl font-black text-gray-900 mb-12 text-center">
-            Why Stores Love Tapify
-          </h2>
-          <div className="grid md:grid-cols-3 gap-8">
-            {[
-              {
-                title: 'Free',
-                description: 'Zero cost to get started. We ship the display, you place it in your store.',
-                icon: '🎁',
-                gradient: 'from-[#FFD4B8] to-[#FFA08A]'
-              },
-              {
-                title: 'No Risk',
-                description: 'No inventory to buy. No commitment. Customers order online, we fulfill and ship.',
-                icon: '🛡️',
-                gradient: 'from-[#FF8FCF] to-[#FFD4B8]'
-              },
-              {
-                title: 'Earn Automatically',
-                description: 'Every tap-to-order sale earns your store a commission. Paid directly to your account.',
-                icon: '💰',
-                gradient: 'from-[#FFA08A] to-[#FF8FCF]'
-              }
-            ].map((item, idx) => (
-              <motion.div
-                key={idx}
-                variants={fadeInUp}
-                whileHover={{ y: -10 }}
-                className="bg-white rounded-3xl p-8 shadow-xl border-2 border-gray-100 text-center"
-              >
-                <div className={`w-20 h-20 mx-auto mb-6 rounded-2xl bg-gradient-to-br ${item.gradient} flex items-center justify-center text-4xl shadow-lg`}>
-                  {item.icon}
-                </div>
-                <h3 className="text-2xl font-bold text-gray-900 mb-3">{item.title}</h3>
-                <p className="text-gray-600 leading-relaxed">{item.description}</p>
-              </motion.div>
-            ))}
+          {/* Bottom Trust Bar */}
+          <div className="mt-12 bg-gradient-to-br from-orange-50 to-pink-50 border-2 border-orange-200 rounded-2xl p-6 md:p-8 text-center">
+            <div className="max-w-4xl mx-auto">
+              <p className="text-2xl md:text-3xl font-black mb-3 text-gray-900">
+                The Perfect Win-Win Partnership
+              </p>
+              <p className="text-lg md:text-xl text-gray-700">
+                We handle product creation, fulfillment, customer service, and technology. You provide counter space and earn commission on every sale. It's that simple.
+              </p>
+            </div>
           </div>
         </motion.section>
 
@@ -165,44 +198,37 @@ export default function AboutPawpaya() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
-          className="mb-20"
+          className="mb-12 md:mb-16"
         >
-          <div className="rounded-3xl p-8 md:p-12 shadow-2xl text-white text-center"
+          <div className="rounded-3xl md:rounded-[2rem] p-8 md:p-12 shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_1px_-0.5px_rgba(0,0,0,0.06),0px_3px_3px_-1.5px_rgba(0,0,0,0.06),0px_6px_6px_-3px_rgba(0,0,0,0.06),0px_12px_12px_-6px_rgba(0,0,0,0.06),0px_24px_24px_-12px_rgba(0,0,0,0.06)] text-white text-center"
                style={{ background: 'linear-gradient(to bottom right, #FFA08A, #FF8FCF)' }}>
-            <h2 className="text-4xl md:text-5xl font-black mb-6">
-              Join the Movement
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-5 md:mb-6">
+              Our Expansion & Your Opportunity
             </h2>
-            <p className="text-xl md:text-2xl mb-10 max-w-3xl mx-auto opacity-90">
-              We're building a network of independent retailers who want to offer premium products
-              without the overhead. Be part of wave one.
+            <p className="text-lg sm:text-xl md:text-2xl mb-8 md:mb-10 max-w-4xl mx-auto opacity-90">
+              We started with a simple idea: make in-store shopping as seamless as online. Now we're expanding to hundreds of retail partners nationwide through our NFC tap checkout technology. Your store could be next—earning passive commission while offering customers something they've never seen before.
             </p>
             <Link href="/onboard">
               <motion.button
                 whileHover={{ scale: 1.05, y: -5 }}
                 whileTap={{ scale: 0.95 }}
-                className="bg-white px-12 py-5 rounded-2xl text-xl font-black hover:bg-gray-50 transition-all shadow-2xl"
+                className="bg-white px-10 md:px-12 py-4 md:py-5 rounded-2xl md:rounded-3xl text-lg md:text-xl font-black hover:bg-gray-50 transition-all shadow-2xl"
                 style={{ color: '#FF8FCF' }}
               >
-                Get Your Free Display →
+                See What We're Offering →
               </motion.button>
             </Link>
           </div>
-        </motion.section>
 
-        {/* Final CTA */}
-        <motion.section
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-          className="text-center"
-        >
-          <Link href="/onboard" className="text-gray-600 hover:text-gray-900 font-bold inline-flex items-center gap-2 hover:gap-3 transition-all">
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-            </svg>
-            Continue to Registration
-          </Link>
+          {/* Final CTA */}
+          <div className="text-center pt-12 md:pt-16">
+            <Link href="/onboard" className="text-gray-600 hover:text-gray-900 font-bold inline-flex items-center gap-2 hover:gap-3 transition-all text-base md:text-lg">
+              <svg className="w-4 h-4 md:w-5 md:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+              </svg>
+              Continue to Registration
+            </Link>
+          </div>
         </motion.section>
       </div>
     </div>

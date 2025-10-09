@@ -345,42 +345,46 @@ export default function RetailerDashboard() {
 
   // Get display status based on UID data
   const getDisplayStatus = (uid) => {
-    if (!uid) return { status: 'No display', icon: '❌', color: 'gray' };
-    
+    if (!uid) return { status: 'No display', badge: 'Inactive', color: 'gray', dotColor: 'bg-gray-400' };
+
     // Check if UID is claimed
     if (uid.is_claimed && uid.claimed_at) {
       const storeName = uid.business?.name || 'Unknown Store';
-      return { 
-        status: `Active at ${storeName}`, 
-        icon: '🟢', 
+      return {
+        status: `Active at ${storeName}`,
+        badge: 'Live & Earning',
         color: 'green',
+        dotColor: 'bg-green-500',
         storeName: storeName
       };
     }
-    
+
     // Check if UID is registered but not claimed (shipping/in transit)
     if (uid.registered_at && !uid.is_claimed) {
-      return { 
-        status: 'In transit / shipping', 
-        icon: '🚚', 
-        color: 'blue' 
+      return {
+        status: 'In transit / shipping',
+        badge: 'In Transit',
+        color: 'blue',
+        dotColor: 'bg-blue-500'
       };
     }
-    
+
     // Check if UID exists but not yet shipped (preparing)
     if (uid.uid && !uid.registered_at) {
-      return { 
-        status: 'Preparing your display', 
-        icon: '🟡', 
-        color: 'yellow' 
+      return {
+        status: 'Preparing your display',
+        badge: 'Preparing',
+        color: 'yellow',
+        dotColor: 'bg-yellow-500'
       };
     }
-    
+
     // Fallback for unknown status
-    return { 
-      status: 'Pending', 
-      icon: '⏳', 
-      color: 'gray' 
+    return {
+      status: 'Pending',
+      badge: 'Pending',
+      color: 'gray',
+      dotColor: 'bg-gray-400'
     };
   };
 
@@ -588,51 +592,48 @@ export default function RetailerDashboard() {
       />
       <div className="min-h-screen pt-20" style={{ backgroundColor: '#FFFFFF' }}>
       {/* Header */}
-      <motion.div 
+      <motion.div
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
-        className="bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3] text-white py-12 px-6 shadow-lg relative overflow-hidden"
+        className="bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3] text-white shadow-lg relative overflow-hidden"
       >
-        {/* Background decoration */}
-        <div className="absolute inset-0 opacity-10">
-          <div className="absolute top-0 right-0 w-64 h-64 md:w-96 md:h-96 bg-white rounded-full blur-3xl"></div>
-          <div className="absolute bottom-0 left-0 w-64 h-64 md:w-96 md:h-96 bg-white rounded-full blur-3xl"></div>
+        <div className="absolute inset-0 opacity-10 pointer-events-none">
+          <div className="absolute top-0 right-0 w-96 h-96 bg-white rounded-full blur-3xl"></div>
+          <div className="absolute bottom-0 left-0 w-96 h-96 bg-white rounded-full blur-3xl"></div>
         </div>
 
-        <div className="max-w-7xl mx-auto relative z-10">
-          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-            <div>
-              <motion.h1
+        <div className="relative z-10 w-full">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 md:py-10">
+            <div className="flex items-start justify-between gap-4">
+              <motion.div
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.5, delay: 0.2 }}
-                className="text-3xl md:text-5xl font-bold mb-2"
+                className="flex-1 min-w-0"
               >
-                Your Dashboard
-              </motion.h1>
-              <motion.p
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.5, delay: 0.3 }}
-                className="text-white/90 text-base md:text-lg"
+                <h1 className="text-lg sm:text-xl md:text-2xl font-bold leading-tight mb-2">
+                  Your Dashboard
+                </h1>
+                <p className="text-white/90 text-xs leading-relaxed">
+                  Welcome back! Here's how your displays are performing.
+                </p>
+              </motion.div>
+
+              <motion.div
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.5, delay: 0.4 }}
+                className="flex-shrink-0 self-start"
               >
-                Welcome back! Here's how your displays are performing.
-              </motion.p>
+                <Link
+                  href="/"
+                  className="bg-white/20 hover:bg-white/30 text-white px-4 sm:px-6 py-2 sm:py-3 rounded-xl font-semibold transition-all backdrop-blur-sm hover:scale-105 text-sm sm:text-base whitespace-nowrap"
+                >
+                  ← Home
+                </Link>
+              </motion.div>
             </div>
-            <motion.div 
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.5, delay: 0.4 }}
-              className="flex gap-3"
-            >
-              <Link 
-                href="/"
-                className="bg-white/20 hover:bg-white/30 text-white px-6 py-3 rounded-xl font-semibold transition-all backdrop-blur-sm hover:scale-105"
-              >
-                ← Home
-              </Link>
-            </motion.div>
           </div>
         </div>
       </motion.div>
@@ -648,40 +649,40 @@ export default function RetailerDashboard() {
           {/* Weekly Scans */}
           <motion.div
             variants={fadeInUp}
-            className="bg-white rounded-3xl p-4 border-2 border-gray-100 text-center"
+            className="bg-white rounded-3xl p-4 md:p-6 border border-transparent text-center shadow-lg"
           >
-            <h3 className="text-gray-600 text-xs md:text-sm font-semibold mb-1">Weekly Scans</h3>
-            <p className="text-3xl md:text-4xl font-bold text-gray-900 mb-1">{stats.weeklyScans}</p>
+            <p className="text-gray-600 text-base md:text-lg font-semibold mb-2">Weekly scans</p>
+            <p className="text-xl md:text-2xl font-bold text-gray-900 mb-1">{stats.weeklyScans}</p>
             <p className="text-xs text-gray-500">Last 7 days</p>
           </motion.div>
 
           {/* Revenue */}
           <motion.div
             variants={fadeInUp}
-            className="bg-white rounded-3xl p-4 border-2 border-gray-100 text-center"
+            className="bg-white rounded-3xl p-4 md:p-6 border border-transparent text-center shadow-lg"
           >
-            <h3 className="text-gray-600 text-xs md:text-sm font-semibold mb-1">Revenue Earned</h3>
-            <p className="text-3xl md:text-4xl font-bold text-gray-900 mb-1">${stats.revenue.toLocaleString()}</p>
+            <p className="text-gray-600 text-base md:text-lg font-semibold mb-2">Revenue earned</p>
+            <p className="text-xl md:text-2xl font-bold text-gray-900 mb-1">${stats.revenue.toLocaleString()}</p>
             <p className="text-xs text-gray-500">This month</p>
           </motion.div>
 
           {/* Displays Claimed */}
           <motion.div
             variants={fadeInUp}
-            className="bg-white rounded-3xl p-4 border-2 border-gray-100 text-center"
+            className="bg-white rounded-3xl p-4 md:p-6 border border-transparent text-center shadow-lg"
           >
-            <h3 className="text-gray-600 text-xs md:text-sm font-semibold mb-1">Displays Active</h3>
-            <p className="text-3xl md:text-4xl font-bold text-gray-900 mb-1">{stats.displaysClaimed}</p>
+            <p className="text-gray-600 text-base md:text-lg font-semibold mb-2">Displays active</p>
+            <p className="text-xl md:text-2xl font-bold text-gray-900 mb-1">{stats.displaysClaimed}</p>
             <p className="text-xs text-gray-500">In your store</p>
           </motion.div>
 
           {/* Conversion Rate */}
           <motion.div
             variants={fadeInUp}
-            className="bg-white rounded-3xl p-4 border-2 border-gray-100 text-center"
+            className="bg-white rounded-3xl p-4 md:p-6 border border-transparent text-center shadow-lg"
           >
-            <h3 className="text-gray-600 text-xs md:text-sm font-semibold mb-1">Conversion Rate</h3>
-            <p className="text-3xl md:text-4xl font-bold text-gray-900 mb-1">{stats.conversionRate}%</p>
+            <p className="text-gray-600 text-base md:text-lg font-semibold mb-2">Conversion rate</p>
+            <p className="text-xl md:text-2xl font-bold text-gray-900 mb-1">{stats.conversionRate}%</p>
             <p className="text-xs text-gray-500">Scans to orders</p>
           </motion.div>
         </motion.div>
@@ -728,7 +729,7 @@ export default function RetailerDashboard() {
         </motion.div>
 
           {/* Tab Content */}
-          <div className="bg-white rounded-3xl shadow-xl border-2 border-gray-100 p-4 md:p-8">
+          <div className="bg-white rounded-3xl shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_1px_-0.5px_rgba(0,0,0,0.06),0px_3px_3px_-1.5px_rgba(0,0,0,0.06),0px_6px_6px_-3px_rgba(0,0,0,0.06),0px_12px_12px_-6px_rgba(0,0,0,0.06),0px_24px_24px_-12px_rgba(0,0,0,0.06)] border border-transparent p-4 md:p-8">
             {/* Stats Tab */}
             {activeTab === 'stats' && (
               <motion.div
@@ -746,7 +747,7 @@ export default function RetailerDashboard() {
                   className="space-y-6"
                 >
                   <div className="flex items-center justify-between mb-4 md:mb-6">
-                    <h3 className="text-xl md:text-2xl font-bold text-gray-900">Recent Scan Activity</h3>
+                    <h3 className="text-sm md:text-base font-bold text-gray-900">Recent Scan Activity</h3>
                     <div className="text-xs md:text-sm text-gray-500 font-semibold">
                       Showing {scans.length} scans
                     </div>
@@ -755,7 +756,7 @@ export default function RetailerDashboard() {
                   {scans.length > 0 ? (
                     <>
                       {/* Desktop Table View */}
-                      <div className="hidden md:block bg-white rounded-2xl border-2 border-gray-100 overflow-hidden shadow-lg">
+                      <div className="hidden md:block bg-white rounded-2xl border border-transparent overflow-hidden shadow-lg">
                         <table className="w-full">
                           <thead className="bg-gradient-to-r from-pink-50 to-purple-50">
                             <tr>
@@ -816,7 +817,7 @@ export default function RetailerDashboard() {
                             initial={{ opacity: 0, y: 10 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ duration: 0.3, delay: Math.min(idx * 0.05, 0.5) }}
-                            className="bg-white rounded-2xl border-2 border-gray-100 p-4 shadow-lg"
+                            className="bg-white rounded-2xl border border-transparent p-4 shadow-lg"
                           >
                             <div className="flex items-center justify-between mb-3">
                               <div>
@@ -863,7 +864,7 @@ export default function RetailerDashboard() {
                       </div>
                     </>
                   ) : (
-                    <div className="bg-white rounded-2xl border-2 border-gray-100 shadow-lg py-12 md:py-20 text-center">
+                    <div className="bg-white rounded-2xl border border-transparent shadow-lg py-12 md:py-20 text-center">
                       <div className="flex flex-col items-center gap-4 max-w-sm mx-auto px-4">
                         <div className="w-20 h-20 bg-gradient-to-br from-gray-100 to-gray-200 rounded-full flex items-center justify-center">
                           <svg className="w-10 h-10 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -893,8 +894,8 @@ export default function RetailerDashboard() {
 
                 {/* Weekly Performance Chart */}
                 <div>
-                  <h3 className="text-xl md:text-2xl font-bold text-gray-900 mb-4 md:mb-6">Weekly Performance</h3>
-                  <div className="bg-gradient-to-br from-gray-50 to-white rounded-2xl p-4 md:p-8 border-2 border-gray-100">
+                  <h3 className="text-base md:text-lg font-bold text-gray-900 mb-4 md:mb-6">Weekly Performance</h3>
+                  <div className="bg-gradient-to-br from-gray-50 to-white rounded-2xl p-4 md:p-8 border border-transparent">
                     {/* Bar Chart - Scans */}
                     <div className="mb-10">
                       <div className="flex items-center justify-between mb-4">
@@ -963,12 +964,12 @@ export default function RetailerDashboard() {
 
                 {/* Top Products */}
                 <div>
-                  <h3 className="text-xl md:text-2xl font-bold text-gray-900 mb-4 md:mb-6">Top Performing Products</h3>
+                  <h3 className="text-base md:text-lg font-bold text-gray-900 mb-4 md:mb-6">Top Performing Products</h3>
 
                   {topProducts.length > 0 ? (
                     <>
                       {/* Desktop Table View */}
-                      <div className="hidden md:block bg-white rounded-2xl border-2 border-gray-100 overflow-hidden shadow-lg">
+                      <div className="hidden md:block bg-white rounded-2xl border border-transparent overflow-hidden shadow-lg">
                         <table className="w-full">
                           <thead className="bg-gradient-to-r from-pink-50 to-purple-50">
                             <tr>
@@ -1021,7 +1022,7 @@ export default function RetailerDashboard() {
                             initial={{ opacity: 0, y: 10 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ duration: 0.3, delay: idx * 0.1 }}
-                            className="bg-white rounded-2xl border-2 border-gray-100 p-4 shadow-lg"
+                            className="bg-white rounded-2xl border border-transparent p-4 shadow-lg"
                           >
                             <div className="flex items-center gap-2 mb-3">
                               <div className="w-2 h-2 rounded-full bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3]"></div>
@@ -1050,7 +1051,7 @@ export default function RetailerDashboard() {
                       </div>
                     </>
                   ) : (
-                    <div className="bg-white rounded-2xl border-2 border-gray-100 shadow-lg py-12 md:py-20 text-center">
+                    <div className="bg-white rounded-2xl border border-transparent shadow-lg py-12 md:py-20 text-center">
                       <div className="flex flex-col items-center gap-4 max-w-sm mx-auto px-4">
                         <div className="w-20 h-20 bg-gradient-to-br from-gray-100 to-gray-200 rounded-full flex items-center justify-center">
                           <svg className="w-10 h-10 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -1077,7 +1078,7 @@ export default function RetailerDashboard() {
                 transition={{ duration: 0.3 }}
               >
                  <div className="flex items-center justify-between mb-4 md:mb-6">
-                   <h3 className="text-xl md:text-2xl font-bold text-gray-900">Payouts</h3>
+                   <h3 className="text-base md:text-lg font-bold text-gray-900">Payouts</h3>
                   <motion.button
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
@@ -1090,7 +1091,7 @@ export default function RetailerDashboard() {
 
                 {/* Summary Cards */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 mb-4 md:mb-8">
-                  <div className="bg-gradient-to-br from-yellow-50 to-orange-50 border-2 border-yellow-200 rounded-3xl p-4 md:p-6 shadow-lg">
+                  <div className="bg-white border border-transparent rounded-3xl p-4 md:p-6 shadow-lg">
                     <h4 className="font-bold text-gray-700 mb-2 text-sm md:text-base">Pending Earnings</h4>
                     <p className="text-3xl font-bold text-gray-900">
                       ${payoutJobs
@@ -1100,7 +1101,7 @@ export default function RetailerDashboard() {
                     </p>
                   </div>
 
-                  <div className="bg-gradient-to-br from-green-50 to-emerald-50 border-2 border-green-200 rounded-3xl p-4 md:p-6 shadow-lg">
+                  <div className="bg-white border border-transparent rounded-3xl p-4 md:p-6 shadow-lg">
                     <h4 className="font-bold text-gray-700 mb-2 text-sm md:text-base">Total Paid Out</h4>
                     <p className="text-3xl font-bold text-gray-900">
                       ${payoutJobs
@@ -1110,7 +1111,7 @@ export default function RetailerDashboard() {
                     </p>
                   </div>
 
-                  <div className="bg-gradient-to-br from-blue-50 to-cyan-50 border-2 border-blue-200 rounded-3xl p-4 md:p-6 shadow-lg">
+                  <div className="bg-white border border-transparent rounded-3xl p-4 md:p-6 shadow-lg">
                     <h4 className="font-bold text-gray-700 mb-2 text-sm md:text-base">Lifetime Earnings</h4>
                     <p className="text-3xl font-bold text-gray-900">
                       ${payoutJobs
@@ -1124,7 +1125,7 @@ export default function RetailerDashboard() {
                 {payoutJobs.length > 0 ? (
                   <>
                     {/* Desktop Table View */}
-                    <div className="hidden md:block bg-white rounded-2xl border-2 border-gray-100 overflow-hidden shadow-lg">
+                    <div className="hidden md:block bg-white rounded-2xl border border-transparent overflow-hidden shadow-lg">
                       <table className="w-full">
                         <thead className="bg-gradient-to-r from-pink-50 to-purple-50">
                           <tr>
@@ -1175,7 +1176,7 @@ export default function RetailerDashboard() {
                           initial={{ opacity: 0, y: 10 }}
                           animate={{ opacity: 1, y: 0 }}
                           transition={{ duration: 0.3, delay: idx * 0.1 }}
-                          className="bg-white rounded-2xl border-2 border-gray-100 p-4 shadow-lg"
+                          className="bg-white rounded-2xl border border-transparent p-4 shadow-lg"
                         >
                           <div className="flex items-center justify-between mb-3">
                             <div>
@@ -1220,7 +1221,7 @@ export default function RetailerDashboard() {
                     </div>
                   </>
                 ) : (
-                  <div className="bg-white rounded-2xl border-2 border-gray-100 shadow-lg py-12 md:py-20 text-center">
+                  <div className="bg-white rounded-2xl border border-transparent shadow-lg py-12 md:py-20 text-center">
                     <div className="flex flex-col items-center gap-4 max-w-sm mx-auto px-4">
                       <div className="w-20 h-20 bg-gradient-to-br from-gray-100 to-gray-200 rounded-full flex items-center justify-center">
                         <svg className="w-10 h-10 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -1246,10 +1247,10 @@ export default function RetailerDashboard() {
                 transition={{ duration: 0.3 }}
                 className="space-y-4 md:space-y-6"
               >
-                <h3 className="text-xl md:text-2xl font-bold text-gray-900">Store Settings</h3>
+                <h3 className="text-base md:text-lg font-bold text-gray-900">Store Settings</h3>
 
                 {/* Bank Connection Section */}
-                <div className="bg-gradient-to-br from-white to-gray-50 rounded-2xl p-4 md:p-8 border-2 border-gray-100 shadow-lg">
+                <div className="bg-gradient-to-br from-white to-gray-50 rounded-2xl p-4 md:p-8 border border-transparent shadow-lg">
                   <h4 className="font-bold text-gray-900 text-base md:text-lg mb-4 md:mb-6">Bank Connection</h4>
                   
                   {retailerAccount?.plaid_access_token ? (
@@ -1298,7 +1299,7 @@ export default function RetailerDashboard() {
                           whileTap={{ scale: (plaidLoading || connecting) ? 1 : 0.95 }}
                           onClick={handlePlaidConnect}
                           disabled={plaidLoading || connecting || !plaidScriptLoaded}
-                          className={`px-8 py-3 bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3] text-white rounded-2xl font-bold hover:shadow-xl transition-all flex items-center gap-2 mx-auto ${
+                          className={`px-8 py-3 bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3] text-white rounded-2xl font-bold hover:shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_1px_-0.5px_rgba(0,0,0,0.06),0px_3px_3px_-1.5px_rgba(0,0,0,0.06),0px_6px_6px_-3px_rgba(0,0,0,0.06),0px_12px_12px_-6px_rgba(0,0,0,0.06),0px_24px_24px_-12px_rgba(0,0,0,0.06)] transition-all flex items-center gap-2 mx-auto ${
                             (plaidLoading || connecting || !plaidScriptLoaded) ? 'opacity-75 cursor-not-allowed' : ''
                           }`}
                         >
@@ -1315,7 +1316,7 @@ export default function RetailerDashboard() {
                           <motion.button
                             whileHover={{ scale: 1.05 }}
                             whileTap={{ scale: 0.95 }}
-                            className="px-8 py-3 bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3] text-white rounded-2xl font-bold hover:shadow-xl transition-all mx-auto"
+                            className="px-8 py-3 bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3] text-white rounded-2xl font-bold hover:shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_1px_-0.5px_rgba(0,0,0,0.06),0px_3px_3px_-1.5px_rgba(0,0,0,0.06),0px_6px_6px_-3px_rgba(0,0,0,0.06),0px_12px_12px_-6px_rgba(0,0,0,0.06),0px_24px_24px_-12px_rgba(0,0,0,0.06)] transition-all mx-auto"
                           >
                             Complete registration first
                           </motion.button>
@@ -1337,7 +1338,7 @@ export default function RetailerDashboard() {
                 {/* Your Displays Section */}
                 <motion.div
                   whileHover={{ scale: 1.01 }}
-                  className="bg-gradient-to-br from-white to-gray-50 rounded-2xl p-4 md:p-8 border-2 border-gray-100 shadow-lg"
+                  className="bg-gradient-to-br from-white to-gray-50 rounded-2xl p-4 md:p-8 border border-transparent shadow-lg"
                 >
                   <h4 className="font-bold text-gray-900 text-base md:text-lg mb-4 md:mb-6">Your Displays (UIDs)</h4>
 
@@ -1358,11 +1359,12 @@ export default function RetailerDashboard() {
                           animate={{ opacity: 1, y: 0 }}
                           transition={{ delay: idx * 0.1 }}
                           whileHover={{ scale: 1.03, y: -5 }}
-                          className="bg-white rounded-3xl border-2 border-gray-100 p-6 shadow-lg hover:shadow-2xl hover:border-purple-200 transition-all"
+                          className="bg-white rounded-3xl border border-transparent p-6 shadow-lg hover:shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_1px_-0.5px_rgba(0,0,0,0.06),0px_3px_3px_-1.5px_rgba(0,0,0,0.06),0px_6px_6px_-3px_rgba(0,0,0,0.06),0px_12px_12px_-6px_rgba(0,0,0,0.06),0px_24px_24px_-12px_rgba(0,0,0,0.06)] hover:border-purple-200 transition-all"
                         >
                           <div className="flex items-start justify-between mb-4">
-                            <div className="w-14 h-14 bg-gradient-to-br from-purple-400 to-pink-500 rounded-2xl flex items-center justify-center shadow-lg">
-                              <span className="text-2xl">{displayStatus.icon}</span>
+                            <div className="inline-flex items-center gap-2 bg-gray-100 px-4 py-2.5 rounded-full">
+                              <span className={`w-2 h-2 ${displayStatus.dotColor} rounded-full animate-pulse`}></span>
+                              <span className="text-sm font-bold text-gray-700">{displayStatus.badge}</span>
                             </div>
                             <span className={`px-3 py-1.5 rounded-full text-xs font-bold border-2 ${statusColors[displayStatus.color]}`}>
                               {displayStatus.status.includes('Active') ? 'Active' : displayStatus.status.split(' ')[0]}
@@ -1407,7 +1409,7 @@ export default function RetailerDashboard() {
                   </div>
 
                   {uids.length === 0 && (
-                    <div className="bg-white rounded-3xl border-2 border-gray-100 p-12 text-center shadow-lg">
+                    <div className="bg-white rounded-3xl border border-transparent p-12 text-center shadow-lg">
                       <div className="flex flex-col items-center gap-4 max-w-sm mx-auto px-4">
                         <div className="w-20 h-20 bg-gradient-to-br from-gray-100 to-gray-200 rounded-full flex items-center justify-center">
                           <svg className="w-10 h-10 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -1426,25 +1428,25 @@ export default function RetailerDashboard() {
                 {/* Store Profile */}
                 <motion.div
                   whileHover={{ scale: 1.01 }}
-                  className="bg-gradient-to-br from-white to-gray-50 rounded-2xl p-4 md:p-8 border-2 border-gray-100 hover:border-gray-200 transition-all shadow-lg"
+                  className="bg-gradient-to-br from-white to-gray-50 rounded-2xl p-4 md:p-8 border border-transparent hover:border-gray-200 transition-all shadow-lg"
                 >
                   <h4 className="font-bold text-gray-900 text-base md:text-lg mb-4 md:mb-6">Store Profile</h4>
                   <div className="space-y-4">
                     <div>
                       <label className="block text-sm font-bold text-gray-700 mb-2">Store Name</label>
-                      <div className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl bg-gray-50 text-gray-900">
+                      <div className="w-full px-4 py-3 border border-transparent rounded-xl bg-gray-50 text-gray-900">
                         {retailer?.name || 'Not set'}
                       </div>
                     </div>
                     <div>
                       <label className="block text-sm font-bold text-gray-700 mb-2">Address</label>
-                      <div className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl bg-gray-50 text-gray-900">
+                      <div className="w-full px-4 py-3 border border-transparent rounded-xl bg-gray-50 text-gray-900">
                         {retailer?.address || retailer?.location || 'Not set'}
                       </div>
                     </div>
                     <div>
                       <label className="block text-sm font-bold text-gray-700 mb-2">Owner Name</label>
-                      <div className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl bg-gray-50 text-gray-900">
+                      <div className="w-full px-4 py-3 border border-transparent rounded-xl bg-gray-50 text-gray-900">
                         {retailer?.owner_name || 'Not set'}
                       </div>
                     </div>
@@ -1455,7 +1457,7 @@ export default function RetailerDashboard() {
                 {/* Shipping Preferences */}
                 <motion.div
                   whileHover={{ scale: 1.01 }}
-                  className="bg-gradient-to-br from-white to-gray-50 rounded-2xl p-4 md:p-8 border-2 border-gray-100 hover:border-gray-200 transition-all shadow-lg"
+                  className="bg-gradient-to-br from-white to-gray-50 rounded-2xl p-4 md:p-8 border border-transparent hover:border-gray-200 transition-all shadow-lg"
                 >
                   <h4 className="font-bold text-gray-900 text-base md:text-lg mb-4 md:mb-6">Display Shipping Preferences</h4>
                   <div className="space-y-4">
@@ -1500,7 +1502,7 @@ export default function RetailerDashboard() {
                 {/* Display Confirmation */}
                 <motion.div
                   whileHover={{ scale: 1.01 }}
-                  className="bg-gradient-to-br from-white to-gray-50 rounded-2xl p-4 md:p-8 border-2 border-gray-100 hover:border-gray-200 transition-all shadow-lg"
+                  className="bg-gradient-to-br from-white to-gray-50 rounded-2xl p-4 md:p-8 border border-transparent hover:border-gray-200 transition-all shadow-lg"
                 >
                   <h4 className="font-bold text-gray-900 text-base md:text-lg mb-4 md:mb-6">Display Confirmation</h4>
                   <div className="space-y-4">
@@ -1570,25 +1572,25 @@ export default function RetailerDashboard() {
                 {/* Store Contact Information */}
                 <motion.div
                   whileHover={{ scale: 1.01 }}
-                  className="bg-gradient-to-br from-white to-gray-50 rounded-2xl p-4 md:p-8 border-2 border-gray-100 hover:border-gray-200 transition-all shadow-lg"
+                  className="bg-gradient-to-br from-white to-gray-50 rounded-2xl p-4 md:p-8 border border-transparent hover:border-gray-200 transition-all shadow-lg"
                 >
                   <h4 className="font-bold text-gray-900 text-base md:text-lg mb-4 md:mb-6">Store Contact Information</h4>
                   <div className="space-y-4">
                     <div>
                       <label className="block text-sm font-bold text-gray-700 mb-2">Manager Name</label>
-                      <div className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl bg-gray-50 text-gray-900">
+                      <div className="w-full px-4 py-3 border border-transparent rounded-xl bg-gray-50 text-gray-900">
                         {retailer?.manager_name || 'Not set'}
                       </div>
                     </div>
                     <div>
                       <label className="block text-sm font-bold text-gray-700 mb-2">Store Phone</label>
-                      <div className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl bg-gray-50 text-gray-900">
+                      <div className="w-full px-4 py-3 border border-transparent rounded-xl bg-gray-50 text-gray-900">
                         {retailer?.phone || retailer?.store_phone || 'Not set'}
                       </div>
                     </div>
                     <div>
                       <label className="block text-sm font-bold text-gray-700 mb-2">Store Email</label>
-                      <div className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl bg-gray-50 text-gray-900">
+                      <div className="w-full px-4 py-3 border border-transparent rounded-xl bg-gray-50 text-gray-900">
                         {retailer?.email || 'Not set'}
                       </div>
                     </div>
@@ -1599,7 +1601,7 @@ export default function RetailerDashboard() {
                 {/* Account Actions */}
                 <motion.div
                   whileHover={{ scale: 1.01 }}
-                  className="bg-gradient-to-br from-white to-gray-50 rounded-2xl p-4 md:p-8 border-2 border-gray-100 hover:border-gray-200 transition-all shadow-lg"
+                  className="bg-gradient-to-br from-white to-gray-50 rounded-2xl p-4 md:p-8 border border-transparent hover:border-gray-200 transition-all shadow-lg"
                 >
                   <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                     <div>
@@ -1608,7 +1610,7 @@ export default function RetailerDashboard() {
                     </div>
                     <button
                       onClick={() => signOut()}
-                      className="px-6 py-3 font-bold text-gray-700 hover:text-gray-900 transition-all rounded-2xl border-2 border-gray-300/80 hover:border-gray-400 bg-white/80 backdrop-blur-sm hover:bg-white/90 shadow-sm hover:shadow-md"
+                      className="px-6 py-3 font-bold text-gray-700 hover:text-gray-900 transition-all rounded-2xl border border-transparent/80 hover:border-gray-400 bg-white/80 backdrop-blur-sm hover:bg-white/90 shadow-sm hover:shadow-md"
                     >
                       Sign Out
                     </button>
@@ -1627,7 +1629,7 @@ export default function RetailerDashboard() {
                   }}
                   className={`w-full py-4 px-6 rounded-2xl font-bold text-lg transition-all ${
                     settingsChanged
-                      ? 'bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3] text-white hover:shadow-xl cursor-pointer'
+                      ? 'bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3] text-white hover:shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_1px_-0.5px_rgba(0,0,0,0.06),0px_3px_3px_-1.5px_rgba(0,0,0,0.06),0px_6px_6px_-3px_rgba(0,0,0,0.06),0px_12px_12px_-6px_rgba(0,0,0,0.06),0px_24px_24px_-12px_rgba(0,0,0,0.06)] cursor-pointer'
                       : 'bg-gray-200 text-gray-500 cursor-not-allowed'
                   }`}
                   disabled={!settingsChanged}
@@ -1654,15 +1656,15 @@ export default function RetailerDashboard() {
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 20 }}
               onClick={(e) => e.stopPropagation()}
-              className="bg-white rounded-3xl shadow-2xl max-w-md w-full p-6 md:p-8 border-2 border-gray-100"
+              className="bg-white rounded-3xl shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_1px_-0.5px_rgba(0,0,0,0.06),0px_3px_3px_-1.5px_rgba(0,0,0,0.06),0px_6px_6px_-3px_rgba(0,0,0,0.06),0px_12px_12px_-6px_rgba(0,0,0,0.06),0px_24px_24px_-12px_rgba(0,0,0,0.06)] max-w-md w-full p-6 md:p-8 border border-transparent"
             >
               <div className="flex items-center justify-center w-16 h-16 bg-red-100 rounded-full mx-auto mb-4">
                 <svg className="w-8 h-8 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
                 </svg>
               </div>
-              <h3 className="text-xl md:text-2xl font-bold text-gray-900 text-center mb-2">Remove Bank Account?</h3>
-              <p className="text-sm md:text-base text-gray-600 text-center mb-6">
+              <h3 className="text-base md:text-lg font-bold text-gray-900 text-center mb-2">Remove Bank Account?</h3>
+              <p className="text-sm text-gray-600 text-center mb-6">
                 This will disconnect your bank account. Your payout history will be preserved, but you won't be able to receive new payouts until you connect a new bank account.
               </p>
               <div className="flex gap-3">
@@ -1670,7 +1672,7 @@ export default function RetailerDashboard() {
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
                   onClick={() => setShowRemoveConfirm(false)}
-                  className="flex-1 px-6 py-3 border-2 border-gray-200 text-gray-700 rounded-2xl font-bold hover:bg-gray-50 transition-all"
+                  className="flex-1 px-6 py-3 border border-transparent text-gray-700 rounded-2xl font-bold hover:bg-gray-50 transition-all"
                 >
                   Cancel
                 </motion.button>
@@ -1698,7 +1700,7 @@ export default function RetailerDashboard() {
             className="fixed bottom-8 right-8 z-50"
           >
             <div className={[
-              "rounded-2xl px-6 py-4 shadow-2xl border-2 flex items-center gap-3 min-w-[300px]",
+              "rounded-2xl px-6 py-4 shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_1px_-0.5px_rgba(0,0,0,0.06),0px_3px_3px_-1.5px_rgba(0,0,0,0.06),0px_6px_6px_-3px_rgba(0,0,0,0.06),0px_12px_12px_-6px_rgba(0,0,0,0.06),0px_24px_24px_-12px_rgba(0,0,0,0.06)] border-2 flex items-center gap-3 min-w-[300px]",
               toast.type === 'success' 
                 ? "bg-gradient-to-r from-green-400 to-emerald-500 border-green-300 text-white" 
                 : "bg-gradient-to-r from-red-400 to-rose-500 border-red-300 text-white"

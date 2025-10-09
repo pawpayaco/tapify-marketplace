@@ -72,45 +72,33 @@ export default function PrivacyPolicies() {
   };
 
   return (
-    <div className="min-h-screen" style={{ backgroundColor: '#FFFFFF' }}>
+    <div className="min-h-screen bg-white pt-32 pb-16">
       {/* Header */}
-      <motion.div 
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        className="bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3] text-white py-16 px-6 shadow-lg relative overflow-hidden"
-      >
-        {/* Background decoration */}
-        <div className="absolute inset-0 opacity-10">
-          <div className="absolute top-0 right-0 w-96 h-96 bg-white rounded-full blur-3xl"></div>
-          <div className="absolute bottom-0 left-0 w-96 h-96 bg-white rounded-full blur-3xl"></div>
-        </div>
-
-        <div className="max-w-7xl mx-auto relative z-10">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.2 }}
-          >
-            <h1 className="text-4xl md:text-5xl font-bold mb-4">Privacy & Security Policies</h1>
-            <p className="text-xl text-white/90 mb-6">
-              Your security and privacy are our top priorities. Download our comprehensive policy documents below.
-            </p>
-            <Link href="/">
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                className="bg-white/20 hover:bg-white/30 text-white px-6 py-3 rounded-xl font-semibold transition-all backdrop-blur-sm"
-              >
-                ← Back to Home
-              </motion.button>
-            </Link>
-          </motion.div>
-        </div>
-      </motion.div>
+      <div className="max-w-7xl mx-auto px-6 pb-12 md:pb-16">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          className="text-center"
+        >
+          <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">Privacy & Security Policies</h1>
+          <p className="text-xl text-gray-700 mb-6">
+            Your security and privacy are our top priorities. Download our comprehensive policy documents below.
+          </p>
+          <Link href="/">
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              className="bg-white text-gray-700 border-2 border-gray-300 px-6 py-3 rounded-2xl font-bold transition-all hover:bg-gray-50"
+            >
+              ← Back to Home
+            </motion.button>
+          </Link>
+        </motion.div>
+      </div>
 
       {/* Policy Documents */}
-      <div className="max-w-7xl mx-auto px-6 py-16">
+      <div className="max-w-7xl mx-auto px-6">
         <motion.div
           variants={staggerContainer}
           initial="hidden"
@@ -122,7 +110,7 @@ export default function PrivacyPolicies() {
             <motion.div 
               key={sectionIdx}
               variants={fadeInUp}
-              className="bg-white rounded-3xl shadow-xl p-8 border-2 border-gray-100"
+              className="bg-white rounded-3xl shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_1px_-0.5px_rgba(0,0,0,0.06),0px_3px_3px_-1.5px_rgba(0,0,0,0.06),0px_6px_6px_-3px_rgba(0,0,0,0.06),0px_12px_12px_-6px_rgba(0,0,0,0.06),0px_24px_24px_-12px_rgba(0,0,0,0.06)] p-8 border border-transparent"
             >
               {/* Category Header */}
               <div className="mb-6 pb-6 border-b-2 border-gray-100">
@@ -144,7 +132,7 @@ export default function PrivacyPolicies() {
                     download
                     whileHover={{ scale: 1.02, y: -2 }}
                     whileTap={{ scale: 0.98 }}
-                    className="flex items-start gap-4 p-5 rounded-2xl border-2 border-gray-200 hover:border-[#ff6fb3] hover:bg-gradient-to-br hover:from-pink-50 hover:to-purple-50 transition-all group"
+                    className="flex items-start gap-4 p-5 rounded-2xl border border-transparent hover:border-[#ff6fb3] hover:bg-gradient-to-br hover:from-pink-50 hover:to-purple-50 transition-all group"
                   >
                     {/* PDF Icon */}
                     <div className="flex-shrink-0 w-12 h-12 bg-gradient-to-br from-red-500 to-red-600 rounded-xl flex items-center justify-center shadow-md group-hover:shadow-lg transition-all">
@@ -180,7 +168,7 @@ export default function PrivacyPolicies() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
-          className="mt-16 bg-gradient-to-br from-[#fff3ea] to-[#fff6fb] rounded-3xl p-10 text-center border-2 border-[#ff6fb3]/20 shadow-xl"
+          className="mt-16 bg-gradient-to-br from-[#fff3ea] to-[#fff6fb] rounded-3xl p-10 text-center border-2 border-[#ff6fb3]/20 shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_1px_-0.5px_rgba(0,0,0,0.06),0px_3px_3px_-1.5px_rgba(0,0,0,0.06),0px_6px_6px_-3px_rgba(0,0,0,0.06),0px_12px_12px_-6px_rgba(0,0,0,0.06),0px_24px_24px_-12px_rgba(0,0,0,0.06)]"
         >
           <h3 className="text-2xl font-bold text-gray-900 mb-4">Have Questions?</h3>
           <p className="text-gray-700 mb-6 max-w-2xl mx-auto">
@@ -190,7 +178,7 @@ export default function PrivacyPolicies() {
             onClick={copyEmailToClipboard}
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
-            className="inline-flex items-center gap-3 bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3] text-white px-8 py-4 rounded-2xl font-bold shadow-lg hover:shadow-xl transition-all"
+            className="inline-flex items-center gap-3 bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3] text-white px-8 py-4 rounded-2xl font-bold shadow-lg hover:shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_1px_-0.5px_rgba(0,0,0,0.06),0px_3px_3px_-1.5px_rgba(0,0,0,0.06),0px_6px_6px_-3px_rgba(0,0,0,0.06),0px_12px_12px_-6px_rgba(0,0,0,0.06),0px_24px_24px_-12px_rgba(0,0,0,0.06)] transition-all"
           >
             {emailCopied ? (
               <>

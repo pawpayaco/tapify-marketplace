@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion';
 import Link from 'next/link';
+import Image from 'next/image';
 import { useState } from 'react';
 
 const fadeInUp = {
@@ -7,30 +8,26 @@ const fadeInUp = {
   visible: { opacity: 1, y: 0 }
 };
 
-const commitments = [
+const benefits = [
   {
-    icon: '🛍️',
-    title: 'Zero-Inventory Growth',
-    description:
-      'Displays arrive stocked with sample product and NFC/QR tech. Your team promotes, the customer orders online, and we fulfill direct-to-door.'
+    icon: '💰',
+    title: 'Zero Risk, Pure Profit',
+    description: 'No inventory to buy. No upfront costs. Just earn commission on every sale from your display.'
   },
   {
-    icon: '📈',
-    title: 'Live Attribution',
-    description:
-      'Every tap, scan, and order is tagged to your store’s UID. The dashboard shows scans-to-sales conversion so you always know what is working.'
+    icon: '🎁',
+    title: 'Free Display Shipped',
+    description: 'We send you a premium, ready-to-place display with sample products and NFC technology built in.'
   },
   {
-    icon: '💸',
+    icon: '📱',
+    title: 'Tap-to-Buy Technology',
+    description: 'Customers tap their phone on the display, order online instantly, and you earn automatically.'
+  },
+  {
+    icon: '🏦',
     title: 'Automatic Payouts',
-    description:
-      'Plaid + Dwolla deposit retailer commission automatically. No spreadsheets, no manual reconciliations—just cleared ACH transfers each week.'
-  },
-  {
-    icon: '🎨',
-    title: 'Staff-Ready Creative',
-    description:
-      'Use the included talking points, QR flyers, and merchandising shots to keep associates aligned and the display looking fresh in your aisles.'
+    description: 'Get paid weekly via direct deposit. Track every scan and sale in your personal dashboard.'
   }
 ];
 
@@ -40,7 +37,7 @@ const actionCards = [
     title: 'Register Your Store',
     description:
       'Register your franchise and connect it to your display network.',
-    href: '/onboard',
+    href: '/onboard/about',
     buttonLabel: 'Register Now',
     highlight: true
   },
@@ -131,32 +128,16 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen" style={{ backgroundColor: '#FFFFFF' }}>
-      {/* Soft background gradient */}
-      <div className="absolute inset-0 bg-gradient-to-b from-[#FFF3E8] to-transparent h-[400px] pointer-events-none"></div>
-      
+    <div className="min-h-screen bg-white pt-32 pb-16">
       {/* Franchise Owner Funnel Card - First Section */}
-      <section className="pt-28 md:pt-32 pb-8 md:pb-16 px-4 bg-gradient-to-br from-white via-pink-50/30 to-orange-50/30 backdrop-blur-sm relative">
-        <div className="max-w-5xl mx-auto relative">
-          {/* Soft radial glow behind the card */}
-          <div
-            className="absolute inset-0 -m-32 rounded-full opacity-60 blur-[60px] pointer-events-none"
-            style={{
-              background: 'radial-gradient(circle, #FFD8C2 0%, transparent 70%)',
-              width: '600px',
-              height: '600px',
-              left: '50%',
-              top: '50%',
-              transform: 'translate(-50%, -50%)'
-            }}
-          ></div>
-
+      <section className="pb-12 md:pb-20 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-6xl mx-auto">
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
-            className="bg-gradient-to-br from-[#ff7a4a]/90 via-[#ff6fb3]/90 to-[#ff7a4a]/70 rounded-2xl md:rounded-3xl p-6 md:p-12 shadow-2xl text-center relative z-10"
+            className="bg-gradient-to-br from-[#ff7a4a]/90 via-[#ff6fb3]/90 to-[#ff7a4a]/70 rounded-3xl md:rounded-[2rem] p-8 sm:p-10 md:p-12 lg:p-16 shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_1px_-0.5px_rgba(0,0,0,0.06),0px_3px_3px_-1.5px_rgba(0,0,0,0.06),0px_6px_6px_-3px_rgba(0,0,0,0.06),0px_12px_12px_-6px_rgba(0,0,0,0.06),0px_24px_24px_-12px_rgba(0,0,0,0.06)] text-center relative z-10"
           >
             <motion.div
               className="text-white"
@@ -166,33 +147,51 @@ export default function Home() {
             >
               {/* Pre-heading */}
               <motion.div
-                className="text-xs md:text-sm font-medium opacity-80 uppercase tracking-wider mb-3 md:mb-4"
+                className="text-xs md:text-sm font-semibold opacity-90 uppercase tracking-wide mb-3 md:mb-4"
                 initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 0.8, y: 0 }}
+                animate={{ opacity: 0.9, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.1, ease: "easeOut" }}
               >
-                For Pet Stores & Franchise Owners
+                Zero Risk • Zero Inventory • 100% Profit
               </motion.div>
 
               {/* Main heading */}
-              <motion.h3
-                className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-4 md:mb-6 px-2"
+              <motion.h1
+                className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 md:mb-6 px-2 leading-tight"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.2, ease: "easeOut" }}
               >
-                Bring Pawpaya to Your Store
-              </motion.h3>
+                Turn Your Pet Store Into a Profit Center—Free
+              </motion.h1>
 
               {/* Subheader */}
               <motion.p
-                className="hidden md:block text-base sm:text-lg md:text-xl lg:text-2xl text-white/90 mb-6 md:mb-8 max-w-3xl mx-auto leading-relaxed px-2"
+                className="text-lg sm:text-xl md:text-2xl text-white/95 mb-6 md:mb-8 max-w-3xl mx-auto leading-relaxed px-2"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.3, ease: "easeOut" }}
               >
-                Pet lovers everywhere are turning their store shelves into smiles and side income. Claim your free Pawpaya display and see the joy it brings.
+                Get a premium Pawpaya display shipped free. Customers tap to buy, you earn automatic commissions. No inventory, no risk, no upfront costs.
               </motion.p>
+
+              {/* Value props - visible on mobile */}
+              <motion.div
+                className="flex flex-wrap justify-center gap-3 md:gap-4 mb-6 md:mb-8 px-2"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.35, ease: "easeOut" }}
+              >
+                <div className="bg-white/20 backdrop-blur-sm px-4 py-2 rounded-full text-xs md:text-sm font-semibold">
+                  ✓ Free Display
+                </div>
+                <div className="bg-white/20 backdrop-blur-sm px-4 py-2 rounded-full text-xs md:text-sm font-semibold">
+                  ✓ Auto Payouts
+                </div>
+                <div className="bg-white/20 backdrop-blur-sm px-4 py-2 rounded-full text-xs md:text-sm font-semibold">
+                  ✓ Zero Inventory
+                </div>
+              </motion.div>
 
               {/* Button */}
               <motion.div
@@ -201,7 +200,7 @@ export default function Home() {
                 transition={{ duration: 0.6, delay: 0.4, ease: "easeOut" }}
                 className="mt-6 md:mt-0"
               >
-                <Link href="/onboard">
+                <Link href="/onboard/about">
                   <span className="glow-button">
                     <motion.span
                       whileHover={{ scale: 1.05 }}
@@ -222,7 +221,7 @@ export default function Home() {
       </section>
 
       {/* Action Center */}
-      <section className="pt-8 md:pt-12 pb-12 md:pb-20 px-4 bg-gradient-to-br from-white via-pink-50/30 to-orange-50/30 backdrop-blur-sm">
+      <section className="py-16 md:py-24 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -231,7 +230,7 @@ export default function Home() {
             transition={{ duration: 0.6 }}
             className="text-center mb-8 md:mb-14"
           >
-            <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-4 md:mb-6 px-2">
+            <h2 className="text-4xl sm:text-5xl md:text-6xl font-bold text-gray-900 mb-4 md:mb-6 px-2">
               Action Center
             </h2>
 
@@ -240,14 +239,14 @@ export default function Home() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6, delay: 0.4 }}
-              className="text-base sm:text-lg md:text-xl lg:text-2xl text-gray-600 max-w-4xl mx-auto mb-4 md:mb-8 px-2"
+              className="text-lg sm:text-xl md:text-2xl text-gray-600 max-w-4xl mx-auto mb-4 md:mb-8 px-2"
             >
               Stay connected, track your impact, and keep your Pawpaya displays running strong.
             </motion.p>
 
           </motion.div>
 
-          <div className="grid md:grid-cols-2 gap-4 md:gap-6 lg:gap-8">
+          <div className="grid sm:grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
             {actionCards.map((card, index) => {
               const CardWrapper = index < 2 ? 'div' : motion.div;
               const cardProps = index < 2 ? {} : {
@@ -261,12 +260,12 @@ export default function Home() {
                 <CardWrapper
                   key={card.title}
                   {...cardProps}
-                  className="rounded-2xl md:rounded-3xl p-6 md:p-8 shadow-xl border-2 transition-all h-full bg-white border-gray-100 hover:shadow-2xl"
+                  className="rounded-3xl md:rounded-[2rem] p-8 md:p-10 shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_1px_-0.5px_rgba(0,0,0,0.06),0px_3px_3px_-1.5px_rgba(0,0,0,0.06),0px_6px_6px_-3px_rgba(0,0,0,0.06),0px_12px_12px_-6px_rgba(0,0,0,0.06),0px_24px_24px_-12px_rgba(0,0,0,0.06)] border border-transparent transition-all h-full bg-white hover:shadow-[0px_0px_0px_1px_rgba(0,0,0,0.08),0px_2px_2px_-0.5px_rgba(0,0,0,0.08),0px_4px_4px_-1.5px_rgba(0,0,0,0.08),0px_8px_8px_-3px_rgba(0,0,0,0.08),0px_16px_16px_-6px_rgba(0,0,0,0.08),0px_32px_32px_-12px_rgba(0,0,0,0.08)]"
                 >
-                <h3 className="text-xl md:text-2xl font-bold mb-2 md:mb-3 text-gray-900">
+                <h3 className="text-2xl md:text-3xl font-bold mb-3 md:mb-4 text-gray-900">
                   {card.title}
                 </h3>
-                <p className="text-sm md:text-base mb-4 md:mb-6 leading-relaxed text-gray-600">
+                <p className="text-base md:text-lg mb-4 md:mb-6 leading-relaxed text-gray-600">
                   {card.description}
                 </p>
                 {card.copyAction ? (
@@ -308,23 +307,23 @@ export default function Home() {
       </section>
 
       {/* Closing CTA */}
-      <section className="py-12 md:py-20 px-4">
-        <div className="max-w-4xl mx-auto">
+      <section className="py-16 md:py-24 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-5xl mx-auto">
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
-            className="bg-gradient-to-br from-[#fff3ea] via-[#fff6fb] to-[#f0f4ff] rounded-2xl md:rounded-3xl p-6 md:p-10 shadow-2xl border-2 md:border-4 border-white text-center"
+            className="bg-gradient-to-br from-[#fff3ea] via-[#fff6fb] to-[#f0f4ff] rounded-3xl md:rounded-[2rem] p-8 sm:p-10 md:p-12 lg:p-14 shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_1px_-0.5px_rgba(0,0,0,0.06),0px_3px_3px_-1.5px_rgba(0,0,0,0.06),0px_6px_6px_-3px_rgba(0,0,0,0.06),0px_12px_12px_-6px_rgba(0,0,0,0.06),0px_24px_24px_-12px_rgba(0,0,0,0.06)] border border-transparent text-center"
           >
-            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 mb-3 md:mb-4 px-2">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 mb-3 md:mb-4 px-2">
               We've Got Your Back
             </h2>
-            <p className="text-base sm:text-lg md:text-xl text-gray-700 leading-relaxed mb-6 px-2">
+            <p className="text-lg sm:text-xl md:text-2xl text-gray-700 leading-relaxed mb-6 px-2">
               Keep your Pawpaya displays performing their best. We're here to help you boost sales, save time, and turn every display into real store value.
             </p>
               <div className="flex flex-col sm:flex-row gap-3 md:gap-4 justify-center">
-                <Link href="/onboard">
+                <Link href="/onboard/about">
                 <motion.span
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
@@ -345,8 +344,8 @@ export default function Home() {
       </section>
 
       {/* Operating Flow */}
-      <section className="py-12 md:py-20 px-4">
-        <div className="max-w-6xl mx-auto">
+      <section className="py-16 md:py-24 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -354,15 +353,15 @@ export default function Home() {
             transition={{ duration: 0.6 }}
             className="text-center mb-8 md:mb-14"
           >
-            <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-3 md:mb-4 px-2">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 mb-3 md:mb-4 px-2">
               The Franchise Operator's Flywheel
             </h2>
-            <p className="text-base sm:text-lg md:text-xl text-gray-600 max-w-3xl mx-auto px-2">
+            <p className="text-lg sm:text-xl md:text-2xl text-gray-600 max-w-3xl mx-auto px-2">
               Every display follows the same four-step loop. Keep the wheel turning and Tapify handles the rest.
             </p>
           </motion.div>
 
-          <div className="grid sm:grid-cols-2 md:grid-cols-4 gap-6 md:gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
             {journey.map((step, index) => (
               <motion.div
                 key={step.title}
@@ -371,15 +370,15 @@ export default function Home() {
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: index * 0.1 }}
               >
-                <div className="relative bg-white rounded-2xl md:rounded-3xl p-6 md:p-8 shadow-xl border-2 border-gray-100 h-full">
+                <div className="relative bg-white rounded-3xl md:rounded-[2rem] p-8 md:p-10 shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_1px_-0.5px_rgba(0,0,0,0.06),0px_3px_3px_-1.5px_rgba(0,0,0,0.06),0px_6px_6px_-3px_rgba(0,0,0,0.06),0px_12px_12px_-6px_rgba(0,0,0,0.06),0px_24px_24px_-12px_rgba(0,0,0,0.06)] border border-transparent h-full">
                   <div className="absolute -top-4 md:-top-6 left-1/2 transform -translate-x-1/2">
                     <div className="bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3] text-white w-10 h-10 md:w-12 md:h-12 rounded-full flex items-center justify-center font-bold shadow-lg text-sm md:text-base">
                       {index + 1}
                     </div>
                   </div>
-                  <div className="text-3xl md:text-4xl text-center mt-6 md:mt-8 mb-3 md:mb-4">{step.icon}</div>
-                  <h3 className="text-lg md:text-xl font-bold text-gray-900 mb-2 md:mb-3 text-center">{step.title}</h3>
-                  <p className="text-sm md:text-base text-gray-600 text-center leading-relaxed">{step.description}</p>
+                  <div className="text-4xl md:text-5xl text-center mt-6 md:mt-8 mb-3 md:mb-4">{step.icon}</div>
+                  <h3 className="text-xl md:text-2xl font-bold text-gray-900 mb-2 md:mb-3 text-center">{step.title}</h3>
+                  <p className="text-base md:text-lg text-gray-600 text-center leading-relaxed">{step.description}</p>
                 </div>
               </motion.div>
             ))}
@@ -388,8 +387,8 @@ export default function Home() {
       </section>
 
       {/* Roadmap */}
-      <section className="py-12 md:py-20 px-4 bg-gradient-to-br from-pink-50 via-purple-50 to-blue-50">
-        <div className="max-w-6xl mx-auto">
+      <section className="py-16 md:py-24 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -397,15 +396,15 @@ export default function Home() {
             transition={{ duration: 0.6 }}
             className="text-center mb-8 md:mb-12"
           >
-            <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-3 md:mb-4 px-2">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 mb-3 md:mb-4 px-2">
               What's Next on the Tapify Roadmap
             </h2>
-            <p className="text-base sm:text-lg md:text-xl text-gray-600 max-w-3xl mx-auto px-2">
+            <p className="text-lg sm:text-xl md:text-2xl text-gray-600 max-w-3xl mx-auto px-2">
               Phase 1 proves the model with Pawpaya. Here's what we are deploying next to make every franchise location self-propelling.
             </p>
           </motion.div>
 
-          <div className="grid md:grid-cols-3 gap-4 md:gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 md:gap-8">
             {roadmap.map((item, index) => (
               <motion.div
                 key={item.title}
@@ -414,10 +413,10 @@ export default function Home() {
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: index * 0.1 }}
               >
-                <div className="bg-white rounded-2xl md:rounded-3xl p-6 md:p-8 shadow-xl border-2 border-white hover:shadow-2xl transition-all h-full">
-                  <div className="text-xs md:text-sm font-semibold text-[#ff7a4a] mb-2 md:mb-3">Coming Soon</div>
-                  <h3 className="text-lg md:text-xl lg:text-2xl font-bold text-gray-900 mb-2 md:mb-3">{item.title}</h3>
-                  <p className="text-sm md:text-base text-gray-600 leading-relaxed">{item.description}</p>
+                <div className="bg-white rounded-3xl md:rounded-[2rem] p-8 md:p-10 shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_1px_-0.5px_rgba(0,0,0,0.06),0px_3px_3px_-1.5px_rgba(0,0,0,0.06),0px_6px_6px_-3px_rgba(0,0,0,0.06),0px_12px_12px_-6px_rgba(0,0,0,0.06),0px_24px_24px_-12px_rgba(0,0,0,0.06)] border border-transparent hover:shadow-[0px_0px_0px_1px_rgba(0,0,0,0.08),0px_2px_2px_-0.5px_rgba(0,0,0,0.08),0px_4px_4px_-1.5px_rgba(0,0,0,0.08),0px_8px_8px_-3px_rgba(0,0,0,0.08),0px_16px_16px_-6px_rgba(0,0,0,0.08),0px_32px_32px_-12px_rgba(0,0,0,0.08)] transition-all h-full">
+                  <div className="text-sm md:text-base font-semibold text-[#ff7a4a] mb-2 md:mb-3">Coming Soon</div>
+                  <h3 className="text-xl md:text-2xl font-bold text-gray-900 mb-2 md:mb-3">{item.title}</h3>
+                  <p className="text-base md:text-lg text-gray-600 leading-relaxed">{item.description}</p>
                 </div>
               </motion.div>
             ))}
