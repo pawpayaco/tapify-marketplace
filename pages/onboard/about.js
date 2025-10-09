@@ -20,59 +20,57 @@ export default function AboutPawpaya() {
   };
 
   return (
-    <div className="min-h-screen pt-20" style={{ backgroundColor: '#FFFFFF' }}>
-      {/* Background decorations */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <motion.div
-          animate={{
-            scale: [1, 1.2, 1],
-            rotate: [0, 90, 0]
-          }}
-          transition={{ duration: 20, repeat: Infinity }}
-          className="absolute -top-40 -right-40 w-64 h-64 md:w-96 md:h-96 rounded-full blur-3xl opacity-30"
-          style={{ background: 'linear-gradient(to bottom right, #FFD4B8, #FF8FCF)' }}
-        />
-        <motion.div
-          animate={{
-            scale: [1, 1.3, 1],
-            rotate: [0, -90, 0]
-          }}
-          transition={{ duration: 25, repeat: Infinity }}
-          className="absolute -bottom-40 -left-40 w-64 h-64 md:w-96 md:h-96 rounded-full blur-3xl opacity-30"
-          style={{ background: 'linear-gradient(to bottom right, #FFA08A, #FFD4B8)' }}
-        />
+    <div className="min-h-screen" style={{ backgroundColor: '#FFFFFF' }}>
+      {/* Hero Section with Gradient Header */}
+      <div className="relative overflow-hidden">
+        {/* Gradient Background Image */}
+        <div className="absolute inset-0 w-full h-full">
+          <Image
+            src="/images/gradient-header.png"
+            alt="Header background"
+            fill
+            className="object-cover"
+            priority
+          />
+          {/* Overlay for better text readability */}
+          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-white/20 to-white"></div>
+        </div>
+
+        {/* Hero Content */}
+        <div className="relative z-10 max-w-6xl mx-auto px-6 py-32 md:py-40">
+          <motion.section
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            className="text-center"
+          >
+            <h1 className="text-5xl md:text-7xl font-black text-gray-900 mb-6 leading-tight drop-shadow-sm">
+              The Future of Retail{' '}
+              <span className="block mt-2">
+                Starts With a Tap{' '}
+                <span className="inline-block">🐾</span>
+              </span>
+            </h1>
+            <p className="text-xl md:text-2xl text-gray-800 max-w-3xl mx-auto leading-relaxed mb-8 drop-shadow-sm">
+              We built Pawpaya from a college dorm, bootstrapped to factory-scale production,
+              and now we're bringing zero-inventory retail to stores nationwide.
+            </p>
+            <Link href="/onboard">
+              <motion.button
+                whileHover={{ scale: 1.05, y: -5 }}
+                whileTap={{ scale: 0.95 }}
+                className="px-10 py-4 rounded-2xl text-lg md:text-xl font-black shadow-xl hover:shadow-2xl transition-all text-white"
+                style={{ background: 'linear-gradient(to right, #FFA08A, #FF8FCF)' }}
+              >
+                Get Started →
+              </motion.button>
+            </Link>
+          </motion.section>
+        </div>
       </div>
 
+      {/* Main Content */}
       <div className="max-w-6xl mx-auto px-6 py-16 relative z-10">
-        {/* Hero Section */}
-        <motion.section
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          className="text-center mb-20"
-        >
-          <h1 className="text-5xl md:text-7xl font-black text-gray-900 mb-6 leading-tight">
-            The Future of Retail{' '}
-            <span className="block mt-2">
-              Starts With a Tap{' '}
-              <span className="inline-block">🐾</span>
-            </span>
-          </h1>
-          <p className="text-xl md:text-2xl text-gray-700 max-w-3xl mx-auto leading-relaxed mb-8">
-            We built Pawpaya from a college dorm, bootstrapped to factory-scale production,
-            and now we're bringing zero-inventory retail to stores nationwide.
-          </p>
-          <Link href="/onboard">
-            <motion.button
-              whileHover={{ scale: 1.05, y: -5 }}
-              whileTap={{ scale: 0.95 }}
-              className="px-10 py-4 rounded-2xl text-lg md:text-xl font-black shadow-xl hover:shadow-2xl transition-all text-white"
-              style={{ background: 'linear-gradient(to right, #FFA08A, #FF8FCF)' }}
-            >
-              Get Started →
-            </motion.button>
-          </Link>
-        </motion.section>
 
         {/* Story Section */}
         <motion.section
