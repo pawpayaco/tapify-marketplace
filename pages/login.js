@@ -97,25 +97,25 @@ export default function Login() {
   }
 
   return (
-    <div className="min-h-screen bg-white pt-32 pb-16 flex items-center justify-center px-4">
+    <div className="min-h-screen bg-white pt-24 sm:pt-32 pb-8 sm:pb-16 flex items-center justify-center px-4">
       <div className="w-full max-w-md">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
-          className="bg-white rounded-3xl shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_1px_-0.5px_rgba(0,0,0,0.06),0px_3px_3px_-1.5px_rgba(0,0,0,0.06),0px_6px_6px_-3px_rgba(0,0,0,0.06),0px_12px_12px_-6px_rgba(0,0,0,0.06),0px_24px_24px_-12px_rgba(0,0,0,0.06)] border border-transparent p-8"
+          className="bg-white rounded-2xl sm:rounded-3xl shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_1px_-0.5px_rgba(0,0,0,0.06),0px_3px_3px_-1.5px_rgba(0,0,0,0.06),0px_6px_6px_-3px_rgba(0,0,0,0.06),0px_12px_12px_-6px_rgba(0,0,0,0.06),0px_24px_24px_-12px_rgba(0,0,0,0.06)] border border-transparent p-5 sm:p-8"
         >
           {/* Header */}
-          <div className="text-center mb-8">
-            <div className="w-16 h-16 bg-gradient-to-br from-[#ff7a4a] to-[#ff6fb3] rounded-2xl flex items-center justify-center mx-auto mb-4">
-              <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div className="text-center mb-5 sm:mb-8">
+            <div className="w-12 h-12 sm:w-16 sm:h-16 bg-gradient-to-br from-[#ff7a4a] to-[#ff6fb3] rounded-xl sm:rounded-2xl flex items-center justify-center mx-auto mb-3 sm:mb-4">
+              <svg className="w-6 h-6 sm:w-8 sm:h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
               </svg>
             </div>
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">
+            <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-1 sm:mb-2">
               {isSignUp ? 'Create Account' : 'Welcome to Tapify'}
             </h1>
-            <p className="text-gray-600">
+            <p className="text-sm sm:text-base text-gray-600">
               {isSignUp ? 'Sign up to get started with your dashboard' : 'Sign in to access your dashboard'}
             </p>
           </div>
@@ -130,10 +130,10 @@ export default function Login() {
                 exit={{ opacity: 0, x: -20 }}
                 transition={{ duration: 0.3 }}
                 onSubmit={handleSubmit}
-                className="space-y-6"
+                className="space-y-4 sm:space-y-6"
               >
                 <div>
-                  <label htmlFor="email" className="block text-sm font-bold text-gray-700 mb-2">
+                  <label htmlFor="email" className="block text-sm font-bold text-gray-700 mb-1.5 sm:mb-2">
                     Email Address
                   </label>
                   <input
@@ -142,13 +142,13 @@ export default function Login() {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     required
-                    className="w-full px-4 py-3 rounded-2xl border-2 border-gray-200 outline-none focus:ring-2 focus:ring-[#ff6fb3] focus:border-transparent transition-all"
+                    className="w-full px-3 py-2.5 sm:px-4 sm:py-3 text-sm sm:text-base rounded-xl sm:rounded-2xl border-2 border-gray-200 outline-none focus:ring-2 focus:ring-[#ff6fb3] focus:border-transparent transition-all"
                     placeholder="you@example.com"
                   />
                 </div>
 
                 <div>
-                  <label htmlFor="password" className="block text-sm font-bold text-gray-700 mb-2">
+                  <label htmlFor="password" className="block text-sm font-bold text-gray-700 mb-1.5 sm:mb-2">
                     Password
                   </label>
                   <input
@@ -158,7 +158,7 @@ export default function Login() {
                     onChange={(e) => setPassword(e.target.value)}
                     required
                     minLength={6}
-                    className="w-full px-4 py-3 rounded-2xl border-2 border-gray-200 outline-none focus:ring-2 focus:ring-[#ff6fb3] focus:border-transparent transition-all"
+                    className="w-full px-3 py-2.5 sm:px-4 sm:py-3 text-sm sm:text-base rounded-xl sm:rounded-2xl border-2 border-gray-200 outline-none focus:ring-2 focus:ring-[#ff6fb3] focus:border-transparent transition-all"
                     placeholder="••••••••"
                   />
                 </div>
@@ -168,9 +168,9 @@ export default function Login() {
                   <motion.div
                     initial={{ opacity: 0, scale: 0.9 }}
                     animate={{ opacity: 1, scale: 1 }}
-                    className="bg-green-50 border-2 border-green-200 text-green-700 px-4 py-4 rounded-2xl text-sm font-medium flex items-center gap-3"
+                    className="bg-green-50 border-2 border-green-200 text-green-700 px-3 py-3 sm:px-4 sm:py-4 rounded-xl sm:rounded-2xl text-xs sm:text-sm font-medium flex items-center gap-2 sm:gap-3"
                   >
-                    <svg className="w-5 h-5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                    <svg className="w-4 h-4 sm:w-5 sm:h-5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                       <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                     </svg>
                     <span>{error.replace('success:', '')}</span>
@@ -182,9 +182,9 @@ export default function Login() {
                   <motion.div
                     initial={{ opacity: 0, scale: 0.9 }}
                     animate={{ opacity: 1, scale: 1 }}
-                    className="bg-red-50 border-2 border-red-200 text-red-700 px-4 py-4 rounded-2xl text-sm font-medium flex items-center gap-3"
+                    className="bg-red-50 border-2 border-red-200 text-red-700 px-3 py-3 sm:px-4 sm:py-4 rounded-xl sm:rounded-2xl text-xs sm:text-sm font-medium flex items-center gap-2 sm:gap-3"
                   >
-                    <svg className="w-5 h-5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                    <svg className="w-4 h-4 sm:w-5 sm:h-5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                       <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
                     </svg>
                     <span>{error}</span>
@@ -197,7 +197,7 @@ export default function Login() {
                   disabled={submitting}
                   whileHover={!submitting ? { scale: 1.02 } : {}}
                   whileTap={!submitting ? { scale: 0.98 } : {}}
-                  className="w-full bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3] text-white py-3 px-4 rounded-2xl font-bold hover:shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="w-full bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3] text-white py-2.5 sm:py-3 px-4 text-sm sm:text-base rounded-xl sm:rounded-2xl font-bold hover:shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {submitting ? (
                     <span className="flex items-center justify-center gap-2">
@@ -209,20 +209,20 @@ export default function Login() {
                   )}
                 </motion.button>
 
-                <div className="flex items-center justify-between pt-2">
+                <div className="flex items-center justify-between pt-1 sm:pt-2">
                   <button
                     type="button"
                     onClick={() => setIsSignUp(!isSignUp)}
-                    className="text-sm text-[#ff6fb3] hover:text-[#ff58a8] font-medium"
+                    className="text-xs sm:text-sm text-[#ff6fb3] hover:text-[#ff58a8] font-medium"
                   >
                     {isSignUp ? 'Already have an account?' : "Don't have an account?"}
                   </button>
-                  
+
                   {!isSignUp && (
                     <button
                       type="button"
                       onClick={() => router.push('/reset-password')}
-                      className="text-sm text-gray-600 hover:text-[#ff6fb3] font-medium"
+                      className="text-xs sm:text-sm text-gray-600 hover:text-[#ff6fb3] font-medium"
                     >
                       Forgot password?
                     </button>
@@ -238,8 +238,8 @@ export default function Login() {
         </motion.div>
 
         {/* Footer */}
-        <div className="text-center mt-6">
-          <a href="/" className="text-gray-600 hover:text-[#ff6fb3] transition-colors text-sm">
+        <div className="text-center mt-4 sm:mt-6">
+          <a href="/" className="text-gray-600 hover:text-[#ff6fb3] transition-colors text-xs sm:text-sm">
             ← Back to Home
           </a>
         </div>

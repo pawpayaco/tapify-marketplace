@@ -128,16 +128,16 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-white pt-32 pb-16">
+    <div className="min-h-screen bg-white pt-24 sm:pt-32 pb-12 sm:pb-16">
       {/* Franchise Owner Funnel Card - First Section */}
-      <section className="pb-12 md:pb-20 px-4 sm:px-6 lg:px-8">
+      <section className="pb-8 sm:pb-12 md:pb-20 px-4 sm:px-6 lg:px-8">
         <div className="max-w-6xl mx-auto">
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
-            className="bg-gradient-to-br from-[#ff7a4a]/90 via-[#ff6fb3]/90 to-[#ff7a4a]/70 rounded-3xl md:rounded-[2rem] p-8 sm:p-10 md:p-12 lg:p-16 shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_1px_-0.5px_rgba(0,0,0,0.06),0px_3px_3px_-1.5px_rgba(0,0,0,0.06),0px_6px_6px_-3px_rgba(0,0,0,0.06),0px_12px_12px_-6px_rgba(0,0,0,0.06),0px_24px_24px_-12px_rgba(0,0,0,0.06)] text-center relative z-10"
+            className="bg-gradient-to-br from-[#ff7a4a]/90 via-[#ff6fb3]/90 to-[#ff7a4a]/70 rounded-2xl sm:rounded-3xl md:rounded-[2rem] p-6 sm:p-8 md:p-12 lg:p-16 shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_1px_-0.5px_rgba(0,0,0,0.06),0px_3px_3px_-1.5px_rgba(0,0,0,0.06),0px_6px_6px_-3px_rgba(0,0,0,0.06),0px_12px_12px_-6px_rgba(0,0,0,0.06),0px_24px_24px_-12px_rgba(0,0,0,0.06)] text-center relative z-10"
           >
             <motion.div
               className="text-white"
@@ -147,7 +147,7 @@ export default function Home() {
             >
               {/* Pre-heading */}
               <motion.div
-                className="text-xs md:text-sm font-semibold opacity-90 uppercase tracking-wide mb-3 md:mb-4"
+                className="text-xs sm:text-xs md:text-sm font-semibold opacity-90 uppercase tracking-wide mb-2 sm:mb-3 md:mb-4"
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 0.9, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.1, ease: "easeOut" }}
@@ -157,7 +157,7 @@ export default function Home() {
 
               {/* Main heading */}
               <motion.h1
-                className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 md:mb-6 px-2 leading-tight"
+                className="text-2xl sm:text-3xl md:text-5xl lg:text-6xl font-bold mb-3 sm:mb-4 md:mb-6 px-1 sm:px-2 leading-tight"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.2, ease: "easeOut" }}
@@ -167,7 +167,7 @@ export default function Home() {
 
               {/* Subheader */}
               <motion.p
-                className="text-lg sm:text-xl md:text-2xl text-white/95 mb-6 md:mb-8 max-w-3xl mx-auto leading-relaxed px-2"
+                className="text-sm sm:text-lg md:text-2xl text-white/95 mb-4 sm:mb-6 md:mb-8 max-w-3xl mx-auto leading-relaxed px-1 sm:px-2"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.3, ease: "easeOut" }}
@@ -177,18 +177,18 @@ export default function Home() {
 
               {/* Value props - visible on mobile */}
               <motion.div
-                className="flex flex-wrap justify-center gap-3 md:gap-4 mb-6 md:mb-8 px-2"
+                className="flex flex-wrap justify-center gap-2 sm:gap-3 md:gap-4 mb-4 sm:mb-6 md:mb-8 px-1 sm:px-2"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.35, ease: "easeOut" }}
               >
-                <div className="bg-white/20 backdrop-blur-sm px-4 py-2 rounded-full text-xs md:text-sm font-semibold">
+                <div className="bg-white/20 backdrop-blur-sm px-3 py-1.5 sm:px-4 sm:py-2 rounded-full text-xs md:text-sm font-semibold">
                   ✓ Free Display
                 </div>
-                <div className="bg-white/20 backdrop-blur-sm px-4 py-2 rounded-full text-xs md:text-sm font-semibold">
+                <div className="bg-white/20 backdrop-blur-sm px-3 py-1.5 sm:px-4 sm:py-2 rounded-full text-xs md:text-sm font-semibold">
                   ✓ Auto Payouts
                 </div>
-                <div className="bg-white/20 backdrop-blur-sm px-4 py-2 rounded-full text-xs md:text-sm font-semibold">
+                <div className="bg-white/20 backdrop-blur-sm px-3 py-1.5 sm:px-4 sm:py-2 rounded-full text-xs md:text-sm font-semibold">
                   ✓ Zero Inventory
                 </div>
               </motion.div>
@@ -198,14 +198,14 @@ export default function Home() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.4, ease: "easeOut" }}
-                className="mt-6 md:mt-0"
+                className="mt-4 sm:mt-6 md:mt-0"
               >
                 <Link href="/onboard/about">
                   <span className="glow-button">
                     <motion.span
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
-                      className="inline-flex items-center justify-center text-[#ff7a4a] px-6 md:px-8 py-3 md:py-4 font-bold text-base md:text-xl shadow-xl hover:shadow-2xl transition-all bg-white"
+                      className="inline-flex items-center justify-center text-[#ff7a4a] px-5 sm:px-6 md:px-8 py-2.5 sm:py-3 md:py-4 font-bold text-sm sm:text-base md:text-xl shadow-xl hover:shadow-2xl transition-all bg-white"
                       style={{
                         borderRadius: '9999px'
                       }}
