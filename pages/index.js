@@ -202,18 +202,18 @@ export default function Home() {
                 className="mt-6 md:mt-0"
               >
                 <Link href="/onboard">
-                  <motion.span
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    className="inline-flex items-center justify-center text-[#ff7a4a] px-6 md:px-8 py-3 md:py-4 font-bold text-base md:text-xl shadow-xl hover:shadow-2xl transition-all"
-                    style={{
-                      border: '2px solid transparent',
-                      background: 'linear-gradient(white, white) padding-box, linear-gradient(to right, #FF9966, #FF5E8E) border-box',
-                      borderRadius: '9999px'
-                    }}
-                  >
-                    Claim Your Free Display →
-                  </motion.span>
+                  <span className="glow-button">
+                    <motion.span
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                      className="inline-flex items-center justify-center text-[#ff7a4a] px-6 md:px-8 py-3 md:py-4 font-bold text-base md:text-xl shadow-xl hover:shadow-2xl transition-all bg-white"
+                      style={{
+                        borderRadius: '9999px'
+                      }}
+                    >
+                      Claim Your Free Display →
+                    </motion.span>
+                  </span>
                 </Link>
               </motion.div>
             </motion.div>

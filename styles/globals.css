@@ -16,3 +16,48 @@
     font-size: 16px !important;
   }
 }
+
+/* Glowing Button Effect */
+@property --rotation-angle {
+  syntax: '<angle>';
+  initial-value: 0deg;
+  inherits: false;
+}
+
+.glow-button {
+  position: relative;
+  display: inline-block;
+}
+
+.glow-button::before {
+  content: '';
+  position: absolute;
+  z-index: 0;
+  inset: -4px;
+  border-radius: 9999px;
+  pointer-events: none;
+  background: conic-gradient(
+    from var(--rotation-angle),
+    #FFB3D9,
+    #FFCCB3,
+    #FFE0CC,
+    #FFB3D9,
+    #FFC4E6,
+    #FFDAB3,
+    #FFB3D9
+  );
+  filter: blur(16px);
+  opacity: 0.7;
+  animation: rotate-glow 4s linear infinite;
+}
+
+@keyframes rotate-glow {
+  to {
+    --rotation-angle: 360deg;
+  }
+}
+
+.glow-button > * {
+  position: relative;
+  z-index: 1;
+}
