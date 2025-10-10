@@ -60,7 +60,7 @@ export default function AboutPawpaya() {
                 whileHover={{ y: -2 }}
                 whileTap={{ scale: 0.98 }}
                 className="px-6 py-4 rounded-2xl text-lg font-black shadow-xl transition-all text-white"
-                style={{ background: 'linear-gradient(to right, #FFA08A, #FF8FCF)', width: '240px', maxWidth: '100%' }}
+                style={{ background: 'linear-gradient(to right, #FFA08A, #FF8FCF)', width: '280px', maxWidth: '100%' }}
               >
                 Learn About Partnership →
               </motion.button>
@@ -73,7 +73,7 @@ export default function AboutPawpaya() {
               whileHover={{ y: -2 }}
               whileTap={{ scale: 0.98 }}
               className="px-6 py-4 rounded-2xl text-lg font-black shadow-xl transition-all bg-white inline-block cursor-pointer text-center"
-              style={{ border: '4px solid #FF8FCF', color: '#FF8FCF', width: '240px', maxWidth: '100%' }}
+              style={{ border: '4px solid #FF8FCF', color: '#FF8FCF', width: '280px', maxWidth: '100%' }}
               onClick={(e) => {
                 e.preventDefault();
                 document.getElementById('how-it-works')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
