@@ -1,8 +1,38 @@
 import Link from 'next/link';
 import Head from 'next/head';
 import { motion } from 'framer-motion';
+import { useState } from 'react';
 
 export default function AboutPawpaya() {
+  const [isCopied, setIsCopied] = useState(false);
+
+  const handleManagerShare = async () => {
+    try {
+      const shareUrl = window.location.origin + '/onboard/about';
+
+      // Always copy to clipboard first
+      await navigator.clipboard.writeText(shareUrl);
+      setIsCopied(true);
+
+      // Reset copied state after 2 seconds
+      setTimeout(() => {
+        setIsCopied(false);
+      }, 2000);
+
+      // Try to use native share API if available
+      if (navigator.share) {
+        await navigator.share({
+          title: 'Pawpaya Display Program',
+          text: 'I found this program that\'s completely free to sign up, can you check it out?',
+          url: shareUrl
+        });
+      }
+    } catch (err) {
+      console.error('Share error:', err);
+      // Link is already copied, so no need to show error
+    }
+  };
+
   return (
     <>
       <Head>
@@ -140,10 +170,72 @@ export default function AboutPawpaya() {
 
           {/* Wrapper for mobile reordering */}
           <div className="flex flex-col gap-8 md:gap-0">
+            {/* Photo Grid - order-0 on mobile (first) */}
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6 }}
+              className="order-0 md:order-none mt-0 md:mt-0 mb-0 md:mb-16"
+            >
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+              {[
+                'iap_640x640.7007939477_lvhsoby5_800x800.webp',
+                'iap_640x640.7082515652_jtlddech_800x800.webp',
+                'image10.webp',
+                'image15.jpeg',
+                'image16.jpeg',
+                'image17.jpeg',
+                'image18.jpeg',
+                'image20.webp'
+              ].map((filename, idx) => (
+                <motion.div
+                  key={idx}
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  whileInView={{ opacity: 1, scale: 1 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.4, delay: idx * 0.05 }}
+                  className="aspect-square rounded-2xl overflow-hidden bg-gradient-to-br from-gray-100 to-gray-200 shadow-lg hover:shadow-xl transition-shadow"
+                >
+                  <img
+                    src={`/images/${filename}`}
+                    alt={`Pawpaya product ${idx + 1}`}
+                    className="w-full h-full object-cover"
+                  />
+                </motion.div>
+              ))}
+            </div>
+          </motion.div>
+
+            {/* Customize Feature Block */}
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6 }}
+              className="order-1 md:order-none mt-0 md:mt-12 mb-8 bg-gradient-to-br from-purple-50 to-pink-50 border-2 border-purple-200 rounded-3xl p-8 md:p-10 text-center"
+            >
+              <h3 className="text-3xl md:text-4xl text-gray-900 mb-4" style={{ fontWeight: 600 }}>
+                Check Out Our Customize Tool
+              </h3>
+              <p className="text-lg md:text-xl text-gray-700 mb-6 max-w-3xl mx-auto leading-relaxed">
+                Create your own personalized pet collar. Choose colors, add custom text, and make it uniquely yours!
+              </p>
+              <a
+                href="https://pawpayaco.com/products/diy-builder-kit-copy"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-block px-8 py-4 rounded-2xl text-lg md:text-xl font-black text-white shadow-lg transition-all hover:shadow-xl hover:scale-105"
+                style={{ background: 'linear-gradient(to right, #FFA08A, #FF8FCF)' }}
+              >
+                Start Customizing →
+              </a>
+            </motion.div>
+
             {/* Grid wrapper - uses contents on mobile to allow flex ordering, grid on desktop */}
             <div className="contents md:grid md:grid-cols-2 md:gap-8 md:gap-12">
               {/* Left: What You Get */}
-              <div className="order-1 bg-gradient-to-br from-gray-50 to-white border-2 border-gray-200 rounded-3xl p-8 md:p-10">
+              <div className="order-2 bg-gradient-to-br from-gray-50 to-white border-2 border-gray-200 rounded-3xl p-8 md:p-10">
                 <h3 className="text-2xl md:text-3xl text-gray-900 mb-6" style={{ fontWeight: 600 }}>Who We Are</h3>
                 <div className="space-y-5">
                   {[
@@ -184,68 +276,6 @@ export default function AboutPawpaya() {
                 </div>
               </div>
             </div>
-
-            {/* Customize Feature Block */}
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6 }}
-              className="order-2 md:order-none mt-0 md:mt-12 mb-8 bg-gradient-to-br from-purple-50 to-pink-50 border-2 border-purple-200 rounded-3xl p-8 md:p-10 text-center"
-            >
-              <h3 className="text-3xl md:text-4xl text-gray-900 mb-4" style={{ fontWeight: 600 }}>
-                Check Out Our Customize Tool
-              </h3>
-              <p className="text-lg md:text-xl text-gray-700 mb-6 max-w-3xl mx-auto leading-relaxed">
-                Create your own personalized pet collar. Choose colors, add custom text, and make it uniquely yours!
-              </p>
-              <a
-                href="https://pawpayaco.com/products/diy-builder-kit-copy"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-block px-8 py-4 rounded-2xl text-lg md:text-xl font-black text-white shadow-lg transition-all hover:shadow-xl hover:scale-105"
-                style={{ background: 'linear-gradient(to right, #FFA08A, #FF8FCF)' }}
-              >
-                Start Customizing →
-              </a>
-            </motion.div>
-
-            {/* Photo Grid - order-3 on mobile (after customize block) */}
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6 }}
-              className="order-3 md:order-none mt-0 md:mt-0 mb-0 md:mb-16"
-            >
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
-              {[
-                'iap_640x640.7007939477_lvhsoby5_800x800.webp',
-                'iap_640x640.7082515652_jtlddech_800x800.webp',
-                'image10.webp',
-                'image15.jpeg',
-                'image16.jpeg',
-                'image17.jpeg',
-                'image18.jpeg',
-                'image20.webp'
-              ].map((filename, idx) => (
-                <motion.div
-                  key={idx}
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  whileInView={{ opacity: 1, scale: 1 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.4, delay: idx * 0.05 }}
-                  className="aspect-square rounded-2xl overflow-hidden bg-gradient-to-br from-gray-100 to-gray-200 shadow-lg hover:shadow-xl transition-shadow"
-                >
-                  <img
-                    src={`/images/${filename}`}
-                    alt={`Pawpaya product ${idx + 1}`}
-                    className="w-full h-full object-cover"
-                  />
-                </motion.div>
-              ))}
-            </div>
-          </motion.div>
           </div>
 
           {/* Bottom Trust Bar */}
@@ -283,7 +313,7 @@ export default function AboutPawpaya() {
             <p className="text-lg sm:text-xl md:text-2xl mb-6 md:mb-8 max-w-4xl opacity-90 text-left">
               Our NFC tap-to-shop displays are in select stores nation wide. Your store could be next, offering customers an unforgettable experience.
             </p>
-            <div className="text-center">
+            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
               <Link href="/onboard">
                 <button
                   className="bg-white px-10 md:px-12 py-4 md:py-5 rounded-2xl md:rounded-3xl text-lg md:text-xl font-black transition-all shadow-2xl whitespace-nowrap"
@@ -292,6 +322,12 @@ export default function AboutPawpaya() {
                   See What We're Offering →
                 </button>
               </Link>
+              <button
+                onClick={handleManagerShare}
+                className="bg-transparent border-2 border-white px-10 md:px-12 py-4 md:py-5 rounded-2xl md:rounded-3xl text-lg md:text-xl font-black transition-all shadow-2xl text-white hover:bg-white hover:bg-opacity-10 whitespace-nowrap"
+              >
+                {isCopied ? 'Copied! ✓' : 'I\'m a Manager — Share This'}
+              </button>
             </div>
           </div>
 
