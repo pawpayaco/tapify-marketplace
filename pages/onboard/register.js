@@ -696,11 +696,11 @@ export default function RegisterRetailer() {
                                         <div className="w-8 h-8 rounded-full bg-gray-300 flex items-center justify-center flex-shrink-0 mt-0.5">
                                           <span className="text-gray-600 text-xs font-bold">{store.name.charAt(0)}</span>
                                         </div>
-                                        <div className="flex-1 min-w-0 overflow-hidden">
-                                          <div className="font-bold text-gray-500 truncate overflow-hidden text-ellipsis whitespace-nowrap">
+                                        <div className="flex-1 min-w-0">
+                                          <div className="font-bold text-gray-500 break-words">
                                             {store.name}
                                           </div>
-                                          <div className="text-xs text-gray-400 truncate overflow-hidden text-ellipsis whitespace-nowrap">
+                                          <div className="text-xs text-gray-400 break-words">
                                             {store.address || store.location || 'Address not listed'}
                                           </div>
                                           <div className="flex items-center gap-2 mt-2">
@@ -728,10 +728,10 @@ export default function RegisterRetailer() {
                                           <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#ff7a4a] to-[#ff6fb3] flex items-center justify-center flex-shrink-0 mt-0.5">
                                             <span className="text-white text-xs font-bold">{store.name.charAt(0)}</span>
                                           </div>
-                                          <div className="flex-1 min-w-0 overflow-hidden">
-                                            <div className="font-bold text-gray-900 group-hover:text-[#ff6fb3] transition-colors truncate overflow-hidden text-ellipsis whitespace-nowrap">{store.name}</div>
-                                            <div className="text-xs text-gray-600 truncate overflow-hidden text-ellipsis whitespace-nowrap">{store.address || store.location || 'Address not listed'}</div>
-                                            {store.email && <div className="text-xs text-gray-500 truncate overflow-hidden text-ellipsis whitespace-nowrap">{store.email}</div>}
+                                          <div className="flex-1 min-w-0">
+                                            <div className="font-bold text-gray-900 group-hover:text-[#ff6fb3] transition-colors break-words">{store.name}</div>
+                                            <div className="text-xs text-gray-600 break-words">{store.address || store.location || 'Address not listed'}</div>
+                                            {store.email && <div className="text-xs text-gray-500 break-words">{store.email}</div>}
                                           </div>
                                           <svg className="w-5 h-5 text-gray-400 group-hover:text-[#ff6fb3] transition-colors flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
@@ -1010,11 +1010,11 @@ export default function RegisterRetailer() {
                                                   <div className="w-8 h-8 rounded-full bg-gray-300 flex items-center justify-center flex-shrink-0 mt-0.5">
                                                     <span className="text-gray-600 text-xs font-bold">{retailer.name.charAt(0)}</span>
                                                   </div>
-                                                  <div className="flex-1 min-w-0 overflow-hidden">
-                                                    <div className="font-bold text-gray-500 truncate overflow-hidden text-ellipsis whitespace-nowrap">
+                                                  <div className="flex-1 min-w-0">
+                                                    <div className="font-bold text-gray-500 break-words">
                                                       {retailer.name}
                                                     </div>
-                                                    <div className="text-xs text-gray-400 truncate overflow-hidden text-ellipsis whitespace-nowrap">
+                                                    <div className="text-xs text-gray-400 break-words">
                                                       {retailer.address || retailer.location || 'Address not listed'}
                                                     </div>
                                                     <div className="flex items-center gap-2 mt-2">
@@ -1042,10 +1042,10 @@ export default function RegisterRetailer() {
                                                     <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#ff7a4a] to-[#ff6fb3] flex items-center justify-center flex-shrink-0 mt-0.5">
                                                       <span className="text-white text-xs font-bold">{retailer.name.charAt(0)}</span>
                                                     </div>
-                                                    <div className="flex-1 min-w-0 overflow-hidden">
-                                                      <div className="font-bold text-gray-900 group-hover:text-[#ff6fb3] transition-colors truncate overflow-hidden text-ellipsis whitespace-nowrap">{retailer.name}</div>
-                                                      <div className="text-xs text-gray-600 truncate overflow-hidden text-ellipsis whitespace-nowrap">{retailer.address || retailer.location || 'Address not listed'}</div>
-                                                      {retailer.email && <div className="text-xs text-gray-500 truncate overflow-hidden text-ellipsis whitespace-nowrap">{retailer.email}</div>}
+                                                    <div className="flex-1 min-w-0">
+                                                      <div className="font-bold text-gray-900 group-hover:text-[#ff6fb3] transition-colors break-words">{retailer.name}</div>
+                                                      <div className="text-xs text-gray-600 break-words">{retailer.address || retailer.location || 'Address not listed'}</div>
+                                                      {retailer.email && <div className="text-xs text-gray-500 break-words">{retailer.email}</div>}
                                                     </div>
                                                     <svg className="w-5 h-5 text-gray-400 group-hover:text-[#ff6fb3] transition-colors flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />

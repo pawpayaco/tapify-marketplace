@@ -229,7 +229,8 @@ export default function OnboardIndex() {
                   <h3 className="text-lg md:text-xl font-bold text-gray-900 mb-2 md:mb-3">
                     {item.splitTitle ? (
                       <>
-                        Full<br />Support
+                        Full<br className="hidden md:block" />
+                        <span className="md:hidden"> </span>Support
                       </>
                     ) : (
                       item.title
