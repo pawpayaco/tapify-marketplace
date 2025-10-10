@@ -128,7 +128,7 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-white pt-24 sm:pt-32 pb-12 sm:pb-16">
+    <div className="min-h-screen pt-24 sm:pt-32 pb-12 sm:pb-16 bg-gray-100">
       {/* Franchise Owner Funnel Card - First Section */}
       <section className="pb-8 sm:pb-12 md:pb-20 px-4 sm:px-6 lg:px-8">
         <div className="max-w-6xl mx-auto">

@@ -2,6 +2,16 @@
 @tailwind components;
 @tailwind utilities;
 
+html {
+  background: #f3f4f6;
+  min-height: 100vh;
+}
+
+body {
+  background: #f3f4f6;
+  min-height: 100vh;
+}
+
 /* Font Face Declarations */
 @font-face {
   font-family: 'Articulat CF';
@@ -216,11 +226,13 @@
 html {
   font-family: 'Geist', system-ui, -apple-system, sans-serif !important;
   letter-spacing: 0.01em !important;
+  background-color: #f3f4f6 !important;
 }
 
 body {
   font-family: 'Geist', system-ui, -apple-system, sans-serif !important;
   letter-spacing: 0.01em !important;
+  background-color: #f3f4f6 !important;
 }
 
 p, span:not(h1 *, h2 *, h3 *, h4 *, h5 *, h6 *), a:not(h1 *, h2 *, h3 *, h4 *, h5 *, h6 *),
