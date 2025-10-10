@@ -77,10 +77,11 @@ export default function OnboardIndex() {
             initial={{ scale: 0.85, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             transition={{ duration: 0.3, delay: 0.12 }}
-            className="text-2xl md:text-4xl text-gray-700 max-w-4xl mx-auto leading-relaxed mb-16"
+            className="text-2xl sm:text-2xl md:text-3xl text-gray-600 max-w-4xl mx-auto leading-relaxed mb-16 font-medium"
           >
-            Free display. Automatic 30% commission. Product customers love.
-            Choose your path below.
+            Free display.<br />
+            30% commission.<br />
+            Product customers love.
           </motion.p>
 
           {/* Two-Path CTA Buttons */}
@@ -207,8 +208,9 @@ export default function OnboardIndex() {
               },
               {
                 title: 'Full Support',
-                description: 'From fulfillment to customer service',
-                icon: '🤝'
+                description: 'Fulfillment to customer service',
+                icon: '🤝',
+                splitTitle: true
               }
             ].map((item, idx) => (
               <motion.div
@@ -225,9 +227,17 @@ export default function OnboardIndex() {
                 <div className="relative z-10">
                   <div className="text-4xl md:text-5xl mb-4 md:mb-5">{item.icon}</div>
                   <h3 className="text-lg md:text-xl font-bold text-gray-900 mb-2 md:mb-3">
-                    {item.title}
+                    {item.splitTitle ? (
+                      <>
+                        Full<br />Support
+                      </>
+                    ) : (
+                      item.title
+                    )}
                   </h3>
-                  <p className="text-gray-700 text-base md:text-lg">{item.description}</p>
+                  <p className="text-gray-700 text-base md:text-lg">
+                    {item.description}
+                  </p>
                 </div>
               </motion.div>
             ))}
@@ -255,7 +265,7 @@ export default function OnboardIndex() {
                 </p>
                 <button
                   onClick={handleManagerShare}
-                  className="w-[180px] px-6 md:px-8 py-3 md:py-4 rounded-2xl md:rounded-3xl text-base md:text-lg font-black shadow-lg bg-white border-2 whitespace-nowrap"
+                  className="px-6 md:px-8 py-3 md:py-4 rounded-2xl md:rounded-3xl text-base md:text-lg font-black shadow-lg bg-white border-2 whitespace-nowrap"
                   style={{ borderColor: '#FF8FCF', color: '#FF8FCF' }}
                 >
                   {isCopied ? 'Copied! ✓' : 'Share With Owner'}
@@ -273,7 +283,7 @@ export default function OnboardIndex() {
                 </p>
                 <Link href="/onboard/register">
                   <button
-                    className="w-[180px] px-8 md:px-10 py-3 md:py-4 rounded-2xl md:rounded-3xl text-base md:text-lg font-black transition-all shadow-xl text-white whitespace-nowrap"
+                    className="px-8 md:px-10 py-3 md:py-4 rounded-2xl md:rounded-3xl text-base md:text-lg font-black transition-all shadow-xl text-white whitespace-nowrap"
                     style={{ background: 'linear-gradient(to right, #FFA08A, #FF8FCF)' }}
                   >
                     Register Now →

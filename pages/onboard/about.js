@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Head from 'next/head';
 import { motion } from 'framer-motion';
 
 export default function AboutPawpaya() {
@@ -19,7 +20,20 @@ export default function AboutPawpaya() {
   };
 
   return (
-    <div className="min-h-screen bg-white pt-20 md:pt-24 pb-16">
+    <>
+      <Head>
+        <title>Pawpaya Display Program - Free Display for Pet Stores</title>
+        <meta name="description" content="I found this program that's completely free to sign up, can you check it out?" />
+        <meta property="og:title" content="Pawpaya Display Program" />
+        <meta property="og:description" content="I found this program that's completely free to sign up, can you check it out?" />
+        <meta property="og:image" content="/images/image1.webp" />
+        <meta property="og:type" content="website" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="Pawpaya Display Program" />
+        <meta name="twitter:description" content="I found this program that's completely free to sign up, can you check it out?" />
+        <meta name="twitter:image" content="/images/image1.webp" />
+      </Head>
+      <div className="min-h-screen bg-white pt-20 md:pt-24 pb-16">
       {/* Hero Content */}
       <div className="max-w-[1400px] mx-auto px-4 md:px-8 pb-8 md:pb-12">
         <section className="text-center">
@@ -150,7 +164,7 @@ export default function AboutPawpaya() {
                 <div className="space-y-5">
                   {[
                     { icon: '🐾', title: 'Pawpaya Pet Collars', desc: 'Adorable, high-quality matching collar + bracelet sets and DIY kits for customers to craft' },
-                    { icon: '🚀', title: 'Nationwide Rollout', desc: '700+ orders, $30k rev, We are rolling out to local pet shops and Pet Supplies Plus stores through innovative display tech' },
+                    { icon: '🚀', title: 'Nationwide Rollout', desc: '700+ orders, $30k rev, we are rolling out to local pet shops and Pet Supplies Plus stores through innovative display tech' },
                     { icon: '✨', title: 'Built on Joy', desc: 'Designed to spread happiness and strengthen the pet-parent bond' }
                   ].map((item, idx) => (
                     <div key={idx} className="flex gap-4 items-start">
@@ -284,5 +298,6 @@ export default function AboutPawpaya() {
         </motion.section>
       </div>
     </div>
+    </>
   );
 }
