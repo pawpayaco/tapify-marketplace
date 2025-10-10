@@ -85,15 +85,15 @@ export default function OnboardIndex() {
 
           {/* Two-Path CTA Buttons */}
           <div className="flex flex-col md:flex-row gap-6 justify-center items-center">
-            <Link href="/onboard/register" className="w-full md:w-[260px]">
+            <Link href="/onboard/register">
               <motion.button
                 initial={{ scale: 0.85, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
                 transition={{ duration: 0.3, delay: 0.15 }}
                 whileHover={{ y: -2 }}
                 whileTap={{ scale: 0.98 }}
-                className="w-full px-6 py-4 rounded-2xl text-lg font-black shadow-xl transition-all text-white"
-                style={{ background: 'linear-gradient(to right, #FFA08A, #FF8FCF)' }}
+                className="px-6 py-4 rounded-2xl text-lg font-black shadow-xl transition-all text-white"
+                style={{ background: 'linear-gradient(to right, #FFA08A, #FF8FCF)', width: '240px', maxWidth: '100%' }}
               >
                 I'm a Franchise Owner →
               </motion.button>
@@ -105,8 +105,8 @@ export default function OnboardIndex() {
               whileHover={{ y: -2 }}
               whileTap={{ scale: 0.98 }}
               onClick={handleManagerShare}
-              className="w-full md:w-[260px] px-6 py-4 rounded-2xl text-lg font-black shadow-xl transition-all bg-white"
-              style={{ border: '4px solid #FF8FCF', color: '#FF8FCF' }}
+              className="px-6 py-4 rounded-2xl text-lg font-black shadow-xl transition-all bg-white"
+              style={{ border: '4px solid #FF8FCF', color: '#FF8FCF', width: '240px', maxWidth: '100%' }}
             >
               {isCopied ? 'Copied! ✓' : 'I\'m a Manager — Share This'}
             </motion.button>

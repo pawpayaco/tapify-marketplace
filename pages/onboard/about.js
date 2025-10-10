@@ -52,15 +52,15 @@ export default function AboutPawpaya() {
 
           {/* CTA Buttons */}
           <div className="flex flex-col sm:flex-row gap-6 justify-center items-center mb-16">
-            <Link href="/onboard" className="w-full sm:w-[260px]">
+            <Link href="/onboard">
               <motion.button
                 initial={{ scale: 0.85, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
                 transition={{ duration: 0.3, delay: 0.15 }}
                 whileHover={{ y: -2 }}
                 whileTap={{ scale: 0.98 }}
-                className="w-full px-6 py-4 rounded-2xl text-lg font-black shadow-xl transition-all text-white"
-                style={{ background: 'linear-gradient(to right, #FFA08A, #FF8FCF)' }}
+                className="px-6 py-4 rounded-2xl text-lg font-black shadow-xl transition-all text-white"
+                style={{ background: 'linear-gradient(to right, #FFA08A, #FF8FCF)', width: '240px', maxWidth: '100%' }}
               >
                 Learn About Partnership →
               </motion.button>
@@ -72,8 +72,8 @@ export default function AboutPawpaya() {
               transition={{ duration: 0.3, delay: 0.18 }}
               whileHover={{ y: -2 }}
               whileTap={{ scale: 0.98 }}
-              className="w-full sm:w-[260px] px-6 py-4 rounded-2xl text-lg font-black shadow-xl transition-all bg-white inline-block cursor-pointer text-center"
-              style={{ border: '4px solid #FF8FCF', color: '#FF8FCF' }}
+              className="px-6 py-4 rounded-2xl text-lg font-black shadow-xl transition-all bg-white inline-block cursor-pointer text-center"
+              style={{ border: '4px solid #FF8FCF', color: '#FF8FCF', width: '240px', maxWidth: '100%' }}
               onClick={(e) => {
                 e.preventDefault();
                 document.getElementById('how-it-works')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
