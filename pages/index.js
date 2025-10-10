@@ -141,7 +141,7 @@ export default function Home() {
 
               {/* Main heading */}
               <h1 className="text-2xl sm:text-3xl md:text-5xl lg:text-6xl font-bold mb-3 sm:mb-4 md:mb-6 px-1 sm:px-2 leading-tight">
-                Turn Your Pet Store Into a Profit Center—Free
+                The Easiest Extra Profit Machine
               </h1>
 
               {/* Subheader */}
