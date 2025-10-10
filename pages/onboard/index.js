@@ -135,9 +135,9 @@ export default function OnboardIndex() {
             <div className="bg-gradient-to-br from-gray-50 to-white border-2 border-gray-200 rounded-3xl pt-8 px-8 pb-6 md:pt-12 md:px-12 md:pb-8 lg:pt-16 lg:px-16 lg:pb-10">
               <ImageModalGallery
                 images={[
-                  { src: "/images/image28.jpg", alt: "Pawpaya display hero angle" },
-                  { src: "/images/image29.jpg", alt: "Pawpaya display close up" },
-                  { src: "/images/image30.jpg", alt: "Pawpaya display lifestyle" }
+                  { src: "/images/image40.jpg", alt: "Pawpaya display hero angle" },
+                  { src: "/images/image41.jpg", alt: "Pawpaya display close up" },
+                  { src: "/images/image42.jpg", alt: "Pawpaya display lifestyle" }
                 ]}
               />
               <div className="mt-6 text-center">
