@@ -19,7 +19,7 @@ export default function AboutPawpaya() {
   };
 
   return (
-    <div className="min-h-screen bg-white pt-24 md:pt-32 pb-16">
+    <div className="min-h-screen bg-white pt-20 md:pt-24 pb-16">
       {/* Hero Content */}
       <div className="max-w-[1400px] mx-auto px-4 md:px-8 pb-8 md:pb-12">
         <section className="text-center">

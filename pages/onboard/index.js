@@ -49,7 +49,7 @@ export default function OnboardIndex() {
   };
 
   return (
-    <div className="min-h-screen bg-white pt-24 md:pt-32 pb-20">
+    <div className="min-h-screen bg-white pt-20 md:pt-24 pb-20">
       {/* Hero Content */}
       <div className="max-w-[1400px] mx-auto px-4 md:px-8 pb-24 md:pb-32">
         <section className="text-center">
