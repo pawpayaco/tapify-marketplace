@@ -194,7 +194,7 @@ export default function AboutPawpaya() {
               className="order-2 md:order-none mt-0 md:mt-12 mb-8 bg-gradient-to-br from-purple-50 to-pink-50 border-2 border-purple-200 rounded-3xl p-8 md:p-10 text-center"
             >
               <h3 className="text-3xl md:text-4xl text-gray-900 mb-4" style={{ fontWeight: 600 }}>
-                Check Out Our Customize Tool!
+                Check Out Our Customize Tool
               </h3>
               <p className="text-lg md:text-xl text-gray-700 mb-6 max-w-3xl mx-auto leading-relaxed">
                 Create your own personalized pet collar. Choose colors, add custom text, and make it uniquely yours!
