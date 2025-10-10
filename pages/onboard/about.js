@@ -3,22 +3,6 @@ import Head from 'next/head';
 import { motion } from 'framer-motion';
 
 export default function AboutPawpaya() {
-  // Animation variants
-  const fadeInUp = {
-    hidden: { opacity: 0, y: 30 },
-    visible: { opacity: 1, y: 0 }
-  };
-
-  const staggerContainer = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.1
-      }
-    }
-  };
-
   return (
     <>
       <Head>
@@ -178,8 +162,8 @@ export default function AboutPawpaya() {
                 </div>
               </div>
 
-              {/* Right: How It Works - order-3 on mobile (after photo grid) */}
-              <div className="order-3 md:order-none bg-gradient-to-br from-gray-50 to-white border-2 border-gray-200 rounded-3xl p-8 md:p-10">
+              {/* Right: How It Works - order-4 on mobile (after photo grid) */}
+              <div className="order-4 md:order-none bg-gradient-to-br from-gray-50 to-white border-2 border-gray-200 rounded-3xl p-8 md:p-10">
                 <h3 className="text-2xl md:text-3xl font-black text-gray-900 mb-6">What We Offer</h3>
                 <div className="space-y-6">
                   {[
@@ -201,13 +185,38 @@ export default function AboutPawpaya() {
               </div>
             </div>
 
-            {/* Photo Grid - order-2 on mobile (between Who We Are and What We Offer) */}
+            {/* Customize Feature Block */}
             <motion.div
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6 }}
-              className="order-2 md:order-none mt-0 md:mt-16 mb-0 md:mb-16"
+              className="order-2 md:order-none mt-0 md:mt-12 mb-8 bg-gradient-to-br from-purple-50 to-pink-50 border-2 border-purple-200 rounded-3xl p-8 md:p-10 text-center"
+            >
+              <h3 className="text-3xl md:text-4xl font-black text-gray-900 mb-4">
+                Check Out Our Customize Tool!
+              </h3>
+              <p className="text-lg md:text-xl text-gray-700 mb-6 max-w-3xl mx-auto leading-relaxed">
+                Create your own personalized pet collar. Choose colors, add custom text, and make it uniquely yours!
+              </p>
+              <a
+                href="https://pawpayaco.com/products/diy-builder-kit-copy"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-block px-8 py-4 rounded-2xl text-lg md:text-xl font-black text-white shadow-lg transition-all hover:shadow-xl hover:scale-105"
+                style={{ background: 'linear-gradient(to right, #FFA08A, #FF8FCF)' }}
+              >
+                Start Customizing →
+              </a>
+            </motion.div>
+
+            {/* Photo Grid - order-3 on mobile (after customize block) */}
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6 }}
+              className="order-3 md:order-none mt-0 md:mt-0 mb-0 md:mb-16"
             >
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
               {[
@@ -245,7 +254,7 @@ export default function AboutPawpaya() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
-            className="mt-8 md:mt-12 mb-0 bg-gradient-to-br from-orange-50 to-pink-50 border-2 border-orange-200 rounded-2xl p-6 md:p-8"
+            className="mt-0 mb-0 bg-gradient-to-br from-orange-50 to-pink-50 border-2 border-orange-200 rounded-2xl p-6 md:p-8"
           >
             <div className="max-w-4xl mx-auto">
               <p className="text-2xl md:text-3xl font-black mb-3 text-gray-900 text-left">
