@@ -21,14 +21,14 @@ export default function AboutPawpaya() {
   return (
     <div className="min-h-screen bg-white pt-24 md:pt-32 pb-16">
       {/* Hero Content */}
-      <div className="max-w-[1400px] mx-auto px-4 md:px-8 pb-20 md:pb-32">
+      <div className="max-w-[1400px] mx-auto px-4 md:px-8 pb-8 md:pb-12">
         <section className="text-center">
           {/* Trust Badge */}
           <motion.div
             initial={{ scale: 0.85, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             transition={{ duration: 0.3, delay: 0.1 }}
-            className="inline-flex items-center gap-1.5 bg-gray-100 px-3 py-1.5 rounded-full mb-8 text-xs md:text-sm font-bold text-gray-700"
+            className="inline-flex items-center gap-1.5 bg-gray-100 px-3 py-1.5 rounded-full mb-8 mt-8 md:mt-12 text-xs md:text-sm font-bold text-gray-700"
           >
             <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse flex-shrink-0"></span>
             <span className="whitespace-nowrap">Free display • Zero inventory • Auto commissions</span>
@@ -47,11 +47,11 @@ export default function AboutPawpaya() {
             transition={{ duration: 0.3, delay: 0.12 }}
             className="text-2xl sm:text-2xl md:text-3xl text-gray-600 max-w-4xl mx-auto leading-relaxed mb-14 font-medium"
           >
-            We're a pet product brand revolutionizing how customers discover and buy in stores—through tap-to-order displays that turn your counter space into commission-earning real estate.
+            We're bringing custom products to retail
           </motion.p>
 
           {/* CTA Buttons */}
-          <div className="flex flex-col sm:flex-row gap-6 justify-center items-center mb-16">
+          <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
             <Link href="/onboard">
               <motion.button
                 initial={{ scale: 0.85, opacity: 0 }}
@@ -81,27 +81,6 @@ export default function AboutPawpaya() {
             >
               See How It Works ↓
             </motion.a>
-          </div>
-
-          {/* Stats Row */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8 max-w-4xl mx-auto">
-            {[
-              { number: '2025', label: 'Founded' },
-              { number: 'NFC', label: 'Tap Technology' },
-              { number: '750+', label: 'Target Stores' },
-              { number: '100%', label: 'Free to Join' }
-            ].map((stat, idx) => (
-              <motion.div
-                key={idx}
-                initial={{ scale: 0.85, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
-                transition={{ duration: 0.3, delay: 0.2 + idx * 0.05 }}
-                className="text-center"
-              >
-                <div className="text-4xl md:text-5xl font-black text-gray-900 mb-1">{stat.number}</div>
-                <div className="text-base md:text-lg text-gray-600 font-semibold">{stat.label}</div>
-              </motion.div>
-            ))}
           </div>
         </section>
       </div>
@@ -185,6 +164,43 @@ export default function AboutPawpaya() {
               </div>
             </div>
           </div>
+
+          {/* Photo Grid */}
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="mt-12 md:mt-16 mb-12 md:mb-16"
+          >
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+              {[
+                'iap_640x640.7007939477_lvhsoby5_800x800.webp',
+                'iap_640x640.7082515652_jtlddech_800x800.webp',
+                'image10.webp',
+                'image15.jpeg',
+                'image16.jpeg',
+                'image17.jpeg',
+                'image18.jpeg',
+                'image20.webp'
+              ].map((filename, idx) => (
+                <motion.div
+                  key={idx}
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  whileInView={{ opacity: 1, scale: 1 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.4, delay: idx * 0.05 }}
+                  className="aspect-square rounded-2xl overflow-hidden bg-gradient-to-br from-gray-100 to-gray-200 shadow-lg hover:shadow-xl transition-shadow"
+                >
+                  <img
+                    src={`/images/${filename}`}
+                    alt={`Pawpaya product ${idx + 1}`}
+                    className="w-full h-full object-cover"
+                  />
+                </motion.div>
+              ))}
+            </div>
+          </motion.div>
 
           {/* Bottom Trust Bar */}
           <motion.div

@@ -36,7 +36,7 @@ const actionCards = [
     icon: '🏪',
     title: 'Register Your Store',
     description:
-      'Register your franchise and connect it to your display network.',
+      "Register your franchise or business and we'll ship you the display.",
     href: '/onboard/about',
     buttonLabel: 'Register Now',
     highlight: true
@@ -62,7 +62,7 @@ const actionCards = [
     title: 'Talk with Pawpaya Staff',
     description:
       'Chat with Pawpaya for support, display requests, or feedback.',
-    href: 'pawpayaco@gmail.com',
+    href: 'oscar@pawpayaco.com',
     buttonLabel: 'Copy Address',
     external: false,
     copyAction: true
@@ -74,25 +74,19 @@ const journey = [
     icon: '📦',
     title: 'Display Arrives',
     description:
-      'We pre-pack the Pawpaya display with sample product, NFC, and QR. You unbox, place it, and keep it visible near impulse zones.'
+      'We pre-pack the Pawpaya display with sample display products and NFC. You unbox, and hang or place it in your store.'
   },
   {
     icon: '📲',
     title: 'Customer Taps',
     description:
-      'Shoppers tap or scan, land on your Pawpaya storefront, and customize their collar in seconds without calling staff for help.'
+      'Shoppers tap, and customize or order their collar in seconds without calling staff for help.'
   },
   {
     icon: '🛒',
-    title: 'Shopify Processes',
+    title: 'Payouts',
     description:
-      'Order intelligence flows through Tapify → Shopify. Inventory stays virtual, so shelves stay clean and risk-free.'
-  },
-  {
-    icon: '🏦',
-    title: 'Payout Hits',
-    description:
-      'Once the order is fulfilled, your commission routes through Dwolla. Watch it clear in the dashboard and your connected bank account.'
+      'Orders flow automatically through your affiliate link and 30% comission gets paid out to your bank via ACH with Plaid and Dwolla.'
   }
 ];
 
@@ -103,14 +97,14 @@ const roadmap = [
       'Auto-suggests the next display mix for your location based on scan velocity and conversion data.'
   },
   {
-    title: 'QR Flyer Generator',
+    title: 'QR Flyers',
     description:
-      'Download event-ready flyers that auto-embed your franchise UID for farmers markets, adoption days, or in-store activations.'
+      'Download event-ready flyers that connect your affiliate link for farmers markets, adoption days, or in-store activations. Ask if you are interested.'
   },
   {
-    title: 'Auto-Rotation Engine',
+    title: 'More Businesses',
     description:
-      'Schedule seasonal refreshes so Tapify can send new hero products without adding to your workload.'
+      'We plan to expand pawpaya into retailors nation wide. Later, signing on etsy type businesses, to bring more hand made products into retail.'
   }
 ];
 
@@ -119,7 +113,7 @@ export default function Home() {
 
   const handleCopyEmail = async () => {
     try {
-      await navigator.clipboard.writeText('pawpayaco@gmail.com');
+      await navigator.clipboard.writeText('oscar@pawpayaco.com');
       setCopiedEmail(true);
       setTimeout(() => setCopiedEmail(false), 2000);
     } catch (err) {
@@ -136,17 +130,17 @@ export default function Home() {
             <div className="text-white">
               {/* Pre-heading */}
               <div className="text-xs sm:text-xs md:text-sm font-semibold opacity-90 uppercase tracking-wide mb-2 sm:mb-3 md:mb-4">
-                Zero Risk • Zero Inventory • 100% Profit
+                • Earn Passive Profit Every Day • 
               </div>
 
               {/* Main heading */}
               <h1 className="text-2xl sm:text-3xl md:text-5xl lg:text-6xl font-bold mb-3 sm:mb-4 md:mb-6 px-1 sm:px-2 leading-tight">
-                The Easiest Pet Shop Profit
+                We Make You More Money
               </h1>
 
               {/* Subheader */}
-              <p className="text-sm sm:text-lg md:text-2xl text-white/95 mb-4 sm:mb-6 md:mb-8 max-w-3xl mx-auto leading-relaxed px-1 sm:px-2">
-                Get a premium Pawpaya display shipped free. Customers tap to buy, you earn automatic commissions. No inventory, no risk, no upfront costs.
+              <p className="text-sm sm:text-lg md:text-2xl text-white/95 mb-4 sm:mb-6 md:mb-8 max-w-3xl mx-auto leading-tight px-1 sm:px-2">
+                Customers tap to buy and you earn<br />automatic 30% commission.
               </p>
 
               {/* Value props - visible on mobile */}
@@ -185,31 +179,8 @@ export default function Home() {
       </section>
 
       {/* Action Center */}
-      <section className="py-12 md:py-20 px-4 sm:px-6 lg:px-8">
+      <section className="pt-6 md:pt-10 pb-6 md:pb-10 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-            className="text-center mb-8 md:mb-14"
-          >
-            <h2 className="text-4xl sm:text-5xl md:text-6xl font-bold text-gray-900 mb-4 md:mb-6 px-2">
-              Action Center
-            </h2>
-
-            <motion.p
-              initial={{ opacity: 0, y: 10 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: 0.4 }}
-              className="text-lg sm:text-xl md:text-2xl text-gray-600 max-w-4xl mx-auto mb-4 md:mb-8 px-2"
-            >
-              Stay connected, track your impact, and keep your Pawpaya displays running strong.
-            </motion.p>
-
-          </motion.div>
-
           <div className="grid sm:grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
             {actionCards.map((card, index) => {
               const CardWrapper = index < 2 ? 'div' : motion.div;
@@ -271,7 +242,7 @@ export default function Home() {
       </section>
 
       {/* Closing CTA */}
-      <section className="py-12 md:py-20 px-4 sm:px-6 lg:px-8">
+      <section className="pt-6 md:pt-10 pb-12 md:pb-20 px-4 sm:px-6 lg:px-8">
         <div className="max-w-5xl mx-auto">
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
@@ -281,10 +252,10 @@ export default function Home() {
             className="bg-gradient-to-br from-[#fff3ea] via-[#fff6fb] to-[#f0f4ff] rounded-3xl md:rounded-[2rem] p-8 sm:p-10 md:p-12 lg:p-14 shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_1px_-0.5px_rgba(0,0,0,0.06),0px_3px_3px_-1.5px_rgba(0,0,0,0.06),0px_6px_6px_-3px_rgba(0,0,0,0.06),0px_12px_12px_-6px_rgba(0,0,0,0.06),0px_24px_24px_-12px_rgba(0,0,0,0.06)] border border-transparent text-center"
           >
             <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 mb-3 md:mb-4 px-2">
-              We've Got Your Back
+              Test it Out
             </h2>
             <p className="text-lg sm:text-xl md:text-2xl text-gray-700 leading-relaxed mb-6 px-2">
-              Keep your Pawpaya displays performing their best. We're here to help you boost sales, save time, and turn every display into real store value.
+              If the display isn't working out how you would like, then simply throw it away.
             </p>
               <div className="flex flex-col sm:flex-row gap-3 md:gap-4 justify-center">
                 <Link href="/onboard/about">
@@ -318,10 +289,10 @@ export default function Home() {
             className="text-center mb-8 md:mb-14"
           >
             <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 mb-3 md:mb-4 px-2">
-              The Franchise Operator's Flywheel
+              How it Works
             </h2>
             <p className="text-lg sm:text-xl md:text-2xl text-gray-600 max-w-3xl mx-auto px-2">
-              Every display follows the same four-step loop. Keep the wheel turning and Tapify handles the rest.
+              Every display follows the same simple process. Keep the wheel turning and Tapify handles the rest.
             </p>
           </motion.div>
 
@@ -364,7 +335,7 @@ export default function Home() {
               What's Next on the Tapify Roadmap
             </h2>
             <p className="text-lg sm:text-xl md:text-2xl text-gray-600 max-w-3xl mx-auto px-2">
-              Phase 1 proves the model with Pawpaya. Here's what we are deploying next to make every franchise location self-propelling.
+              Here's what we are deploying next to make every location self-propelling.
             </p>
           </motion.div>
 
