@@ -583,7 +583,7 @@ export default function RegisterRetailer() {
             >
               <h3 className="text-xl font-black text-gray-900 mb-3">Questions?</h3>
               <p className="text-gray-600 mb-4 leading-relaxed">
-                Give us a call and we're happy to help! Here to chat.
+                Give us a call - we're happy to answer any questions!
               </p>
               <a
                 href="tel:7159791259"
