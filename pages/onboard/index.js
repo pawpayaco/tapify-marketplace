@@ -234,7 +234,13 @@ export default function OnboardIndex() {
                 <div className="absolute inset-0 bg-white opacity-40"></div>
                 <div className="relative z-10">
                   <div className="text-4xl md:text-5xl mb-4 md:mb-5">{item.icon}</div>
-                  <h3 className="text-xl md:text-2xl font-bold text-gray-900 mb-2 md:mb-3">{item.title}</h3>
+                  <h3 className="text-xl md:text-2xl font-bold text-gray-900 mb-2 md:mb-3">
+                    {item.title === 'Full Support' ? (
+                      <>Full<br/>Support</>
+                    ) : (
+                      item.title
+                    )}
+                  </h3>
                   <p className="text-gray-700 text-base md:text-lg">{item.description}</p>
                 </div>
               </motion.div>
@@ -275,7 +281,7 @@ export default function OnboardIndex() {
               {/* For Franchise Owners */}
               <div className="flex flex-col border-t md:border-t-0 pt-8 md:pt-0 md:pl-8">
                 <h2 className="text-2xl sm:text-3xl md:text-4xl font-black mb-4 md:mb-5 text-gray-900">
-                  For Franchise Owners
+                  For Owners
                 </h2>
                 <p className="text-base md:text-lg mb-5 md:mb-6 leading-relaxed text-gray-700 flex-grow">
                   Ready to add a new revenue stream with zero upfront cost?
