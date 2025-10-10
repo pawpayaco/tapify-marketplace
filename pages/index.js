@@ -129,8 +129,8 @@ export default function Home() {
           <div className="bg-gradient-to-br from-[#ff7a4a]/90 via-[#ff6fb3]/90 to-[#ff7a4a]/70 rounded-2xl sm:rounded-3xl md:rounded-[2rem] p-6 sm:p-8 md:p-12 lg:p-16 shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_1px_-0.5px_rgba(0,0,0,0.06),0px_3px_3px_-1.5px_rgba(0,0,0,0.06),0px_6px_6px_-3px_rgba(0,0,0,0.06),0px_12px_12px_-6px_rgba(0,0,0,0.06),0px_24px_24px_-12px_rgba(0,0,0,0.06)] text-center relative z-10">
             <div className="text-white">
               {/* Pre-heading */}
-              <div className="text-xs sm:text-xs md:text-sm font-semibold opacity-90 uppercase tracking-wide mb-2 sm:mb-3 md:mb-4">
-                • Earn Passive Profit Every Day • 
+              <div className="text-xs sm:text-xs md:text-sm font-semibold opacity-90 uppercase tracking-wide mb-2 sm:mb-3 md:mb-4 px-4 py-2.5">
+                • Earn Passive Profit Every Day •
               </div>
 
               {/* Main heading */}

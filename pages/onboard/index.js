@@ -58,7 +58,7 @@ export default function OnboardIndex() {
             initial={{ scale: 0.85, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             transition={{ duration: 0.3, delay: 0.1 }}
-            className="inline-flex items-center gap-1.5 bg-gray-100 px-3 py-1.5 rounded-full mb-12 mt-8 md:mt-12 text-xs md:text-sm font-bold text-gray-700"
+            className="inline-flex items-center gap-1.5 bg-gray-100 px-4 py-2.5 rounded-full mb-12 mt-8 md:mt-12 text-xs md:text-sm font-bold text-gray-700"
           >
             <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse flex-shrink-0"></span>
             <span className="whitespace-nowrap">Free display • Zero inventory • Auto commissions</span>
@@ -140,7 +140,7 @@ export default function OnboardIndex() {
               See What You're Getting
             </h2>
             {/* FREE Tag */}
-            <div className="inline-flex items-center px-5 py-2.5 rounded-full text-base font-black text-white shadow-lg"
+            <div className="inline-flex items-center px-8 py-3.5 rounded-full text-base font-black text-white shadow-lg"
                  style={{ background: 'linear-gradient(to right, #FFA08A, #FF8FCF)' }}>
               100% FREE
             </div>
