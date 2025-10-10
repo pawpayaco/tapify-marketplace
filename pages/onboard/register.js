@@ -485,17 +485,9 @@ export default function RegisterRetailer() {
         body {
           overflow-x: hidden !important;
           max-width: 100vw !important;
-          overscroll-behavior-y: none !important;
-          -webkit-overflow-scrolling: touch !important;
-          position: relative !important;
         }
         html {
           overflow-x: hidden !important;
-          overscroll-behavior-y: none !important;
-          position: relative !important;
-        }
-        * {
-          -webkit-overflow-scrolling: touch !important;
         }
       `}</style>
     <div className="min-h-screen bg-white pt-28 md:pt-36 pb-16 overflow-x-hidden max-w-full w-full" style={{ position: 'relative' }}>
@@ -676,7 +668,7 @@ export default function RegisterRetailer() {
                         exit={{ opacity: 0, height: 0 }}
                         className="border-t border-gray-200 overflow-hidden w-full"
                       >
-                        <div className="max-h-64 overflow-y-auto overflow-x-hidden bg-white w-full" style={{ WebkitOverflowScrolling: 'touch' }}>
+                        <div className="bg-white w-full overflow-hidden">
                           {storeSuggestions.length > 0 ? (
                             <>
                               {storeSuggestions.map((store, idx) => {
@@ -992,7 +984,7 @@ export default function RegisterRetailer() {
                                   exit={{ opacity: 0, height: 0 }}
                                   className="border-t border-gray-200 overflow-hidden w-full"
                                 >
-                                  <div className="max-h-64 overflow-y-auto overflow-x-hidden bg-white w-full" style={{ WebkitOverflowScrolling: 'touch' }}>
+                                  <div className="bg-white w-full overflow-hidden">
                                     {store.storeSuggestions.length > 0 ? (
                                       <>
                                         {store.storeSuggestions.map((retailer) => {
