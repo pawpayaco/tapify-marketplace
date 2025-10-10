@@ -628,50 +628,47 @@ export default function RegisterRetailer() {
                   Store Name <span className="text-red-500">*</span>
                   {selectedRetailer && <span className="text-green-600 text-xs ml-2">Selected ✓</span>}
                 </label>
-                {/* Unified Search Container with Better Transition */}
+                {/* Unified Search Container - COMPLETELY RESTRUCTURED */}
                 <div className="relative max-w-full">
-                  <div className={[
-                    "border-2 transition-all overflow-hidden bg-white max-w-full",
-                      showSuggestions && storeQuery.length >= 1
-                      ? "border-gray-300 rounded-2xl shadow-lg"
-                      : "border-gray-200 rounded-2xl hover:border-gray-300 focus-within:border-[#ff6fb3] focus-within:ring-2 focus-within:ring-[#ff6fb3]/20"
-                  ].join(" ")}>
-
-                    {/* Input Field */}
-                <input
-                  type="text"
-                  id="storeName"
-                      value={storeQuery}
-                      onChange={(e) => {
-                        setStoreQuery(e.target.value);
-                        setFormData(prev => ({ ...prev, storeName: e.target.value }));
+                  {/* Input Field */}
+                  <input
+                    type="text"
+                    id="storeName"
+                    value={storeQuery}
+                    onChange={(e) => {
+                      setStoreQuery(e.target.value);
+                      setFormData(prev => ({ ...prev, storeName: e.target.value }));
+                      setShowSuggestions(true);
+                      setSelectedRetailer(null);
+                      setSuccess('');
+                    }}
+                    onFocus={() => {
+                      if (!selectedRetailer) {
                         setShowSuggestions(true);
-                        setSelectedRetailer(null);
-                        setSuccess(''); // Clear success message when typing
-                      }}
-                      onFocus={() => {
-                        // Only show suggestions if no store is selected yet
-                        if (!selectedRetailer) {
-                          setShowSuggestions(true);
-                        }
-                      }}
-                  required
-                      className="w-full px-4 py-3 pr-10 border-0 bg-transparent text-gray-900 placeholder-gray-400 focus:ring-0 focus:outline-none"
-                      placeholder="Start typing your store name..."
-                    />
+                      }
+                    }}
+                    required
+                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-2xl hover:border-gray-300 focus:border-[#ff6fb3] focus:ring-2 focus:ring-[#ff6fb3]/20 transition-all text-gray-900 placeholder-gray-400"
+                    placeholder="Start typing your store name..."
+                  />
 
-                    {/* Dropdown Content Inside Container */}
-                    {showSuggestions && storeQuery.length >= 1 && (
-                      <motion.div
-                        initial={{ opacity: 0, height: 0 }}
-                        animate={{ opacity: 1, height: "auto" }}
-                        exit={{ opacity: 0, height: 0 }}
-                        className="border-t border-gray-200 overflow-hidden w-full"
-                      >
-                        <div className="bg-white w-full" style={{ overflow: 'hidden', touchAction: 'none', pointerEvents: 'auto', maxHeight: 'none', position: 'static', overscrollBehavior: 'none' }}>
-                          {storeSuggestions.length > 0 ? (
-                            <>
-                              {storeSuggestions.map((store, idx) => {
+                  {/* Dropdown - Absolutely Positioned, No Animations, Max 3 Items */}
+                  {showSuggestions && storeQuery.length >= 1 && (
+                    <div
+                      className="absolute z-50 w-full mt-2 bg-white border-2 border-gray-300 rounded-2xl shadow-2xl"
+                      style={{
+                        position: 'absolute',
+                        top: '100%',
+                        left: 0,
+                        right: 0,
+                        maxHeight: 'none',
+                        overflow: 'visible'
+                      }}
+                    >
+                      <div style={{ overflow: 'visible', touchAction: 'none' }}>
+                        {storeSuggestions.length > 0 ? (
+                          <>
+                            {storeSuggestions.slice(0, 3).map((store, idx) => {
                                 const isTaken = store.converted;
                                 return (
                                   <div
@@ -739,7 +736,7 @@ export default function RegisterRetailer() {
                               type="button"
                               onClick={handleAddNewStore}
                               disabled={loading}
-                              className="w-full text-left px-4 py-4 bg-gradient-to-r from-green-50 via-emerald-50 to-green-50 hover:from-green-100 hover:via-emerald-100 hover:to-green-100 transition-all disabled:opacity-50 disabled:cursor-not-allowed group"
+                              className="w-full text-left px-4 py-4 bg-gradient-to-r from-green-50 via-emerald-50 to-green-50 hover:from-green-100 hover:via-emerald-100 hover:to-green-100 transition-all disabled:opacity-50 disabled:cursor-not-allowed group rounded-2xl"
                             >
                               <div className="flex items-center gap-3">
                                 <div className="w-8 h-8 rounded-full bg-gradient-to-br from-green-500 to-emerald-600 flex items-center justify-center flex-shrink-0">
@@ -757,15 +754,14 @@ export default function RegisterRetailer() {
                               </div>
                             </button>
                           ) : (
-                            <div className="px-4 py-8 text-gray-500 text-sm flex items-center justify-center gap-2 bg-white">
+                            <div className="px-4 py-8 text-gray-500 text-sm flex items-center justify-center gap-2 bg-white rounded-2xl">
                               <div className="animate-spin rounded-full h-4 w-4 border-2 border-gray-400 border-t-transparent"></div>
                               Searching retailers...
                             </div>
                           )}
-                        </div>
-                      </motion.div>
-                    )}
-                  </div>
+                      </div>
+                    </div>
+                  )}
                 </div>
 
                 {/* Success Banner - Right After Store Name */}
@@ -952,42 +948,40 @@ export default function RegisterRetailer() {
                               {store.selectedRetailer && <span className="text-green-600 text-xs ml-2">Selected ✓</span>}
                             </label>
 
-                            {/* Unified Search Container */}
-                            <div className={[
-                              "border-2 transition-all overflow-hidden bg-white w-full",
-                              store.showSuggestions && store.storeQuery.length >= 1
-                                ? "border-gray-300 rounded-2xl shadow-lg"
-                                : "border-gray-200 rounded-2xl hover:border-gray-300 focus-within:border-blue-500 focus-within:ring-2 focus-within:ring-blue-500/20"
-                            ].join(" ")}>
-
+                            {/* Unified Search Container - COMPLETELY RESTRUCTURED */}
+                            <div className="relative w-full">
                               {/* Input Field */}
-                  <input
+                              <input
                                 type="text"
                                 value={store.storeQuery}
                                 onChange={(e) => handleAdditionalStoreQueryChange(store.id, e.target.value)}
                                 onFocus={() => {
-                                  // Only show suggestions if no store is selected yet
                                   if (!store.selectedRetailer) {
                                     handleAdditionalStoreFieldChange(store.id, 'showSuggestions', true);
                                   }
                                 }}
                                 required
-                                className="w-full px-4 py-3 pr-10 border-0 bg-transparent text-gray-900 placeholder-gray-400 focus:ring-0 focus:outline-none"
+                                className="w-full px-4 py-3 border-2 border-gray-200 rounded-2xl hover:border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all text-gray-900 placeholder-gray-400"
                                 placeholder="Start typing store name..."
                               />
 
-                              {/* Dropdown Content */}
+                              {/* Dropdown - Absolutely Positioned, No Animations, Max 3 Items */}
                               {store.showSuggestions && store.storeQuery.length >= 1 && (
-                                <motion.div
-                                  initial={{ opacity: 0, height: 0 }}
-                                  animate={{ opacity: 1, height: "auto" }}
-                                  exit={{ opacity: 0, height: 0 }}
-                                  className="border-t border-gray-200 overflow-hidden w-full"
+                                <div
+                                  className="absolute z-50 w-full mt-2 bg-white border-2 border-gray-300 rounded-2xl shadow-2xl"
+                                  style={{
+                                    position: 'absolute',
+                                    top: '100%',
+                                    left: 0,
+                                    right: 0,
+                                    maxHeight: 'none',
+                                    overflow: 'visible'
+                                  }}
                                 >
-                                  <div className="bg-white w-full" style={{ overflow: 'hidden', touchAction: 'none', pointerEvents: 'auto', maxHeight: 'none', position: 'static', overscrollBehavior: 'none' }}>
+                                  <div style={{ overflow: 'visible', touchAction: 'none' }}>
                                     {store.storeSuggestions.length > 0 ? (
                                       <>
-                                        {store.storeSuggestions.map((retailer) => {
+                                        {store.storeSuggestions.slice(0, 3).map((retailer) => {
                                           const isTaken = retailer.converted;
                                           return (
                                             <div
@@ -1055,31 +1049,31 @@ export default function RegisterRetailer() {
                                         type="button"
                                         onClick={() => handleAddNewAdditionalStore(store.id)}
                                         disabled={store.isCreatingNew}
-                                        className="w-full text-left px-4 py-4 bg-gradient-to-r from-green-50 via-emerald-50 to-green-50 hover:from-green-100 hover:via-emerald-100 hover:to-green-100 transition-all disabled:opacity-50 disabled:cursor-not-allowed group"
+                                        className="w-full text-left px-4 py-4 bg-gradient-to-r from-green-50 via-emerald-50 to-green-50 hover:from-green-100 hover:via-emerald-100 hover:to-green-100 transition-all disabled:opacity-50 disabled:cursor-not-allowed group rounded-2xl"
                                       >
                                         <div className="flex items-center gap-3">
                                           <div className="w-8 h-8 rounded-full bg-gradient-to-br from-green-500 to-emerald-600 flex items-center justify-center flex-shrink-0">
                                             <span className="text-white text-lg">✨</span>
                                           </div>
-                  <div className="flex-1">
+                                          <div className="flex-1">
                                             <div className="font-bold text-green-700 group-hover:text-green-800 transition-colors">
                                               Add "{store.storeQuery}" as new store
-                    </div>
+                                            </div>
                                             <div className="text-xs text-green-600">Store not listed? Click to add it!</div>
-                  </div>
+                                          </div>
                                           {store.isCreatingNew && (
                                             <div className="animate-spin rounded-full h-5 w-5 border-2 border-green-600 border-t-transparent"></div>
                                           )}
                                         </div>
                                       </button>
                                     ) : (
-                                      <div className="px-4 py-8 text-gray-500 text-sm flex items-center justify-center gap-2 bg-white">
+                                      <div className="px-4 py-8 text-gray-500 text-sm flex items-center justify-center gap-2 bg-white rounded-2xl">
                                         <div className="animate-spin rounded-full h-4 w-4 border-2 border-gray-400 border-t-transparent"></div>
                                         Searching retailers...
                                       </div>
                                     )}
                                   </div>
-                                </motion.div>
+                                </div>
                               )}
                             </div>
                           </div>

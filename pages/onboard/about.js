@@ -34,12 +34,16 @@ export default function AboutPawpaya() {
             <span className="whitespace-nowrap">Free display • Zero inventory • Auto commissions</span>
           </motion.div>
 
-          <h1 className="text-6xl sm:text-7xl md:text-8xl font-black text-gray-900 mb-8 leading-[1.1]">
+          <h1 className="text-6xl sm:text-7xl md:text-8xl font-black text-gray-900 mb-8 leading-[1.1] text-center">
             Meet Pawpaya
             <span className="block mt-3 bg-gradient-to-r from-[#FFA08A] to-[#FF8FCF] bg-clip-text text-transparent">
-              The Future of Retail
+              Cute Collars
+              <br />
+              <span className="block text-5xl sm:text-6xl md:text-7xl">+</span>
+              NFC Tech
             </span>
           </h1>
+
 
           <motion.p
             initial={{ scale: 0.85, opacity: 0 }}
