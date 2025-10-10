@@ -19,24 +19,19 @@ export default function AboutPawpaya() {
   };
 
   return (
-    <div className="min-h-screen bg-white pt-32 pb-16">
+    <div className="min-h-screen bg-white pt-24 md:pt-32 pb-16">
       {/* Hero Content */}
-      <div className="max-w-[1400px] mx-auto px-6 md:px-8 pb-20 md:pb-32">
-        <motion.section
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          className="text-center"
-        >
+      <div className="max-w-[1400px] mx-auto px-4 md:px-8 pb-20 md:pb-32">
+        <section className="text-center">
           {/* Trust Badge */}
           <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: 0.2 }}
-            className="inline-flex items-center gap-2 bg-gray-100 px-4 py-2 rounded-full mb-8 text-sm font-bold text-gray-700"
+            initial={{ scale: 0.85, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ duration: 0.3, delay: 0.1 }}
+            className="inline-flex items-center gap-1.5 bg-gray-100 px-3 py-1.5 rounded-full mb-8 text-xs md:text-sm font-bold text-gray-700"
           >
-            <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
-            Expanding nationwide • Proven retail system • Join wave one
+            <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse flex-shrink-0"></span>
+            <span className="whitespace-nowrap">Free display • Zero inventory • Auto commissions</span>
           </motion.div>
 
           <h1 className="text-6xl sm:text-7xl md:text-8xl font-black text-gray-900 mb-8 leading-[1.1]">
@@ -46,17 +41,25 @@ export default function AboutPawpaya() {
             </span>
           </h1>
 
-          <p className="text-2xl sm:text-2xl md:text-3xl text-gray-600 max-w-4xl mx-auto leading-relaxed mb-14 font-medium">
+          <motion.p
+            initial={{ scale: 0.85, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ duration: 0.3, delay: 0.12 }}
+            className="text-2xl sm:text-2xl md:text-3xl text-gray-600 max-w-4xl mx-auto leading-relaxed mb-14 font-medium"
+          >
             We're a pet product brand revolutionizing how customers discover and buy in stores—through tap-to-order displays that turn your counter space into commission-earning real estate.
-          </p>
+          </motion.p>
 
           {/* CTA Buttons */}
-          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-16">
-            <Link href="/onboard">
+          <div className="flex flex-col sm:flex-row gap-6 justify-center items-center mb-16">
+            <Link href="/onboard" className="w-full sm:w-auto">
               <motion.button
-                whileHover={{ scale: 1.05, y: -2 }}
+                initial={{ scale: 0.85, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                transition={{ duration: 0.3, delay: 0.15 }}
+                whileHover={{ y: -2 }}
                 whileTap={{ scale: 0.98 }}
-                className="px-12 py-6 rounded-2xl text-2xl font-black shadow-2xl hover:shadow-3xl transition-all text-white w-full sm:w-auto"
+                className="px-10 py-5 rounded-2xl text-xl sm:text-2xl font-black shadow-xl transition-all text-white w-full sm:w-[360px]"
                 style={{ background: 'linear-gradient(to right, #FFA08A, #FF8FCF)' }}
               >
                 Learn About Partnership →
@@ -64,9 +67,13 @@ export default function AboutPawpaya() {
             </Link>
             <motion.a
               href="#how-it-works"
-              whileHover={{ scale: 1.05 }}
+              initial={{ scale: 0.85, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ duration: 0.3, delay: 0.18 }}
+              whileHover={{ y: -2 }}
               whileTap={{ scale: 0.98 }}
-              className="px-10 py-5 rounded-2xl text-xl font-bold border-2 border-gray-300 text-gray-700 hover:border-gray-400 transition-all w-full sm:w-auto inline-block cursor-pointer"
+              className="px-10 py-5 rounded-2xl text-xl sm:text-2xl font-black shadow-xl transition-all bg-white w-full sm:w-[360px] inline-block cursor-pointer"
+              style={{ border: '4px solid #FF8FCF', color: '#FF8FCF' }}
               onClick={(e) => {
                 e.preventDefault();
                 document.getElementById('how-it-works')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -86,9 +93,9 @@ export default function AboutPawpaya() {
             ].map((stat, idx) => (
               <motion.div
                 key={idx}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.3 + idx * 0.1 }}
+                initial={{ scale: 0.85, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                transition={{ duration: 0.3, delay: 0.2 + idx * 0.05 }}
                 className="text-center"
               >
                 <div className="text-4xl md:text-5xl font-black text-gray-900 mb-1">{stat.number}</div>
@@ -96,7 +103,7 @@ export default function AboutPawpaya() {
               </motion.div>
             ))}
           </div>
-        </motion.section>
+        </section>
       </div>
 
       {/* Subtle Divider */}
@@ -180,7 +187,13 @@ export default function AboutPawpaya() {
           </div>
 
           {/* Bottom Trust Bar */}
-          <div className="mt-12 bg-gradient-to-br from-orange-50 to-pink-50 border-2 border-orange-200 rounded-2xl p-6 md:p-8 text-center">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="mt-8 md:mt-12 mb-0 bg-gradient-to-br from-orange-50 to-pink-50 border-2 border-orange-200 rounded-2xl p-6 md:p-8 text-center"
+          >
             <div className="max-w-4xl mx-auto">
               <p className="text-2xl md:text-3xl font-black mb-3 text-gray-900">
                 The Perfect Win-Win Partnership
@@ -189,7 +202,7 @@ export default function AboutPawpaya() {
                 We handle product creation, fulfillment, customer service, and technology. You provide counter space and earn commission on every sale. It's that simple.
               </p>
             </div>
-          </div>
+          </motion.div>
         </motion.section>
 
         {/* Expansion Section */}
@@ -198,21 +211,21 @@ export default function AboutPawpaya() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
-          className="mb-12 md:mb-16"
+          className="mb-8 md:mb-12 -mt-8 md:-mt-12"
         >
-          <div className="rounded-3xl md:rounded-[2rem] p-8 md:p-12 shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_1px_-0.5px_rgba(0,0,0,0.06),0px_3px_3px_-1.5px_rgba(0,0,0,0.06),0px_6px_6px_-3px_rgba(0,0,0,0.06),0px_12px_12px_-6px_rgba(0,0,0,0.06),0px_24px_24px_-12px_rgba(0,0,0,0.06)] text-white text-center"
+          <div className="rounded-3xl md:rounded-[2rem] p-6 md:p-10 shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_1px_-0.5px_rgba(0,0,0,0.06),0px_3px_3px_-1.5px_rgba(0,0,0,0.06),0px_6px_6px_-3px_rgba(0,0,0,0.06),0px_12px_12px_-6px_rgba(0,0,0,0.06),0px_24px_24px_-12px_rgba(0,0,0,0.06)] text-white text-center"
                style={{ background: 'linear-gradient(to bottom right, #FFA08A, #FF8FCF)' }}>
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-5 md:mb-6">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4 md:mb-5">
               Our Expansion & Your Opportunity
             </h2>
-            <p className="text-lg sm:text-xl md:text-2xl mb-8 md:mb-10 max-w-4xl mx-auto opacity-90">
+            <p className="text-lg sm:text-xl md:text-2xl mb-6 md:mb-8 max-w-4xl mx-auto opacity-90">
               We started with a simple idea: make in-store shopping as seamless as online. Now we're expanding to hundreds of retail partners nationwide through our NFC tap checkout technology. Your store could be next—earning passive commission while offering customers something they've never seen before.
             </p>
             <Link href="/onboard">
               <motion.button
-                whileHover={{ scale: 1.05, y: -5 }}
-                whileTap={{ scale: 0.95 }}
-                className="bg-white px-10 md:px-12 py-4 md:py-5 rounded-2xl md:rounded-3xl text-lg md:text-xl font-black hover:bg-gray-50 transition-all shadow-2xl"
+                whileHover={{ y: -2 }}
+                whileTap={{ scale: 0.98 }}
+                className="bg-white px-10 md:px-12 py-4 md:py-5 rounded-2xl md:rounded-3xl text-lg md:text-xl font-black transition-all shadow-2xl"
                 style={{ color: '#FF8FCF' }}
               >
                 See What We're Offering →
@@ -221,7 +234,7 @@ export default function AboutPawpaya() {
           </div>
 
           {/* Final CTA */}
-          <div className="text-center pt-12 md:pt-16">
+          <div className="text-center pt-8 md:pt-12">
             <Link href="/onboard" className="text-gray-600 hover:text-gray-900 font-bold inline-flex items-center gap-2 hover:gap-3 transition-all text-base md:text-lg">
               <svg className="w-4 h-4 md:w-5 md:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />

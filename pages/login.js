@@ -113,7 +113,7 @@ export default function Login() {
               </svg>
             </div>
             <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-1 sm:mb-2">
-              {isSignUp ? 'Create Account' : 'Welcome to Tapify'}
+              {isSignUp ? 'Create Account' : 'Welcome to Pawpaya'}
             </h1>
             <p className="text-sm sm:text-base text-gray-600">
               {isSignUp ? 'Sign up to get started with your dashboard' : 'Sign in to access your dashboard'}

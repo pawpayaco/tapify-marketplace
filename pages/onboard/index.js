@@ -4,24 +4,32 @@ import { useState } from 'react';
 import ImageModalGallery from '../../components/ImageModalGallery';
 
 export default function OnboardIndex() {
-  const [shareError, setShareError] = useState('');
+  const [isCopied, setIsCopied] = useState(false);
 
   const handleManagerShare = async () => {
     try {
+      const shareUrl = window.location.origin + '/onboard';
+
+      // Always copy to clipboard first
+      await navigator.clipboard.writeText(shareUrl);
+      setIsCopied(true);
+
+      // Reset copied state after 2 seconds
+      setTimeout(() => {
+        setIsCopied(false);
+      }, 2000);
+
+      // Try to use native share API if available
       if (navigator.share) {
         await navigator.share({
           title: 'Tapify Display Program',
           text: 'Check out this amazing display program for our store!',
-          url: window.location.origin + '/onboard'
+          url: shareUrl
         });
-      } else {
-        // Fallback: copy to clipboard
-        await navigator.clipboard.writeText(window.location.origin + '/onboard');
-        alert('Link copied to clipboard!');
       }
     } catch (err) {
       console.error('Share error:', err);
-      setShareError('Unable to share. Please copy the link manually.');
+      // Link is already copied, so no need to show error
     }
   };
 
@@ -41,24 +49,19 @@ export default function OnboardIndex() {
   };
 
   return (
-    <div className="min-h-screen bg-white pt-40 pb-20">
+    <div className="min-h-screen bg-white pt-24 md:pt-32 pb-20">
       {/* Hero Content */}
-      <div className="max-w-[1400px] mx-auto px-8 pb-24 md:pb-32">
-        <motion.section
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          className="text-center"
-        >
+      <div className="max-w-[1400px] mx-auto px-4 md:px-8 pb-24 md:pb-32">
+        <section className="text-center">
           {/* Trust Badge */}
           <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: 0.2 }}
-            className="inline-flex items-center gap-2 bg-gray-100 px-4 py-2 rounded-full mb-12 text-sm font-bold text-gray-700"
+            initial={{ scale: 0.85, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ duration: 0.3, delay: 0.1 }}
+            className="inline-flex items-center gap-1.5 bg-gray-100 px-3 py-1.5 rounded-full mb-12 text-xs md:text-sm font-bold text-gray-700"
           >
-            <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
-            Free display • Zero inventory • Automatic commissions
+            <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse flex-shrink-0"></span>
+            <span className="whitespace-nowrap">Free display • Zero inventory • Auto commissions</span>
           </motion.div>
 
           <h1 className="text-7xl md:text-9xl font-black text-gray-900 mb-10 leading-tight">
@@ -70,35 +73,45 @@ export default function OnboardIndex() {
               </span>
             </span>
           </h1>
-          <p className="text-2xl md:text-4xl text-gray-700 max-w-4xl mx-auto leading-relaxed mb-16">
+          <motion.p
+            initial={{ scale: 0.85, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ duration: 0.3, delay: 0.12 }}
+            className="text-2xl md:text-4xl text-gray-700 max-w-4xl mx-auto leading-relaxed mb-16"
+          >
             Free displays. Zero risk. Automatic commissions on every sale.
             Choose your path below.
-          </p>
+          </motion.p>
 
           {/* Two-Path CTA Buttons */}
-          <div className="flex flex-col md:flex-row gap-6 justify-center items-center mb-20">
-            <Link href="/onboard/register">
+          <div className="flex flex-col md:flex-row gap-6 justify-center items-center">
+            <Link href="/onboard/register" className="w-full md:w-auto">
               <motion.button
-                whileHover={{ scale: 1.05, y: -5 }}
-                whileTap={{ scale: 0.95 }}
-                className="px-10 py-5 rounded-2xl text-xl md:text-2xl font-black shadow-xl hover:shadow-2xl transition-all text-white w-full md:w-auto"
+                initial={{ scale: 0.85, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                transition={{ duration: 0.3, delay: 0.15 }}
+                whileHover={{ y: -2 }}
+                whileTap={{ scale: 0.98 }}
+                className="px-10 py-5 rounded-2xl text-xl md:text-2xl font-black shadow-xl transition-all text-white w-full md:w-[360px]"
                 style={{ background: 'linear-gradient(to right, #FFA08A, #FF8FCF)' }}
               >
                 I'm a Franchise Owner →
               </motion.button>
             </Link>
             <motion.button
-              whileHover={{ scale: 1.05, y: -5 }}
-              whileTap={{ scale: 0.95 }}
+              initial={{ scale: 0.85, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ duration: 0.3, delay: 0.18 }}
+              whileHover={{ y: -2 }}
+              whileTap={{ scale: 0.98 }}
               onClick={handleManagerShare}
-              className="px-10 py-5 rounded-2xl text-xl md:text-2xl font-black shadow-xl hover:shadow-2xl transition-all bg-white border-4 w-full md:w-auto"
-              style={{ borderColor: '#FF8FCF', color: '#FF8FCF' }}
+              className="px-10 py-5 rounded-2xl text-xl md:text-2xl font-black shadow-xl transition-all bg-white w-full md:w-[360px]"
+              style={{ border: '4px solid #FF8FCF', color: '#FF8FCF' }}
             >
-              I'm a Manager — Share This
+              {isCopied ? 'Copied! ✓' : 'I\'m a Manager — Share This'}
             </motion.button>
           </div>
-          {shareError && <p className="text-red-600 text-sm">{shareError}</p>}
-        </motion.section>
+        </section>
       </div>
 
       {/* Subtle Divider */}
@@ -119,7 +132,7 @@ export default function OnboardIndex() {
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
+          transition={{ duration: 0.3 }}
           className="mb-16 md:mb-20"
         >
           <div className="text-center mb-8 md:mb-12">
@@ -157,8 +170,8 @@ export default function OnboardIndex() {
             How It Works
           </h2>
 
-          <div className="bg-white rounded-3xl md:rounded-[2rem] py-6 md:py-8 px-8 md:px-10 shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_1px_-0.5px_rgba(0,0,0,0.06),0px_3px_3px_-1.5px_rgba(0,0,0,0.06),0px_6px_6px_-3px_rgba(0,0,0,0.06),0px_12px_12px_-6px_rgba(0,0,0,0.06),0px_24px_24px_-12px_rgba(0,0,0,0.06)] border border-transparent">
-            <div className="flex flex-col md:flex-row items-center justify-between gap-6 md:gap-3">
+          <div className="bg-white rounded-3xl md:rounded-[2rem] py-6 md:py-8 px-4 md:px-10 shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_1px_-0.5px_rgba(0,0,0,0.06),0px_3px_3px_-1.5px_rgba(0,0,0,0.06),0px_6px_6px_-3px_rgba(0,0,0,0.06),0px_12px_12px_-6px_rgba(0,0,0,0.06),0px_24px_24px_-12px_rgba(0,0,0,0.06)] border border-transparent">
+            <div className="flex flex-col md:flex-row items-center justify-between gap-8 md:gap-3">
               {[
                 { step: '1', text: 'Customer sees display' },
                 { step: '2', text: 'Taps phone to order' },
@@ -167,11 +180,11 @@ export default function OnboardIndex() {
               ].map((item, idx) => (
                 <div key={idx} className="flex items-center gap-3 md:gap-4 flex-1">
                   <div className="flex flex-col items-center text-center flex-1">
-                    <div className="w-16 h-16 md:w-20 md:h-20 rounded-full flex items-center justify-center text-2xl md:text-3xl font-black text-white mb-3 shadow-lg"
+                    <div className="w-24 h-24 md:w-20 md:h-20 rounded-full flex items-center justify-center text-4xl md:text-3xl font-black text-white mb-3 shadow-lg"
                          style={{ background: 'linear-gradient(to bottom right, #FFA08A, #FF8FCF)' }}>
                       {item.step}
                     </div>
-                    <p className="text-gray-900 font-bold text-base md:text-lg">{item.text}</p>
+                    <p className="text-gray-900 font-bold text-lg md:text-lg">{item.text}</p>
                   </div>
                   {idx < 3 && (
                     <div className="hidden md:block text-4xl text-gray-300">→</div>
@@ -211,8 +224,7 @@ export default function OnboardIndex() {
               <motion.div
                 key={idx}
                 variants={fadeInUp}
-                whileHover={{ y: -5, scale: 1.02 }}
-                className="relative overflow-hidden rounded-3xl md:rounded-[2rem] p-8 md:p-10 shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_1px_-0.5px_rgba(0,0,0,0.06),0px_3px_3px_-1.5px_rgba(0,0,0,0.06),0px_6px_6px_-3px_rgba(0,0,0,0.06),0px_12px_12px_-6px_rgba(0,0,0,0.06),0px_24px_24px_-12px_rgba(0,0,0,0.06)] border border-transparent text-center hover:shadow-xl transition-all"
+                className="relative overflow-hidden rounded-3xl md:rounded-[2rem] p-8 md:p-10 shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_1px_-0.5px_rgba(0,0,0,0.06),0px_3px_3px_-1.5px_rgba(0,0,0,0.06),0px_6px_6px_-3px_rgba(0,0,0,0.06),0px_12px_12px_-6px_rgba(0,0,0,0.06),0px_24px_24px_-12px_rgba(0,0,0,0.06)] border border-transparent text-center transition-all"
                 style={{
                   backgroundImage: 'url(/gradient-bg.png)',
                   backgroundSize: 'cover',
@@ -250,13 +262,13 @@ export default function OnboardIndex() {
                   When they approve, you'll be the hero who brought in passive revenue.
                 </p>
                 <motion.button
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
+                  whileHover={{ y: -2 }}
+                  whileTap={{ scale: 0.98 }}
                   onClick={handleManagerShare}
-                  className="px-6 md:px-8 py-3 md:py-4 rounded-2xl md:rounded-3xl text-base md:text-lg font-black shadow-lg bg-white border-2"
+                  className="px-6 md:px-8 py-3 md:py-4 rounded-2xl md:rounded-3xl text-base md:text-lg font-black shadow-lg bg-white border-2 min-w-[200px]"
                   style={{ borderColor: '#FF8FCF', color: '#FF8FCF' }}
                 >
-                  Share With Owner
+                  {isCopied ? 'Copied! ✓' : 'Share With Owner'}
                 </motion.button>
               </div>
 
@@ -271,8 +283,8 @@ export default function OnboardIndex() {
                 </p>
                 <Link href="/onboard/register">
                   <motion.button
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
+                    whileHover={{ y: -2 }}
+                    whileTap={{ scale: 0.98 }}
                     className="px-8 md:px-10 py-3 md:py-4 rounded-2xl md:rounded-3xl text-base md:text-lg font-black transition-all shadow-xl text-white"
                     style={{ background: 'linear-gradient(to right, #FFA08A, #FF8FCF)' }}
                   >
@@ -284,7 +296,7 @@ export default function OnboardIndex() {
           </div>
 
           {/* Back Link */}
-          <div className="text-center pt-12 md:pt-16">
+          <div className="text-center pt-6 md:pt-8">
             <Link href="/onboard/about" className="text-gray-600 hover:text-gray-900 font-bold inline-flex items-center gap-2 hover:gap-3 transition-all">
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />

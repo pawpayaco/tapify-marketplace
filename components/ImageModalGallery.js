@@ -1,9 +1,20 @@
 import Image from 'next/image';
 import { motion } from 'framer-motion';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 export default function ImageModalGallery({ images, className = "" }) {
   const [hoveredIndex, setHoveredIndex] = useState(null);
+  const [isMobile, setIsMobile] = useState(false);
+
+  // Detect if we're on mobile
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   return (
     <div className={`grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 ${className}`}>
@@ -11,8 +22,8 @@ export default function ImageModalGallery({ images, className = "" }) {
         <div
           key={index}
           className="relative aspect-square cursor-pointer overflow-visible"
-          onMouseEnter={() => setHoveredIndex(index)}
-          onMouseLeave={() => setHoveredIndex(null)}
+          onMouseEnter={() => !isMobile && setHoveredIndex(index)}
+          onMouseLeave={() => !isMobile && setHoveredIndex(null)}
         >
           <motion.div
             animate={hoveredIndex === index ? {

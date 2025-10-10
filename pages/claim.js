@@ -165,8 +165,8 @@ export default function ConnectPage() {
              rounded-2xl
              bg-white
              text-gray-900 placeholder-gray-400
-             border border-transparent
-             outline-none focus:ring-2 focus:ring-[#ff6fb3] focus:border-transparent
+             border-2 border-[#ff6fb3]
+             outline-none focus:ring-2 focus:ring-[#ff6fb3]
              transition-all"
           />
         </div>

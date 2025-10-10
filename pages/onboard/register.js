@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/router';
 import { supabase } from '../../lib/supabase';
 import Link from 'next/link';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import Image from 'next/image';
 import AddressInput from '../../components/AddressInput';
 
@@ -44,6 +44,8 @@ export default function RegisterRetailer() {
 
   // Additional stores for multi-location retailers
   const [additionalStores, setAdditionalStores] = useState([]);
+  const [lastAddedStoreId, setLastAddedStoreId] = useState(null);
+  const storeRefs = useRef({});
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -55,10 +57,11 @@ export default function RegisterRetailer() {
 
   // Add new store location with search capabilities
   const addAdditionalStore = () => {
+    const newStoreId = Date.now();
     setAdditionalStores(prev => [
       ...prev,
       {
-        id: Date.now(), // Simple ID for React key
+        id: newStoreId, // Simple ID for React key
         storeQuery: '',
         selectedRetailer: null,
         storeSuggestions: [],
@@ -69,7 +72,22 @@ export default function RegisterRetailer() {
         isCreatingNew: false
       }
     ]);
+    setLastAddedStoreId(newStoreId);
   };
+
+  // Scroll to newly added store
+  useEffect(() => {
+    if (lastAddedStoreId && storeRefs.current[lastAddedStoreId]) {
+      // Small delay to ensure the DOM is updated with animation
+      setTimeout(() => {
+        storeRefs.current[lastAddedStoreId]?.scrollIntoView({
+          behavior: 'smooth',
+          block: 'nearest'
+        });
+        setLastAddedStoreId(null);
+      }, 100);
+    }
+  }, [lastAddedStoreId, additionalStores]);
 
   // Remove store location
   const removeAdditionalStore = (id) => {
@@ -462,17 +480,17 @@ export default function RegisterRetailer() {
 
 
   return (
-    <div className="min-h-screen bg-white pt-32 pb-16">
+    <div className="min-h-screen bg-white pt-28 md:pt-36 pb-16 overflow-x-hidden">
 
       {/* Desktop: Two-column layout, Mobile: Single column */}
-      <div className="max-w-[1600px] mx-auto px-8 sm:px-10 lg:px-12 pb-12">
-        <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-start">
+      <div className="max-w-[1600px] mx-auto px-4 sm:px-10 lg:px-12 pb-12">
+        <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-start">
           {/* LEFT COLUMN - Info (Sticky on desktop) */}
           <motion.div
-            initial={{ opacity: 0, x: -50 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.6 }}
-            className="lg:sticky lg:top-8 space-y-6 order-2 lg:order-1"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.4 }}
+            className="lg:sticky lg:top-8 space-y-4 md:space-y-6 order-2 lg:order-1"
           >
             {/* Step Indicator + Hero - Hidden on mobile, visible on desktop */}
             <div className="hidden lg:block text-center lg:text-left space-y-6">
@@ -513,13 +531,13 @@ export default function RegisterRetailer() {
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.85 }}
-              className="bg-white rounded-3xl p-8 shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_1px_-0.5px_rgba(0,0,0,0.06),0px_3px_3px_-1.5px_rgba(0,0,0,0.06),0px_6px_6px_-3px_rgba(0,0,0,0.06),0px_12px_12px_-6px_rgba(0,0,0,0.06),0px_24px_24px_-12px_rgba(0,0,0,0.06)] border border-transparent"
+              className="bg-white rounded-3xl p-5 md:p-6 shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_1px_-0.5px_rgba(0,0,0,0.06),0px_3px_3px_-1.5px_rgba(0,0,0,0.06),0px_6px_6px_-3px_rgba(0,0,0,0.06),0px_12px_12px_-6px_rgba(0,0,0,0.06),0px_24px_24px_-12px_rgba(0,0,0,0.06)] border border-transparent"
             >
-              <div className="mb-8">
-                <h3 className="text-3xl font-black text-gray-900 mb-2">What Happens Next</h3>
-                <p className="text-gray-600">Your display ships within 5-7 days. Here's the timeline:</p>
+              <div className="mb-4 md:mb-6">
+                <h3 className="text-2xl font-black text-gray-900 mb-2">What Happens Next</h3>
+                <p className="text-gray-600 text-sm">Your display ships within 5-7 days. Here's the timeline:</p>
               </div>
-              <div className="space-y-8">
+              <div className="space-y-4 md:space-y-5">
                 {nextSteps.map((step, idx) => (
                   <div
                     key={step.title}
@@ -533,8 +551,8 @@ export default function RegisterRetailer() {
                       <div className="flex-1">
                         <div className="flex items-center gap-3 mb-2">
                           <h4 className="font-black text-lg text-gray-900">{step.title}</h4>
-                          <span className="px-3 py-1 rounded-full text-xs font-bold"
-                                style={{ background: 'linear-gradient(to right, #FFD4B8, #FF8FCF)', color: 'white' }}>
+                          <span className="px-3 py-1 rounded-full text-xs font-bold whitespace-nowrap"
+                                style={{ background: 'linear-gradient(to right, #FFA08A, #FF8FCF)', color: 'white' }}>
                             {step.timing}
                           </span>
                         </div>
@@ -551,9 +569,9 @@ export default function RegisterRetailer() {
 
           {/* RIGHT COLUMN - Registration Form */}
           <motion.div
-            initial={{ opacity: 0, x: 50 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.6, delay: 0.3 }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.4 }}
             className="bg-white rounded-3xl shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_1px_-0.5px_rgba(0,0,0,0.06),0px_3px_3px_-1.5px_rgba(0,0,0,0.06),0px_6px_6px_-3px_rgba(0,0,0,0.06),0px_12px_12px_-6px_rgba(0,0,0,0.06),0px_24px_24px_-12px_rgba(0,0,0,0.06)] p-8 lg:p-10 border border-transparent order-1 lg:order-2"
           >
             {/* Mobile Hero Header - Only visible on mobile */}
@@ -593,7 +611,7 @@ export default function RegisterRetailer() {
               variants={staggerContainer}
               initial="hidden"
               animate="visible"
-              className="space-y-6"
+              className="space-y-5"
             >
               {/* Store Name with Autocomplete */}
               <motion.div variants={fadeInUp} className="relative" ref={suggestionsRef}>
@@ -602,9 +620,9 @@ export default function RegisterRetailer() {
                   {selectedRetailer && <span className="text-green-600 text-xs ml-2">Selected ✓</span>}
                 </label>
                 {/* Unified Search Container with Better Transition */}
-                <div className="relative">
+                <div className="relative max-w-full">
                   <div className={[
-                    "border-2 transition-all overflow-hidden bg-white",
+                    "border-2 transition-all overflow-hidden bg-white max-w-full",
                       showSuggestions && storeQuery.length >= 1
                       ? "border-gray-300 rounded-2xl shadow-lg"
                       : "border-gray-200 rounded-2xl hover:border-gray-300 focus-within:border-[#ff6fb3] focus-within:ring-2 focus-within:ring-[#ff6fb3]/20"
@@ -639,9 +657,9 @@ export default function RegisterRetailer() {
                         initial={{ opacity: 0, height: 0 }}
                         animate={{ opacity: 1, height: "auto" }}
                         exit={{ opacity: 0, height: 0 }}
-                        className="border-t border-gray-200 overflow-hidden"
+                        className="border-t border-gray-200 overflow-hidden max-w-full"
                       >
-                        <div className="max-h-64 overflow-y-auto bg-white">
+                        <div className="max-h-64 overflow-y-auto overflow-x-hidden bg-white max-w-full">
                           {storeSuggestions.length > 0 ? (
                             <>
                               {storeSuggestions.map((store, idx) => {
@@ -649,19 +667,19 @@ export default function RegisterRetailer() {
                                 return (
                                   <div
                                     key={store.id}
-                                    className={`w-full text-left px-4 py-3 border-b border-gray-100 last:border-b-0 transition-all ${
+                                    className={`w-full max-w-full text-left px-4 py-3 border-b border-gray-100 last:border-b-0 transition-all ${
                                       isTaken
                                         ? 'bg-gray-50 cursor-not-allowed opacity-60'
                                         : 'hover:bg-gradient-to-r hover:from-blue-50 hover:to-purple-50 cursor-pointer'
                                     }`}
                                   >
                                     {isTaken ? (
-                                      <div className="flex items-start gap-3">
+                                      <div className="flex items-start gap-3 max-w-full">
                                         <div className="w-8 h-8 rounded-full bg-gray-300 flex items-center justify-center flex-shrink-0 mt-0.5">
                                           <span className="text-gray-600 text-xs font-bold">{store.name.charAt(0)}</span>
                                         </div>
                                         <div className="flex-1 min-w-0">
-                                          <div className="font-bold text-gray-500">
+                                          <div className="font-bold text-gray-500 truncate">
                                             {store.name}
                                           </div>
                                           <div className="text-xs text-gray-400 truncate">
@@ -686,14 +704,14 @@ export default function RegisterRetailer() {
                                       <button
                                         type="button"
                                         onClick={() => handleSelectRetailer(store)}
-                                        className="w-full"
+                                        className="w-full max-w-full"
                                       >
-                                        <div className="flex items-start gap-3">
+                                        <div className="flex items-start gap-3 max-w-full">
                                           <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#ff7a4a] to-[#ff6fb3] flex items-center justify-center flex-shrink-0 mt-0.5">
                                             <span className="text-white text-xs font-bold">{store.name.charAt(0)}</span>
                                           </div>
                                           <div className="flex-1 min-w-0">
-                                            <div className="font-bold text-gray-900 group-hover:text-[#ff6fb3] transition-colors">{store.name}</div>
+                                            <div className="font-bold text-gray-900 group-hover:text-[#ff6fb3] transition-colors truncate">{store.name}</div>
                                             <div className="text-xs text-gray-600 truncate">{store.address || store.location || 'Address not listed'}</div>
                                             {store.email && <div className="text-xs text-gray-500 truncate">{store.email}</div>}
                                           </div>
@@ -869,19 +887,35 @@ export default function RegisterRetailer() {
               </motion.div>
 
               {/* Multi-Location Stores Section */}
-              <motion.div variants={fadeInUp} className="bg-white rounded-2xl p-6 border border-transparent shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_1px_-0.5px_rgba(0,0,0,0.06),0px_3px_3px_-1.5px_rgba(0,0,0,0.06),0px_6px_6px_-3px_rgba(0,0,0,0.06),0px_12px_12px_-6px_rgba(0,0,0,0.06),0px_24px_24px_-12px_rgba(0,0,0,0.06)]">
+              <motion.div variants={fadeInUp}>
 
                 {/* Additional Stores List */}
-                {additionalStores.length > 0 && (
-                  <div className="space-y-4 mb-4">
-                    {additionalStores.map((store, index) => (
-              <motion.div
-                        key={store.id}
-                        initial={{ opacity: 0, y: 10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, scale: 0.95 }}
-                        className="bg-white rounded-xl p-4 border border-transparent shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_1px_-0.5px_rgba(0,0,0,0.06),0px_3px_3px_-1.5px_rgba(0,0,0,0.06),0px_6px_6px_-3px_rgba(0,0,0,0.06),0px_12px_12px_-6px_rgba(0,0,0,0.06),0px_24px_24px_-12px_rgba(0,0,0,0.06)]"
-                      >
+                <AnimatePresence initial={false}>
+                  {additionalStores.map((store, index) => (
+                    <motion.div
+                      key={store.id}
+                      ref={el => storeRefs.current[store.id] = el}
+                      initial={{ opacity: 0, height: 0, overflow: "hidden" }}
+                      animate={{
+                        opacity: 1,
+                        height: "auto",
+                        overflow: "visible",
+                        transition: {
+                          height: { duration: 0.4, ease: "easeOut" },
+                          opacity: { duration: 0.3, delay: 0.1 }
+                        }
+                      }}
+                      exit={{
+                        opacity: 0,
+                        height: 0,
+                        overflow: "hidden",
+                        transition: {
+                          height: { duration: 0.3, ease: "easeIn" },
+                          opacity: { duration: 0.2 }
+                        }
+                      }}
+                      className="pt-6 border-t-2 border-gray-200"
+                    >
                         <div className="flex items-center justify-between mb-4">
                           <div className="flex items-center gap-2">
                             <span className="w-6 h-6 bg-gradient-to-br from-[#ff7a4a] to-[#ff6fb3] rounded-full flex items-center justify-center text-white text-sm font-bold">
@@ -911,7 +945,7 @@ export default function RegisterRetailer() {
 
                             {/* Unified Search Container */}
                             <div className={[
-                              "border-2 transition-all overflow-hidden bg-white",
+                              "border-2 transition-all overflow-hidden bg-white max-w-full",
                               store.showSuggestions && store.storeQuery.length >= 1
                                 ? "border-gray-300 rounded-2xl shadow-lg"
                                 : "border-gray-200 rounded-2xl hover:border-gray-300 focus-within:border-blue-500 focus-within:ring-2 focus-within:ring-blue-500/20"
@@ -939,9 +973,9 @@ export default function RegisterRetailer() {
                                   initial={{ opacity: 0, height: 0 }}
                                   animate={{ opacity: 1, height: "auto" }}
                                   exit={{ opacity: 0, height: 0 }}
-                                  className="border-t border-gray-200 overflow-hidden"
+                                  className="border-t border-gray-200 overflow-hidden max-w-full"
                                 >
-                                  <div className="max-h-64 overflow-y-auto bg-white">
+                                  <div className="max-h-64 overflow-y-auto overflow-x-hidden bg-white max-w-full">
                                     {store.storeSuggestions.length > 0 ? (
                                       <>
                                         {store.storeSuggestions.map((retailer) => {
@@ -949,19 +983,19 @@ export default function RegisterRetailer() {
                                           return (
                                             <div
                                               key={retailer.id}
-                                              className={`w-full text-left px-4 py-3 border-b border-gray-100 last:border-b-0 transition-all ${
+                                              className={`w-full max-w-full text-left px-4 py-3 border-b border-gray-100 last:border-b-0 transition-all ${
                                                 isTaken
                                                   ? 'bg-gray-50 cursor-not-allowed opacity-60'
                                                   : 'hover:bg-gradient-to-r hover:from-blue-50 hover:to-purple-50 cursor-pointer'
                                               }`}
                                             >
                                               {isTaken ? (
-                                                <div className="flex items-start gap-3">
+                                                <div className="flex items-start gap-3 max-w-full">
                                                   <div className="w-8 h-8 rounded-full bg-gray-300 flex items-center justify-center flex-shrink-0 mt-0.5">
                                                     <span className="text-gray-600 text-xs font-bold">{retailer.name.charAt(0)}</span>
                                                   </div>
                                                   <div className="flex-1 min-w-0">
-                                                    <div className="font-bold text-gray-500">
+                                                    <div className="font-bold text-gray-500 truncate">
                                                       {retailer.name}
                                                     </div>
                                                     <div className="text-xs text-gray-400 truncate">
@@ -986,14 +1020,14 @@ export default function RegisterRetailer() {
                                                 <button
                                                   type="button"
                                                   onClick={() => handleSelectAdditionalRetailer(store.id, retailer)}
-                                                  className="w-full"
+                                                  className="w-full max-w-full"
                                                 >
-                                                  <div className="flex items-start gap-3">
+                                                  <div className="flex items-start gap-3 max-w-full">
                                                     <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#ff7a4a] to-[#ff6fb3] flex items-center justify-center flex-shrink-0 mt-0.5">
                                                       <span className="text-white text-xs font-bold">{retailer.name.charAt(0)}</span>
                                                     </div>
                                                     <div className="flex-1 min-w-0">
-                                                      <div className="font-bold text-gray-900 group-hover:text-[#ff6fb3] transition-colors">{retailer.name}</div>
+                                                      <div className="font-bold text-gray-900 group-hover:text-[#ff6fb3] transition-colors truncate">{retailer.name}</div>
                                                       <div className="text-xs text-gray-600 truncate">{retailer.address || retailer.location || 'Address not listed'}</div>
                                                       {retailer.email && <div className="text-xs text-gray-500 truncate">{retailer.email}</div>}
                                                     </div>
@@ -1074,23 +1108,24 @@ export default function RegisterRetailer() {
                           />
                         </div>
                     </div>
-              </motion.div>
-                    ))}
-                  </div>
-                )}
+                    </motion.div>
+                  ))}
+                </AnimatePresence>
 
                 {/* Add Store Button */}
-                <button
+                <motion.button
                   type="button"
                   onClick={addAdditionalStore}
-                  className="w-full p-4 border-2 border-dashed border-blue-300 rounded-xl hover:border-blue-400 hover:bg-blue-100/50 transition-all text-blue-600 font-bold flex items-center justify-center gap-2 group"
+                  whileHover={{ y: -2 }}
+                  whileTap={{ scale: 0.98 }}
+                  className="px-6 py-3 rounded-xl text-sm font-bold transition-all flex items-center gap-2 text-gray-700 hover:text-gray-900 border-2 border-gray-200 hover:border-gray-300"
                 >
-                  <svg className="w-5 h-5 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
                   </svg>
                   <span className="md:hidden">Add Another Store</span>
                   <span className="hidden md:inline">Add Another Retail Location</span>
-                </button>
+                </motion.button>
 
               </motion.div>
 
@@ -1115,9 +1150,9 @@ export default function RegisterRetailer() {
                 variants={fadeInUp}
                 type="submit"
                 disabled={loading}
-                whileHover={{ scale: loading ? 1 : 1.02 }}
+                whileHover={{ y: loading ? 0 : -2 }}
                 whileTap={{ scale: loading ? 1 : 0.98 }}
-                className="w-full bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3] text-white py-4 px-6 rounded-2xl font-bold text-lg hover:shadow-2xl transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3] text-white py-4 px-6 rounded-2xl font-bold text-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {loading ? (
                   <span className="flex items-center justify-center gap-2">
@@ -1153,7 +1188,7 @@ export default function RegisterRetailer() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.8 }}
-          className="text-center mt-12"
+          className="text-center mt-8 md:mt-12"
         >
           <Link href="/onboard" className="text-gray-600 hover:text-gray-900 font-bold inline-flex items-center gap-2 hover:gap-3 transition-all">
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

@@ -43,7 +43,7 @@ export default function ShopifyConnect() {
   };
 
   return (
-    <div className="min-h-screen bg-white pt-32 pb-16">
+    <div className="min-h-screen bg-white pt-24 md:pt-28 pb-16">
       {/* Success Modal Popup */}
       {showSuccessModal && (
         <div
@@ -54,7 +54,7 @@ export default function ShopifyConnect() {
             initial={{ opacity: 0, scale: 0.9, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             transition={{ duration: 0.3 }}
-            className="bg-white rounded-3xl p-8 md:p-12 max-w-2xl w-full relative shadow-2xl"
+            className="bg-white rounded-3xl p-8 max-w-md w-full relative shadow-2xl"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Close Button */}
@@ -69,28 +69,22 @@ export default function ShopifyConnect() {
 
             {/* Success Content */}
             <div className="text-center">
-              <div className="mb-6">
-                <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <svg className="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                  </svg>
-                </div>
-              </div>
-
-              <h1 className="text-3xl sm:text-4xl md:text-5xl font-black text-gray-900 mb-4 leading-tight">
-                Success!{' '}
+              <h1 className="text-3xl sm:text-4xl font-black mb-2 leading-tight">
                 <span style={{ background: 'linear-gradient(to right, #FFA08A, #FF8FCF)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
-                  Your Display Order Is Being Processed
+                  Success!
                 </span>
               </h1>
-              <p className="text-lg md:text-xl text-gray-700 font-medium mb-8">
+              <h2 className="text-2xl font-black text-gray-900 mb-4">
+                Your Display Order Is Being Processed
+              </h2>
+              <p className="text-base text-gray-700 font-medium mb-6">
                 Your free Pawpaya display will ship within 5-7 days.
               </p>
 
               {/* OK Button */}
               <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
+                whileHover={{ y: -2 }}
+                whileTap={{ scale: 0.98 }}
                 onClick={() => setShowSuccessModal(false)}
                 className="px-8 py-3 rounded-2xl font-black text-lg text-white shadow-lg"
                 style={{ background: 'linear-gradient(to right, #FFA08A, #FF8FCF)' }}
@@ -108,8 +102,8 @@ export default function ShopifyConnect() {
 
           {/* LEFT COLUMN - Priority Upgrade */}
           <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
             transition={{ delay: 0.2 }}
             className="bg-gradient-to-br from-gray-50 to-white border-2 border-gray-200 rounded-3xl p-8 md:p-10"
           >
@@ -122,8 +116,7 @@ export default function ShopifyConnect() {
                 for Just $50
               </h2>
               <p className="text-base md:text-lg text-gray-700 leading-relaxed">
-                Get your display before Black Friday and start earning 4× faster.
-                Priority shipping means early arrival and maximum ROI during the busiest shopping season.
+                Basically, if you think you can sell more than 5 collars or DIY kits in the span of 4 weeks, which includes black friday, then this is a no brainer to add extra profit for the month.
               </p>
             </div>
 
@@ -150,7 +143,7 @@ export default function ShopifyConnect() {
             </div>
 
             <motion.button
-              whileHover={{ scale: 1.02, y: -2 }}
+              whileHover={{ y: -2 }}
               whileTap={{ scale: 0.98 }}
               onClick={handlePriorityUpgrade}
               className="w-full py-4 rounded-2xl font-black text-lg text-white shadow-lg"
@@ -162,8 +155,8 @@ export default function ShopifyConnect() {
 
           {/* RIGHT COLUMN - Skip to Dashboard */}
           <motion.div
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
             transition={{ delay: 0.3 }}
             className="bg-gradient-to-br from-gray-50 to-white border-2 border-gray-200 rounded-3xl p-8 md:p-10"
           >
@@ -200,11 +193,11 @@ export default function ShopifyConnect() {
             </div>
 
             <motion.button
-              whileHover={{ scale: 1.02, y: -2 }}
+              whileHover={{ y: -2 }}
               whileTap={{ scale: 0.98 }}
               onClick={handleSkipToDashboard}
               disabled={loading}
-              className="w-full py-4 rounded-2xl font-bold text-lg bg-gray-900 text-white hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+              className="w-full py-4 rounded-2xl font-bold text-lg bg-gray-900 text-white disabled:opacity-50 disabled:cursor-not-allowed transition-all"
             >
               {loading ? (
                 <span className="flex items-center justify-center gap-2">

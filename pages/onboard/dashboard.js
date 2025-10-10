@@ -604,7 +604,7 @@ export default function RetailerDashboard() {
         </div>
 
         <div className="relative z-10 w-full">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 md:py-10">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 md:py-8">
             <div className="flex items-start justify-between gap-4">
               <motion.div
                 initial={{ opacity: 0, x: -20 }}
@@ -619,32 +619,18 @@ export default function RetailerDashboard() {
                   Welcome back! Here's how your displays are performing.
                 </p>
               </motion.div>
-
-              <motion.div
-                initial={{ opacity: 0, scale: 0.8 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.5, delay: 0.4 }}
-                className="flex-shrink-0 self-start"
-              >
-                <Link
-                  href="/"
-                  className="bg-white/20 hover:bg-white/30 text-white px-4 sm:px-6 py-2 sm:py-3 rounded-xl font-semibold transition-all backdrop-blur-sm hover:scale-105 text-sm sm:text-base whitespace-nowrap"
-                >
-                  ← Home
-                </Link>
-              </motion.div>
             </div>
           </div>
         </div>
       </motion.div>
 
-      <div className="max-w-7xl mx-auto px-6 py-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4 sm:py-6 md:py-8">
         {/* KPI Cards */}
         <motion.div
           variants={staggerContainer}
           initial="hidden"
           animate="visible"
-          className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 mb-8"
+          className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-6 mb-4 md:mb-8"
         >
           {/* Weekly Scans */}
           <motion.div
@@ -744,10 +730,10 @@ export default function RetailerDashboard() {
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ duration: 0.3 }}
-                  className="space-y-6"
+                  className="space-y-4 md:space-y-6"
                 >
-                  <div className="flex items-center justify-between mb-4 md:mb-6">
-                    <h3 className="text-sm md:text-base font-bold text-gray-900">Recent Scan Activity</h3>
+                  <div className="flex items-center justify-between mb-3 md:mb-6">
+                    <h3 className="text-sm md:text-base font-black text-gray-900">Recent Scan Activity</h3>
                     <div className="text-xs md:text-sm text-gray-500 font-semibold">
                       Showing {scans.length} scans
                     </div>
@@ -883,7 +869,7 @@ export default function RetailerDashboard() {
                     <div className="bg-gradient-to-r from-yellow-100 to-orange-100 border-2 border-yellow-300 rounded-2xl p-6">
                       <div className="flex items-center justify-between">
                         <div>
-                          <h4 className="text-lg font-bold text-gray-900 mb-1">💰 Unpaid Earnings</h4>
+                          <h4 className="text-lg font-bold text-gray-900 mb-1">Unpaid Earnings</h4>
                           <p className="text-sm text-gray-600">Pending payout to your account</p>
                         </div>
                         <div className="text-3xl font-bold text-orange-700">${stats.unpaidEarnings.toFixed(2)}</div>
@@ -894,7 +880,7 @@ export default function RetailerDashboard() {
 
                 {/* Weekly Performance Chart */}
                 <div>
-                  <h3 className="text-base md:text-lg font-bold text-gray-900 mb-4 md:mb-6">Weekly Performance</h3>
+                  <h3 className="text-xs md:text-sm font-bold text-gray-900 mb-4 md:mb-6">Weekly Performance</h3>
                   <div className="bg-gradient-to-br from-gray-50 to-white rounded-2xl p-4 md:p-8 border border-transparent">
                     {/* Bar Chart - Scans */}
                     <div className="mb-10">
@@ -964,7 +950,7 @@ export default function RetailerDashboard() {
 
                 {/* Top Products */}
                 <div>
-                  <h3 className="text-base md:text-lg font-bold text-gray-900 mb-4 md:mb-6">Top Performing Products</h3>
+                  <h3 className="text-xs md:text-sm font-bold text-gray-900 mb-4 md:mb-6">Top Performing Products</h3>
 
                   {topProducts.length > 0 ? (
                     <>
@@ -1078,7 +1064,7 @@ export default function RetailerDashboard() {
                 transition={{ duration: 0.3 }}
               >
                  <div className="flex items-center justify-between mb-4 md:mb-6">
-                   <h3 className="text-base md:text-lg font-bold text-gray-900">Payouts</h3>
+                   <h3 className="text-sm md:text-base font-black text-gray-900">Payouts</h3>
                   <motion.button
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
@@ -1247,7 +1233,7 @@ export default function RetailerDashboard() {
                 transition={{ duration: 0.3 }}
                 className="space-y-4 md:space-y-6"
               >
-                <h3 className="text-base md:text-lg font-bold text-gray-900">Store Settings</h3>
+                <h3 className="text-sm md:text-base font-black text-gray-900">Store Settings</h3>
 
                 {/* Bank Connection Section */}
                 <div className="bg-gradient-to-br from-white to-gray-50 rounded-2xl p-4 md:p-8 border border-transparent shadow-lg">
@@ -1663,7 +1649,7 @@ export default function RetailerDashboard() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
                 </svg>
               </div>
-              <h3 className="text-base md:text-lg font-bold text-gray-900 text-center mb-2">Remove Bank Account?</h3>
+              <h3 className="text-xs md:text-sm font-bold text-gray-900 text-center mb-2">Remove Bank Account?</h3>
               <p className="text-sm text-gray-600 text-center mb-6">
                 This will disconnect your bank account. Your payout history will be preserved, but you won't be able to receive new payouts until you connect a new bank account.
               </p>
