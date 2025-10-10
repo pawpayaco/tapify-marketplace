@@ -91,7 +91,7 @@ export default function OnboardIndex() {
                 className="px-6 py-4 rounded-2xl text-lg font-black shadow-xl transition-all text-white"
                 style={{ background: 'linear-gradient(to right, #FFA08A, #FF8FCF)', width: '320px', maxWidth: '100%' }}
               >
-                I'm a Franchise Owner →
+                I'm a Business Owner →
               </button>
             </Link>
             <button
