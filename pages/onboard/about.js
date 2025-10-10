@@ -213,7 +213,7 @@ export default function AboutPawpaya() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6 }}
-              className="order-1 md:order-none mt-0 md:mt-12 mb-8 bg-gradient-to-br from-purple-50 to-pink-50 border-2 border-purple-200 rounded-3xl p-8 md:p-10 text-center"
+              className="order-1 md:order-none mt-0 md:mt-12 mb-4 bg-gradient-to-br from-purple-50 to-pink-50 border-2 border-purple-200 rounded-3xl p-8 md:p-10 text-center"
             >
               <h3 className="text-3xl md:text-4xl text-gray-900 mb-4" style={{ fontWeight: 600 }}>
                 Check Out Our Customize Tool
@@ -278,13 +278,48 @@ export default function AboutPawpaya() {
             </div>
           </div>
 
+          {/* Your Opportunity Section */}
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="mt-12 md:mt-16 mb-8 md:mb-12"
+          >
+            <div className="rounded-3xl md:rounded-[2rem] p-6 md:p-10 shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_1px_-0.5px_rgba(0,0,0,0.06),0px_3px_3px_-1.5px_rgba(0,0,0,0.06),0px_6px_6px_-3px_rgba(0,0,0,0.06),0px_12px_12px_-6px_rgba(0,0,0,0.06),0px_24px_24px_-12px_rgba(0,0,0,0.06)] text-white"
+                 style={{ background: 'linear-gradient(to bottom right, #FFA08A, #FF8FCF)' }}>
+              <h2 className="text-3xl sm:text-4xl md:text-5xl mb-4 md:mb-5 text-left" style={{ fontWeight: 600 }}>
+                Your Opportunity
+              </h2>
+              <p className="text-lg sm:text-xl md:text-2xl mb-6 md:mb-8 max-w-4xl opacity-90 text-left">
+                Our NFC tap-to-shop displays are in select stores nation wide. Your store could be next, offering customers an unforgettable experience.
+              </p>
+              <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+                <Link href="/onboard">
+                  <button
+                    className="bg-white px-10 md:px-12 py-4 md:py-5 rounded-2xl md:rounded-3xl text-lg md:text-xl font-black transition-all shadow-2xl whitespace-nowrap"
+                    style={{ color: '#FF8FCF' }}
+                  >
+                    See What We're Offering →
+                  </button>
+                </Link>
+                <button
+                  onClick={handleManagerShare}
+                  className="bg-transparent border-2 border-white px-10 md:px-12 py-4 md:py-5 rounded-2xl md:rounded-3xl text-lg md:text-xl font-black transition-all shadow-2xl text-white hover:bg-white hover:bg-opacity-10 whitespace-nowrap"
+                >
+                  {isCopied ? 'Copied! ✓' : 'I\'m a Manager — Share This'}
+                </button>
+              </div>
+            </div>
+          </motion.div>
+
           {/* Bottom Trust Bar */}
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
-            className="mt-12 md:mt-16 mb-0 bg-gradient-to-br from-orange-50 to-pink-50 border-2 border-orange-200 rounded-2xl p-6 md:p-8"
+            className="mb-0 bg-gradient-to-br from-orange-50 to-pink-50 border-2 border-orange-200 rounded-2xl p-6 md:p-8"
           >
             <div className="max-w-4xl mx-auto">
               <p className="text-2xl md:text-3xl mb-3 text-gray-900 text-left" style={{ fontWeight: 600 }}>
@@ -297,42 +332,15 @@ export default function AboutPawpaya() {
           </motion.div>
         </motion.section>
 
-        {/* Expansion Section */}
+        {/* Final CTA Section */}
         <motion.section
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
-          className="mb-8 md:mb-12 -mt-8 md:-mt-12"
+          className="mb-8 md:mb-12"
         >
-          <div className="rounded-3xl md:rounded-[2rem] p-6 md:p-10 shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_1px_-0.5px_rgba(0,0,0,0.06),0px_3px_3px_-1.5px_rgba(0,0,0,0.06),0px_6px_6px_-3px_rgba(0,0,0,0.06),0px_12px_12px_-6px_rgba(0,0,0,0.06),0px_24px_24px_-12px_rgba(0,0,0,0.06)] text-white"
-               style={{ background: 'linear-gradient(to bottom right, #FFA08A, #FF8FCF)' }}>
-            <h2 className="text-3xl sm:text-4xl md:text-5xl mb-4 md:mb-5 text-left" style={{ fontWeight: 600 }}>
-              Your Opportunity
-            </h2>
-            <p className="text-lg sm:text-xl md:text-2xl mb-6 md:mb-8 max-w-4xl opacity-90 text-left">
-              Our NFC tap-to-shop displays are in select stores nation wide. Your store could be next, offering customers an unforgettable experience.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-              <Link href="/onboard">
-                <button
-                  className="bg-white px-10 md:px-12 py-4 md:py-5 rounded-2xl md:rounded-3xl text-lg md:text-xl font-black transition-all shadow-2xl whitespace-nowrap"
-                  style={{ color: '#FF8FCF' }}
-                >
-                  See What We're Offering →
-                </button>
-              </Link>
-              <button
-                onClick={handleManagerShare}
-                className="bg-transparent border-2 border-white px-10 md:px-12 py-4 md:py-5 rounded-2xl md:rounded-3xl text-lg md:text-xl font-black transition-all shadow-2xl text-white hover:bg-white hover:bg-opacity-10 whitespace-nowrap"
-              >
-                {isCopied ? 'Copied! ✓' : 'I\'m a Manager — Share This'}
-              </button>
-            </div>
-          </div>
-
-          {/* Final CTA */}
-          <div className="text-center pt-8 md:pt-12">
+          <div className="text-center pt-4 md:pt-6">
             <Link href="/onboard" className="text-gray-600 hover:text-gray-900 font-bold inline-flex items-center gap-2 hover:gap-3 transition-all text-base md:text-lg">
               <svg className="w-4 h-4 md:w-5 md:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
