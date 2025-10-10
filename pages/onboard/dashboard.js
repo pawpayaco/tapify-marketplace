@@ -733,7 +733,7 @@ export default function RetailerDashboard() {
                   className="space-y-4 md:space-y-6"
                 >
                   <div className="flex items-center justify-between mb-3 md:mb-6">
-                    <h3 className="text-sm md:text-base font-black text-gray-900">Recent Scan Activity</h3>
+                    <h3 className="text-xs md:text-sm font-black text-gray-900">Recent Scan Activity</h3>
                     <div className="text-xs md:text-sm text-gray-500 font-semibold">
                       Showing {scans.length} scans
                     </div>
@@ -880,12 +880,12 @@ export default function RetailerDashboard() {
 
                 {/* Weekly Performance Chart */}
                 <div>
-                  <h3 className="text-xs md:text-sm font-bold text-gray-900 mb-4 md:mb-6">Weekly Performance</h3>
+                  <h3 className="text-xs font-bold text-gray-900 mb-4 md:mb-6">Weekly Performance</h3>
                   <div className="bg-gradient-to-br from-gray-50 to-white rounded-2xl p-4 md:p-8 border border-transparent">
                     {/* Bar Chart - Scans */}
                     <div className="mb-10">
                       <div className="flex items-center justify-between mb-4">
-                        <h4 className="font-bold text-gray-700 text-base md:text-lg">Scans per Day</h4>
+                        <h4 className="font-bold text-gray-700 text-xs md:text-sm">Scans per Day</h4>
                         <div className="text-xs md:text-sm text-gray-500">Max: {maxScans}</div>
                       </div>
                       <div className="flex items-end justify-between gap-2 h-48">
@@ -917,7 +917,7 @@ export default function RetailerDashboard() {
                     {/* Revenue Chart */}
                     <div>
                       <div className="flex items-center justify-between mb-4">
-                        <h4 className="font-bold text-gray-700 text-base md:text-lg">Revenue per Day</h4>
+                        <h4 className="font-bold text-gray-700 text-xs md:text-sm">Revenue per Day</h4>
                         <div className="text-xs md:text-sm text-gray-500">Max: ${maxRevenue}</div>
                       </div>
                       <div className="flex items-end justify-between gap-2 h-48">
@@ -950,7 +950,7 @@ export default function RetailerDashboard() {
 
                 {/* Top Products */}
                 <div>
-                  <h3 className="text-xs md:text-sm font-bold text-gray-900 mb-4 md:mb-6">Top Performing Products</h3>
+                  <h3 className="text-xs font-bold text-gray-900 mb-4 md:mb-6">Top Performing Products</h3>
 
                   {topProducts.length > 0 ? (
                     <>
