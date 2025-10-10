@@ -117,9 +117,9 @@ export default function AboutPawpaya() {
 
             {/* Two Column Layout on Desktop */}
             <div className="grid md:grid-cols-[2.25fr_1fr] gap-8 items-center max-w-6xl mx-auto">
-              <div className="bg-white rounded-3xl p-8 md:p-10 shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_1px_-0.5px_rgba(0,0,0,0.06),0px_3px_3px_-1.5px_rgba(0,0,0,0.06),0px_6px_6px_-3px_rgba(0,0,0,0.06),0px_12px_12px_-6px_rgba(0,0,0,0.06),0px_24px_24px_-12px_rgba(0,0,0,0.06)]">
+              <div className="bg-white rounded-3xl p-7 md:p-10 shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_1px_-0.5px_rgba(0,0,0,0.06),0px_3px_3px_-1.5px_rgba(0,0,0,0.06),0px_6px_6px_-3px_rgba(0,0,0,0.06),0px_12px_12px_-6px_rgba(0,0,0,0.06),0px_24px_24px_-12px_rgba(0,0,0,0.06)]">
                 <p className="text-xl md:text-2xl text-gray-600 text-left leading-relaxed">
-                  Pawpaya helps stores earn extra revenue with zero hassle through free displays featuring our friendship collar & bracelet sets. Each display has tap to buy online technology, earning retail stores automatic commission. A modern, risk-free way to boost profit and engage customers.
+                  Pawpaya helps stores earn extra revenue with free displays featuring our friendship collar & bracelet sets. Each has tap-to-buy tech, earning your store automatic commission—simple, modern, and risk-free.
                 </p>
               </div>
 
@@ -153,7 +153,7 @@ export default function AboutPawpaya() {
               <div className="space-y-5">
                 {[
                   { icon: '🐾', title: 'Pawpaya Pet Collars', desc: 'Adorable, high-quality pet collars crafted to make tails wag and customers smile' },
-                  { icon: '🚀', title: 'Nationwide Rollout', desc: 'Rolling out to local pet shops and sPet Supplies Plus stores through innovative display tech' },
+                  { icon: '🚀', title: 'Nationwide Rollout', desc: '700+ orders, $30k rev, We are rolling out to local pet shops and Pet Supplies Plus stores through innovative display tech' },
                   { icon: '✨', title: 'Built on Joy', desc: 'Designed to spread happiness and strengthen the pet-parent bond' }
                 ].map((item, idx) => (
                   <div key={idx} className="flex gap-4 items-start">

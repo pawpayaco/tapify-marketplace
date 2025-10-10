@@ -79,7 +79,7 @@ export default function OnboardIndex() {
             transition={{ duration: 0.3, delay: 0.12 }}
             className="text-2xl md:text-4xl text-gray-700 max-w-4xl mx-auto leading-relaxed mb-16"
           >
-            Free displays. Zero risk. Automatic commissions on every sale.
+            Free display. Automatic 30% commission. Product customers love.
             Choose your path below.
           </motion.p>
 
@@ -136,9 +136,14 @@ export default function OnboardIndex() {
           className="mb-16 md:mb-20"
         >
           <div className="text-center mb-8 md:mb-12">
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-gray-900">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-gray-900 mb-4">
               See What You're Getting
             </h2>
+            {/* FREE Tag */}
+            <div className="inline-flex items-center px-5 py-2.5 rounded-full text-base font-black text-white shadow-lg"
+                 style={{ background: 'linear-gradient(to right, #FFA08A, #FF8FCF)' }}>
+              100% FREE
+            </div>
           </div>
           <div className="max-w-7xl mx-auto">
             <div className="bg-gradient-to-br from-gray-50 to-white border-2 border-gray-200 rounded-3xl p-8 md:p-12 lg:p-16">

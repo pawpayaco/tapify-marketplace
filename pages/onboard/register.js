@@ -668,7 +668,7 @@ export default function RegisterRetailer() {
                         exit={{ opacity: 0, height: 0 }}
                         className="border-t border-gray-200 overflow-hidden w-full"
                       >
-                        <div className="bg-white w-full overflow-hidden">
+                        <div className="bg-white w-full" style={{ overflow: 'hidden', touchAction: 'none', pointerEvents: 'auto', maxHeight: 'none', position: 'static', overscrollBehavior: 'none' }}>
                           {storeSuggestions.length > 0 ? (
                             <>
                               {storeSuggestions.map((store, idx) => {
@@ -984,7 +984,7 @@ export default function RegisterRetailer() {
                                   exit={{ opacity: 0, height: 0 }}
                                   className="border-t border-gray-200 overflow-hidden w-full"
                                 >
-                                  <div className="bg-white w-full overflow-hidden">
+                                  <div className="bg-white w-full" style={{ overflow: 'hidden', touchAction: 'none', pointerEvents: 'auto', maxHeight: 'none', position: 'static', overscrollBehavior: 'none' }}>
                                     {store.storeSuggestions.length > 0 ? (
                                       <>
                                         {store.storeSuggestions.map((retailer) => {
