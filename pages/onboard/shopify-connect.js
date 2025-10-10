@@ -96,9 +96,9 @@ export default function ShopifyConnect() {
         </div>
       )}
 
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pb-12 md:pb-16">
-        {/* Two Column Layout */}
-        <div className="grid md:grid-cols-2 gap-6 md:gap-8 mb-12">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pb-12 md:pb-16">
+        {/* Stacked Layout */}
+        <div className="flex flex-col gap-6 md:gap-8 mb-12 md:pt-12">
 
           {/* LEFT COLUMN - Priority Upgrade */}
           <motion.div
@@ -110,12 +110,12 @@ export default function ShopifyConnect() {
             <div className="mb-6">
               <h2 className="text-3xl md:text-4xl font-black text-gray-900 mb-3">
                 <span style={{ background: 'linear-gradient(to right, #FFA08A, #FF8FCF)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
-                  Priority<br />Shipping
+                  Priority<br />Upgrade
                 </span><br />
                 for Just $50
               </h2>
               <p className="text-base md:text-lg text-gray-700 leading-relaxed">
-                If you sell 5 collars or DIY kits in November - Black Friday included - Then upgrading is a no-brainer at roughly $10 per item return
+                Four extra weeks of profit through Black Friday and Q4 — upgrade now and break even after only 5 sales, then it’s pure profit (~$10 per item).
               </p>
             </div>
 
@@ -136,7 +136,7 @@ export default function ShopifyConnect() {
                 </li>
                 <li className="flex items-start gap-3">
                   <span className="font-bold text-xl flex-shrink-0" style={{ color: '#FF8FCF' }}>✓</span>
-                  <span>Arrives before the Black Friday rush</span>
+                  <span>5 items sold in Novemeber is literally nothing. Many people have multiple dogs.</span>
                 </li>
               </ul>
             </div>
@@ -164,8 +164,8 @@ export default function ShopifyConnect() {
                 Standard Shipping
               </h2>
               <p className="text-base md:text-lg text-gray-700 leading-relaxed mb-6">
-                Your display will arrive in 5-7 business days with free standard shipping.
-                You'll still get all the benefits of the Pawpaya program.
+                Your display will arrive during <strong>the 1st week of December.</strong>
+                {' '}You'll still get all the standard benefits of the Pawpaya program.
               </p>
             </div>
 
@@ -200,7 +200,7 @@ export default function ShopifyConnect() {
         >
           <div className="bg-white rounded-2xl p-6 border-2 border-gray-200 inline-block">
             <p className="text-gray-600 text-base md:text-lg mb-2">
-              Either way, you're all set! We'll send tracking info to your email as soon as your display ships.
+              Either way, you're all set! We'll send tracking info to your email as soon as it ships.
             </p>
             <p className="font-black text-gray-900 text-lg md:text-xl">
               Welcome to the Pawpaya network!
