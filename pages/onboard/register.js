@@ -474,7 +474,7 @@ export default function RegisterRetailer() {
     {
       title: 'Start Earning',
       timing: 'Day 1',
-      description: 'Place display near checkout or on the shelf. You earn commissions.'
+      description: 'Place display near checkout or on the shelf. You start earning.'
     }
   ];
 

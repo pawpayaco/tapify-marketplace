@@ -10,7 +10,7 @@ export default function ShopifyConnect() {
 
   const handlePriorityUpgrade = () => {
     // Open Shopify in new tab
-    window.open('https://pawpayaco.com/products/priority-display', '_blank');
+    window.open('https://pawpayaco.com/products/display-setup-for-affiliate', '_blank');
   };
 
   const handleSkipToDashboard = async () => {
@@ -75,10 +75,10 @@ export default function ShopifyConnect() {
                 </span>
               </h1>
               <h2 className="text-2xl font-black text-gray-900 mb-4">
-                Your Display Order Is Being Processed
+              
               </h2>
-              <p className="text-base text-gray-700 font-medium mb-6">
-                Your free Pawpaya display will ship within 5-7 days.
+              <p className="text-xl md:text-2xl text-gray-700 font-medium mb-6 leading-relaxed">
+                Your Display Order<br />Is Being Processed
               </p>
 
               {/* OK Button */}
@@ -109,14 +109,13 @@ export default function ShopifyConnect() {
           >
             <div className="mb-6">
               <h2 className="text-3xl md:text-4xl font-black text-gray-900 mb-3">
-                Upgrade to{' '}
                 <span style={{ background: 'linear-gradient(to right, #FFA08A, #FF8FCF)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
-                  Priority Shipping
-                </span>{' '}
+                  Priority<br />Shipping
+                </span><br />
                 for Just $50
               </h2>
               <p className="text-base md:text-lg text-gray-700 leading-relaxed">
-                Basically, if you think you can sell more than 5 collars or DIY kits in the span of 4 weeks, which includes black friday, then this is a no brainer to add extra profit for the month.
+                If you sell 5 collars or DIY kits in November - Black Friday included - Then upgrading is a no-brainer at roughly $10 per item return
               </p>
             </div>
 
@@ -125,19 +124,19 @@ export default function ShopifyConnect() {
               <ul className="space-y-3 text-gray-700 text-sm md:text-base">
                 <li className="flex items-start gap-3">
                   <span className="font-bold text-xl flex-shrink-0" style={{ color: '#FF8FCF' }}>✓</span>
-                  <span>2-3 day delivery (vs. 5-7 days standard)</span>
+                  <span>Arrives at the beginning of November (vs. after Black Friday)</span>
                 </li>
                 <li className="flex items-start gap-3">
                   <span className="font-bold text-xl flex-shrink-0" style={{ color: '#FF8FCF' }}>✓</span>
-                  <span>Arrives before Black Friday rush</span>
+                  <span>Start earning extra profit sooner</span>
                 </li>
                 <li className="flex items-start gap-3">
                   <span className="font-bold text-xl flex-shrink-0" style={{ color: '#FF8FCF' }}>✓</span>
-                  <span>Start earning commissions sooner</span>
+                  <span>Be among the first stores to secure this product</span>
                 </li>
                 <li className="flex items-start gap-3">
                   <span className="font-bold text-xl flex-shrink-0" style={{ color: '#FF8FCF' }}>✓</span>
-                  <span>Priority placement in our marketplace</span>
+                  <span>Arrives before the Black Friday rush</span>
                 </li>
               </ul>
             </div>
@@ -161,8 +160,8 @@ export default function ShopifyConnect() {
             className="bg-gradient-to-br from-gray-50 to-white border-2 border-gray-200 rounded-3xl p-8 md:p-10"
           >
             <div className="mb-6">
-              <h2 className="text-3xl md:text-4xl font-black text-gray-900 mb-3">
-                Continue with Standard Shipping
+              <h2 className="text-3xl md:text-4xl font-black text-gray-600 mb-3">
+                Standard Shipping
               </h2>
               <p className="text-base md:text-lg text-gray-700 leading-relaxed mb-6">
                 Your display will arrive in 5-7 business days with free standard shipping.
@@ -170,34 +169,14 @@ export default function ShopifyConnect() {
               </p>
             </div>
 
-            <div className="bg-white rounded-2xl p-6 border border-gray-200 mb-8">
-              <h3 className="font-black text-lg text-gray-900 mb-4">What's Included:</h3>
-              <ul className="space-y-3 text-gray-700 text-sm md:text-base">
-                <li className="flex items-start gap-3">
-                  <span className="text-gray-600 font-bold text-xl flex-shrink-0">✓</span>
-                  <span>Free premium NFC display</span>
-                </li>
-                <li className="flex items-start gap-3">
-                  <span className="text-gray-600 font-bold text-xl flex-shrink-0">✓</span>
-                  <span>Free standard shipping (5-7 days)</span>
-                </li>
-                <li className="flex items-start gap-3">
-                  <span className="text-gray-600 font-bold text-xl flex-shrink-0">✓</span>
-                  <span>Full commission tracking</span>
-                </li>
-                <li className="flex items-start gap-3">
-                  <span className="text-gray-600 font-bold text-xl flex-shrink-0">✓</span>
-                  <span>Access to retailer dashboard</span>
-                </li>
-              </ul>
-            </div>
+          
 
             <motion.button
               whileHover={{ y: -2 }}
               whileTap={{ scale: 0.98 }}
               onClick={handleSkipToDashboard}
               disabled={loading}
-              className="w-full py-4 rounded-2xl font-bold text-lg bg-gray-900 text-white disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+              className="w-full py-4 rounded-2xl font-bold text-lg bg-gray-500 text-white disabled:opacity-50 disabled:cursor-not-allowed transition-all"
             >
               {loading ? (
                 <span className="flex items-center justify-center gap-2">
@@ -219,12 +198,12 @@ export default function ShopifyConnect() {
           transition={{ delay: 0.5 }}
           className="text-center"
         >
-          <div className="bg-white rounded-2xl p-6 shadow-md inline-block">
+          <div className="bg-white rounded-2xl p-6 border-2 border-gray-200 inline-block">
             <p className="text-gray-600 text-base md:text-lg mb-2">
               Either way, you're all set! We'll send tracking info to your email as soon as your display ships.
             </p>
             <p className="font-black text-gray-900 text-lg md:text-xl">
-              Welcome to the Tapify network. 🎉
+              Welcome to the Pawpaya network!
             </p>
           </div>
         </motion.div>
