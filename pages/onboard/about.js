@@ -52,14 +52,14 @@ export default function AboutPawpaya() {
 
           {/* CTA Buttons */}
           <div className="flex flex-col sm:flex-row gap-6 justify-center items-center mb-16">
-            <Link href="/onboard" className="w-full sm:w-auto">
+            <Link href="/onboard" className="w-full sm:w-[260px]">
               <motion.button
                 initial={{ scale: 0.85, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
                 transition={{ duration: 0.3, delay: 0.15 }}
                 whileHover={{ y: -2 }}
                 whileTap={{ scale: 0.98 }}
-                className="px-10 py-5 rounded-2xl text-xl sm:text-2xl font-black shadow-xl transition-all text-white w-full sm:w-[360px]"
+                className="w-full px-6 py-4 rounded-2xl text-lg font-black shadow-xl transition-all text-white"
                 style={{ background: 'linear-gradient(to right, #FFA08A, #FF8FCF)' }}
               >
                 Learn About Partnership →
@@ -72,7 +72,7 @@ export default function AboutPawpaya() {
               transition={{ duration: 0.3, delay: 0.18 }}
               whileHover={{ y: -2 }}
               whileTap={{ scale: 0.98 }}
-              className="px-10 py-5 rounded-2xl text-xl sm:text-2xl font-black shadow-xl transition-all bg-white w-full sm:w-[360px] inline-block cursor-pointer"
+              className="w-full sm:w-[260px] px-6 py-4 rounded-2xl text-lg font-black shadow-xl transition-all bg-white inline-block cursor-pointer text-center"
               style={{ border: '4px solid #FF8FCF', color: '#FF8FCF' }}
               onClick={(e) => {
                 e.preventDefault();

@@ -85,14 +85,14 @@ export default function OnboardIndex() {
 
           {/* Two-Path CTA Buttons */}
           <div className="flex flex-col md:flex-row gap-6 justify-center items-center">
-            <Link href="/onboard/register" className="w-full md:w-auto">
+            <Link href="/onboard/register" className="w-full md:w-[260px]">
               <motion.button
                 initial={{ scale: 0.85, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
                 transition={{ duration: 0.3, delay: 0.15 }}
                 whileHover={{ y: -2 }}
                 whileTap={{ scale: 0.98 }}
-                className="px-10 py-5 rounded-2xl text-xl md:text-2xl font-black shadow-xl transition-all text-white w-full md:w-[360px]"
+                className="w-full px-6 py-4 rounded-2xl text-lg font-black shadow-xl transition-all text-white"
                 style={{ background: 'linear-gradient(to right, #FFA08A, #FF8FCF)' }}
               >
                 I'm a Franchise Owner →
@@ -105,7 +105,7 @@ export default function OnboardIndex() {
               whileHover={{ y: -2 }}
               whileTap={{ scale: 0.98 }}
               onClick={handleManagerShare}
-              className="px-10 py-5 rounded-2xl text-xl md:text-2xl font-black shadow-xl transition-all bg-white w-full md:w-[360px]"
+              className="w-full md:w-[260px] px-6 py-4 rounded-2xl text-lg font-black shadow-xl transition-all bg-white"
               style={{ border: '4px solid #FF8FCF', color: '#FF8FCF' }}
             >
               {isCopied ? 'Copied! ✓' : 'I\'m a Manager — Share This'}
@@ -271,7 +271,7 @@ export default function OnboardIndex() {
                   whileHover={{ y: -2 }}
                   whileTap={{ scale: 0.98 }}
                   onClick={handleManagerShare}
-                  className="px-6 md:px-8 py-3 md:py-4 rounded-2xl md:rounded-3xl text-base md:text-lg font-black shadow-lg bg-white border-2 min-w-[200px]"
+                  className="w-[240px] px-6 md:px-8 py-3 md:py-4 rounded-2xl md:rounded-3xl text-base md:text-lg font-black shadow-lg bg-white border-2 whitespace-nowrap"
                   style={{ borderColor: '#FF8FCF', color: '#FF8FCF' }}
                 >
                   {isCopied ? 'Copied! ✓' : 'Share With Owner'}
@@ -291,7 +291,7 @@ export default function OnboardIndex() {
                   <motion.button
                     whileHover={{ y: -2 }}
                     whileTap={{ scale: 0.98 }}
-                    className="px-8 md:px-10 py-3 md:py-4 rounded-2xl md:rounded-3xl text-base md:text-lg font-black transition-all shadow-xl text-white"
+                    className="w-[240px] px-8 md:px-10 py-3 md:py-4 rounded-2xl md:rounded-3xl text-base md:text-lg font-black transition-all shadow-xl text-white whitespace-nowrap"
                     style={{ background: 'linear-gradient(to right, #FFA08A, #FF8FCF)' }}
                   >
                     Register Now →
