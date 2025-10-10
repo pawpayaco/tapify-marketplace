@@ -20,8 +20,8 @@ export default function Navbar() {
           pointerEvents: 'none'
         }}
       />
-      <nav className="fixed top-0 left-0 right-0 z-50 border-b border-gray-200 shadow-sm bg-white">
-        <div className="max-w-[1800px] mx-auto px-4 sm:px-8 lg:px-12 pt-2 pb-2">
+      <nav className="fixed top-0 left-0 right-0 z-50 border-b border-gray-200 shadow-sm bg-white/95 backdrop-blur-sm">
+        <div className="max-w-[1800px] mx-auto px-4 sm:px-8 lg:px-12 pb-2">
         <div className="flex justify-between items-center h-16 sm:h-20">
           {/* Left: See Products Button */}
           <div className="flex-1 flex justify-start">
@@ -29,7 +29,7 @@ export default function Navbar() {
               href="https://pawpayaco.com/products/diy-builder-kit-copy"
               target="_blank"
               rel="noopener noreferrer"
-              className="py-2.5 sm:py-3.5 font-bold text-sm sm:text-base text-[#ff7a4a] bg-white border-2 border-[#ff7a4a] rounded-xl shadow-md whitespace-nowrap w-[161px] sm:w-[220px] text-center"
+              className="py-2.5 sm:py-3.5 font-bold text-sm sm:text-base text-[#ff7a4a] bg-white border-2 border-[#ff7a4a] rounded-xl shadow-md whitespace-nowrap w-[130px] text-center"
             >
               See Products
             </Link>
@@ -56,14 +56,14 @@ export default function Navbar() {
             {user ? (
               <Link
                 href="/onboard/dashboard"
-                className="py-2.5 sm:py-3.5 font-bold text-sm sm:text-base text-[#ff7a4a] bg-white border-2 border-[#ff7a4a] rounded-xl shadow-md whitespace-nowrap w-[161px] sm:w-[220px] text-center"
+                className="py-2.5 sm:py-3.5 font-bold text-sm sm:text-base text-[#ff7a4a] bg-white border-2 border-[#ff7a4a] rounded-xl shadow-md whitespace-nowrap w-[130px] text-center"
               >
                 Dashboard
               </Link>
             ) : (
               <Link
                 href="/login"
-                className="py-2.5 sm:py-3.5 font-bold text-sm sm:text-base text-[#ff7a4a] bg-white border-2 border-[#ff7a4a] rounded-xl shadow-md whitespace-nowrap w-[161px] sm:w-[220px] text-center"
+                className="py-2.5 sm:py-3.5 font-bold text-sm sm:text-base text-[#ff7a4a] bg-white border-2 border-[#ff7a4a] rounded-xl shadow-md whitespace-nowrap w-[130px] text-center"
               >
                 Login
               </Link>
