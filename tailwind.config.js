@@ -34,12 +34,12 @@ module.exports = {
         body: ['Geist', 'system-ui', '-apple-system', 'sans-serif'],
       },
       fontSize: {
-        'heading': ['56px', { lineHeight: '1.2', letterSpacing: '0.02em', fontWeight: '800' }],
-        'heading-lg': ['64px', { lineHeight: '1.2', letterSpacing: '0.02em', fontWeight: '800' }],
-        'heading-sm': ['48px', { lineHeight: '1.2', letterSpacing: '0.02em', fontWeight: '800' }],
-        'subheading': ['26px', { lineHeight: '1.4', letterSpacing: '0.01em', fontWeight: '800' }],
-        'subheading-lg': ['28px', { lineHeight: '1.4', letterSpacing: '0.01em', fontWeight: '800' }],
-        'subheading-sm': ['24px', { lineHeight: '1.4', letterSpacing: '0.01em', fontWeight: '800' }],
+        'heading': ['56px', { lineHeight: '1.2', letterSpacing: '0.02em', fontWeight: '600' }],
+        'heading-lg': ['64px', { lineHeight: '1.2', letterSpacing: '0.02em', fontWeight: '600' }],
+        'heading-sm': ['48px', { lineHeight: '1.2', letterSpacing: '0.02em', fontWeight: '600' }],
+        'subheading': ['26px', { lineHeight: '1.4', letterSpacing: '0.01em', fontWeight: '600' }],
+        'subheading-lg': ['28px', { lineHeight: '1.4', letterSpacing: '0.01em', fontWeight: '600' }],
+        'subheading-sm': ['24px', { lineHeight: '1.4', letterSpacing: '0.01em', fontWeight: '600' }],
       },
       letterSpacing: {
         'expanded': '0.02em',

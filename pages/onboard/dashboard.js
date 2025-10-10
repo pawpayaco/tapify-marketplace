@@ -742,7 +742,7 @@ export default function RetailerDashboard() {
                   {scans.length > 0 ? (
                     <>
                       {/* Desktop Table View */}
-                      <div className="hidden md:block bg-white rounded-2xl border border-transparent overflow-hidden shadow-lg">
+                      <div className="hidden md:block bg-gradient-to-br from-gray-50 to-white border-2 border-gray-200 rounded-2xl overflow-hidden shadow-lg">
                         <table className="w-full">
                           <thead className="bg-gradient-to-r from-pink-50 to-purple-50">
                             <tr>
@@ -761,7 +761,7 @@ export default function RetailerDashboard() {
                                 initial={{ opacity: 0, x: -20 }}
                                 animate={{ opacity: 1, x: 0 }}
                                 transition={{ duration: 0.3, delay: Math.min(idx * 0.05, 0.5) }}
-                                className="border-t border-gray-100 hover:bg-gray-50"
+                                className="border-t border-gray-100"
                               >
                                 <td className="py-4 px-6">
                                   <span className="font-mono text-sm text-gray-900">{scan.uid || '-'}</span>
@@ -803,7 +803,7 @@ export default function RetailerDashboard() {
                             initial={{ opacity: 0, y: 10 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ duration: 0.3, delay: Math.min(idx * 0.05, 0.5) }}
-                            className="bg-white rounded-2xl border border-transparent p-4 shadow-lg"
+                            className="bg-gradient-to-br from-gray-50 to-white border-2 border-gray-200 rounded-2xl p-4 shadow-lg"
                           >
                             <div className="flex items-center justify-between mb-3">
                               <div>
@@ -900,7 +900,7 @@ export default function RetailerDashboard() {
                             <div className="w-full flex flex-col justify-end h-full">
                               <motion.div
                                 whileHover={{ scale: 1.1 }}
-                                className="w-full bg-gradient-to-t from-blue-500 to-blue-400 rounded-t-xl hover:from-blue-600 hover:to-blue-500 transition-all cursor-pointer relative group shadow-lg"
+                                className="w-full bg-gradient-to-t from-blue-500 to-blue-400 rounded-t-xl relative group shadow-lg"
                                 style={{ height: `${(day.scans / maxScans) * 100}%` }}
                               >
                                 <div className="absolute -top-10 left-1/2 transform -translate-x-1/2 bg-gray-900 text-white text-xs px-3 py-1.5 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap font-semibold shadow-lg">
@@ -932,7 +932,7 @@ export default function RetailerDashboard() {
                             <div className="w-full flex flex-col justify-end h-full">
                               <motion.div
                                 whileHover={{ scale: 1.1 }}
-                                className="w-full bg-gradient-to-t from-[#ff7a4a] to-[#ff6fb3] rounded-t-xl hover:opacity-90 transition-all cursor-pointer relative group shadow-lg"
+                                className="w-full bg-gradient-to-t from-[#ff7a4a] to-[#ff6fb3] rounded-t-xl relative group shadow-lg"
                                 style={{ height: `${(day.revenue / maxRevenue) * 100}%` }}
                               >
                                 <div className="absolute -top-10 left-1/2 transform -translate-x-1/2 bg-gray-900 text-white text-xs px-3 py-1.5 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap font-semibold shadow-lg">
@@ -1077,9 +1077,9 @@ export default function RetailerDashboard() {
 
                 {/* Summary Cards */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 mb-4 md:mb-8">
-                  <div className="bg-white border border-transparent rounded-3xl p-4 md:p-6 shadow-lg">
+                  <div className="bg-gradient-to-br from-gray-50 to-white border-2 border-gray-200 rounded-3xl p-4 md:p-6 shadow-lg">
                     <h4 className="font-bold text-gray-700 mb-2 text-sm md:text-base">Pending Earnings</h4>
-                    <p className="text-3xl font-bold text-gray-900">
+                    <p className="text-2xl md:text-3xl font-bold text-gray-900">
                       ${payoutJobs
                         .filter(p => p.status === 'pending')
                         .reduce((sum, p) => sum + (p.retailer_cut || 0), 0)
@@ -1087,9 +1087,9 @@ export default function RetailerDashboard() {
                     </p>
                   </div>
 
-                  <div className="bg-white border border-transparent rounded-3xl p-4 md:p-6 shadow-lg">
+                  <div className="bg-gradient-to-br from-gray-50 to-white border-2 border-gray-200 rounded-3xl p-4 md:p-6 shadow-lg">
                     <h4 className="font-bold text-gray-700 mb-2 text-sm md:text-base">Total Paid Out</h4>
-                    <p className="text-3xl font-bold text-gray-900">
+                    <p className="text-2xl md:text-3xl font-bold text-gray-900">
                       ${payoutJobs
                         .filter(p => p.status === 'paid')
                         .reduce((sum, p) => sum + (p.retailer_cut || 0), 0)
@@ -1097,9 +1097,9 @@ export default function RetailerDashboard() {
                     </p>
                   </div>
 
-                  <div className="bg-white border border-transparent rounded-3xl p-4 md:p-6 shadow-lg">
+                  <div className="bg-gradient-to-br from-gray-50 to-white border-2 border-gray-200 rounded-3xl p-4 md:p-6 shadow-lg">
                     <h4 className="font-bold text-gray-700 mb-2 text-sm md:text-base">Lifetime Earnings</h4>
-                    <p className="text-3xl font-bold text-gray-900">
+                    <p className="text-2xl md:text-3xl font-bold text-gray-900">
                       ${payoutJobs
                         .reduce((sum, p) => sum + (p.retailer_cut || 0), 0)
                         .toFixed(2)}
@@ -1111,7 +1111,7 @@ export default function RetailerDashboard() {
                 {payoutJobs.length > 0 ? (
                   <>
                     {/* Desktop Table View */}
-                    <div className="hidden md:block bg-white rounded-2xl border border-transparent overflow-hidden shadow-lg">
+                    <div className="hidden md:block bg-gradient-to-br from-gray-50 to-white border-2 border-gray-200 rounded-2xl overflow-hidden shadow-lg">
                       <table className="w-full">
                         <thead className="bg-gradient-to-r from-pink-50 to-purple-50">
                           <tr>
@@ -1125,7 +1125,7 @@ export default function RetailerDashboard() {
                         </thead>
                         <tbody>
                           {payoutJobs.map((payout, idx) => (
-                            <tr key={idx} className="border-t border-gray-100 hover:bg-gray-50">
+                            <tr key={idx} className="border-t border-gray-100">
                               <td className="py-4 px-6 text-gray-900">
                                 {new Date(payout.created_at).toLocaleDateString()}
                               </td>
@@ -1162,7 +1162,7 @@ export default function RetailerDashboard() {
                           initial={{ opacity: 0, y: 10 }}
                           animate={{ opacity: 1, y: 0 }}
                           transition={{ duration: 0.3, delay: idx * 0.1 }}
-                          className="bg-white rounded-2xl border border-transparent p-4 shadow-lg"
+                          className="bg-gradient-to-br from-gray-50 to-white border-2 border-gray-200 rounded-2xl p-4 shadow-lg"
                         >
                           <div className="flex items-center justify-between mb-3">
                             <div>
@@ -1236,7 +1236,7 @@ export default function RetailerDashboard() {
                 <h3 className="text-sm md:text-base font-black text-gray-900">Store Settings</h3>
 
                 {/* Bank Connection Section */}
-                <div className="bg-gradient-to-br from-white to-gray-50 rounded-2xl p-4 md:p-8 border border-transparent shadow-lg">
+                <div className="bg-gradient-to-br from-gray-50 to-white border-2 border-gray-200 rounded-2xl p-4 md:p-8 shadow-lg">
                   <h4 className="font-bold text-gray-900 text-base md:text-lg mb-4 md:mb-6">Bank Connection</h4>
                   
                   {retailerAccount?.plaid_access_token ? (
@@ -1323,8 +1323,7 @@ export default function RetailerDashboard() {
 
                 {/* Your Displays Section */}
                 <motion.div
-                  whileHover={{ scale: 1.01 }}
-                  className="bg-gradient-to-br from-white to-gray-50 rounded-2xl p-4 md:p-8 border border-transparent shadow-lg"
+                  className="bg-gradient-to-br from-gray-50 to-white border-2 border-gray-200 rounded-2xl p-4 md:p-8 shadow-lg"
                 >
                   <h4 className="font-bold text-gray-900 text-base md:text-lg mb-4 md:mb-6">Your Displays (UIDs)</h4>
 
@@ -1344,8 +1343,7 @@ export default function RetailerDashboard() {
                           initial={{ opacity: 0, y: 20 }}
                           animate={{ opacity: 1, y: 0 }}
                           transition={{ delay: idx * 0.1 }}
-                          whileHover={{ scale: 1.03, y: -5 }}
-                          className="bg-white rounded-3xl border border-transparent p-6 shadow-lg hover:shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_1px_-0.5px_rgba(0,0,0,0.06),0px_3px_3px_-1.5px_rgba(0,0,0,0.06),0px_6px_6px_-3px_rgba(0,0,0,0.06),0px_12px_12px_-6px_rgba(0,0,0,0.06),0px_24px_24px_-12px_rgba(0,0,0,0.06)] hover:border-purple-200 transition-all"
+                          className="bg-gradient-to-br from-gray-50 to-white border-2 border-gray-200 rounded-3xl p-6 shadow-lg"
                         >
                           <div className="flex items-start justify-between mb-4">
                             <div className="inline-flex items-center gap-2 bg-gray-100 px-4 py-2.5 rounded-full">
@@ -1395,7 +1393,7 @@ export default function RetailerDashboard() {
                   </div>
 
                   {uids.length === 0 && (
-                    <div className="bg-white rounded-3xl border border-transparent p-12 text-center shadow-lg">
+                    <div className="bg-gradient-to-br from-gray-50 to-white border-2 border-gray-200 rounded-3xl p-12 text-center shadow-lg">
                       <div className="flex flex-col items-center gap-4 max-w-sm mx-auto px-4">
                         <div className="w-20 h-20 bg-gradient-to-br from-gray-100 to-gray-200 rounded-full flex items-center justify-center">
                           <svg className="w-10 h-10 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -1413,8 +1411,7 @@ export default function RetailerDashboard() {
 
                 {/* Store Profile */}
                 <motion.div
-                  whileHover={{ scale: 1.01 }}
-                  className="bg-gradient-to-br from-white to-gray-50 rounded-2xl p-4 md:p-8 border border-transparent hover:border-gray-200 transition-all shadow-lg"
+                  className="bg-gradient-to-br from-gray-50 to-white border-2 border-gray-200 rounded-2xl p-4 md:p-8 shadow-lg"
                 >
                   <h4 className="font-bold text-gray-900 text-base md:text-lg mb-4 md:mb-6">Store Profile</h4>
                   <div className="space-y-4">
@@ -1442,8 +1439,7 @@ export default function RetailerDashboard() {
 
                 {/* Shipping Preferences */}
                 <motion.div
-                  whileHover={{ scale: 1.01 }}
-                  className="bg-gradient-to-br from-white to-gray-50 rounded-2xl p-4 md:p-8 border border-transparent hover:border-gray-200 transition-all shadow-lg"
+                  className="bg-gradient-to-br from-gray-50 to-white border-2 border-gray-200 rounded-2xl p-4 md:p-8 shadow-lg"
                 >
                   <h4 className="font-bold text-gray-900 text-base md:text-lg mb-4 md:mb-6">Display Shipping Preferences</h4>
                   <div className="space-y-4">
@@ -1487,8 +1483,7 @@ export default function RetailerDashboard() {
 
                 {/* Display Confirmation */}
                 <motion.div
-                  whileHover={{ scale: 1.01 }}
-                  className="bg-gradient-to-br from-white to-gray-50 rounded-2xl p-4 md:p-8 border border-transparent hover:border-gray-200 transition-all shadow-lg"
+                  className="bg-gradient-to-br from-gray-50 to-white border-2 border-gray-200 rounded-2xl p-4 md:p-8 shadow-lg"
                 >
                   <h4 className="font-bold text-gray-900 text-base md:text-lg mb-4 md:mb-6">Display Confirmation</h4>
                   <div className="space-y-4">
@@ -1528,9 +1523,9 @@ export default function RetailerDashboard() {
                                 <div>
                                   <p className="font-bold text-blue-900">Standard Display</p>
                                   <p className="text-xs text-blue-700">
-                                    <Link href="/onboard/shopify-connect" className="underline hover:text-blue-900">
+                                    <a href="https://pawpayaco.com/products/display-setup-for-affiliate" target="_blank" rel="noopener noreferrer" className="underline hover:text-blue-900">
                                       Upgrade to Priority Display
-                                    </Link> for premium placement
+                                    </a> for premium placement
                                   </p>
                                 </div>
                               </div>
@@ -1557,8 +1552,7 @@ export default function RetailerDashboard() {
 
                 {/* Store Contact Information */}
                 <motion.div
-                  whileHover={{ scale: 1.01 }}
-                  className="bg-gradient-to-br from-white to-gray-50 rounded-2xl p-4 md:p-8 border border-transparent hover:border-gray-200 transition-all shadow-lg"
+                  className="bg-gradient-to-br from-gray-50 to-white border-2 border-gray-200 rounded-2xl p-4 md:p-8 shadow-lg"
                 >
                   <h4 className="font-bold text-gray-900 text-base md:text-lg mb-4 md:mb-6">Store Contact Information</h4>
                   <div className="space-y-4">
@@ -1586,8 +1580,7 @@ export default function RetailerDashboard() {
 
                 {/* Account Actions */}
                 <motion.div
-                  whileHover={{ scale: 1.01 }}
-                  className="bg-gradient-to-br from-white to-gray-50 rounded-2xl p-4 md:p-8 border border-transparent hover:border-gray-200 transition-all shadow-lg"
+                  className="bg-gradient-to-br from-gray-50 to-white border-2 border-gray-200 rounded-2xl p-4 md:p-8 shadow-lg"
                 >
                   <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                     <div>

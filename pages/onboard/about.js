@@ -32,7 +32,7 @@ export default function AboutPawpaya() {
             <span className="whitespace-nowrap">Free display • Zero inventory • Auto commissions</span>
           </motion.div>
 
-          <h1 className="text-6xl sm:text-7xl md:text-8xl font-black text-gray-900 mb-8 leading-[1.1] text-center">
+          <h1 className="text-6xl sm:text-7xl md:text-8xl text-gray-900 mb-8 leading-[1.1] text-center" style={{ fontWeight: 700 }}>
             Meet Pawpaya
             <span className="block mt-3 bg-gradient-to-r from-[#FFA08A] to-[#FF8FCF] bg-clip-text text-transparent">
               Cute Collars
@@ -103,7 +103,7 @@ export default function AboutPawpaya() {
           className="mb-16 md:mb-20"
         >
           <div className="text-center mb-12 md:mb-16">
-            <h2 className="text-4xl sm:text-5xl md:text-6xl font-black text-gray-900 mb-6 leading-tight">
+            <h2 className="text-4xl sm:text-5xl md:text-6xl text-gray-900 mb-6 leading-tight" style={{ fontWeight: 600 }}>
               What We Do
             </h2>
 
@@ -144,7 +144,7 @@ export default function AboutPawpaya() {
             <div className="contents md:grid md:grid-cols-2 md:gap-8 md:gap-12">
               {/* Left: What You Get */}
               <div className="order-1 bg-gradient-to-br from-gray-50 to-white border-2 border-gray-200 rounded-3xl p-8 md:p-10">
-                <h3 className="text-2xl md:text-3xl font-black text-gray-900 mb-6">Who We Are</h3>
+                <h3 className="text-2xl md:text-3xl text-gray-900 mb-6" style={{ fontWeight: 600 }}>Who We Are</h3>
                 <div className="space-y-5">
                   {[
                     { icon: '🐾', title: 'Pawpaya Pet Collars', desc: 'Adorable, high-quality matching collar + bracelet sets and DIY kits for customers to craft' },
@@ -154,7 +154,7 @@ export default function AboutPawpaya() {
                     <div key={idx} className="flex gap-4 items-start">
                       <div className="text-3xl flex-shrink-0">{item.icon}</div>
                       <div>
-                        <div className="font-bold text-gray-900 text-lg mb-1">{item.title}</div>
+                        <div className="text-gray-900 text-lg mb-1" style={{ fontWeight: 500 }}>{item.title}</div>
                         <div className="text-gray-600 leading-relaxed">{item.desc}</div>
                       </div>
                     </div>
@@ -164,8 +164,8 @@ export default function AboutPawpaya() {
 
               {/* Right: How It Works - order-4 on mobile (after photo grid) */}
               <div className="order-4 md:order-none bg-gradient-to-br from-gray-50 to-white border-2 border-gray-200 rounded-3xl p-8 md:p-10">
-                <h3 className="text-2xl md:text-3xl font-black text-gray-900 mb-6">What We Offer</h3>
-                <div className="space-y-6">
+                <h3 className="text-2xl md:text-3xl text-gray-900 mb-6" style={{ fontWeight: 600 }}>What We Offer</h3>
+                <div className="space-y-8">
                   {[
                     { step: '1', title: 'NFC Tap Displays', desc: 'Beautiful displays featuring our Friendship Collars. Customers tap their phone to browse and buy' },
                     { step: '2', title: 'Zero Inventory Risk', desc: 'Sample display collars for customers to see and touch. Orders ship from us. You never handle inventory' },
@@ -176,7 +176,7 @@ export default function AboutPawpaya() {
                         {item.step}
                       </div>
                       <div className="flex-1">
-                        <div className="font-black text-gray-900 text-lg mb-1">{item.title}</div>
+                        <div className="text-gray-900 text-lg mb-1" style={{ fontWeight: 500 }}>{item.title}</div>
                         <div className="text-gray-700 leading-relaxed">{item.desc}</div>
                       </div>
                     </div>
@@ -193,7 +193,7 @@ export default function AboutPawpaya() {
               transition={{ duration: 0.6 }}
               className="order-2 md:order-none mt-0 md:mt-12 mb-8 bg-gradient-to-br from-purple-50 to-pink-50 border-2 border-purple-200 rounded-3xl p-8 md:p-10 text-center"
             >
-              <h3 className="text-3xl md:text-4xl font-black text-gray-900 mb-4">
+              <h3 className="text-3xl md:text-4xl text-gray-900 mb-4" style={{ fontWeight: 600 }}>
                 Check Out Our Customize Tool!
               </h3>
               <p className="text-lg md:text-xl text-gray-700 mb-6 max-w-3xl mx-auto leading-relaxed">
@@ -254,10 +254,10 @@ export default function AboutPawpaya() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
-            className="mt-0 mb-0 bg-gradient-to-br from-orange-50 to-pink-50 border-2 border-orange-200 rounded-2xl p-6 md:p-8"
+            className="mt-12 md:mt-16 mb-0 bg-gradient-to-br from-orange-50 to-pink-50 border-2 border-orange-200 rounded-2xl p-6 md:p-8"
           >
             <div className="max-w-4xl mx-auto">
-              <p className="text-2xl md:text-3xl font-black mb-3 text-gray-900 text-left">
+              <p className="text-2xl md:text-3xl mb-3 text-gray-900 text-left" style={{ fontWeight: 600 }}>
                 A Win-Win Partnership
               </p>
               <p className="text-lg md:text-xl text-gray-700 text-left">
@@ -277,7 +277,7 @@ export default function AboutPawpaya() {
         >
           <div className="rounded-3xl md:rounded-[2rem] p-6 md:p-10 shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_1px_-0.5px_rgba(0,0,0,0.06),0px_3px_3px_-1.5px_rgba(0,0,0,0.06),0px_6px_6px_-3px_rgba(0,0,0,0.06),0px_12px_12px_-6px_rgba(0,0,0,0.06),0px_24px_24px_-12px_rgba(0,0,0,0.06)] text-white"
                style={{ background: 'linear-gradient(to bottom right, #FFA08A, #FF8FCF)' }}>
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4 md:mb-5 text-left">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl mb-4 md:mb-5 text-left" style={{ fontWeight: 600 }}>
               Your Opportunity
             </h2>
             <p className="text-lg sm:text-xl md:text-2xl mb-6 md:mb-8 max-w-4xl opacity-90 text-left">
