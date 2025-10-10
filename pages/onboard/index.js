@@ -93,7 +93,7 @@ export default function OnboardIndex() {
                 whileHover={{ y: -2 }}
                 whileTap={{ scale: 0.98 }}
                 className="px-6 py-4 rounded-2xl text-lg font-black shadow-xl transition-all text-white"
-                style={{ background: 'linear-gradient(to right, #FFA08A, #FF8FCF)', width: '280px', maxWidth: '100%' }}
+                style={{ background: 'linear-gradient(to right, #FFA08A, #FF8FCF)', width: '320px', maxWidth: '100%' }}
               >
                 I'm a Franchise Owner →
               </motion.button>
@@ -106,7 +106,7 @@ export default function OnboardIndex() {
               whileTap={{ scale: 0.98 }}
               onClick={handleManagerShare}
               className="px-6 py-4 rounded-2xl text-lg font-black shadow-xl transition-all bg-white"
-              style={{ border: '4px solid #FF8FCF', color: '#FF8FCF', width: '280px', maxWidth: '100%' }}
+              style={{ border: '4px solid #FF8FCF', color: '#FF8FCF', width: '320px', maxWidth: '100%' }}
             >
               {isCopied ? 'Copied! ✓' : 'I\'m a Manager — Share This'}
             </motion.button>

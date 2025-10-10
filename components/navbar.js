@@ -15,10 +15,9 @@ export default function Navbar() {
               href="https://pawpayaco.com/products/diy-builder-kit-copy"
               target="_blank"
               rel="noopener noreferrer"
-              className="px-5 sm:px-7 py-2.5 sm:py-3.5 font-bold text-sm sm:text-base text-[#ff7a4a] bg-white border-2 border-[#ff7a4a] rounded-xl shadow-md whitespace-nowrap"
+              className="py-2.5 sm:py-3.5 font-bold text-sm sm:text-base text-[#ff7a4a] bg-white border-2 border-[#ff7a4a] rounded-xl shadow-md whitespace-nowrap w-[180px] sm:w-[220px] text-center"
             >
-              <span className="hidden sm:inline">See Products</span>
-              <span className="sm:hidden">Products</span>
+              See Products
             </Link>
           </div>
 
@@ -43,14 +42,14 @@ export default function Navbar() {
             {user ? (
               <Link
                 href="/onboard/dashboard"
-                className="px-5 sm:px-7 py-2.5 sm:py-3.5 font-bold text-sm sm:text-base text-white bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3] rounded-xl shadow-lg whitespace-nowrap"
+                className="py-2.5 sm:py-3.5 font-bold text-sm sm:text-base text-white bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3] rounded-xl shadow-lg whitespace-nowrap w-[180px] sm:w-[220px] text-center"
               >
                 Dashboard
               </Link>
             ) : (
               <Link
                 href="/login"
-                className="px-5 sm:px-7 py-2.5 sm:py-3.5 font-bold text-sm sm:text-base text-white bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3] rounded-xl shadow-lg whitespace-nowrap"
+                className="py-2.5 sm:py-3.5 font-bold text-sm sm:text-base text-white bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3] rounded-xl shadow-lg whitespace-nowrap w-[180px] sm:w-[220px] text-center"
               >
                 Login
               </Link>
