@@ -57,25 +57,15 @@ export default function AboutPawpaya() {
           {/* CTA Buttons */}
           <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
             <Link href="/onboard">
-              <motion.button
-                initial={{ scale: 0.85, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
-                transition={{ duration: 0.3, delay: 0.15 }}
-                whileHover={{ y: -2 }}
-                whileTap={{ scale: 0.98 }}
+              <button
                 className="px-6 py-4 rounded-2xl text-lg font-black shadow-xl transition-all text-white"
                 style={{ background: 'linear-gradient(to right, #FFA08A, #FF8FCF)', width: '320px', maxWidth: '100%' }}
               >
                 Learn About Partnership →
-              </motion.button>
+              </button>
             </Link>
-            <motion.a
+            <a
               href="#how-it-works"
-              initial={{ scale: 0.85, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              transition={{ duration: 0.3, delay: 0.18 }}
-              whileHover={{ y: -2 }}
-              whileTap={{ scale: 0.98 }}
               className="px-6 py-4 rounded-2xl text-lg font-black shadow-xl transition-all bg-white inline-block cursor-pointer text-center"
               style={{ border: '4px solid #FF8FCF', color: '#FF8FCF', width: '320px', maxWidth: '100%' }}
               onClick={(e) => {
@@ -84,7 +74,7 @@ export default function AboutPawpaya() {
               }}
             >
               See How It Works ↓
-            </motion.a>
+            </a>
           </div>
         </section>
       </div>
@@ -181,7 +171,7 @@ export default function AboutPawpaya() {
                   {[
                     { step: '1', title: 'NFC Tap Displays', desc: 'Beautiful displays featuring our Friendship Collars. Customers tap their phone to browse and buy' },
                     { step: '2', title: 'Zero Inventory Risk', desc: 'Sample display collars for customers to see and touch. Orders ship from us. You never handle inventory' },
-                    { step: '3', title: 'Earn Per Sale', desc: 'Earn 30% commission on every Pawpaya product ordered from your display completely automatic' }
+                    { step: '3', title: 'Earn Per Sale', desc: 'Earn 30% commission on every Pawpaya product ordered from your display automatically' }
                   ].map((item, idx) => (
                     <div key={idx} className="flex gap-4 items-start">
                       <div className="w-10 h-10 flex-shrink-0 rounded-full bg-gradient-to-br from-[#FFA08A] to-[#FF8FCF] flex items-center justify-center text-white font-black text-lg shadow-lg">
@@ -241,14 +231,14 @@ export default function AboutPawpaya() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
-            className="mt-8 md:mt-12 mb-0 bg-gradient-to-br from-orange-50 to-pink-50 border-2 border-orange-200 rounded-2xl p-6 md:p-8 text-center"
+            className="mt-8 md:mt-12 mb-0 bg-gradient-to-br from-orange-50 to-pink-50 border-2 border-orange-200 rounded-2xl p-6 md:p-8"
           >
             <div className="max-w-4xl mx-auto">
-              <p className="text-2xl md:text-3xl font-black mb-3 text-gray-900">
-                The Perfect Win-Win Partnership
+              <p className="text-2xl md:text-3xl font-black mb-3 text-gray-900 text-left">
+                A Win-Win Partnership
               </p>
-              <p className="text-lg md:text-xl text-gray-700">
-                We handle product creation, fulfillment, customer service, and technology. You provide shelf, rack, or counter space and earn commission on every sale. It's that simple.
+              <p className="text-lg md:text-xl text-gray-700 text-left">
+                We handle product creation, fulfillment, customer service, and technology. You provide shelf, rack, or counter space and earn commission on every sale.<br />It's that simple.
               </p>
             </div>
           </motion.div>
@@ -262,24 +252,24 @@ export default function AboutPawpaya() {
           transition={{ duration: 0.6 }}
           className="mb-8 md:mb-12 -mt-8 md:-mt-12"
         >
-          <div className="rounded-3xl md:rounded-[2rem] p-6 md:p-10 shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_1px_-0.5px_rgba(0,0,0,0.06),0px_3px_3px_-1.5px_rgba(0,0,0,0.06),0px_6px_6px_-3px_rgba(0,0,0,0.06),0px_12px_12px_-6px_rgba(0,0,0,0.06),0px_24px_24px_-12px_rgba(0,0,0,0.06)] text-white text-center"
+          <div className="rounded-3xl md:rounded-[2rem] p-6 md:p-10 shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_1px_-0.5px_rgba(0,0,0,0.06),0px_3px_3px_-1.5px_rgba(0,0,0,0.06),0px_6px_6px_-3px_rgba(0,0,0,0.06),0px_12px_12px_-6px_rgba(0,0,0,0.06),0px_24px_24px_-12px_rgba(0,0,0,0.06)] text-white"
                style={{ background: 'linear-gradient(to bottom right, #FFA08A, #FF8FCF)' }}>
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4 md:mb-5">
-              Our Expansion & Your Opportunity
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4 md:mb-5 text-left">
+              Your Opportunity
             </h2>
-            <p className="text-lg sm:text-xl md:text-2xl mb-6 md:mb-8 max-w-4xl mx-auto opacity-90">
-              We started with a simple idea - make in-store shopping as seamless as online. Now, our NFC tap-to-shop displays are rolling out to stores nationwide. Your store could be next, earning passive commission while offering customers something they’ve never seen before.
+            <p className="text-lg sm:text-xl md:text-2xl mb-6 md:mb-8 max-w-4xl opacity-90 text-left">
+              Our NFC tap-to-shop displays are in select stores nation wide. Your store could be next, offering customers an unforgettable experience.
             </p>
-            <Link href="/onboard">
-              <motion.button
-                whileHover={{ y: -2 }}
-                whileTap={{ scale: 0.98 }}
-                className="bg-white px-10 md:px-12 py-4 md:py-5 rounded-2xl md:rounded-3xl text-lg md:text-xl font-black transition-all shadow-2xl whitespace-nowrap"
-                style={{ color: '#FF8FCF' }}
-              >
-                See What We're Offering →
-              </motion.button>
-            </Link>
+            <div className="text-center">
+              <Link href="/onboard">
+                <button
+                  className="bg-white px-10 md:px-12 py-4 md:py-5 rounded-2xl md:rounded-3xl text-lg md:text-xl font-black transition-all shadow-2xl whitespace-nowrap"
+                  style={{ color: '#FF8FCF' }}
+                >
+                  See What We're Offering →
+                </button>
+              </Link>
+            </div>
           </div>
 
           {/* Final CTA */}

@@ -8,7 +8,7 @@ export default function OnboardIndex() {
 
   const handleManagerShare = async () => {
     try {
-      const shareUrl = window.location.origin + '/onboard';
+      const shareUrl = window.location.origin + '/onboard/about';
 
       // Always copy to clipboard first
       await navigator.clipboard.writeText(shareUrl);
@@ -22,8 +22,8 @@ export default function OnboardIndex() {
       // Try to use native share API if available
       if (navigator.share) {
         await navigator.share({
-          title: 'Tapify Display Program',
-          text: 'Check out this amazing display program for our store!',
+          title: 'Pawpaya Display Program',
+          text: 'I found this program that\'s completely free to sign up, can you check it out?',
           url: shareUrl
         });
       }
@@ -86,30 +86,20 @@ export default function OnboardIndex() {
           {/* Two-Path CTA Buttons */}
           <div className="flex flex-col md:flex-row gap-6 justify-center items-center">
             <Link href="/onboard/register">
-              <motion.button
-                initial={{ scale: 0.85, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
-                transition={{ duration: 0.3, delay: 0.15 }}
-                whileHover={{ y: -2 }}
-                whileTap={{ scale: 0.98 }}
+              <button
                 className="px-6 py-4 rounded-2xl text-lg font-black shadow-xl transition-all text-white"
                 style={{ background: 'linear-gradient(to right, #FFA08A, #FF8FCF)', width: '320px', maxWidth: '100%' }}
               >
                 I'm a Franchise Owner →
-              </motion.button>
+              </button>
             </Link>
-            <motion.button
-              initial={{ scale: 0.85, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              transition={{ duration: 0.3, delay: 0.18 }}
-              whileHover={{ y: -2 }}
-              whileTap={{ scale: 0.98 }}
+            <button
               onClick={handleManagerShare}
               className="px-6 py-4 rounded-2xl text-lg font-black shadow-xl transition-all bg-white"
               style={{ border: '4px solid #FF8FCF', color: '#FF8FCF', width: '320px', maxWidth: '100%' }}
             >
               {isCopied ? 'Copied! ✓' : 'I\'m a Manager — Share This'}
-            </motion.button>
+            </button>
           </div>
         </section>
       </div>
@@ -127,7 +117,7 @@ export default function OnboardIndex() {
 
       {/* Main Content */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* See What You're Getting Section */}
+        {/* What You're Getting Section */}
         <motion.section
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -136,17 +126,12 @@ export default function OnboardIndex() {
           className="mb-16 md:mb-20"
         >
           <div className="text-center mb-8 md:mb-12">
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-gray-900 mb-4">
-              See What You're Getting
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-gray-900">
+              What You're Getting
             </h2>
-            {/* FREE Tag */}
-            <div className="inline-flex items-center px-5 py-2.5 rounded-full text-base font-black text-white shadow-lg"
-                 style={{ background: 'linear-gradient(to right, #FFA08A, #FF8FCF)' }}>
-              100% FREE
-            </div>
           </div>
           <div className="max-w-7xl mx-auto">
-            <div className="bg-gradient-to-br from-gray-50 to-white border-2 border-gray-200 rounded-3xl p-8 md:p-12 lg:p-16">
+            <div className="bg-gradient-to-br from-gray-50 to-white border-2 border-gray-200 rounded-3xl pt-8 px-8 pb-6 md:pt-12 md:px-12 md:pb-8 lg:pt-16 lg:px-16 lg:pb-10">
               <ImageModalGallery
                 images={[
                   { src: "/images/image28.jpg", alt: "Pawpaya display hero angle" },
@@ -154,6 +139,11 @@ export default function OnboardIndex() {
                   { src: "/images/image30.jpg", alt: "Pawpaya display lifestyle" }
                 ]}
               />
+              <div className="mt-6 text-center">
+                <div className="inline-block bg-white px-6 py-3 rounded-2xl shadow-md">
+                  <p className="text-gray-700 font-bold text-sm md:text-base">Includes hooks to hang on metal peg board next to other collars</p>
+                </div>
+              </div>
             </div>
           </div>
         </motion.section>
@@ -171,20 +161,20 @@ export default function OnboardIndex() {
           </h2>
 
           <div className="bg-white rounded-3xl md:rounded-[2rem] py-6 md:py-8 px-4 md:px-10 shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_1px_-0.5px_rgba(0,0,0,0.06),0px_3px_3px_-1.5px_rgba(0,0,0,0.06),0px_6px_6px_-3px_rgba(0,0,0,0.06),0px_12px_12px_-6px_rgba(0,0,0,0.06),0px_24px_24px_-12px_rgba(0,0,0,0.06)] border border-transparent">
-            <div className="flex flex-col md:flex-row items-center justify-between gap-8 md:gap-3">
+            <div className="grid grid-cols-2 place-items-center md:flex md:flex-row md:items-center md:justify-between gap-4 md:gap-3">
               {[
-                { step: '1', text: 'Customer sees display' },
+                { step: '1', text: 'Sees display' },
                 { step: '2', text: 'Taps phone to order' },
                 { step: '3', text: 'We ship product' },
                 { step: '4', text: 'You earn commission' }
               ].map((item, idx) => (
                 <div key={idx} className="flex items-center gap-3 md:gap-4 flex-1">
                   <div className="flex flex-col items-center text-center flex-1">
-                    <div className="w-24 h-24 md:w-20 md:h-20 rounded-full flex items-center justify-center text-4xl md:text-3xl font-black text-white mb-3 shadow-lg"
+                    <div className="w-16 h-16 md:w-20 md:h-20 rounded-full flex items-center justify-center text-2xl md:text-3xl font-black text-white mb-2 md:mb-3 shadow-lg"
                          style={{ background: 'linear-gradient(to bottom right, #FFA08A, #FF8FCF)' }}>
                       {item.step}
                     </div>
-                    <p className="text-gray-900 font-bold text-lg md:text-lg">{item.text}</p>
+                    <p className="text-gray-900 font-bold text-sm md:text-lg">{item.text}</p>
                   </div>
                   {idx < 3 && (
                     <div className="hidden md:block text-4xl text-gray-300">→</div>
@@ -207,17 +197,17 @@ export default function OnboardIndex() {
             {[
               {
                 title: 'Zero Inventory',
-                description: 'No products to buy, stock, or manage',
+                description: 'No wholesale, stock, or extra work',
                 icon: '✨'
               },
               {
-                title: 'Auto Commissions',
-                description: 'Earn on every customer tap-to-order sale',
+                title: 'Auto ACH Payouts',
+                description: 'Earn 30% of every sale',
                 icon: '💰'
               },
               {
                 title: 'Full Support',
-                description: 'We handle fulfillment, shipping, and customer service',
+                description: 'From fulfillment to customer service',
                 icon: '🤝'
               }
             ].map((item, idx) => (
@@ -234,12 +224,8 @@ export default function OnboardIndex() {
                 <div className="absolute inset-0 bg-white opacity-40"></div>
                 <div className="relative z-10">
                   <div className="text-4xl md:text-5xl mb-4 md:mb-5">{item.icon}</div>
-                  <h3 className="text-xl md:text-2xl font-bold text-gray-900 mb-2 md:mb-3">
-                    {item.title === 'Full Support' ? (
-                      <>Full<br/>Support</>
-                    ) : (
-                      item.title
-                    )}
+                  <h3 className="text-lg md:text-xl font-bold text-gray-900 mb-2 md:mb-3">
+                    {item.title}
                   </h3>
                   <p className="text-gray-700 text-base md:text-lg">{item.description}</p>
                 </div>
@@ -267,15 +253,13 @@ export default function OnboardIndex() {
                   Love this idea? Share it with your owner using the button above.
                   When they approve, you'll be the hero who brought in passive revenue.
                 </p>
-                <motion.button
-                  whileHover={{ y: -2 }}
-                  whileTap={{ scale: 0.98 }}
+                <button
                   onClick={handleManagerShare}
-                  className="w-[240px] px-6 md:px-8 py-3 md:py-4 rounded-2xl md:rounded-3xl text-base md:text-lg font-black shadow-lg bg-white border-2 whitespace-nowrap"
+                  className="w-[180px] px-6 md:px-8 py-3 md:py-4 rounded-2xl md:rounded-3xl text-base md:text-lg font-black shadow-lg bg-white border-2 whitespace-nowrap"
                   style={{ borderColor: '#FF8FCF', color: '#FF8FCF' }}
                 >
                   {isCopied ? 'Copied! ✓' : 'Share With Owner'}
-                </motion.button>
+                </button>
               </div>
 
               {/* For Franchise Owners */}
@@ -288,14 +272,12 @@ export default function OnboardIndex() {
                   Register now and we'll ship your free display within 5-7 days.
                 </p>
                 <Link href="/onboard/register">
-                  <motion.button
-                    whileHover={{ y: -2 }}
-                    whileTap={{ scale: 0.98 }}
-                    className="w-[240px] px-8 md:px-10 py-3 md:py-4 rounded-2xl md:rounded-3xl text-base md:text-lg font-black transition-all shadow-xl text-white whitespace-nowrap"
+                  <button
+                    className="w-[180px] px-8 md:px-10 py-3 md:py-4 rounded-2xl md:rounded-3xl text-base md:text-lg font-black transition-all shadow-xl text-white whitespace-nowrap"
                     style={{ background: 'linear-gradient(to right, #FFA08A, #FF8FCF)' }}
                   >
                     Register Now →
-                  </motion.button>
+                  </button>
                 </Link>
               </div>
             </div>
