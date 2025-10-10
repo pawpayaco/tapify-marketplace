@@ -331,24 +331,6 @@ export default function AboutPawpaya() {
             </div>
           </motion.div>
         </motion.section>
-
-        {/* Final CTA Section */}
-        <motion.section
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-          className="mb-8 md:mb-12"
-        >
-          <div className="text-center pt-4 md:pt-6">
-            <Link href="/onboard" className="text-gray-600 hover:text-gray-900 font-bold inline-flex items-center gap-2 hover:gap-3 transition-all text-base md:text-lg">
-              <svg className="w-4 h-4 md:w-5 md:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-              </svg>
-              Continue to Registration
-            </Link>
-          </div>
-        </motion.section>
       </div>
     </div>
     </>
