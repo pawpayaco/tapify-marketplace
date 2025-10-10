@@ -485,15 +485,20 @@ export default function RegisterRetailer() {
         body {
           overflow-x: hidden !important;
           max-width: 100vw !important;
-          overscroll-behavior: none !important;
-          -webkit-overflow-scrolling: auto !important;
+          overscroll-behavior-y: none !important;
+          -webkit-overflow-scrolling: touch !important;
+          position: relative !important;
         }
         html {
           overflow-x: hidden !important;
-          overscroll-behavior: none !important;
+          overscroll-behavior-y: none !important;
+          position: relative !important;
+        }
+        * {
+          -webkit-overflow-scrolling: touch !important;
         }
       `}</style>
-    <div className="min-h-screen bg-white pt-28 md:pt-36 pb-16 overflow-x-hidden max-w-full w-full">
+    <div className="min-h-screen bg-white pt-28 md:pt-36 pb-16 overflow-x-hidden max-w-full w-full" style={{ position: 'relative' }}>
 
       {/* Desktop: Two-column layout, Mobile: Single column */}
       <div className="max-w-[1600px] mx-auto px-4 sm:px-10 lg:px-12 pb-12 overflow-x-hidden">

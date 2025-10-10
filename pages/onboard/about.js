@@ -112,11 +112,38 @@ export default function AboutPawpaya() {
         >
           <div className="text-center mb-12 md:mb-16">
             <h2 className="text-4xl sm:text-5xl md:text-6xl font-black text-gray-900 mb-6 leading-tight">
-              Our Story & What We Do
+              What We Do
             </h2>
-            <p className="text-xl md:text-2xl text-gray-600 max-w-3xl mx-auto">
-              We created Pawpaya to bring the joy of premium pet products to stores everywhere—using NFC tap technology to make discovering and buying our collars effortless for customers and profitable for you
-            </p>
+
+            {/* Two Column Layout on Desktop */}
+            <div className="grid md:grid-cols-[2.25fr_1fr] gap-8 items-center max-w-6xl mx-auto">
+              <div className="bg-white rounded-3xl p-8 md:p-10 shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_1px_-0.5px_rgba(0,0,0,0.06),0px_3px_3px_-1.5px_rgba(0,0,0,0.06),0px_6px_6px_-3px_rgba(0,0,0,0.06),0px_12px_12px_-6px_rgba(0,0,0,0.06),0px_24px_24px_-12px_rgba(0,0,0,0.06)]">
+                <p className="text-xl md:text-2xl text-gray-600 text-left leading-relaxed">
+                  Pawpaya helps stores earn extra revenue with zero hassle through free displays featuring our friendship collar & bracelet sets. Each display has tap to buy online technology, earning retail stores automatic commission. A modern, risk-free way to boost profit and engage customers.
+                </p>
+              </div>
+
+              {/* Rounded Image Card */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6 }}
+                className="pointer-events-none md:pointer-events-auto"
+              >
+                <motion.div
+                  whileHover={{ scale: 1.5 }}
+                  transition={{ duration: 0.3 }}
+                  className="rounded-3xl overflow-hidden shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_1px_-0.5px_rgba(0,0,0,0.06),0px_3px_3px_-1.5px_rgba(0,0,0,0.06),0px_6px_6px_-3px_rgba(0,0,0,0.06),0px_12px_12px_-6px_rgba(0,0,0,0.06),0px_24px_24px_-12px_rgba(0,0,0,0.06)]"
+                >
+                  <img
+                    src="/images/image1.webp"
+                    alt="Pawpaya story"
+                    className="w-full h-auto object-cover"
+                  />
+                </motion.div>
+              </motion.div>
+            </div>
           </div>
 
           <div className="grid md:grid-cols-2 gap-8 md:gap-12">
@@ -126,8 +153,7 @@ export default function AboutPawpaya() {
               <div className="space-y-5">
                 {[
                   { icon: '🐾', title: 'Pawpaya Pet Collars', desc: 'Adorable, high-quality pet collars crafted to make tails wag and customers smile' },
-                  { icon: '💝', title: 'The Friendship Collar', desc: 'Matching collars for pets and bracelets for humans—celebrating the bond between best friends' },
-                  { icon: '🚀', title: 'Nationwide Rollout', desc: 'Rolling out to 750+ Pet Supplies Plus stores through innovative NFC displays' },
+                  { icon: '🚀', title: 'Nationwide Rollout', desc: 'Rolling out to local pet shops and sPet Supplies Plus stores through innovative display tech' },
                   { icon: '✨', title: 'Built on Joy', desc: 'Designed to spread happiness and strengthen the pet-parent bond' }
                 ].map((item, idx) => (
                   <div key={idx} className="flex gap-4 items-start">
@@ -146,10 +172,9 @@ export default function AboutPawpaya() {
               <h3 className="text-2xl md:text-3xl font-black text-gray-900 mb-6">What We Offer</h3>
               <div className="space-y-6">
                 {[
-                  { step: '1', title: 'NFC Tap Displays', desc: 'Beautiful displays featuring our Friendship Collars—customers tap their phone to browse and buy' },
-                  { step: '2', title: 'Zero Inventory Risk', desc: 'Sample collars for customers to see and touch. Orders ship from us—you never handle inventory' },
-                  { step: '3', title: 'Earn Per Sale', desc: 'Earn commission on every Pawpaya product ordered from your display—completely automatic' },
-                  { step: '4', title: 'Automatic Payouts', desc: 'We track every sale and deposit earnings directly to your account—completely hands-free' }
+                  { step: '1', title: 'NFC Tap Displays', desc: 'Beautiful displays featuring our Friendship Collars. Customers tap their phone to browse and buy' },
+                  { step: '2', title: 'Zero Inventory Risk', desc: 'Sample display collars for customers to see and touch. Orders ship from us. You never handle inventory' },
+                  { step: '3', title: 'Earn Per Sale', desc: 'Earn 30% commission on every Pawpaya product ordered from your display completely automatic' }
                 ].map((item, idx) => (
                   <div key={idx} className="flex gap-4 items-start">
                     <div className="w-10 h-10 flex-shrink-0 rounded-full bg-gradient-to-br from-[#FFA08A] to-[#FF8FCF] flex items-center justify-center text-white font-black text-lg shadow-lg">
@@ -215,7 +240,7 @@ export default function AboutPawpaya() {
                 The Perfect Win-Win Partnership
               </p>
               <p className="text-lg md:text-xl text-gray-700">
-                We handle product creation, fulfillment, customer service, and technology. You provide counter space and earn commission on every sale. It's that simple.
+                We handle product creation, fulfillment, customer service, and technology. You provide shelf, rack, or counter space and earn commission on every sale. It's that simple.
               </p>
             </div>
           </motion.div>
@@ -235,7 +260,7 @@ export default function AboutPawpaya() {
               Our Expansion & Your Opportunity
             </h2>
             <p className="text-lg sm:text-xl md:text-2xl mb-6 md:mb-8 max-w-4xl mx-auto opacity-90">
-              We started with a simple idea: make in-store shopping as seamless as online. Now we're expanding to hundreds of retail partners nationwide through our NFC tap checkout technology. Your store could be next—earning passive commission while offering customers something they've never seen before.
+              We started with a simple idea - make in-store shopping as seamless as online. Now, our NFC tap-to-shop displays are rolling out to stores nationwide. Your store could be next, earning passive commission while offering customers something they’ve never seen before.
             </p>
             <Link href="/onboard">
               <motion.button

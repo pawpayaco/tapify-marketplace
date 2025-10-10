@@ -136,14 +136,9 @@ export default function OnboardIndex() {
           className="mb-16 md:mb-20"
         >
           <div className="text-center mb-8 md:mb-12">
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-gray-900 mb-4">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-gray-900">
               See What You're Getting
             </h2>
-            {/* FREE Tag */}
-            <div className="inline-flex items-center px-8 py-3.5 rounded-full text-base font-black text-white shadow-lg"
-                 style={{ background: 'linear-gradient(to right, #FFA08A, #FF8FCF)' }}>
-              100% FREE
-            </div>
           </div>
           <div className="max-w-7xl mx-auto">
             <div className="bg-gradient-to-br from-gray-50 to-white border-2 border-gray-200 rounded-3xl p-8 md:p-12 lg:p-16">
