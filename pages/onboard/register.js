@@ -490,11 +490,11 @@ export default function RegisterRetailer() {
           overflow-x: hidden !important;
         }
       `}</style>
-    <div className="min-h-screen bg-white pt-28 md:pt-36 pb-16 overflow-x-hidden max-w-full w-full">
+    <div className="min-h-screen bg-white pt-28 md:pt-36 pb-16">
 
       {/* Desktop: Two-column layout, Mobile: Single column */}
-      <div className="max-w-[1600px] mx-auto px-4 sm:px-10 lg:px-12 pb-12 overflow-x-hidden">
-        <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 lg:items-start overflow-x-hidden">
+      <div className="max-w-[1600px] mx-auto px-4 sm:px-10 lg:px-12 pb-12">
+        <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 lg:items-start">
           {/* LEFT COLUMN - Info (Sticky on desktop) */}
           <motion.div
             initial={{ opacity: 0 }}
@@ -583,7 +583,12 @@ export default function RegisterRetailer() {
             animate={{ opacity: 1 }}
             transition={{ duration: 0.4 }}
             className="bg-white rounded-3xl shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_1px_-0.5px_rgba(0,0,0,0.06),0px_3px_3px_-1.5px_rgba(0,0,0,0.06),0px_6px_6px_-3px_rgba(0,0,0,0.06),0px_12px_12px_-6px_rgba(0,0,0,0.06),0px_24px_24px_-12px_rgba(0,0,0,0.06)] p-8 lg:p-10 border border-transparent order-1 lg:order-2 w-full"
-            style={{ height: 'auto', minHeight: 'unset' }}
+            style={{
+              overflow: 'visible',
+              height: 'auto',
+              minHeight: 'unset',
+              maxHeight: 'none'
+            }}
           >
             {/* Mobile Hero Header - Only visible on mobile */}
             <div className="lg:hidden mb-8 text-center">
@@ -599,9 +604,9 @@ export default function RegisterRetailer() {
               </motion.div>
 
               <h1 className="text-3xl sm:text-4xl font-black text-gray-900 leading-tight mb-4">
-                Claim Your{' '}
+                {' '}
                 <span style={{ background: 'linear-gradient(to right, #FFA08A, #FF8FCF)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
-                  Display
+                  Claim Your Display
                 </span>
               </h1>
 
@@ -622,7 +627,11 @@ export default function RegisterRetailer() {
               initial="hidden"
               animate="visible"
               className="space-y-5 w-full"
-              style={{ height: 'auto' }}
+              style={{
+                overflow: 'visible',
+                height: 'auto',
+                maxHeight: 'none'
+              }}
             >
               {/* Store Name with Autocomplete */}
               <motion.div variants={fadeInUp} className="relative w-full" ref={suggestionsRef}>

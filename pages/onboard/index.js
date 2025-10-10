@@ -65,11 +65,11 @@ export default function OnboardIndex() {
           </motion.div>
 
           <h1 className="text-7xl md:text-9xl font-black text-gray-900 mb-10 leading-tight">
-            Your Store Can{' '}
+            {' '}
             <span className="block mt-2">
-              Earn More — With{' '}
+              {' '}
               <span style={{ background: 'linear-gradient(to right, #FFA08A, #FF8FCF)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
-                Zero Inventory
+                Our Offer
               </span>
             </span>
           </h1>
