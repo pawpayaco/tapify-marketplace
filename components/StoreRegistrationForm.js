@@ -165,14 +165,14 @@ export default function StoreRegistrationForm({ preselectedStore = null, onSucce
           
           {selectedStore ? (
             <div className="flex items-center gap-3 p-4 rounded-2xl border-2 border-green-200 bg-green-50">
-              <div className="flex-1">
-                <div className="font-bold text-gray-900">{selectedStore.name}</div>
-                <div className="text-sm text-gray-600">{selectedStore.address}</div>
+              <div className="flex-1 min-w-0">
+                <div className="font-bold text-gray-900 truncate">{selectedStore.name}</div>
+                <div className="text-sm text-gray-600 truncate">{selectedStore.address}</div>
               </div>
               <button
                 type="button"
                 onClick={() => setSelectedStore(null)}
-                className="px-3 py-1.5 rounded-xl bg-gray-200 text-gray-700 font-bold hover:bg-gray-300"
+                className="px-3 py-1.5 rounded-xl bg-gray-200 text-gray-700 font-bold hover:bg-gray-300 flex-shrink-0"
               >
                 Change
               </button>
@@ -203,10 +203,10 @@ export default function StoreRegistrationForm({ preselectedStore = null, onSucce
                         key={store.id}
                         type="button"
                         onClick={() => selectStore(store)}
-                        className="w-full text-left p-4 hover:bg-gray-50 border-b border-gray-100 last:border-b-0"
+                        className="w-full text-left p-4 hover:bg-gray-50 border-b border-gray-100 last:border-b-0 overflow-hidden"
                       >
-                        <div className="font-bold text-gray-900">{store.name}</div>
-                        <div className="text-sm text-gray-600">{store.address}</div>
+                        <div className="font-bold text-gray-900 truncate">{store.name}</div>
+                        <div className="text-sm text-gray-600 truncate">{store.address}</div>
                       </button>
                     ))
                   )}

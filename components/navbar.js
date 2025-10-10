@@ -7,7 +7,7 @@ export default function Navbar() {
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 border-b border-gray-200 shadow-sm bg-white">
-      <div className="max-w-[1800px] mx-auto px-4 sm:px-8 lg:px-12 pt-0 sm:pt-2 pb-2">
+      <div className="max-w-[1800px] mx-auto px-4 sm:px-8 lg:px-12 pt-2 pb-2">
         <div className="flex justify-between items-center h-16 sm:h-20">
           {/* Left: See Products Button */}
           <div className="flex-1 flex justify-start">
