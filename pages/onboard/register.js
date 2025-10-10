@@ -462,19 +462,19 @@ export default function RegisterRetailer() {
 
   const nextSteps = [
     {
-      title: 'Instant Confirmation',
+      title: 'Confirmation',
       timing: 'Right away',
-      description: 'Get immediate confirmation via email. Your display order is locked in and ready for production.'
+      description: 'Get immediate confirmation in your dashboard. Your display order is locked in.'
     },
     {
-      title: 'Ships to Your Door',
-      timing: '5-7 days',
-      description: 'We print, assemble, and quality-check your custom Pawpaya display, then ship it free to your store. Track your package in real-time via email updates.'
+      title: 'Delivery',
+      timing: '3 weeks',
+      description: 'We print, ship, and quality-check your display. Including hooks, samples and tech.'
     },
     {
       title: 'Start Earning',
       timing: 'Day 1',
-      description: 'Place display near checkout. Customers tap to order, you earn commissions. It\'s that simple.'
+      description: 'Place display near checkout or on the shelf. You earn commissions.'
     }
   ];
 
@@ -545,7 +545,7 @@ export default function RegisterRetailer() {
             >
               <div className="mb-4 md:mb-6">
                 <h3 className="text-2xl font-black text-gray-900 mb-2">What Happens Next</h3>
-                <p className="text-gray-600 text-sm">Your display ships within 5-7 days. Here's the timeline:</p>
+                <p className="text-gray-600 text-sm"></p>
               </div>
               <div className="space-y-4 md:space-y-5">
                 {nextSteps.map((step, idx) => (
