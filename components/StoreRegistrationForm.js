@@ -148,7 +148,7 @@ export default function StoreRegistrationForm({ preselectedStore = null, onSucce
   };
 
   return (
-    <div className="bg-white rounded-3xl shadow-xl border-2 border-gray-100 p-6 md:p-8">
+    <div className="bg-white rounded-3xl shadow-xl border-2 border-gray-100 p-6 md:p-8 overflow-hidden max-w-full">
       <div className="mb-6">
         <h2 className="text-2xl font-bold text-gray-900 mb-2">Register Store Owner</h2>
         <p className="text-gray-600">
@@ -178,7 +178,7 @@ export default function StoreRegistrationForm({ preselectedStore = null, onSucce
               </button>
             </div>
           ) : (
-            <div className="relative">
+            <div className="relative w-full overflow-hidden">
               <input
                 type="text"
                 value={searchTerm}
@@ -190,9 +190,9 @@ export default function StoreRegistrationForm({ preselectedStore = null, onSucce
                 placeholder="Search by name or address..."
                 className="w-full h-12 px-4 rounded-2xl border-2 border-gray-200 outline-none focus:ring-2 focus:ring-[#ff6fb3] focus:border-transparent"
               />
-              
+
               {showDropdown && (
-                <div className="absolute z-10 w-full mt-2 bg-white border-2 border-gray-200 rounded-2xl shadow-xl max-h-64 overflow-auto">
+                <div className="absolute z-10 left-0 right-0 mt-2 bg-white border-2 border-gray-200 rounded-2xl shadow-xl max-h-64 overflow-auto">
                   {loadingStores ? (
                     <div className="p-4 text-center text-gray-500">Loading stores...</div>
                   ) : filteredStores.length === 0 ? (
@@ -203,10 +203,10 @@ export default function StoreRegistrationForm({ preselectedStore = null, onSucce
                         key={store.id}
                         type="button"
                         onClick={() => selectStore(store)}
-                        className="w-full text-left p-4 hover:bg-gray-50 border-b border-gray-100 last:border-b-0 overflow-hidden"
+                        className="w-full text-left p-4 hover:bg-gray-50 border-b border-gray-100 last:border-b-0 block"
                       >
-                        <div className="font-bold text-gray-900 truncate">{store.name}</div>
-                        <div className="text-sm text-gray-600 truncate">{store.address}</div>
+                        <div className="font-bold text-gray-900 truncate overflow-hidden text-ellipsis whitespace-nowrap">{store.name}</div>
+                        <div className="text-sm text-gray-600 truncate overflow-hidden text-ellipsis whitespace-nowrap">{store.address}</div>
                       </button>
                     ))
                   )}

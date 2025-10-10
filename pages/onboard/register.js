@@ -480,11 +480,21 @@ export default function RegisterRetailer() {
 
 
   return (
-    <div className="min-h-screen bg-white pt-28 md:pt-36 pb-16 overflow-x-hidden">
+    <>
+      <style jsx global>{`
+        body {
+          overflow-x: hidden !important;
+          max-width: 100vw !important;
+        }
+        html {
+          overflow-x: hidden !important;
+        }
+      `}</style>
+    <div className="min-h-screen bg-white pt-28 md:pt-36 pb-16 overflow-x-hidden max-w-full w-full">
 
       {/* Desktop: Two-column layout, Mobile: Single column */}
-      <div className="max-w-[1600px] mx-auto px-4 sm:px-10 lg:px-12 pb-12">
-        <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-start">
+      <div className="max-w-[1600px] mx-auto px-4 sm:px-10 lg:px-12 pb-12 overflow-x-hidden">
+        <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-start overflow-x-hidden">
           {/* LEFT COLUMN - Info (Sticky on desktop) */}
           <motion.div
             initial={{ opacity: 0 }}
@@ -572,7 +582,7 @@ export default function RegisterRetailer() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.4 }}
-            className="bg-white rounded-3xl shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_1px_-0.5px_rgba(0,0,0,0.06),0px_3px_3px_-1.5px_rgba(0,0,0,0.06),0px_6px_6px_-3px_rgba(0,0,0,0.06),0px_12px_12px_-6px_rgba(0,0,0,0.06),0px_24px_24px_-12px_rgba(0,0,0,0.06)] p-8 lg:p-10 border border-transparent order-1 lg:order-2"
+            className="bg-white rounded-3xl shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_1px_-0.5px_rgba(0,0,0,0.06),0px_3px_3px_-1.5px_rgba(0,0,0,0.06),0px_6px_6px_-3px_rgba(0,0,0,0.06),0px_12px_12px_-6px_rgba(0,0,0,0.06),0px_24px_24px_-12px_rgba(0,0,0,0.06)] p-8 lg:p-10 border border-transparent order-1 lg:order-2 overflow-x-hidden max-w-full"
           >
             {/* Mobile Hero Header - Only visible on mobile */}
             <div className="lg:hidden mb-8 text-center">
@@ -611,10 +621,10 @@ export default function RegisterRetailer() {
               variants={staggerContainer}
               initial="hidden"
               animate="visible"
-              className="space-y-5"
+              className="space-y-5 overflow-x-hidden max-w-full"
             >
               {/* Store Name with Autocomplete */}
-              <motion.div variants={fadeInUp} className="relative" ref={suggestionsRef}>
+              <motion.div variants={fadeInUp} className="relative overflow-x-hidden max-w-full w-full" ref={suggestionsRef}>
                 <label htmlFor="storeName" className="block text-sm font-bold text-gray-700 mb-2">
                   Store Name <span className="text-red-500">*</span>
                   {selectedRetailer && <span className="text-green-600 text-xs ml-2">Selected ✓</span>}
@@ -657,9 +667,9 @@ export default function RegisterRetailer() {
                         initial={{ opacity: 0, height: 0 }}
                         animate={{ opacity: 1, height: "auto" }}
                         exit={{ opacity: 0, height: 0 }}
-                        className="border-t border-gray-200 overflow-hidden max-w-full"
+                        className="border-t border-gray-200 overflow-hidden w-full"
                       >
-                        <div className="max-h-64 overflow-y-auto overflow-x-hidden bg-white max-w-full">
+                        <div className="max-h-64 overflow-y-auto overflow-x-hidden bg-white w-full">
                           {storeSuggestions.length > 0 ? (
                             <>
                               {storeSuggestions.map((store, idx) => {
@@ -667,22 +677,22 @@ export default function RegisterRetailer() {
                                 return (
                                   <div
                                     key={store.id}
-                                    className={`w-full max-w-full text-left px-4 py-3 border-b border-gray-100 last:border-b-0 transition-all ${
+                                    className={`w-full text-left px-4 py-3 border-b border-gray-100 last:border-b-0 transition-all overflow-hidden ${
                                       isTaken
                                         ? 'bg-gray-50 cursor-not-allowed opacity-60'
                                         : 'hover:bg-gradient-to-r hover:from-blue-50 hover:to-purple-50 cursor-pointer'
                                     }`}
                                   >
                                     {isTaken ? (
-                                      <div className="flex items-start gap-3 max-w-full">
+                                      <div className="flex items-start gap-3 w-full overflow-hidden">
                                         <div className="w-8 h-8 rounded-full bg-gray-300 flex items-center justify-center flex-shrink-0 mt-0.5">
                                           <span className="text-gray-600 text-xs font-bold">{store.name.charAt(0)}</span>
                                         </div>
-                                        <div className="flex-1 min-w-0">
-                                          <div className="font-bold text-gray-500 truncate">
+                                        <div className="flex-1 min-w-0 overflow-hidden">
+                                          <div className="font-bold text-gray-500 truncate overflow-hidden text-ellipsis whitespace-nowrap">
                                             {store.name}
                                           </div>
-                                          <div className="text-xs text-gray-400 truncate">
+                                          <div className="text-xs text-gray-400 truncate overflow-hidden text-ellipsis whitespace-nowrap">
                                             {store.address || store.location || 'Address not listed'}
                                           </div>
                                           <div className="flex items-center gap-2 mt-2">
@@ -704,16 +714,16 @@ export default function RegisterRetailer() {
                                       <button
                                         type="button"
                                         onClick={() => handleSelectRetailer(store)}
-                                        className="w-full max-w-full"
+                                        className="w-full overflow-hidden block"
                                       >
-                                        <div className="flex items-start gap-3 max-w-full">
+                                        <div className="flex items-start gap-3 w-full overflow-hidden">
                                           <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#ff7a4a] to-[#ff6fb3] flex items-center justify-center flex-shrink-0 mt-0.5">
                                             <span className="text-white text-xs font-bold">{store.name.charAt(0)}</span>
                                           </div>
-                                          <div className="flex-1 min-w-0">
-                                            <div className="font-bold text-gray-900 group-hover:text-[#ff6fb3] transition-colors truncate">{store.name}</div>
-                                            <div className="text-xs text-gray-600 truncate">{store.address || store.location || 'Address not listed'}</div>
-                                            {store.email && <div className="text-xs text-gray-500 truncate">{store.email}</div>}
+                                          <div className="flex-1 min-w-0 overflow-hidden">
+                                            <div className="font-bold text-gray-900 group-hover:text-[#ff6fb3] transition-colors truncate overflow-hidden text-ellipsis whitespace-nowrap">{store.name}</div>
+                                            <div className="text-xs text-gray-600 truncate overflow-hidden text-ellipsis whitespace-nowrap">{store.address || store.location || 'Address not listed'}</div>
+                                            {store.email && <div className="text-xs text-gray-500 truncate overflow-hidden text-ellipsis whitespace-nowrap">{store.email}</div>}
                                           </div>
                                           <svg className="w-5 h-5 text-gray-400 group-hover:text-[#ff6fb3] transition-colors flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
@@ -935,9 +945,9 @@ export default function RegisterRetailer() {
                           </button>
                         </div>
 
-                        <div className="space-y-4">
+                        <div className="space-y-4 overflow-x-hidden max-w-full">
                           {/* Store Name Search - Same as Main Field */}
-                          <div className="relative">
+                          <div className="relative overflow-x-hidden max-w-full w-full">
                             <label className="block text-sm font-bold text-gray-700 mb-2">
                               Store Name <span className="text-red-500">*</span>
                               {store.selectedRetailer && <span className="text-green-600 text-xs ml-2">Selected ✓</span>}
@@ -945,7 +955,7 @@ export default function RegisterRetailer() {
 
                             {/* Unified Search Container */}
                             <div className={[
-                              "border-2 transition-all overflow-hidden bg-white max-w-full",
+                              "border-2 transition-all overflow-hidden bg-white w-full",
                               store.showSuggestions && store.storeQuery.length >= 1
                                 ? "border-gray-300 rounded-2xl shadow-lg"
                                 : "border-gray-200 rounded-2xl hover:border-gray-300 focus-within:border-blue-500 focus-within:ring-2 focus-within:ring-blue-500/20"
@@ -973,9 +983,9 @@ export default function RegisterRetailer() {
                                   initial={{ opacity: 0, height: 0 }}
                                   animate={{ opacity: 1, height: "auto" }}
                                   exit={{ opacity: 0, height: 0 }}
-                                  className="border-t border-gray-200 overflow-hidden max-w-full"
+                                  className="border-t border-gray-200 overflow-hidden w-full"
                                 >
-                                  <div className="max-h-64 overflow-y-auto overflow-x-hidden bg-white max-w-full">
+                                  <div className="max-h-64 overflow-y-auto overflow-x-hidden bg-white w-full">
                                     {store.storeSuggestions.length > 0 ? (
                                       <>
                                         {store.storeSuggestions.map((retailer) => {
@@ -983,22 +993,22 @@ export default function RegisterRetailer() {
                                           return (
                                             <div
                                               key={retailer.id}
-                                              className={`w-full max-w-full text-left px-4 py-3 border-b border-gray-100 last:border-b-0 transition-all ${
+                                              className={`w-full text-left px-4 py-3 border-b border-gray-100 last:border-b-0 transition-all overflow-hidden ${
                                                 isTaken
                                                   ? 'bg-gray-50 cursor-not-allowed opacity-60'
                                                   : 'hover:bg-gradient-to-r hover:from-blue-50 hover:to-purple-50 cursor-pointer'
                                               }`}
                                             >
                                               {isTaken ? (
-                                                <div className="flex items-start gap-3 max-w-full">
+                                                <div className="flex items-start gap-3 w-full overflow-hidden">
                                                   <div className="w-8 h-8 rounded-full bg-gray-300 flex items-center justify-center flex-shrink-0 mt-0.5">
                                                     <span className="text-gray-600 text-xs font-bold">{retailer.name.charAt(0)}</span>
                                                   </div>
-                                                  <div className="flex-1 min-w-0">
-                                                    <div className="font-bold text-gray-500 truncate">
+                                                  <div className="flex-1 min-w-0 overflow-hidden">
+                                                    <div className="font-bold text-gray-500 truncate overflow-hidden text-ellipsis whitespace-nowrap">
                                                       {retailer.name}
                                                     </div>
-                                                    <div className="text-xs text-gray-400 truncate">
+                                                    <div className="text-xs text-gray-400 truncate overflow-hidden text-ellipsis whitespace-nowrap">
                                                       {retailer.address || retailer.location || 'Address not listed'}
                                                     </div>
                                                     <div className="flex items-center gap-2 mt-2">
@@ -1020,16 +1030,16 @@ export default function RegisterRetailer() {
                                                 <button
                                                   type="button"
                                                   onClick={() => handleSelectAdditionalRetailer(store.id, retailer)}
-                                                  className="w-full max-w-full"
+                                                  className="w-full overflow-hidden block"
                                                 >
-                                                  <div className="flex items-start gap-3 max-w-full">
+                                                  <div className="flex items-start gap-3 w-full overflow-hidden">
                                                     <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#ff7a4a] to-[#ff6fb3] flex items-center justify-center flex-shrink-0 mt-0.5">
                                                       <span className="text-white text-xs font-bold">{retailer.name.charAt(0)}</span>
                                                     </div>
-                                                    <div className="flex-1 min-w-0">
-                                                      <div className="font-bold text-gray-900 group-hover:text-[#ff6fb3] transition-colors truncate">{retailer.name}</div>
-                                                      <div className="text-xs text-gray-600 truncate">{retailer.address || retailer.location || 'Address not listed'}</div>
-                                                      {retailer.email && <div className="text-xs text-gray-500 truncate">{retailer.email}</div>}
+                                                    <div className="flex-1 min-w-0 overflow-hidden">
+                                                      <div className="font-bold text-gray-900 group-hover:text-[#ff6fb3] transition-colors truncate overflow-hidden text-ellipsis whitespace-nowrap">{retailer.name}</div>
+                                                      <div className="text-xs text-gray-600 truncate overflow-hidden text-ellipsis whitespace-nowrap">{retailer.address || retailer.location || 'Address not listed'}</div>
+                                                      {retailer.email && <div className="text-xs text-gray-500 truncate overflow-hidden text-ellipsis whitespace-nowrap">{retailer.email}</div>}
                                                     </div>
                                                     <svg className="w-5 h-5 text-gray-400 group-hover:text-[#ff6fb3] transition-colors flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
@@ -1199,5 +1209,6 @@ export default function RegisterRetailer() {
         </motion.div>
       </div>
     </div>
+    </>
   );
 }
