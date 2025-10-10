@@ -266,7 +266,7 @@ export default function AboutPawpaya() {
               <motion.button
                 whileHover={{ y: -2 }}
                 whileTap={{ scale: 0.98 }}
-                className="bg-white px-10 md:px-12 py-4 md:py-5 rounded-2xl md:rounded-3xl text-lg md:text-xl font-black transition-all shadow-2xl"
+                className="bg-white px-10 md:px-12 py-4 md:py-5 rounded-2xl md:rounded-3xl text-lg md:text-xl font-black transition-all shadow-2xl whitespace-nowrap"
                 style={{ color: '#FF8FCF' }}
               >
                 See What We're Offering →

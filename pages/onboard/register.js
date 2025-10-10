@@ -528,9 +528,9 @@ export default function RegisterRetailer() {
                 transition={{ duration: 0.5, delay: 0.3 }}
                 className="text-4xl md:text-5xl lg:text-6xl font-black text-gray-900 leading-tight"
               >
-                Start Earning Passive Income{' '}
+                Claim Your{' '}
                 <span style={{ background: 'linear-gradient(to right, #FFA08A, #FF8FCF)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
-                  With Zero Inventory
+                  Display
                 </span>
               </motion.h1>
               <motion.p
@@ -602,19 +602,18 @@ export default function RegisterRetailer() {
                 style={{ background: 'linear-gradient(to right, #FFA08A, #FF8FCF)', color: 'white' }}
               >
                 <span>🎉</span>
-                <span>Final Step — Claim Your Display</span>
+                <span>Final Step</span>
               </motion.div>
 
               <h1 className="text-3xl sm:text-4xl font-black text-gray-900 leading-tight mb-4">
-                Start Earning Passive Income{' '}
+                Claim Your{' '}
                 <span style={{ background: 'linear-gradient(to right, #FFA08A, #FF8FCF)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
-                  With Zero Inventory
+                  Display
                 </span>
               </h1>
 
               <p className="text-base text-gray-700 font-medium leading-relaxed mb-8">
-                Complete the form to get your free Pawpaya display shipped within 5-7 days.
-                Every customer tap earns you money—automatically.
+
               </p>
             </div>
 
@@ -677,7 +676,7 @@ export default function RegisterRetailer() {
                         exit={{ opacity: 0, height: 0 }}
                         className="border-t border-gray-200 overflow-hidden w-full"
                       >
-                        <div className="max-h-64 overflow-y-hidden overflow-x-hidden bg-white w-full">
+                        <div className="max-h-64 overflow-y-auto overflow-x-hidden bg-white w-full" style={{ WebkitOverflowScrolling: 'touch' }}>
                           {storeSuggestions.length > 0 ? (
                             <>
                               {storeSuggestions.map((store, idx) => {
@@ -993,7 +992,7 @@ export default function RegisterRetailer() {
                                   exit={{ opacity: 0, height: 0 }}
                                   className="border-t border-gray-200 overflow-hidden w-full"
                                 >
-                                  <div className="max-h-64 overflow-y-hidden overflow-x-hidden bg-white w-full">
+                                  <div className="max-h-64 overflow-y-auto overflow-x-hidden bg-white w-full" style={{ WebkitOverflowScrolling: 'touch' }}>
                                     {store.storeSuggestions.length > 0 ? (
                                       <>
                                         {store.storeSuggestions.map((retailer) => {
