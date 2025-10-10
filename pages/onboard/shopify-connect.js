@@ -128,15 +128,15 @@ export default function ShopifyConnect() {
                 </li>
                 <li className="flex items-start gap-3">
                   <span className="font-bold text-xl flex-shrink-0" style={{ color: '#FF8FCF' }}>✓</span>
+                  <span>5 items sold in Novemeber is literally nothing. Many people have multiple dogs.</span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <span className="font-bold text-xl flex-shrink-0" style={{ color: '#FF8FCF' }}>✓</span>
                   <span>Start earning extra profit sooner</span>
                 </li>
                 <li className="flex items-start gap-3">
                   <span className="font-bold text-xl flex-shrink-0" style={{ color: '#FF8FCF' }}>✓</span>
                   <span>Be among the first stores to secure this product</span>
-                </li>
-                <li className="flex items-start gap-3">
-                  <span className="font-bold text-xl flex-shrink-0" style={{ color: '#FF8FCF' }}>✓</span>
-                  <span>5 items sold in Novemeber is literally nothing. Many people have multiple dogs.</span>
                 </li>
               </ul>
             </div>

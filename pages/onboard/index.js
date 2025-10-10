@@ -261,8 +261,7 @@ export default function OnboardIndex() {
                   For Managers
                 </h2>
                 <p className="text-base md:text-lg text-gray-700 mb-5 md:mb-6 leading-relaxed flex-grow">
-                  Love this idea? Share it with your owner using the button above.
-                  When they approve, you'll be the hero who brought in passive revenue.
+                  Are you interested? Share it with the store owner using the button below!
                 </p>
                 <button
                   onClick={handleManagerShare}
@@ -279,8 +278,8 @@ export default function OnboardIndex() {
                   For Owners
                 </h2>
                 <p className="text-base md:text-lg mb-5 md:mb-6 leading-relaxed text-gray-700 flex-grow">
-                  Ready to add a new revenue stream with zero upfront cost?
-                  Register now and we'll ship your free display within 5-7 days.
+                  Ready to add a new profit stream with zero cost?
+                  Register now and bring somthing new to your customers!
                 </p>
                 <Link href="/onboard/register">
                   <button
