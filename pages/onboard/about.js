@@ -120,10 +120,10 @@ export default function AboutPawpaya() {
             </h2>
 
             {/* Two Column Layout on Desktop */}
-            <div className="grid md:grid-cols-[2.25fr_1fr] gap-8 items-center max-w-6xl mx-auto">
-              <div className="bg-white rounded-3xl p-7 md:p-10 shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_1px_-0.5px_rgba(0,0,0,0.06),0px_3px_3px_-1.5px_rgba(0,0,0,0.06),0px_6px_6px_-3px_rgba(0,0,0,0.06),0px_12px_12px_-6px_rgba(0,0,0,0.06),0px_24px_24px_-12px_rgba(0,0,0,0.06)]">
+            <div className="flex flex-col md:grid md:grid-cols-[2.25fr_1fr] gap-8 items-center max-w-6xl mx-auto">
+              <div className="order-2 md:order-none bg-white rounded-3xl p-7 md:p-10 shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_1px_-0.5px_rgba(0,0,0,0.06),0px_3px_3px_-1.5px_rgba(0,0,0,0.06),0px_6px_6px_-3px_rgba(0,0,0,0.06),0px_12px_12px_-6px_rgba(0,0,0,0.06),0px_24px_24px_-12px_rgba(0,0,0,0.06)]">
                 <p className="text-xl md:text-2xl text-gray-600 text-left leading-relaxed">
-                  Pawpaya helps stores earn extra revenue with free displays featuring our friendship collar & bracelet sets. Each has tap-to-buy tech, earning your store automatic commission—simple, modern, and risk-free.
+                  Pawpaya helps stores earn extra revenue with free displays featuring our friendship collars & bracelet sets. Each has tap-to-buy tech, earning your store automatic commission. simple, modern, and risk-free.
                 </p>
               </div>
 
@@ -133,7 +133,7 @@ export default function AboutPawpaya() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.6 }}
-                className="pointer-events-none md:pointer-events-auto"
+                className="order-1 md:order-none pointer-events-none md:pointer-events-auto"
               >
                 <motion.div
                   whileHover={{ scale: 1.5 }}
@@ -150,58 +150,61 @@ export default function AboutPawpaya() {
             </div>
           </div>
 
-          <div className="grid md:grid-cols-2 gap-8 md:gap-12">
-            {/* Left: What You Get */}
-            <div className="bg-gradient-to-br from-gray-50 to-white border-2 border-gray-200 rounded-3xl p-8 md:p-10">
-              <h3 className="text-2xl md:text-3xl font-black text-gray-900 mb-6">Who We Are</h3>
-              <div className="space-y-5">
-                {[
-                  { icon: '🐾', title: 'Pawpaya Pet Collars', desc: 'Adorable, high-quality pet collars crafted to make tails wag and customers smile' },
-                  { icon: '🚀', title: 'Nationwide Rollout', desc: '700+ orders, $30k rev, We are rolling out to local pet shops and Pet Supplies Plus stores through innovative display tech' },
-                  { icon: '✨', title: 'Built on Joy', desc: 'Designed to spread happiness and strengthen the pet-parent bond' }
-                ].map((item, idx) => (
-                  <div key={idx} className="flex gap-4 items-start">
-                    <div className="text-3xl flex-shrink-0">{item.icon}</div>
-                    <div>
-                      <div className="font-bold text-gray-900 text-lg mb-1">{item.title}</div>
-                      <div className="text-gray-600 leading-relaxed">{item.desc}</div>
+          {/* Wrapper for mobile reordering */}
+          <div className="flex flex-col gap-8 md:gap-0">
+            {/* Grid wrapper - uses contents on mobile to allow flex ordering, grid on desktop */}
+            <div className="contents md:grid md:grid-cols-2 md:gap-8 md:gap-12">
+              {/* Left: What You Get */}
+              <div className="order-1 bg-gradient-to-br from-gray-50 to-white border-2 border-gray-200 rounded-3xl p-8 md:p-10">
+                <h3 className="text-2xl md:text-3xl font-black text-gray-900 mb-6">Who We Are</h3>
+                <div className="space-y-5">
+                  {[
+                    { icon: '🐾', title: 'Pawpaya Pet Collars', desc: 'Adorable, high-quality matching collar + bracelet sets and DIY kits for customers to craft' },
+                    { icon: '🚀', title: 'Nationwide Rollout', desc: '700+ orders, $30k rev, We are rolling out to local pet shops and Pet Supplies Plus stores through innovative display tech' },
+                    { icon: '✨', title: 'Built on Joy', desc: 'Designed to spread happiness and strengthen the pet-parent bond' }
+                  ].map((item, idx) => (
+                    <div key={idx} className="flex gap-4 items-start">
+                      <div className="text-3xl flex-shrink-0">{item.icon}</div>
+                      <div>
+                        <div className="font-bold text-gray-900 text-lg mb-1">{item.title}</div>
+                        <div className="text-gray-600 leading-relaxed">{item.desc}</div>
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  ))}
+                </div>
+              </div>
+
+              {/* Right: How It Works - order-3 on mobile (after photo grid) */}
+              <div className="order-3 md:order-none bg-gradient-to-br from-gray-50 to-white border-2 border-gray-200 rounded-3xl p-8 md:p-10">
+                <h3 className="text-2xl md:text-3xl font-black text-gray-900 mb-6">What We Offer</h3>
+                <div className="space-y-6">
+                  {[
+                    { step: '1', title: 'NFC Tap Displays', desc: 'Beautiful displays featuring our Friendship Collars. Customers tap their phone to browse and buy' },
+                    { step: '2', title: 'Zero Inventory Risk', desc: 'Sample display collars for customers to see and touch. Orders ship from us. You never handle inventory' },
+                    { step: '3', title: 'Earn Per Sale', desc: 'Earn 30% commission on every Pawpaya product ordered from your display completely automatic' }
+                  ].map((item, idx) => (
+                    <div key={idx} className="flex gap-4 items-start">
+                      <div className="w-10 h-10 flex-shrink-0 rounded-full bg-gradient-to-br from-[#FFA08A] to-[#FF8FCF] flex items-center justify-center text-white font-black text-lg shadow-lg">
+                        {item.step}
+                      </div>
+                      <div className="flex-1">
+                        <div className="font-black text-gray-900 text-lg mb-1">{item.title}</div>
+                        <div className="text-gray-700 leading-relaxed">{item.desc}</div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
 
-            {/* Right: How It Works */}
-            <div className="bg-gradient-to-br from-gray-50 to-white border-2 border-gray-200 rounded-3xl p-8 md:p-10">
-              <h3 className="text-2xl md:text-3xl font-black text-gray-900 mb-6">What We Offer</h3>
-              <div className="space-y-6">
-                {[
-                  { step: '1', title: 'NFC Tap Displays', desc: 'Beautiful displays featuring our Friendship Collars. Customers tap their phone to browse and buy' },
-                  { step: '2', title: 'Zero Inventory Risk', desc: 'Sample display collars for customers to see and touch. Orders ship from us. You never handle inventory' },
-                  { step: '3', title: 'Earn Per Sale', desc: 'Earn 30% commission on every Pawpaya product ordered from your display completely automatic' }
-                ].map((item, idx) => (
-                  <div key={idx} className="flex gap-4 items-start">
-                    <div className="w-10 h-10 flex-shrink-0 rounded-full bg-gradient-to-br from-[#FFA08A] to-[#FF8FCF] flex items-center justify-center text-white font-black text-lg shadow-lg">
-                      {item.step}
-                    </div>
-                    <div className="flex-1">
-                      <div className="font-black text-gray-900 text-lg mb-1">{item.title}</div>
-                      <div className="text-gray-700 leading-relaxed">{item.desc}</div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-
-          {/* Photo Grid */}
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-            className="mt-12 md:mt-16 mb-12 md:mb-16"
-          >
+            {/* Photo Grid - order-2 on mobile (between Who We Are and What We Offer) */}
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6 }}
+              className="order-2 md:order-none mt-0 md:mt-16 mb-0 md:mb-16"
+            >
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
               {[
                 'iap_640x640.7007939477_lvhsoby5_800x800.webp',
@@ -230,6 +233,7 @@ export default function AboutPawpaya() {
               ))}
             </div>
           </motion.div>
+          </div>
 
           {/* Bottom Trust Bar */}
           <motion.div

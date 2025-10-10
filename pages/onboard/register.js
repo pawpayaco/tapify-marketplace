@@ -490,11 +490,11 @@ export default function RegisterRetailer() {
           overflow-x: hidden !important;
         }
       `}</style>
-    <div className="min-h-screen bg-white pt-28 md:pt-36 pb-16 overflow-x-hidden max-w-full w-full" style={{ position: 'relative' }}>
+    <div className="min-h-screen bg-white pt-28 md:pt-36 pb-16 overflow-x-hidden max-w-full w-full">
 
       {/* Desktop: Two-column layout, Mobile: Single column */}
       <div className="max-w-[1600px] mx-auto px-4 sm:px-10 lg:px-12 pb-12 overflow-x-hidden">
-        <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-start overflow-x-hidden">
+        <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 lg:items-start overflow-x-hidden">
           {/* LEFT COLUMN - Info (Sticky on desktop) */}
           <motion.div
             initial={{ opacity: 0 }}
@@ -582,7 +582,8 @@ export default function RegisterRetailer() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.4 }}
-            className="bg-white rounded-3xl shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_1px_-0.5px_rgba(0,0,0,0.06),0px_3px_3px_-1.5px_rgba(0,0,0,0.06),0px_6px_6px_-3px_rgba(0,0,0,0.06),0px_12px_12px_-6px_rgba(0,0,0,0.06),0px_24px_24px_-12px_rgba(0,0,0,0.06)] p-8 lg:p-10 border border-transparent order-1 lg:order-2 overflow-x-hidden max-w-full"
+            className="bg-white rounded-3xl shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_1px_-0.5px_rgba(0,0,0,0.06),0px_3px_3px_-1.5px_rgba(0,0,0,0.06),0px_6px_6px_-3px_rgba(0,0,0,0.06),0px_12px_12px_-6px_rgba(0,0,0,0.06),0px_24px_24px_-12px_rgba(0,0,0,0.06)] p-8 lg:p-10 border border-transparent order-1 lg:order-2 w-full"
+            style={{ height: 'auto', minHeight: 'unset' }}
           >
             {/* Mobile Hero Header - Only visible on mobile */}
             <div className="lg:hidden mb-8 text-center">
@@ -620,10 +621,11 @@ export default function RegisterRetailer() {
               variants={staggerContainer}
               initial="hidden"
               animate="visible"
-              className="space-y-5 overflow-x-hidden max-w-full"
+              className="space-y-5 w-full"
+              style={{ height: 'auto' }}
             >
               {/* Store Name with Autocomplete */}
-              <motion.div variants={fadeInUp} className="relative overflow-x-hidden max-w-full w-full" ref={suggestionsRef}>
+              <motion.div variants={fadeInUp} className="relative w-full" ref={suggestionsRef}>
                 <label htmlFor="storeName" className="block text-sm font-bold text-gray-700 mb-2">
                   Store Name <span className="text-red-500">*</span>
                   {selectedRetailer && <span className="text-green-600 text-xs ml-2">Selected ✓</span>}
@@ -662,10 +664,11 @@ export default function RegisterRetailer() {
                         left: 0,
                         right: 0,
                         maxHeight: 'none',
-                        overflow: 'visible'
+                        overflow: 'visible',
+                        touchAction: 'auto'
                       }}
                     >
-                      <div style={{ overflow: 'visible', touchAction: 'none' }}>
+                      <div style={{ overflow: 'visible' }}>
                         {storeSuggestions.length > 0 ? (
                           <>
                             {storeSuggestions.slice(0, 3).map((store, idx) => {
@@ -940,9 +943,9 @@ export default function RegisterRetailer() {
                           </button>
                         </div>
 
-                        <div className="space-y-4 overflow-x-hidden max-w-full">
+                        <div className="space-y-4 w-full">
                           {/* Store Name Search - Same as Main Field */}
-                          <div className="relative overflow-x-hidden max-w-full w-full">
+                          <div className="relative w-full">
                             <label className="block text-sm font-bold text-gray-700 mb-2">
                               Store Name <span className="text-red-500">*</span>
                               {store.selectedRetailer && <span className="text-green-600 text-xs ml-2">Selected ✓</span>}
@@ -975,10 +978,11 @@ export default function RegisterRetailer() {
                                     left: 0,
                                     right: 0,
                                     maxHeight: 'none',
-                                    overflow: 'visible'
+                                    overflow: 'visible',
+                                    touchAction: 'auto'
                                   }}
                                 >
-                                  <div style={{ overflow: 'visible', touchAction: 'none' }}>
+                                  <div style={{ overflow: 'visible' }}>
                                     {store.storeSuggestions.length > 0 ? (
                                       <>
                                         {store.storeSuggestions.slice(0, 3).map((retailer) => {
