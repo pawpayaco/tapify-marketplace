@@ -227,12 +227,15 @@ export default async function handler(req, res) {
       return sum + (Number.isFinite(value) ? value : 0);
     }, 0);
 
+    const payoutAmount = totalSent || job.total_amount || job.vendor_cut + job.retailer_cut + (job.sourcer_cut ?? 0);
+
     const { error: payoutInsertError } = await supabaseAdmin.from('payouts').insert({
       payout_job_id: job.id,
       retailer_id: job.retailer_id,
       vendor_id: job.vendor_id,
       sourcer_id: job.sourcer_id ?? null,
-      total_amount: totalSent || job.total_amount || job.vendor_cut + job.retailer_cut + (job.sourcer_cut ?? 0),
+      amount: payoutAmount,
+      total_amount: payoutAmount,
       transfer_summary: transferSummaries,
       status: 'sent',
       triggered_by: adminUser?.id ?? null,
