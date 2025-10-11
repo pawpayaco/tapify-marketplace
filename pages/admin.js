@@ -5,6 +5,7 @@ import { createServerClient } from '@supabase/ssr';
 import { supabase, supabaseAdmin } from "../lib/supabase";
 import { formatMoney } from "../utils/formatMoney";
 import { triggerPayout } from "../services/dwolla";
+import CommissionSettingsModal from "../components/CommissionSettingsModal";
 
 const TABS = ["Vendors", "Retailers", "Stores", "Payouts", "Analytics", "Sourcers", "UIDs"];
 
@@ -285,6 +286,9 @@ export default function Admin({
   const [payoutFilter, setPayoutFilter] = useState('pending');
   const [processingPayouts, setProcessingPayouts] = useState(new Set());
   const [toast, setToast] = useState(null);
+  const [commissionModalOpen, setCommissionModalOpen] = useState(false);
+  const [selectedVendor, setSelectedVendor] = useState(null);
+  const [vendors, setVendors] = useState(initialVendors);
 
   // Handle client-side mounting to prevent hydration mismatch
   useEffect(() => {
@@ -399,12 +403,12 @@ export default function Admin({
   // Process individual payout
   const handleProcessPayout = async (jobId) => {
     setProcessingPayouts(prev => new Set([...prev, jobId]));
-    
+
     try {
       await triggerPayout(jobId);
 
-      setPayoutJobs(prev => 
-        prev.map(job => 
+      setPayoutJobs(prev =>
+        prev.map(job =>
           job.id === jobId ? { ...job, status: 'paid' } : job
         ).filter(job => payoutFilter === 'paid' ? true : job.id !== jobId)
       );
@@ -422,7 +426,25 @@ export default function Admin({
     }
   };
 
-  const vendors = useMemo(() => initialVendors, [initialVendors]);
+  // Handle commission settings modal
+  const handleOpenCommissionModal = (vendor) => {
+    setSelectedVendor(vendor);
+    setCommissionModalOpen(true);
+  };
+
+  const handleCloseCommissionModal = () => {
+    setCommissionModalOpen(false);
+    setSelectedVendor(null);
+  };
+
+  const handleSaveCommission = (updatedVendor) => {
+    // Update the vendor in the local state
+    setVendors(prev =>
+      prev.map(v => v.id === updatedVendor.id ? updatedVendor : v)
+    );
+    showToast('Commission settings updated successfully!', 'success');
+  };
+
   const retailers = useMemo(() => initialRetailers, [initialRetailers]);
   const sourcers = useMemo(() => initialSourcers, [initialSourcers]);
   const uids = useMemo(() => initialUids, [initialUids]);
@@ -847,7 +869,7 @@ export default function Admin({
                       </span>
                     )}
                   </div>
-                  <div className="flex gap-2">
+                  <div className="flex gap-2 mb-3">
                     <motion.a
                       href={`/vendor/${v.id}`}
                       whileHover={{ scale: 1.05 }}
@@ -865,6 +887,14 @@ export default function Admin({
                       Retailers
                     </motion.a>
                   </div>
+                  <motion.button
+                    onClick={() => handleOpenCommissionModal(v)}
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    className="w-full text-center rounded-2xl border-2 border-purple-200 bg-gradient-to-r from-purple-50 to-pink-50 px-4 py-2.5 text-sm font-bold text-purple-700 hover:border-purple-300 hover:shadow-md transition-all"
+                  >
+                    ⚙️ Commission Settings
+                  </motion.button>
                 </motion.article>
               ))}
             </motion.div>
@@ -1344,8 +1374,8 @@ export default function Admin({
         >
           <div className={[
             "rounded-2xl px-6 py-4 shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_1px_-0.5px_rgba(0,0,0,0.06),0px_3px_3px_-1.5px_rgba(0,0,0,0.06),0px_6px_6px_-3px_rgba(0,0,0,0.06),0px_12px_12px_-6px_rgba(0,0,0,0.06),0px_24px_24px_-12px_rgba(0,0,0,0.06)] border-2 flex items-center gap-3 min-w-[300px]",
-            toast.type === 'success' 
-              ? "bg-gradient-to-r from-green-400 to-emerald-500 border-green-300 text-white" 
+            toast.type === 'success'
+              ? "bg-gradient-to-r from-green-400 to-emerald-500 border-green-300 text-white"
               : "bg-gradient-to-r from-red-400 to-rose-500 border-red-300 text-white"
           ].join(" ")}>
             {toast.type === 'success' ? (
@@ -1361,6 +1391,14 @@ export default function Admin({
           </div>
         </motion.div>
       )}
+
+      {/* Commission Settings Modal */}
+      <CommissionSettingsModal
+        vendor={selectedVendor}
+        isOpen={commissionModalOpen}
+        onClose={handleCloseCommissionModal}
+        onSave={handleSaveCommission}
+      />
     </div>
   );
 }

@@ -66,6 +66,7 @@ async function createPayoutJob(orderId, retailerId, vendorId, total, sourceUid, 
     return null;
   }
 
+  // Fetch retailer to check for sourcer
   const { data: retailer } = await supabaseAdmin
     .from('retailers')
     .select('recruited_by_sourcer_id')
@@ -74,21 +75,34 @@ async function createPayoutJob(orderId, retailerId, vendorId, total, sourceUid, 
 
   const sourcerId = retailer?.recruited_by_sourcer_id ?? null;
 
-  // Phase 1 (No Sourcer): Retailer 20%, Vendor 80%
-  // Phase 2 (With Sourcer): Retailer 20%, Vendor 60%, Sourcer 10%, Tapify 10%
-  const retailerCut = Number((total * 0.2).toFixed(2));
+  // Fetch vendor commission settings (configurable percentages)
+  const { data: vendor } = await supabaseAdmin
+    .from('vendors')
+    .select('retailer_commission_percent, sourcer_commission_percent, tapify_commission_percent, vendor_commission_percent')
+    .eq('id', vendorId)
+    .maybeSingle();
 
-  const vendorCut = sourcerId
-    ? Number((total * 0.60).toFixed(2))  // Phase 2: 60%
-    : Number((total - retailerCut).toFixed(2));  // Phase 1: 80%
+  // Use configured percentages or fall back to defaults
+  // Default Phase 1 (No Sourcer): Retailer 20%, Vendor 80%
+  // Default Phase 2 (With Sourcer): Retailer 20%, Vendor 60%, Sourcer 10%, Tapify 10%
+  const retailerPercent = vendor?.retailer_commission_percent ?? 20;
+  const sourcerPercent = vendor?.sourcer_commission_percent ?? (sourcerId ? 10 : 0);
+  const tapifyPercent = vendor?.tapify_commission_percent ?? (sourcerId ? 10 : 0);
+  const vendorPercent = vendor?.vendor_commission_percent ?? (sourcerId ? 60 : 80);
 
-  const sourcerCut = sourcerId
-    ? Number((total * 0.10).toFixed(2))  // Phase 2: 10%
-    : 0;
+  console.log('[shopify-webhook] Commission breakdown:', {
+    retailer: `${retailerPercent}%`,
+    sourcer: `${sourcerPercent}%`,
+    tapify: `${tapifyPercent}%`,
+    vendor: `${vendorPercent}%`,
+    hasSourcer: !!sourcerId
+  });
 
-  const tapifyCut = sourcerId
-    ? Number((total * 0.10).toFixed(2))  // Phase 2: 10%
-    : 0;
+  // Calculate dollar amounts
+  const retailerCut = Number((total * (retailerPercent / 100)).toFixed(2));
+  const sourcerCut = sourcerId ? Number((total * (sourcerPercent / 100)).toFixed(2)) : 0;
+  const tapifyCut = sourcerId ? Number((total * (tapifyPercent / 100)).toFixed(2)) : 0;
+  const vendorCut = Number((total * (vendorPercent / 100)).toFixed(2));
 
   const { data, error } = await supabaseAdmin
     .from('payout_jobs')

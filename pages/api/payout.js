@@ -115,14 +115,16 @@ export default async function handler(req, res) {
     const transfers = [];
     const sourceFundingId = env.DWOLLA_MASTER_FUNDING_SOURCE; // ✅ your business bank funding source
 
+    // ✅ SKIP VENDOR TRANSFER - Vendor cut stays in master account (you keep this!)
+    // Only transfer to external parties (retailers, sourcers)
     if (job.vendor_cut > 0) {
-      const vendorTransfer = await createDwollaTransfer(
-        dwollaToken,
-        sourceFundingId,
-        vendor.dwolla_funding_source_id,
-        job.vendor_cut
-      );
-      transfers.push({ role: 'vendor', response: vendorTransfer });
+      console.log(`[payout] Vendor cut $${job.vendor_cut} retained in master account (no transfer)`);
+      transfers.push({
+        role: 'vendor',
+        amount: job.vendor_cut,
+        status: 'retained_in_master_account',
+        note: 'Vendor portion kept in business account'
+      });
     }
 
     if (retailer?.dwolla_funding_source_id && job.retailer_cut > 0) {
@@ -145,13 +147,29 @@ export default async function handler(req, res) {
       transfers.push({ role: 'sourcer', response: sourcerTransfer });
     }
 
-    const transferSummaries = transfers.map(({ role, response }) => ({
-      role,
-      id: response?.id ?? null,
-      status: response?.status ?? null,
-      href: response?._links?.self?.href ?? null,
-      amount: response?.amount?.value ?? null,
-    }));
+    const transferSummaries = transfers.map((transfer) => {
+      // Handle vendor retention (no Dwolla transfer)
+      if (transfer.role === 'vendor' && transfer.status === 'retained_in_master_account') {
+        return {
+          role: 'vendor',
+          id: null,
+          status: 'retained_in_master_account',
+          href: null,
+          amount: transfer.amount,
+          note: transfer.note
+        };
+      }
+
+      // Handle actual Dwolla transfers (retailer, sourcer)
+      const { role, response } = transfer;
+      return {
+        role,
+        id: response?.id ?? null,
+        status: response?.status ?? null,
+        href: response?._links?.self?.href ?? null,
+        amount: response?.amount?.value ?? null,
+      };
+    });
 
     const totalSent = transferSummaries.reduce((sum, transfer) => {
       const value = parseFloat(transfer.amount ?? '0');
