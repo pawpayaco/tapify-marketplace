@@ -8,7 +8,7 @@ export default function ConnectPage() {
   const [uid, setUid] = useState("");
   const [retailers, setRetailers] = useState([]);
   const [search, setSearch] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [loadingId, setLoadingId] = useState(null); // Track which button is loading by store ID
   const [connectedId, setConnectedId] = useState(null);
   const [error, setError] = useState("");
   const [loadingList, setLoadingList] = useState(false);
@@ -80,7 +80,7 @@ export default function ConnectPage() {
     console.log('[CLAIM] ========== CONNECT FLOW START ==========');
     console.log('[CLAIM] UID:', uid);
     console.log('[CLAIM] Retailer ID:', retailerId);
-    console.log('[CLAIM] Button clicked! Loading state:', loading);
+    console.log('[CLAIM] Button clicked! loadingId:', loadingId);
 
     if (!uid) {
       console.error('[CLAIM] ERROR: No UID in URL');
@@ -88,8 +88,8 @@ export default function ConnectPage() {
       return;
     }
 
-    console.log('[CLAIM] Setting loading to true');
-    setLoading(true);
+    console.log('[CLAIM] Setting loadingId to:', retailerId);
+    setLoadingId(retailerId);
     setError("");
 
     try {
@@ -138,7 +138,7 @@ export default function ConnectPage() {
     } catch (err) {
       console.error('[CLAIM] Exception caught:', err);
       setError(err.message || "Error connecting business.");
-      setLoading(false);
+      setLoadingId(null);
     }
     console.log('[CLAIM] ========== CONNECT FLOW END ==========');
   };
@@ -202,22 +202,22 @@ export default function ConnectPage() {
                   </div>
                   <button
                     type="button"
-                    disabled={loading || connectedId === store.id}
-                    onClick={(e) => {
-                      e.preventDefault();
-                      e.stopPropagation();
+                    disabled={loadingId === store.id || connectedId === store.id}
+                    onClick={() => {
                       console.log('[CLAIM] BUTTON CLICKED!', store.id);
                       handleConnect(store.id);
                     }}
                     className={`px-5 py-2.5 rounded-2xl font-bold text-sm transition-all ${
                       connectedId === store.id
                         ? "bg-gray-200 text-gray-500 cursor-not-allowed"
+                        : loadingId === store.id
+                        ? "bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3] text-white opacity-75 cursor-wait"
                         : "bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3] text-white shadow-lg hover:shadow-xl hover:scale-105 active:scale-95 cursor-pointer"
                     }`}
                   >
-                    {loading && connectedId === store.id ? (
+                    {loadingId === store.id ? (
                       <div className="flex items-center gap-2">
-                        <div className="animate-spin rounded-full h-4 w-4 border border-transparent border-t-transparent"></div>
+                        <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent"></div>
                         Claiming...
                       </div>
                     ) : connectedId === store.id ? (
@@ -258,7 +258,7 @@ export default function ConnectPage() {
             <p><strong>Debug Info:</strong></p>
             <p>UID from URL: {uid}</p>
             <p>Retailers loaded: {retailers.length}</p>
-            <p>Loading: {loading ? 'Yes' : 'No'}</p>
+            <p>Loading ID: {loadingId || 'None'}</p>
             <p>Connected ID: {connectedId || 'None'}</p>
           </div>
         )}
