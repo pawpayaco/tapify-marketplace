@@ -62,40 +62,35 @@ export default function AboutPawpaya() {
             <span className="whitespace-nowrap">Free display • Zero inventory • Auto commissions</span>
           </motion.div>
 
-          <h1 className="text-6xl sm:text-7xl md:text-8xl text-gray-900 mb-8 leading-[1.1] text-center" style={{ fontWeight: 700 }}>
+          <h1 className="text-6xl sm:text-7xl md:text-8xl font-black text-gray-900 mb-6 leading-tight">
             Meet Pawpaya
-            <span className="block mt-3 bg-gradient-to-r from-[#FFA08A] to-[#FF8FCF] bg-clip-text text-transparent">
-              Cute Collars
-              <br />
-              <span className="block text-5xl sm:text-6xl md:text-7xl">+</span>
-              NFC Tech
+            <span className="block mt-2 bg-gradient-to-r from-[#FFA08A] to-[#FF8FCF] bg-clip-text text-transparent">
+              Cute Collars + NFC Tech
             </span>
           </h1>
-
 
           <motion.p
             initial={{ scale: 0.85, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             transition={{ duration: 0.3, delay: 0.12 }}
-            className="text-2xl sm:text-2xl md:text-3xl text-gray-600 max-w-4xl mx-auto leading-relaxed mb-14 font-medium"
+            className="text-xl sm:text-2xl md:text-3xl text-gray-600 max-w-3xl mx-auto leading-relaxed mb-14 font-medium"
           >
-            We're bringing custom<br />collars to your store
+            We're bringing custom collars to your store
           </motion.p>
 
           {/* CTA Buttons */}
-          <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
+          <div className="flex flex-col md:flex-row gap-4 justify-center items-center">
             <Link href="/onboard">
               <button
-                className="px-6 py-4 rounded-2xl text-lg font-black shadow-xl transition-all text-white"
-                style={{ background: 'linear-gradient(to right, #FFA08A, #FF8FCF)', width: '320px', maxWidth: '100%' }}
+                className="bg-gradient-to-r from-[#FFA08A] to-[#FF8FCF] text-white px-8 py-4 rounded-2xl text-lg font-black shadow-lg hover:shadow-xl transition-all hover:scale-105"
               >
                 Learn About Partnership →
               </button>
             </Link>
             <a
               href="#how-it-works"
-              className="px-6 py-4 rounded-2xl text-lg font-black shadow-xl transition-all bg-white inline-block cursor-pointer text-center"
-              style={{ border: '4px solid #FF8FCF', color: '#FF8FCF', width: '320px', maxWidth: '100%' }}
+              className="bg-white border-4 px-8 py-4 rounded-2xl text-lg font-black shadow-lg hover:shadow-xl transition-all hover:scale-105 inline-block cursor-pointer"
+              style={{ borderColor: '#FF8FCF', color: '#FF8FCF' }}
               onClick={(e) => {
                 e.preventDefault();
                 document.getElementById('how-it-works')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
