@@ -7,29 +7,36 @@ export default function AboutPawpaya() {
   const [isCopied, setIsCopied] = useState(false);
 
   const handleManagerShare = async () => {
+    const shareUrl = window.location.origin + '/onboard/about';
+
     try {
-      const shareUrl = window.location.origin + '/onboard/about';
-
-      // Always copy to clipboard first
-      await navigator.clipboard.writeText(shareUrl);
+      // Try to copy to clipboard first
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        await navigator.clipboard.writeText(shareUrl);
+        setIsCopied(true);
+        setTimeout(() => setIsCopied(false), 2000);
+      }
+    } catch (clipboardErr) {
+      console.log('Clipboard write failed:', clipboardErr);
+      // Fallback: still show as copied if we proceed to share
       setIsCopied(true);
+      setTimeout(() => setIsCopied(false), 2000);
+    }
 
-      // Reset copied state after 2 seconds
-      setTimeout(() => {
-        setIsCopied(false);
-      }, 2000);
-
-      // Try to use native share API if available
-      if (navigator.share) {
+    // Try native share API if available (separate from clipboard)
+    if (navigator.share) {
+      try {
         await navigator.share({
           title: 'Pawpaya Display Program',
           text: 'I found this program that\'s completely free to sign up, can you check it out?',
           url: shareUrl
         });
+      } catch (shareErr) {
+        // User cancelled share or share failed - that's ok, link is already copied
+        if (shareErr.name !== 'AbortError') {
+          console.log('Share failed:', shareErr);
+        }
       }
-    } catch (err) {
-      console.error('Share error:', err);
-      // Link is already copied, so no need to show error
     }
   };
 

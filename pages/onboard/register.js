@@ -46,6 +46,41 @@ export default function RegisterRetailer() {
   const [additionalStores, setAdditionalStores] = useState([]);
   const [lastAddedStoreId, setLastAddedStoreId] = useState(null);
   const storeRefs = useRef({});
+  const [isCopied, setIsCopied] = useState(false);
+
+  const handleManagerShare = async () => {
+    const shareUrl = window.location.origin + '/onboard/about';
+
+    try {
+      // Try to copy to clipboard first
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        await navigator.clipboard.writeText(shareUrl);
+        setIsCopied(true);
+        setTimeout(() => setIsCopied(false), 2000);
+      }
+    } catch (clipboardErr) {
+      console.log('Clipboard write failed:', clipboardErr);
+      // Fallback: still show as copied if we proceed to share
+      setIsCopied(true);
+      setTimeout(() => setIsCopied(false), 2000);
+    }
+
+    // Try native share API if available (separate from clipboard)
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: 'Pawpaya Display Program',
+          text: 'I found this program that\'s completely free to sign up, can you check it out?',
+          url: shareUrl
+        });
+      } catch (shareErr) {
+        // User cancelled share or share failed - that's ok, link is already copied
+        if (shareErr.name !== 'AbortError') {
+          console.log('Share failed:', shareErr);
+        }
+      }
+    }
+  };
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -574,11 +609,32 @@ export default function RegisterRetailer() {
               </div>
             </motion.div>
 
+            {/* Manager Referral Card */}
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.9 }}
+              className="bg-white rounded-3xl p-5 md:p-6 shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_1px_-0.5px_rgba(0,0,0,0.06),0px_3px_3px_-1.5px_rgba(0,0,0,0.06),0px_6px_6px_-3px_rgba(0,0,0,0.06),0px_12px_12px_-6px_rgba(0,0,0,0.06),0px_24px_24px_-12px_rgba(0,0,0,0.06)] border border-transparent"
+            >
+              <h3 className="text-xl font-black text-gray-900 mb-3">Managers</h3>
+              <p className="text-gray-600 mb-4 leading-relaxed">
+                Think your store would benefit from this? Help the owner discover this opportunity by sharing with them.
+              </p>
+              <button
+                onClick={handleManagerShare}
+                type="button"
+                className="w-full px-6 py-3 rounded-xl font-bold shadow-lg transition-all bg-white border-2"
+                style={{ borderColor: '#ff6fb3', color: '#ff6fb3' }}
+              >
+                {isCopied ? 'Copied! ✓' : 'Share With Owner'}
+              </button>
+            </motion.div>
+
             {/* Questions Contact Card */}
             <motion.div
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.95 }}
+              transition={{ duration: 0.6, delay: 1.0 }}
               className="bg-white rounded-3xl p-5 md:p-6 shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_1px_-0.5px_rgba(0,0,0,0.06),0px_3px_3px_-1.5px_rgba(0,0,0,0.06),0px_6px_6px_-3px_rgba(0,0,0,0.06),0px_12px_12px_-6px_rgba(0,0,0,0.06),0px_24px_24px_-12px_rgba(0,0,0,0.06)] border border-transparent text-center"
             >
               <h3 className="text-xl font-black text-gray-900 mb-3">Questions?</h3>

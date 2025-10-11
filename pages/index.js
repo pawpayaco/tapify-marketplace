@@ -110,6 +110,7 @@ const roadmap = [
 
 export default function Home() {
   const [copiedEmail, setCopiedEmail] = useState(false);
+  const [isCopied, setIsCopied] = useState(false);
 
   const handleCopyEmail = async () => {
     try {
@@ -118,6 +119,40 @@ export default function Home() {
       setTimeout(() => setCopiedEmail(false), 2000);
     } catch (err) {
       console.error('Failed to copy email:', err);
+    }
+  };
+
+  const handleManagerShare = async () => {
+    const shareUrl = window.location.origin + '/onboard/about';
+
+    try {
+      // Try to copy to clipboard first
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        await navigator.clipboard.writeText(shareUrl);
+        setIsCopied(true);
+        setTimeout(() => setIsCopied(false), 2000);
+      }
+    } catch (clipboardErr) {
+      console.log('Clipboard write failed:', clipboardErr);
+      // Fallback: still show as copied if we proceed to share
+      setIsCopied(true);
+      setTimeout(() => setIsCopied(false), 2000);
+    }
+
+    // Try native share API if available (separate from clipboard)
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: 'Pawpaya Display Program',
+          text: 'I found this program that\'s completely free to sign up, can you check it out?',
+          url: shareUrl
+        });
+      } catch (shareErr) {
+        // User cancelled share or share failed - that's ok, link is already copied
+        if (shareErr.name !== 'AbortError') {
+          console.log('Share failed:', shareErr);
+        }
+      }
     }
   };
 
@@ -175,6 +210,33 @@ export default function Home() {
               </div>
             </div>
           </div>
+        </div>
+      </section>
+
+      {/* Manager Referral Card */}
+      <section className="pb-8 sm:pb-12 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-4xl mx-auto">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            className="bg-white rounded-3xl p-5 md:p-6 shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_1px_-0.5px_rgba(0,0,0,0.06),0px_3px_3px_-1.5px_rgba(0,0,0,0.06),0px_6px_6px_-3px_rgba(0,0,0,0.06),0px_12px_12px_-6px_rgba(0,0,0,0.06),0px_24px_24px_-12px_rgba(0,0,0,0.06)] border border-transparent text-center"
+          >
+            <h3 className="text-xl font-black text-gray-900 mb-3">Managers</h3>
+            <p className="text-gray-600 mb-4 leading-relaxed">
+              Think your store would benefit from this? Help the owner discover this opportunity by sharing with them.
+            </p>
+            <motion.button
+              onClick={handleManagerShare}
+              type="button"
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              className="w-full sm:w-auto px-6 py-3 rounded-xl font-bold shadow-lg transition-all bg-white border-2"
+              style={{ borderColor: '#ff6fb3', color: '#ff6fb3' }}
+            >
+              {isCopied ? 'Copied! ✓' : 'Share With Owner'}
+            </motion.button>
+          </motion.div>
         </div>
       </section>
 
@@ -257,22 +319,16 @@ export default function Home() {
             <p className="text-lg sm:text-xl md:text-2xl text-gray-700 leading-relaxed mb-6 px-2">
               If the display isn't working out how you would like, then simply throw it away.
             </p>
-              <div className="flex flex-col sm:flex-row gap-3 md:gap-4 justify-center">
+              <div className="flex justify-center">
                 <Link href="/onboard/about">
                 <motion.span
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
-                  className="inline-flex items-center justify-center bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3] text-white px-6 md:px-8 py-3 rounded-2xl font-bold text-base md:text-lg shadow-xl hover:shadow-2xl transition-all w-full sm:w-auto"
+                  className="inline-flex items-center justify-center bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3] text-white px-6 md:px-8 py-3 rounded-2xl font-bold text-base md:text-lg shadow-xl hover:shadow-2xl transition-all"
                 >
                   Get Your Display →
                 </motion.span>
               </Link>
-              <a
-                href="mailto:oscar@tapify.com?subject=Pawpaya%20Display%20Feedback"
-                className="inline-flex items-center justify-center bg-white text-gray-800 px-6 md:px-8 py-3 rounded-2xl font-bold text-base md:text-lg shadow-lg hover:shadow-xl transition-all border-2 border-gray-200 hover:border-[#ff6fb3] w-full sm:w-auto"
-              >
-                Share Feedback
-              </a>
             </div>
           </motion.div>
         </div>
@@ -296,7 +352,7 @@ export default function Home() {
             </p>
           </motion.div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
             {journey.map((step, index) => (
               <motion.div
                 key={step.title}
