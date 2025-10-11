@@ -258,8 +258,8 @@ export default async function handler(req, res) {
 
         const { data: emailRetailer, error: emailError } = await supabaseAdmin
           .from('retailers')
-          .select('id, business_id, name')
-          .eq('email', customerEmail)
+          .select('id, business_id, name, email')
+          .ilike('email', customerEmail)  // Case-insensitive match
           .maybeSingle();
 
         if (emailError) {
@@ -268,6 +268,7 @@ export default async function handler(req, res) {
           retailerId = emailRetailer.id;
           businessId = emailRetailer.business_id ?? null;
           console.log('[shopify-webhook] ✅ Retailer found by email:', emailRetailer.name, '(ID:', retailerId, ')');
+          console.log('[shopify-webhook] Email match - Shopify:', customerEmail, '→ Database:', emailRetailer.email);
         } else {
           console.log('[shopify-webhook] No retailer found with email:', customerEmail);
         }
