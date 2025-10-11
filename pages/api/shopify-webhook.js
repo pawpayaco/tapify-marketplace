@@ -249,6 +249,31 @@ export default async function handler(req, res) {
       console.log('[shopify-webhook] No UID provided in order note_attributes');
     }
 
+    // ✅ NEW: Fallback to email-based retailer lookup for Priority Display purchases
+    // This allows customers who register and then purchase directly on Shopify (without UID) to still get credited
+    if (!retailerId) {
+      const customerEmail = order.email ?? order.customer?.email;
+      if (customerEmail) {
+        console.log('[shopify-webhook] No retailer from UID, trying email lookup:', customerEmail);
+
+        const { data: emailRetailer, error: emailError } = await supabaseAdmin
+          .from('retailers')
+          .select('id, business_id, name')
+          .eq('email', customerEmail)
+          .maybeSingle();
+
+        if (emailError) {
+          console.error('[shopify-webhook] Error looking up retailer by email:', emailError.message);
+        } else if (emailRetailer) {
+          retailerId = emailRetailer.id;
+          businessId = emailRetailer.business_id ?? null;
+          console.log('[shopify-webhook] ✅ Retailer found by email:', emailRetailer.name, '(ID:', retailerId, ')');
+        } else {
+          console.log('[shopify-webhook] No retailer found with email:', customerEmail);
+        }
+      }
+    }
+
     const pawpayaVendorId = await ensurePawpayaVendor();
 
     // Detect Priority Display product

@@ -65,17 +65,29 @@ Automatically updates retailer dashboard when they purchase the $50 Priority Dis
 - **Price**: $50.00
 - **Product URL**: `https://pawpayaco.com/products/display-setup-for-affiliate`
 
-#### 2. Configure Webhook
+#### 2. Configure Webhook in Shopify
 **Shopify Admin → Settings → Notifications → Webhooks**
 - Event: `Order creation`
 - Format: `JSON`
-- URL: `https://yourdomain.com/api/shopify-webhook`
+- URL: `https://tapify-marketplace.vercel.app/api/shopify-webhook`
 
-#### 3. Add Secret to Environment
+#### 3. Add Secret to Vercel (CRITICAL!)
+**⚠️ IMPORTANT**: If your webhook URL points to Vercel production, you MUST add the secret to Vercel's dashboard, not just `.env.local`!
+
+**For Production (Vercel)**:
+1. Go to https://vercel.com/dashboard
+2. Open your project → Settings → Environment Variables
+3. Add: `SHOPIFY_WEBHOOK_SECRET` = `your_secret_from_shopify`
+4. Check all environments (Production, Preview, Development)
+5. Save and redeploy
+
+**For Local Testing Only**:
 ```bash
-# .env.local
+# .env.local (only works for localhost)
 SHOPIFY_WEBHOOK_SECRET=your_secret_from_shopify
 ```
+
+📖 **See `VERCEL_WEBHOOK_SETUP.md` for detailed instructions**
 
 ### Dashboard Display States
 
@@ -166,15 +178,26 @@ SHOPIFY_WEBHOOK_SECRET=your_secret_from_shopify
 - **Fix**: Hard refresh (Cmd+Shift+R)
 
 ### Issue: Purchase not updating dashboard
-- **Check 1**: Does Shopify email match `retailers.email`?
-- **Check 2**: Does product title include "Priority Display"?
-- **Check 3**: Is webhook configured correctly?
-- **Check 4**: Is `SHOPIFY_WEBHOOK_SECRET` set?
-- **Fix**: See `SHOPIFY_WEBHOOK_SETUP.md` for detailed troubleshooting
+
+**Most Common Cause**: Webhook secret not in Vercel!
+
+**Quick Fix**:
+1. Go to Vercel Dashboard → Your Project → Settings → Environment Variables
+2. Add `SHOPIFY_WEBHOOK_SECRET` with your webhook secret
+3. Redeploy
+
+**Other Checks**:
+- **Check 1**: Is `SHOPIFY_WEBHOOK_SECRET` in **Vercel** (not just `.env.local`)?
+- **Check 2**: Does Shopify email match `retailers.email`?
+- **Check 3**: Does product title include "Priority Display"?
+- **Check 4**: Is webhook configured correctly?
+- **Check 5**: Are you checking `priority_display_active` column (not `express_shipping`)?
+
+📖 **See `VERCEL_WEBHOOK_SETUP.md` for step-by-step fix**
 
 ### Issue: Webhook failing
 - **Check**: Shopify Admin → Webhooks → Recent deliveries
-- **Error 401**: HMAC verification failed - check secret
+- **Error 401**: HMAC verification failed - secret not in Vercel or wrong
 - **Error 500**: Check application logs
 
 ---
@@ -214,13 +237,15 @@ WHERE email = 'customer@email.com';
 ✅ Email-based matching - automatic retailer identification
 
 ### What You Need To Do
-1. **Apply SQL migration** for `displays_ordered` column
-2. **Configure Shopify webhook** (if not already done)
-3. **Add webhook secret** to environment variables
-4. **Test both features** using checklist above
-5. **Ensure product title** includes "Priority Display"
+1. **Apply SQL migration** for `displays_ordered` column (Supabase SQL Editor)
+2. **Configure Shopify webhook** (if not already done) ✅ You did this
+3. **⚠️ CRITICAL: Add webhook secret to Vercel** - See `VERCEL_WEBHOOK_SETUP.md`
+4. **Redeploy your Vercel app** after adding secret
+5. **Test both features** using checklist above
+6. **Ensure product title** includes "Priority Display" ✅ You did this
 
 ### Key Files
+- `VERCEL_WEBHOOK_SETUP.md` - **START HERE** - Fix webhook secret issue
 - `ORDER_DISPLAY_SETUP.md` - Detailed guide for Order Display feature
 - `SHOPIFY_WEBHOOK_SETUP.md` - Detailed guide for webhook integration
 - `pages/api/shopify-webhook.js` - Webhook handler (already existed)
