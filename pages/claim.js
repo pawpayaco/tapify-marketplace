@@ -14,20 +14,16 @@ export default function ClaimPage() {
     // Get UID from URL
     const params = new URLSearchParams(window.location.search);
     const u = params.get("u");
-    console.log('[CLAIM] Page loaded, UID from URL:', u);
     if (u) setUid(u);
 
     // Fetch retailers
     const fetchRetailers = async () => {
       try {
-        console.log('[CLAIM] Fetching retailers...');
         const response = await fetch('/api/retailers/ready-for-claim');
         const data = await response.json();
-        console.log('[CLAIM] Retailers loaded:', data.results?.length || 0);
         setRetailers(data.results || []);
       } catch (err) {
-        console.error('[CLAIM] Failed to load retailers:', err);
-        setError('Could not load stores.');
+        setError('Could not load stores. Please try again.');
       }
     };
 
@@ -35,68 +31,40 @@ export default function ClaimPage() {
   }, []);
 
   const handleClaim = async (retailerId) => {
-    console.log('🚀 [CLAIM] ========== CLAIM BUTTON CLICKED! ==========');
-    console.log('🚀 [CLAIM] Timestamp:', new Date().toISOString());
-    console.log('🚀 [CLAIM] UID:', uid);
-    console.log('🚀 [CLAIM] Retailer ID:', retailerId);
-    console.log('🚀 [CLAIM] Current loadingId:', loadingId);
-
     if (!uid) {
-      console.error('❌ [CLAIM] ERROR: No UID in URL');
       setError("No UID in URL. Please scan your NFC tag again.");
       return;
     }
 
-    console.log('⏳ [CLAIM] Setting loadingId to:', retailerId);
     setLoadingId(retailerId);
     setError("");
 
     try {
-      const requestBody = { uid, retailerId };
-      console.log('📤 [CLAIM] Sending request to /api/claim-display');
-      console.log('📤 [CLAIM] Request body:', JSON.stringify(requestBody, null, 2));
-
       const response = await fetch('/api/claim-display', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(requestBody),
+        body: JSON.stringify({ uid, retailerId }),
       });
 
-      console.log('📥 [CLAIM] Response status:', response.status);
-      console.log('📥 [CLAIM] Response headers:', Object.fromEntries(response.headers.entries()));
-
       const result = await response.json();
-      console.log('📥 [CLAIM] Response body:', JSON.stringify(result, null, 2));
 
       if (response.status === 409) {
-        console.warn('⚠️  [CLAIM] UID already claimed!');
-        setError(`This UID is already claimed. Please use a different UID.`);
+        setError(`This display is already claimed. Please contact support if you believe this is an error.`);
         setLoadingId(null);
         return;
       }
 
       if (!response.ok) {
-        console.error('❌ [CLAIM] Request failed with status:', response.status);
         throw new Error(result.error || 'Failed to claim display');
       }
 
-      // SUCCESS!
-      console.log('✅ [CLAIM] SUCCESS! Display claimed successfully!');
-      console.log('✅ [CLAIM] Affiliate URL:', result.affiliate_url);
-      console.log('✅ [CLAIM] Retailer:', result.retailer_name);
-      console.log('🔄 [CLAIM] Redirecting to /claimed...');
-
-      // Immediate redirect
+      // Success! Redirect to success page
       router.push('/claimed');
 
     } catch (err) {
-      console.error('💥 [CLAIM] Exception caught:', err);
-      console.error('💥 [CLAIM] Error message:', err.message);
-      console.error('💥 [CLAIM] Error stack:', err.stack);
-      setError(err.message || "Error claiming display.");
+      setError(err.message || "Error claiming display. Please try again.");
       setLoadingId(null);
     }
-    console.log('🏁 [CLAIM] ========== CLAIM FLOW COMPLETE ==========');
   };
 
   // Filter retailers based on search
@@ -111,96 +79,136 @@ export default function ClaimPage() {
   });
 
   return (
-    <div className="min-h-screen bg-white pt-32 pb-16">
-      <div className="max-w-2xl mx-auto px-6">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 py-12 sm:py-20">
 
         {/* Header */}
-        <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-gray-900 mb-3">
+        <div className="text-center mb-12">
+          <div className="inline-block p-3 bg-gradient-to-r from-blue-500 to-purple-600 rounded-2xl mb-4">
+            <svg className="w-12 h-12 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 11c0 3.517-1.009 6.799-2.753 9.571m-3.44-2.04l.054-.09A13.916 13.916 0 008 11a4 4 0 118 0c0 1.017-.07 2.019-.203 3m-2.118 6.844A21.88 21.88 0 0015.171 17m3.839 1.132c.645-2.266.99-4.659.99-7.132A8 8 0 008 4.07M3 15.364c.64-1.319 1-2.8 1-4.364 0-1.457.39-2.823 1.07-4" />
+            </svg>
+          </div>
+          <h1 className="text-4xl sm:text-5xl font-bold text-gray-900 mb-4">
             Claim Your Display
           </h1>
-          <p className="text-lg text-gray-600">
-            Select your business below to start earning commissions
+          <p className="text-lg sm:text-xl text-gray-600 max-w-2xl mx-auto">
+            Select your business below to activate your NFC display and start earning commissions
           </p>
         </div>
 
         {/* Search */}
-        <input
-          type="text"
-          placeholder="Search for your business..."
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          className="w-full px-4 py-3 mb-6 rounded-xl border-2 border-gray-300 focus:border-blue-500 outline-none transition-colors"
-        />
-
-        {/* Debug Info */}
-        {uid && (
-          <div className="mb-6 p-4 bg-blue-50 border-2 border-blue-400 rounded-lg text-sm space-y-1">
-            <p className="font-bold text-lg">🔍 Debug Info:</p>
-            <p>✅ UID: <span className="font-mono font-bold">{uid}</span></p>
-            <p>✅ Stores loaded: <span className="font-bold">{retailers.length}</span></p>
-            <p>✅ Filtered stores: <span className="font-bold">{filteredRetailers.length}</span></p>
-            <p>⏳ Loading ID: <span className="font-bold">{loadingId || 'None'}</span></p>
-            <p className="text-xs text-gray-600 mt-2">
-              Open browser console (F12) to see detailed logs when you click a button
-            </p>
+        <div className="mb-8">
+          <div className="relative">
+            <input
+              type="text"
+              placeholder="Search for your business..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="w-full px-6 py-4 pl-14 text-lg rounded-2xl border-2 border-gray-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-100 outline-none transition-all shadow-sm"
+            />
+            <svg className="absolute left-5 top-1/2 -translate-y-1/2 w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
           </div>
-        )}
+        </div>
 
         {/* Error */}
         {error && (
-          <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg text-red-700">
-            {error}
+          <div className="mb-8 p-4 bg-red-50 border-2 border-red-200 rounded-2xl">
+            <div className="flex items-start gap-3">
+              <svg className="w-6 h-6 text-red-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              <p className="text-red-700 font-medium">{error}</p>
+            </div>
           </div>
         )}
 
         {/* Retailers List */}
-        <div className="space-y-3">
-          {filteredRetailers.length === 0 && (
-            <div className="p-8 text-center text-gray-500 bg-gray-50 rounded-lg">
-              No stores found
+        <div className="space-y-4">
+          {filteredRetailers.length === 0 && !error && (
+            <div className="p-12 text-center bg-white border-2 border-gray-200 rounded-2xl shadow-sm">
+              <div className="inline-block p-4 bg-gray-100 rounded-full mb-4">
+                <svg className="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                </svg>
+              </div>
+              <p className="text-xl text-gray-500 font-medium">No stores found</p>
+              <p className="text-sm text-gray-400 mt-2">Try adjusting your search</p>
             </div>
           )}
 
           {filteredRetailers.map((store) => (
             <div
               key={store.id}
-              className="flex items-center justify-between p-4 bg-white border-2 border-gray-200 rounded-xl hover:border-blue-400 transition-colors"
+              className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 p-6 bg-white border-2 border-gray-200 rounded-2xl hover:border-blue-400 hover:shadow-lg transition-all"
             >
-              <div className="flex-1">
-                <h3 className="font-bold text-lg text-gray-900">{store.name}</h3>
-                {store.address && (
-                  <p className="text-sm text-gray-600">{store.address}</p>
-                )}
+              <div className="flex items-start gap-4 flex-1">
+                <div className="flex-shrink-0 w-12 h-12 bg-gradient-to-br from-blue-100 to-purple-100 rounded-xl flex items-center justify-center">
+                  <svg className="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                  </svg>
+                </div>
+                <div className="flex-1 min-w-0">
+                  <h3 className="font-bold text-xl text-gray-900 mb-1">{store.name}</h3>
+                  {store.address && (
+                    <p className="text-sm text-gray-600 flex items-center gap-1">
+                      <svg className="w-4 h-4 text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                      </svg>
+                      {store.address}
+                    </p>
+                  )}
+                </div>
               </div>
 
               <button
-                onClick={(e) => {
-                  console.log('🖱️  [CLAIM] BUTTON CLICK EVENT FIRED!', {
-                    storeId: store.id,
-                    storeName: store.name,
-                    event: e.type,
-                    timestamp: new Date().toISOString()
-                  });
-                  handleClaim(store.id);
-                }}
-                onMouseDown={() => console.log('👆 [CLAIM] Mouse down on button:', store.id)}
-                onMouseUp={() => console.log('👆 [CLAIM] Mouse up on button:', store.id)}
+                onClick={() => handleClaim(store.id)}
                 disabled={loadingId === store.id}
                 className={`
-                  px-6 py-3 rounded-xl font-bold text-white transition-all
+                  w-full sm:w-auto px-8 py-3 rounded-xl font-bold text-white transition-all shadow-md
                   ${loadingId === store.id
                     ? 'bg-gray-400 cursor-wait'
-                    : 'bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 active:scale-95'
+                    : 'bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 hover:shadow-xl hover:scale-105 active:scale-95'
                   }
                 `}
-                style={{ pointerEvents: 'auto', touchAction: 'manipulation' }}
               >
-                {loadingId === store.id ? '⏳ Claiming...' : 'Claim Display'}
+                {loadingId === store.id ? (
+                  <span className="flex items-center justify-center gap-2">
+                    <svg className="animate-spin h-5 w-5" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    Claiming...
+                  </span>
+                ) : (
+                  'Claim Display'
+                )}
               </button>
             </div>
           ))}
         </div>
+
+        {/* Info Footer */}
+        {filteredRetailers.length > 0 && (
+          <div className="mt-12 p-6 bg-blue-50 border-2 border-blue-200 rounded-2xl">
+            <div className="flex items-start gap-3">
+              <svg className="w-6 h-6 text-blue-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              <div className="text-sm text-blue-900">
+                <p className="font-bold mb-1">What happens next?</p>
+                <ul className="space-y-1 text-blue-800">
+                  <li>• Your display will be activated and ready to use</li>
+                  <li>• You'll receive a unique affiliate link for your business</li>
+                  <li>• Start earning commissions on every sale through your display</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
