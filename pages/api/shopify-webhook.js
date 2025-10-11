@@ -146,14 +146,20 @@ export default async function handler(req, res) {
     const shopDomain = req.headers['x-shopify-shop-domain'] || null;
 
     // ✅ IMPROVED: Extract UID from multiple sources
-    // Priority: 1) note_attributes, 2) landing_site_ref, 3) landing_site URL, 4) referring_site
+    // Priority: 1) note_attributes, 2) cart attributes, 3) landing_site_ref, 4) landing_site URL, 5) referring_site
     let uid = null;
 
-    // Method 1: Check note_attributes (for theme-based tracking)
+    // Method 1a: Check note_attributes (for theme-based tracking via cart attributes)
     const refAttr = order?.note_attributes?.find?.((attr) => attr?.name === 'ref');
     if (refAttr?.value) {
       uid = refAttr.value;
       console.log('[shopify-webhook] UID extracted from note_attributes:', uid);
+    }
+
+    // Method 1b: Check order.attributes object (alternative format for cart attributes)
+    if (!uid && order?.attributes?.ref) {
+      uid = order.attributes.ref;
+      console.log('[shopify-webhook] UID extracted from order.attributes.ref:', uid);
     }
 
     // Method 2: Check Shopify's landing_site_ref field
@@ -192,7 +198,8 @@ export default async function handler(req, res) {
 
     if (!uid) {
       console.log('[shopify-webhook] No UID found in order - checking all sources:');
-      console.log('  - note_attributes:', order?.note_attributes);
+      console.log('  - note_attributes:', JSON.stringify(order?.note_attributes || []));
+      console.log('  - order.attributes:', JSON.stringify(order?.attributes || {}));
       console.log('  - landing_site_ref:', order?.landing_site_ref);
       console.log('  - landing_site:', order?.landing_site);
       console.log('  - referring_site:', order?.referring_site);
