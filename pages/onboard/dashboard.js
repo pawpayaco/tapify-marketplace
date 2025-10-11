@@ -1506,50 +1506,6 @@ export default function RetailerDashboard() {
                   </div>
                 </motion.div>
 
-                {/* Shipping Preferences */}
-                <motion.div
-                  className="bg-gradient-to-br from-gray-50 to-white border-2 border-gray-200 rounded-2xl p-4 md:p-8 shadow-lg"
-                >
-                  <h4 className="font-bold text-gray-900 text-base md:text-lg mb-4 md:mb-6">Display Shipping Preferences</h4>
-                  <div className="space-y-4">
-                    <div className="bg-blue-50 border-2 border-blue-200 rounded-xl p-4">
-                      <div className="flex items-start gap-3">
-                        <div className="flex-shrink-0 w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center">
-                          <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                          </svg>
-                        </div>
-                        <div className="flex-1">
-                          <div className="flex items-center justify-between mb-2">
-                            <h5 className="font-bold text-gray-900">Express Shipping</h5>
-                            <label className="relative inline-flex items-center cursor-pointer">
-                              <input
-                                type="checkbox"
-                                checked={retailer?.express_shipping || false}
-                                onChange={handleExpressShippingToggle}
-                                className="sr-only peer"
-                              />
-                              <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-[#ff6fb3]/20 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-gradient-to-r peer-checked:from-[#ff7a4a] peer-checked:to-[#ff6fb3]"></div>
-                            </label>
-                          </div>
-                          <p className="text-sm text-gray-600">
-                            Get your new displays delivered faster with priority shipping
-                          </p>
-                          {retailer?.express_shipping ? (
-                            <div className="mt-2 text-xs font-semibold text-green-700">
-                              ✓ Display shipping active — your display will ship priority
-                            </div>
-                          ) : (
-                            <div className="mt-2 text-xs text-gray-500">
-                              Toggle to purchase express shipping for faster delivery
-                            </div>
-                          )}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </motion.div>
-
                 {/* Display Confirmation */}
                 <motion.div
                   className="bg-gradient-to-br from-gray-50 to-white border-2 border-gray-200 rounded-2xl p-4 md:p-8 shadow-lg"
@@ -1602,13 +1558,21 @@ export default function RetailerDashboard() {
                           )}
 
                           {/* Shipping Status */}
-                          <div className="mt-3 p-3 bg-green-50 border-2 border-green-200 rounded-lg">
+                          <div className={`mt-3 p-3 rounded-lg border-2 ${
+                            retailer?.priority_display_active
+                              ? 'bg-gradient-to-r from-purple-50 to-pink-50 border-purple-300'
+                              : 'bg-green-50 border-green-200'
+                          }`}>
                             <div className="flex items-center gap-2">
-                              <span className="text-lg">🚚</span>
+                              <span className="text-lg">{retailer?.priority_display_active ? '⚡' : '🚚'}</span>
                               <div>
-                                <p className="font-bold text-green-900">Shipping Status</p>
-                                <p className="text-xs text-green-700">
-                                  {retailer?.express_shipping ? 'Express shipping enabled - faster delivery' : 'Standard shipping - free delivery'}
+                                <p className={`font-bold ${retailer?.priority_display_active ? 'text-purple-900' : 'text-green-900'}`}>
+                                  {retailer?.priority_display_active ? 'Priority Shipping' : 'Standard Shipping'}
+                                </p>
+                                <p className={`text-xs ${retailer?.priority_display_active ? 'text-purple-700' : 'text-green-700'}`}>
+                                  {retailer?.priority_display_active
+                                    ? 'Your displays ship with priority delivery'
+                                    : 'Free standard delivery (3-5 weeks)'}
                                 </p>
                               </div>
                             </div>
