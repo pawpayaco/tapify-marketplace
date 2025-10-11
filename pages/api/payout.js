@@ -84,28 +84,29 @@ export default async function handler(req, res) {
     }
 
     // 2. Fetch linked accounts w/ funding source IDs
-    const { data: vendor } = await supabaseAdmin
-      .from('vendor_accounts')
-      .select('dwolla_funding_source_id')
-      .eq('vendor_id', job.vendor_id)
-      .single();
-
+    // Note: Vendor bank account NOT required - vendor cut stays in master account
     const { data: retailer } = await supabaseAdmin
       .from('retailer_accounts')
       .select('dwolla_funding_source_id')
       .eq('retailer_id', job.retailer_id)
-      .single();
+      .maybeSingle();
 
     const { data: sourcer } = job.sourcer_id
       ? await supabaseAdmin
           .from('sourcer_accounts')
           .select('dwolla_funding_source_id')
           .eq('id', job.sourcer_id)
-          .single()
+          .maybeSingle()
       : { data: null };
 
-    if (!vendor?.dwolla_funding_source_id) {
-      return res.status(400).json({ error: 'Vendor bank account missing' });
+    // Check if retailer needs payout but doesn't have bank account
+    if (job.retailer_cut > 0 && !retailer?.dwolla_funding_source_id) {
+      return res.status(400).json({ error: 'Retailer bank account missing. Please connect bank account in dashboard.' });
+    }
+
+    // Check if sourcer needs payout but doesn't have bank account
+    if (job.sourcer_cut > 0 && job.sourcer_id && !sourcer?.dwolla_funding_source_id) {
+      return res.status(400).json({ error: 'Sourcer bank account missing' });
     }
 
     // 3. Get Dwolla token
