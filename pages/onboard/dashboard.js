@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { supabase } from '../../lib/supabase';
 import { useAuthContext } from '../../context/AuthContext';
 import Script from 'next/script';
+import OrderDisplayModal from '../../components/OrderDisplayModal';
 
 export default function RetailerDashboard() {
   const router = useRouter();
@@ -27,7 +28,8 @@ export default function RetailerDashboard() {
   const [removingBank, setRemovingBank] = useState(false);
   const [showRemoveConfirm, setShowRemoveConfirm] = useState(false);
   const [plaidScriptLoaded, setPlaidScriptLoaded] = useState(false);
-  
+  const [isOrderModalOpen, setIsOrderModalOpen] = useState(false);
+
   // Data states
   const [retailer, setRetailer] = useState(null);
   const [stats, setStats] = useState({
@@ -1565,11 +1567,11 @@ export default function RetailerDashboard() {
                           <div className="flex items-center justify-between mb-2">
                             <h5 className="font-bold text-gray-900">Displays Owned</h5>
                             <span className="text-2xl font-black bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3] bg-clip-text text-transparent">
-                              {uids.length}
+                              {retailer?.displays_ordered || 1}
                             </span>
                           </div>
                           <p className="text-sm text-gray-600 mb-3">
-                            You have {uids.length} {uids.length === 1 ? 'display' : 'displays'} registered to your store
+                            You have {retailer?.displays_ordered || 1} {(retailer?.displays_ordered || 1) === 1 ? 'display' : 'displays'} registered to your store
                           </p>
 
                           {/* Priority Display Status */}
@@ -1611,6 +1613,19 @@ export default function RetailerDashboard() {
                               </div>
                             </div>
                           </div>
+
+                          {/* Order Another Display Button */}
+                          <motion.button
+                            onClick={() => setIsOrderModalOpen(true)}
+                            whileHover={{ scale: 1.02 }}
+                            whileTap={{ scale: 0.98 }}
+                            className="mt-4 w-full px-6 py-3 bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3] text-white rounded-xl font-bold shadow-lg hover:shadow-xl transition-all flex items-center justify-center gap-2"
+                          >
+                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                            </svg>
+                            Order Another Display
+                          </motion.button>
                         </div>
                       </div>
                     </div>
@@ -1765,6 +1780,20 @@ export default function RetailerDashboard() {
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* Order Display Modal */}
+      <OrderDisplayModal
+        isOpen={isOrderModalOpen}
+        onClose={() => setIsOrderModalOpen(false)}
+        onSuccess={(result) => {
+          setIsOrderModalOpen(false);
+          showToast(`Display ordered successfully! Total displays: ${result.displays_ordered}`, 'success');
+          // Refresh retailer data to update the counter
+          if (retailer) {
+            setRetailer({ ...retailer, displays_ordered: result.displays_ordered });
+          }
+        }}
+      />
     </div>
     </>
   );
