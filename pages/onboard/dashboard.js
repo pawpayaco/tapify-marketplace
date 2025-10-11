@@ -247,15 +247,21 @@ export default function RetailerDashboard() {
 
         setScans(scansData);
 
-        // Get payout jobs for all user's retailers
-        const { data: payoutsData } = await supabase
-          .from('payout_jobs')
-          .select('*')
-          .in('retailer_id', retailerIds)
-          .order('created_at', { ascending: false });
-        
-        setPayoutJobs(payoutsData || []);
-        
+        // Get payout jobs and earnings from API endpoint
+        try {
+          const earningsResponse = await fetch('/api/retailer-earnings');
+          if (earningsResponse.ok) {
+            const earningsData = await earningsResponse.json();
+            setPayoutJobs(earningsData.payouts || []);
+          } else {
+            console.warn('[Dashboard] Failed to fetch earnings data');
+            setPayoutJobs([]);
+          }
+        } catch (earningsError) {
+          console.error('[Dashboard] Error fetching earnings:', earningsError);
+          setPayoutJobs([]);
+        }
+
         // Get retailer account
         const { data: accountData } = await supabase
           .from('retailer_accounts')

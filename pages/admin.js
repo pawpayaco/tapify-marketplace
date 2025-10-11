@@ -6,6 +6,7 @@ import { supabase, supabaseAdmin } from "../lib/supabase";
 import { formatMoney } from "../utils/formatMoney";
 import { triggerPayout } from "../services/dwolla";
 import CommissionSettingsModal from "../components/CommissionSettingsModal";
+import RetailerPayoutRow from "../components/RetailerPayoutRow";
 
 const TABS = ["Vendors", "Retailers", "Stores", "Payouts", "Analytics", "Sourcers", "UIDs"];
 
@@ -289,6 +290,9 @@ export default function Admin({
   const [commissionModalOpen, setCommissionModalOpen] = useState(false);
   const [selectedVendor, setSelectedVendor] = useState(null);
   const [vendors, setVendors] = useState(initialVendors);
+  const [retailerPayouts, setRetailerPayouts] = useState([]);
+  const [loadingRetailerPayouts, setLoadingRetailerPayouts] = useState(false);
+  const [payoutTotals, setPayoutTotals] = useState({ total_pending: 0, total_paid: 0 });
 
   // Handle client-side mounting to prevent hydration mismatch
   useEffect(() => {
@@ -345,41 +349,28 @@ export default function Admin({
     fetchPayouts();
   }, [tab, isAdmin]);
 
-  // Fetch payout jobs when Payouts tab is active
+  // Fetch retailer payouts when Payouts tab is active
   useEffect(() => {
-    const fetchPayoutJobs = async () => {
+    const fetchRetailerPayouts = async () => {
       if (tab === "Payouts" && isAdmin) {
-        if (!supabase) {
-          console.warn('[Admin] Supabase not initialized');
-          setLoadingPayoutJobs(false);
-          return;
-        }
-
-        setLoadingPayoutJobs(true);
+        setLoadingRetailerPayouts(true);
         try {
-          const { data, error } = await supabase
-            .from('payout_jobs')
-            .select(`
-              *,
-              vendors:vendor_id (name, email),
-              retailers:retailer_id (name, location),
-              sourcer_accounts:sourcer_id (name, email)
-            `)
-            .eq('status', payoutFilter)
-            .order('created_at', { ascending: false });
+          const response = await fetch(`/api/admin/retailer-payouts?status=${payoutFilter}`);
+          if (!response.ok) throw new Error('Failed to fetch retailer payouts');
 
-          if (error) throw error;
-          setPayoutJobs(data || []);
+          const data = await response.json();
+          setRetailerPayouts(data.retailers || []);
+          setPayoutTotals(data.totals || { total_pending: 0, total_paid: 0 });
         } catch (error) {
-          console.error('[Admin] Error fetching payout jobs:', error);
-          showToast('Failed to fetch payout jobs', 'error');
+          console.error('[Admin] Error fetching retailer payouts:', error);
+          showToast('Failed to fetch retailer payouts', 'error');
         } finally {
-          setLoadingPayoutJobs(false);
+          setLoadingRetailerPayouts(false);
         }
       }
     };
 
-    fetchPayoutJobs();
+    fetchRetailerPayouts();
   }, [tab, payoutFilter, isAdmin]);
 
   // Toast notification helper
@@ -443,6 +434,56 @@ export default function Admin({
       prev.map(v => v.id === updatedVendor.id ? updatedVendor : v)
     );
     showToast('Commission settings updated successfully!', 'success');
+  };
+
+  // Handle processing all pending payouts for a retailer
+  const handleProcessAllPayouts = async (payouts) => {
+    try {
+      const results = await Promise.all(
+        payouts.map(payout => triggerPayout(payout.id))
+      );
+
+      // Refresh retailer payouts data
+      const response = await fetch(`/api/admin/retailer-payouts?status=${payoutFilter}`);
+      if (response.ok) {
+        const data = await response.json();
+        setRetailerPayouts(data.retailers || []);
+        setPayoutTotals(data.totals || { total_pending: 0, total_paid: 0 });
+      }
+
+      showToast(`Successfully processed ${payouts.length} payout(s)!`, 'success');
+    } catch (error) {
+      console.error('[Admin] Error processing payouts:', error);
+      showToast('Failed to process some payouts', 'error');
+    }
+  };
+
+  // Handle processing single payout
+  const handleProcessSinglePayout = async (jobId) => {
+    setProcessingPayouts(prev => new Set([...prev, jobId]));
+
+    try {
+      await triggerPayout(jobId);
+
+      // Refresh retailer payouts data
+      const response = await fetch(`/api/admin/retailer-payouts?status=${payoutFilter}`);
+      if (response.ok) {
+        const data = await response.json();
+        setRetailerPayouts(data.retailers || []);
+        setPayoutTotals(data.totals || { total_pending: 0, total_paid: 0 });
+      }
+
+      showToast('Payout processed successfully!', 'success');
+    } catch (error) {
+      console.error('[Admin] Error processing payout:', error);
+      showToast(error.message || 'Failed to process payout', 'error');
+    } finally {
+      setProcessingPayouts(prev => {
+        const newSet = new Set(prev);
+        newSet.delete(jobId);
+        return newSet;
+      });
+    }
   };
 
   const retailers = useMemo(() => initialRetailers, [initialRetailers]);
@@ -987,7 +1028,7 @@ export default function Admin({
 
           {tab === "Payouts" && (
             <>
-              <motion.div 
+              <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 className="bg-white rounded-3xl shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_1px_-0.5px_rgba(0,0,0,0.06),0px_3px_3px_-1.5px_rgba(0,0,0,0.06),0px_6px_6px_-3px_rgba(0,0,0,0.06),0px_12px_12px_-6px_rgba(0,0,0,0.06),0px_24px_24px_-12px_rgba(0,0,0,0.06)] border border-transparent p-4 mb-6"
@@ -1027,121 +1068,50 @@ export default function Admin({
                 <div className="p-6 border-b-2 border-gray-100 bg-gradient-to-r from-pink-50 to-purple-50">
                   <div className="flex items-center justify-between">
                     <div>
-                      <h3 className="text-2xl font-bold text-gray-900">Payout Jobs</h3>
+                      <h3 className="text-2xl font-bold text-gray-900">Retailer Payouts</h3>
                       <p className="text-sm text-gray-600 mt-1">
-                        {payoutFilter === 'pending' ? 'Process pending payouts' : 'View payout history'}
+                        {payoutFilter === 'pending' ? 'Process pending payouts by retailer' : 'View payout history by retailer'}
                       </p>
                     </div>
-                    <span className={[
-                      "px-4 py-2 rounded-full text-sm font-bold",
-                      payoutFilter === 'pending' 
-                        ? "bg-yellow-100 text-yellow-700" 
-                        : "bg-green-100 text-green-700"
-                    ].join(" ")}>
-                      {payoutJobs.length} {payoutFilter === 'pending' ? 'Pending' : 'Paid'}
-                    </span>
+                    <div className="text-right">
+                      <div className="text-sm text-gray-600">Total {payoutFilter === 'pending' ? 'Pending' : 'Paid'}</div>
+                      <div className="text-2xl font-bold text-purple-700">
+                        {formatMoney(payoutFilter === 'pending' ? payoutTotals.total_pending : payoutTotals.total_paid)}
+                      </div>
+                    </div>
                   </div>
                 </div>
-                
-                {loadingPayoutJobs ? (
+
+                {loadingRetailerPayouts ? (
                   <div className="p-12 text-center">
                     <div className="animate-spin rounded-full h-12 w-12 border-4 border-[#ff6fb3] border-t-transparent mx-auto mb-4"></div>
-                    <p className="text-gray-600 font-medium">Loading payout jobs...</p>
+                    <p className="text-gray-600 font-medium">Loading retailer payouts...</p>
                   </div>
-                ) : payoutJobs.length === 0 ? (
+                ) : retailerPayouts.length === 0 ? (
                   <div className="p-12 text-center">
                     <div className="w-20 h-20 bg-gradient-to-br from-gray-100 to-gray-200 rounded-full flex items-center justify-center mx-auto mb-4">
                       <svg className="w-10 h-10 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                       </svg>
                     </div>
-                    <p className="text-gray-700 font-bold text-lg">
-                      No {payoutFilter} payout jobs
-                    </p>
+                    <p className="text-gray-700 font-bold text-lg">No {payoutFilter} payouts</p>
                     <p className="text-gray-500 mt-2">
-                      {payoutFilter === 'pending' 
-                        ? 'All payouts have been processed!' 
+                      {payoutFilter === 'pending'
+                        ? 'All payouts have been processed!'
                         : 'Process some payouts to see history here'}
                     </p>
                   </div>
                 ) : (
-                  <div className="overflow-auto">
-                    <table className="w-full text-sm">
-                      <thead>
-                        <tr className="text-left bg-gradient-to-r from-gray-50 to-gray-100">
-                          <Th>Vendor</Th>
-                          <Th>Retailer</Th>
-                          <Th>Sourcer</Th>
-                          <Th>Total</Th>
-                          <Th>Vendor Cut</Th>
-                          <Th>Retailer Cut</Th>
-                          <Th>Sourcer Cut</Th>
-                          <Th>Tapify Cut</Th>
-                          <Th>Date</Th>
-                          {payoutFilter === 'pending' && <Th>Action</Th>}
-                        </tr>
-                      </thead>
-                      <tbody className="divide-y divide-gray-100">
-                        {payoutJobs.map((job) => {
-                          const isProcessing = processingPayouts.has(job.id);
-                          const totalAmount = (job.vendor_cut || 0) + (job.retailer_cut || 0) + (job.sourcer_cut || 0) + (job.tapify_cut || 0);
-                          
-                          return (
-                            <tr key={job.id} className="hover:bg-gray-50 transition-colors">
-                              <Td>
-                                <div>
-                                  <div className="font-bold text-gray-900">{job.vendors?.name || 'N/A'}</div>
-                                  <div className="text-xs text-gray-500">{job.vendors?.email}</div>
-                                </div>
-                              </Td>
-                              <Td>
-                                <div>
-                                  <div className="font-bold text-gray-900">{job.retailers?.name || 'N/A'}</div>
-                                  <div className="text-xs text-gray-500">{job.retailers?.location}</div>
-                                </div>
-                              </Td>
-                              <Td>
-                                <div>
-                                  <div className="font-bold text-gray-900">{job.sourcer_accounts?.name || 'N/A'}</div>
-                                  <div className="text-xs text-gray-500">{job.sourcer_accounts?.email}</div>
-                                </div>
-                              </Td>
-                              <Td><span className="font-bold text-lg text-purple-700">{formatMoney(totalAmount)}</span></Td>
-                              <Td><span className="font-bold text-green-700">{formatMoney(job.vendor_cut || 0)}</span></Td>
-                              <Td><span className="font-bold text-blue-700">{formatMoney(job.retailer_cut || 0)}</span></Td>
-                              <Td><span className="font-bold text-orange-700">{formatMoney(job.sourcer_cut || 0)}</span></Td>
-                              <Td><span className="font-bold text-pink-700">{formatMoney(job.tapify_cut || 0)}</span></Td>
-                              <Td className="text-gray-600">{new Date(job.created_at).toLocaleDateString()}</Td>
-                              {payoutFilter === 'pending' && (
-                                <Td>
-                                  <motion.button
-                                    whileHover={!isProcessing ? { scale: 1.05 } : {}}
-                                    whileTap={!isProcessing ? { scale: 0.95 } : {}}
-                                    onClick={() => handleProcessPayout(job.id)}
-                                    disabled={isProcessing}
-                                    className={[
-                                      "rounded-2xl px-4 py-2 text-xs font-bold transition-all whitespace-nowrap",
-                                      isProcessing
-                                        ? "bg-gray-300 text-gray-500 cursor-not-allowed"
-                                        : "bg-gradient-to-r from-green-400 to-emerald-500 text-white hover:shadow-lg"
-                                    ].join(" ")}
-                                  >
-                                    {isProcessing ? (
-                                      <span className="flex items-center gap-2">
-                                        <div className="animate-spin rounded-full h-3 w-3 border border-transparent border-t-transparent"></div>
-                                        Processing...
-                                      </span>
-                                    ) : (
-                                      '💰 Process Payout'
-                                    )}
-                                  </motion.button>
-                                </Td>
-                              )}
-                            </tr>
-                          );
-                        })}
-                      </tbody>
-                    </table>
+                  <div>
+                    {retailerPayouts.map((retailerData) => (
+                      <RetailerPayoutRow
+                        key={retailerData.retailer.id}
+                        retailerData={retailerData}
+                        onProcessPayout={handleProcessSinglePayout}
+                        onProcessAll={handleProcessAllPayouts}
+                        processingPayouts={processingPayouts}
+                      />
+                    ))}
                   </div>
                 )}
               </div>
