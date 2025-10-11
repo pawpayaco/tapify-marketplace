@@ -118,23 +118,55 @@ export default function RetailerDashboard() {
       try {
         setLoading(true);
 
-        // Get retailer profile using proper user ID foreign key
-        const { data: retailerData, error: retailerError } = await supabase
+        // Get retailer profile - try by user ID first, then by email
+        let { data: retailerData, error: retailerError } = await supabase
           .from('retailers')
           .select('*')
           .eq('created_by_user_id', user.id)
           .maybeSingle();
 
         if (retailerError) {
-          console.error('Error fetching retailer:', retailerError);
+          console.error('Error fetching retailer by user_id:', retailerError);
         }
 
-        // If no retailer found, initialize with empty data (no popup - just continue)
+        // FALLBACK: If no retailer found by user_id, try finding by email
+        // This handles cases where customer claimed UID before creating account
+        if (!retailerData && user.email) {
+          console.log('[Dashboard] No retailer found by user_id, trying email match:', user.email);
+
+          const { data: emailRetailer, error: emailError } = await supabase
+            .from('retailers')
+            .select('*')
+            .eq('email', user.email)
+            .maybeSingle();
+
+          if (emailError) {
+            console.error('Error fetching retailer by email:', emailError);
+          }
+
+          if (emailRetailer) {
+            console.log('[Dashboard] Found retailer by email, linking to user account');
+            retailerData = emailRetailer;
+
+            // Update the retailer to link it to this user account
+            const { error: updateError } = await supabase
+              .from('retailers')
+              .update({ created_by_user_id: user.id })
+              .eq('id', emailRetailer.id);
+
+            if (updateError) {
+              console.error('Error linking retailer to user:', updateError);
+            } else {
+              console.log('[Dashboard] Successfully linked retailer', emailRetailer.id, 'to user', user.id);
+            }
+          }
+        }
+
+        // If still no retailer found, initialize with empty data
         if (!retailerData) {
-          console.warn('No retailer profile found for user:', user.id);
-          // Don't show popup - let them finish onboarding in registration flow
+          console.warn('No retailer profile found for user:', user.id, 'or email:', user.email);
           setLoading(false);
-          
+
           // Initialize with empty weekly data so charts don't break
           setWeeklyData([
             { day: 'Mon', scans: 0, orders: 0, revenue: 0 },
@@ -149,8 +181,18 @@ export default function RetailerDashboard() {
         }
         
         setRetailer(retailerData);
-        
-        // Get UIDs claimed by this retailer with business information
+
+        // Get all retailer IDs that belong to this user (by user_id OR email match)
+        const { data: allUserRetailers } = await supabase
+          .from('retailers')
+          .select('id')
+          .or(`created_by_user_id.eq.${user.id},email.eq.${user.email}`);
+
+        const retailerIds = allUserRetailers?.map(r => r.id) || [retailerData.id];
+
+        console.log('[Dashboard] Fetching UIDs for retailer IDs:', retailerIds);
+
+        // Get UIDs claimed by ANY of this user's retailers
         const { data: uidsData } = await supabase
           .from('uids')
           .select(`
@@ -163,26 +205,40 @@ export default function RetailerDashboard() {
               state
             )
           `)
-          .eq('retailer_id', retailerData.id)
+          .in('retailer_id', retailerIds)
           .limit(100);
 
         setUids(uidsData || []);
 
-        // Get scans data scoped to this retailer
-        const { data: scansData } = await supabase
-          .from('scans')
-          .select('*')
-          .eq('retailer_id', retailerData.id)
-          .order('timestamp', { ascending: false })
-          .limit(100);
+        // Get scans ONLY for UIDs that are claimed and belong to this user
+        // This prevents showing scans from unclaimed or unrelated UIDs
+        const claimedUids = (uidsData || [])
+          .filter(uid => uid.is_claimed)
+          .map(uid => uid.uid);
 
-        setScans(scansData || []);
-        
-        // Get payout jobs
+        console.log('[Dashboard] Fetching scans for claimed UIDs:', claimedUids);
+
+        let scansData = [];
+        if (claimedUids.length > 0) {
+          const { data: scans } = await supabase
+            .from('scans')
+            .select('*')
+            .in('uid', claimedUids)
+            .order('timestamp', { ascending: false })
+            .limit(100);
+
+          scansData = scans || [];
+        } else {
+          console.log('[Dashboard] No claimed UIDs found, skipping scans query');
+        }
+
+        setScans(scansData);
+
+        // Get payout jobs for all user's retailers
         const { data: payoutsData } = await supabase
           .from('payout_jobs')
           .select('*')
-          .eq('retailer_id', retailerData.id)
+          .in('retailer_id', retailerIds)
           .order('created_at', { ascending: false });
         
         setPayoutJobs(payoutsData || []);

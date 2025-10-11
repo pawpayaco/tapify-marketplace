@@ -144,8 +144,59 @@ export default async function handler(req, res) {
 
     const order = JSON.parse(rawBody.toString('utf8'));
     const shopDomain = req.headers['x-shopify-shop-domain'] || null;
+
+    // ✅ IMPROVED: Extract UID from multiple sources
+    // Priority: 1) note_attributes, 2) landing_site_ref, 3) landing_site URL, 4) referring_site
+    let uid = null;
+
+    // Method 1: Check note_attributes (for theme-based tracking)
     const refAttr = order?.note_attributes?.find?.((attr) => attr?.name === 'ref');
-    const uid = refAttr?.value ?? null;
+    if (refAttr?.value) {
+      uid = refAttr.value;
+      console.log('[shopify-webhook] UID extracted from note_attributes:', uid);
+    }
+
+    // Method 2: Check Shopify's landing_site_ref field
+    if (!uid && order?.landing_site_ref) {
+      uid = order.landing_site_ref;
+      console.log('[shopify-webhook] UID extracted from landing_site_ref:', uid);
+    }
+
+    // Method 3: Parse landing_site URL for ref parameter
+    if (!uid && order?.landing_site) {
+      try {
+        const landingUrl = new URL(order.landing_site);
+        const refParam = landingUrl.searchParams.get('ref');
+        if (refParam) {
+          uid = refParam;
+          console.log('[shopify-webhook] UID extracted from landing_site URL:', uid);
+        }
+      } catch (err) {
+        console.warn('[shopify-webhook] Failed to parse landing_site URL:', order.landing_site);
+      }
+    }
+
+    // Method 4: Check referring_site as last resort
+    if (!uid && order?.referring_site) {
+      try {
+        const referringUrl = new URL(order.referring_site);
+        const refParam = referringUrl.searchParams.get('ref');
+        if (refParam) {
+          uid = refParam;
+          console.log('[shopify-webhook] UID extracted from referring_site URL:', uid);
+        }
+      } catch (err) {
+        // Ignore parsing errors for referring_site
+      }
+    }
+
+    if (!uid) {
+      console.log('[shopify-webhook] No UID found in order - checking all sources:');
+      console.log('  - note_attributes:', order?.note_attributes);
+      console.log('  - landing_site_ref:', order?.landing_site_ref);
+      console.log('  - landing_site:', order?.landing_site);
+      console.log('  - referring_site:', order?.referring_site);
+    }
 
     let retailerId = null;
     let businessId = null;

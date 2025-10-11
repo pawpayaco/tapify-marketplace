@@ -11,6 +11,8 @@ export default function ShopifyConnect() {
   const handlePriorityUpgrade = () => {
     // Open Shopify in new tab
     window.open('https://pawpayaco.com/products/display-setup-for-affiliate', '_blank');
+    // Navigate current tab to dashboard
+    router.push('/onboard/dashboard');
   };
 
   const handleSkipToDashboard = async () => {

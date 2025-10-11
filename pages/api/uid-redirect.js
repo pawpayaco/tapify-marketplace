@@ -90,16 +90,30 @@ export default async function handler(req, res) {
 
     const { is_claimed, affiliate_url } = uidRow;
 
+    // Debug logging for redirect decision
+    console.log('[uid-redirect] Redirect decision:', {
+      uid,
+      is_claimed,
+      has_affiliate_url: !!affiliate_url,
+      affiliate_url,
+    });
+
     if (!is_claimed || !affiliate_url) {
+      console.log('[uid-redirect] Redirecting to claim page. Reason:', {
+        not_claimed: !is_claimed,
+        missing_affiliate_url: !affiliate_url,
+      });
       return res.redirect(302, `/claim?u=${uid}`);
     }
 
+    // Valid claim with affiliate URL - redirect to Shopify
     await logEvent('uid-redirect', 'scan_redirect', {
       uid,
       retailer_id: uidRow.retailer_id,
       affiliate_url,
     });
 
+    console.log('[uid-redirect] Redirecting to affiliate URL:', affiliate_url);
     return res.redirect(302, affiliate_url);
   } catch (err) {
     console.error('[uid-redirect] Handler error', err);
