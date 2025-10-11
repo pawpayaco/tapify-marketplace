@@ -358,6 +358,31 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      {/* Questions Card */}
+      <section className="pb-12 md:pb-20 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-4xl mx-auto">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="bg-white rounded-3xl p-5 md:p-6 shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_1px_-0.5px_rgba(0,0,0,0.06),0px_3px_3px_-1.5px_rgba(0,0,0,0.06),0px_6px_6px_-3px_rgba(0,0,0,0.06),0px_12px_12px_-6px_rgba(0,0,0,0.06),0px_24px_24px_-12px_rgba(0,0,0,0.06)] border border-transparent text-center"
+          >
+            <h3 className="text-xl font-black text-gray-900 mb-3">Questions?</h3>
+            <p className="text-gray-600 mb-4 leading-relaxed">
+              Call us now! We're here to help you out.
+            </p>
+            <a
+              href="tel:7159791259"
+              className="inline-block px-6 py-3 rounded-xl font-bold text-white shadow-lg hover:shadow-xl transition-all"
+              style={{ background: 'linear-gradient(to right, #ff7a4a, #ff6fb3)' }}
+            >
+              (715) 979-1259
+            </a>
+          </motion.div>
+        </div>
+      </section>
     </div>
   );
 }

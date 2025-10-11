@@ -115,7 +115,7 @@ export default function ShopifyConnect() {
                 for Just $50
               </h2>
               <p className="text-base md:text-lg text-gray-700 leading-relaxed">
-                Four extra weeks of profit through Black Friday and Q4 — upgrade now and break even after only 5 sales, then it’s pure profit (~$10 per item).
+                November’s a huge revenue month with Black Friday and Q4 — upgrade now to get your display 4 weeks earlier and start earning sooner, breaking even after just 5 sales (~$10 profit each).
               </p>
             </div>
 
@@ -124,19 +124,19 @@ export default function ShopifyConnect() {
               <ul className="space-y-3 text-gray-700 text-sm md:text-base">
                 <li className="flex items-start gap-3">
                   <span className="font-bold text-xl flex-shrink-0" style={{ color: '#ff6fb3' }}>✓</span>
-                  <span>Arrives at the beginning of November (vs. after Black Friday)</span>
+                  <span>Arrives at the start of November (vs. after Black Friday)</span>
                 </li>
                 <li className="flex items-start gap-3">
                   <span className="font-bold text-xl flex-shrink-0" style={{ color: '#ff6fb3' }}>✓</span>
-                  <span>5 items sold in Novemeber is literally nothing. Many people have multiple dogs.</span>
+                  <span>Break even after just 5 sales — many customers buy multiple sets</span>
                 </li>
                 <li className="flex items-start gap-3">
                   <span className="font-bold text-xl flex-shrink-0" style={{ color: '#ff6fb3' }}>✓</span>
-                  <span>Start earning extra profit sooner</span>
+                  <span>Stand out with cuter, higher-quality products than your competitors</span>
                 </li>
                 <li className="flex items-start gap-3">
                   <span className="font-bold text-xl flex-shrink-0" style={{ color: '#ff6fb3' }}>✓</span>
-                  <span>Be among the first stores to secure this product</span>
+                  <span>Be among the first stores to feature this limited display</span>
                 </li>
               </ul>
             </div>
@@ -150,6 +150,60 @@ export default function ShopifyConnect() {
             >
               Upgrade for $50 →
             </motion.button>
+          </motion.div>
+
+          {/* Common Questions Card */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.25 }}
+            className="bg-white border-2 border-gray-200 rounded-3xl p-8 md:p-10 shadow-sm"
+          >
+            <div className="font-bold text-gray-900 mb-6 text-center" style={{ fontSize: '28px', lineHeight: '1.3' }}>
+              Common Questions
+            </div>
+
+            <div className="space-y-6">
+              {/* Question 2 */}
+              <div className="pb-6 border-b border-gray-100">
+                <div className="font-bold text-gray-900 mb-2" style={{ fontSize: '18px', lineHeight: '1.4' }}>
+                  Thinking of waiting until after Black Friday?
+                </div>
+                <p className="text-sm md:text-base text-gray-600 leading-relaxed">
+                  Understandable, the timing feels tricky. But stores that wait will miss out on the biggest traffic of the year. Getting your display 4 weeks earlier lets you ride the full Black Friday wave instead of watching it pass by.
+                </p>
+              </div>
+
+              {/* Question 3 */}
+              <div className="pb-6 border-b border-gray-100">
+                <div className="font-bold text-gray-900 mb-2" style={{ fontSize: '18px', lineHeight: '1.4' }}>
+                  Don't want to spend extra right now?
+                </div>
+                <p className="text-sm md:text-base text-gray-600 leading-relaxed">
+                  Makes sense, budgets are tight. That’s why the upgrade pays for itself after just 5 sales (~$10 per item). You’ll earn it back fast and keep the profit flowing through Q4.
+                </p>
+              </div>
+
+              {/* Question 4 */}
+              <div>
+                <div className="font-bold text-gray-900 mb-2" style={{ fontSize: '18px', lineHeight: '1.4' }}>
+                  Limited on space?
+                </div>
+                <p className="text-sm md:text-base text-gray-600 leading-relaxed">
+                  Our display is designed to fit on any counter, shelf edge, or peg board rack, and makes your store look more premium without taking up space.
+                </p>
+              </div>
+            </div>
+
+            {/* Optional accent bar at bottom */}
+            <div className="mt-8 pt-6 border-t-2 border-transparent">
+              <p className="text-center text-sm text-gray-500">
+                Still have questions?{' '}
+                <a href="tel:7159791259" className="font-bold hover:underline" style={{ color: '#ff6fb3' }}>
+                  Call us at (715) 979-1259
+                </a>
+              </p>
+            </div>
           </motion.div>
 
           {/* RIGHT COLUMN - Skip to Dashboard */}

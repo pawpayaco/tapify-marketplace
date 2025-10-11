@@ -64,6 +64,7 @@ export default function AboutPawpaya() {
 
           <h1 className="text-6xl sm:text-7xl md:text-8xl font-black text-gray-900 mb-6 leading-tight">
             Meet Pawpaya
+            <span className="block w-full bg-transparent" style={{ height: '2px', margin: '16px 0' }}></span>
             <span className="block mt-2 bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3] bg-clip-text text-transparent">
               Cute Collars<br />+<br />NFC Tech
             </span>
@@ -136,7 +137,7 @@ export default function AboutPawpaya() {
             <div className="flex flex-col md:grid md:grid-cols-[2.25fr_1fr] gap-8 items-center max-w-6xl mx-auto">
               <div className="order-2 md:order-none bg-white rounded-3xl p-7 md:p-10 shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_1px_-0.5px_rgba(0,0,0,0.06),0px_3px_3px_-1.5px_rgba(0,0,0,0.06),0px_6px_6px_-3px_rgba(0,0,0,0.06),0px_12px_12px_-6px_rgba(0,0,0,0.06),0px_24px_24px_-12px_rgba(0,0,0,0.06)]">
                 <p className="text-xl md:text-2xl text-gray-600 text-left leading-relaxed">
-                  Pawpaya helps stores earn extra profit by featuring our friendship collars & bracelet sets. The displays include tap-to-buy tech, earning your store automatic commission. simple, modern, and risk-free.
+                  We help stores earn extra profit with free, tap-to-buy displays featuring our friendship collar & bracelet sets. A seamless, and modern way for your store to earn automatic commissions.
                 </p>
               </div>
 
@@ -314,7 +315,7 @@ export default function AboutPawpaya() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
-            className="mb-0 bg-gradient-to-br from-orange-50 to-pink-50 border-2 border-orange-200 rounded-2xl p-6 md:p-8"
+            className="mb-8 md:mb-12 bg-gradient-to-br from-orange-50 to-pink-50 border-2 border-orange-200 rounded-2xl p-6 md:p-8"
           >
             <div className="max-w-4xl mx-auto">
               <p className="text-2xl md:text-3xl mb-3 text-gray-900 text-left" style={{ fontWeight: 600 }}>
@@ -324,6 +325,27 @@ export default function AboutPawpaya() {
                 We handle product creation, fulfillment, customer service, and technology. You provide shelf, rack, or counter space and earn commission on every sale.<br />It's that simple.
               </p>
             </div>
+          </motion.div>
+
+          {/* Questions Card */}
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="mb-0 bg-white rounded-3xl p-5 md:p-6 shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_1px_-0.5px_rgba(0,0,0,0.06),0px_3px_3px_-1.5px_rgba(0,0,0,0.06),0px_6px_6px_-3px_rgba(0,0,0,0.06),0px_12px_12px_-6px_rgba(0,0,0,0.06),0px_24px_24px_-12px_rgba(0,0,0,0.06)] border border-transparent text-center"
+          >
+            <h3 className="text-xl font-black text-gray-900 mb-3">Questions?</h3>
+            <p className="text-gray-600 mb-4 leading-relaxed">
+              Call us now! We're here to help you out.
+            </p>
+            <a
+              href="tel:7159791259"
+              className="inline-block px-6 py-3 rounded-xl font-bold text-white shadow-lg hover:shadow-xl transition-all"
+              style={{ background: 'linear-gradient(to right, #ff7a4a, #ff6fb3)' }}
+            >
+              (715) 979-1259
+            </a>
           </motion.div>
         </motion.section>
       </div>
