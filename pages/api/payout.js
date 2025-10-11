@@ -49,27 +49,41 @@ async function createDwollaTransfer(token, sourceFundingId, destFundingId, amoun
   });
 
   console.log('[Dwolla Transfer] Response status:', res.status);
-  console.log('[Dwolla Transfer] Response headers:', JSON.stringify([...res.headers.entries()]));
 
+  // Dwolla returns 201 with Location header, not a JSON body
+  if (res.status === 201) {
+    const locationHeader = res.headers.get('location');
+    console.log('[Dwolla Transfer] Location header:', locationHeader);
+
+    if (!locationHeader) {
+      throw new Error('Dwolla transfer created but no Location header returned');
+    }
+
+    // Extract transfer ID from Location header
+    // Location format: https://api-sandbox.dwolla.com/transfers/{transfer-id}
+    const transferId = locationHeader.split('/').pop();
+
+    return {
+      id: transferId,
+      status: 'pending',
+      _links: {
+        self: { href: locationHeader }
+      }
+    };
+  }
+
+  // Handle error responses
   const text = await res.text();
   console.log('[Dwolla Transfer] Response body:', text);
 
-  if (!res.ok) {
-    let errorMessage = `Dwolla API error (${res.status})`;
-    try {
-      const json = JSON.parse(text);
-      errorMessage = `Dwolla API error: ${JSON.stringify(json)}`;
-    } catch (e) {
-      errorMessage = `Dwolla API error (${res.status}): ${text}`;
-    }
-    throw new Error(errorMessage);
-  }
-
+  let errorMessage = `Dwolla API error (${res.status})`;
   try {
-    return JSON.parse(text);
+    const json = JSON.parse(text);
+    errorMessage = `Dwolla API error: ${JSON.stringify(json)}`;
   } catch (e) {
-    throw new Error(`Failed to parse Dwolla response: ${text}`);
+    errorMessage = `Dwolla API error (${res.status}): ${text}`;
   }
+  throw new Error(errorMessage);
 }
 
 export default async function handler(req, res) {
