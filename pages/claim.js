@@ -80,12 +80,15 @@ export default function ConnectPage() {
     console.log('[CLAIM] ========== CONNECT FLOW START ==========');
     console.log('[CLAIM] UID:', uid);
     console.log('[CLAIM] Retailer ID:', retailerId);
+    console.log('[CLAIM] Button clicked! Loading state:', loading);
 
     if (!uid) {
       console.error('[CLAIM] ERROR: No UID in URL');
-      setError("No UID detected in URL.");
+      setError("No UID detected in URL. Please scan the NFC tag again.");
       return;
     }
+
+    console.log('[CLAIM] Setting loading to true');
     setLoading(true);
     setError("");
 
@@ -198,12 +201,18 @@ export default function ConnectPage() {
                     </div>
                   </div>
                   <button
+                    type="button"
                     disabled={loading || connectedId === store.id}
-                    onClick={() => handleConnect(store.id)}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      console.log('[CLAIM] BUTTON CLICKED!', store.id);
+                      handleConnect(store.id);
+                    }}
                     className={`px-5 py-2.5 rounded-2xl font-bold text-sm transition-all ${
                       connectedId === store.id
                         ? "bg-gray-200 text-gray-500 cursor-not-allowed"
-                        : "bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3] text-white shadow-lg hover:shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_1px_-0.5px_rgba(0,0,0,0.06),0px_3px_3px_-1.5px_rgba(0,0,0,0.06),0px_6px_6px_-3px_rgba(0,0,0,0.06),0px_12px_12px_-6px_rgba(0,0,0,0.06),0px_24px_24px_-12px_rgba(0,0,0,0.06)] hover:scale-105 active:scale-95"
+                        : "bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3] text-white shadow-lg hover:shadow-xl hover:scale-105 active:scale-95 cursor-pointer"
                     }`}
                   >
                     {loading && connectedId === store.id ? (
@@ -241,6 +250,17 @@ export default function ConnectPage() {
           <p className="mt-6 text-center text-sm text-red-600 font-medium">
             {error}
           </p>
+        )}
+
+        {/* Debug Info */}
+        {uid && (
+          <div className="mt-6 p-4 bg-gray-100 rounded-xl text-xs text-gray-600">
+            <p><strong>Debug Info:</strong></p>
+            <p>UID from URL: {uid}</p>
+            <p>Retailers loaded: {retailers.length}</p>
+            <p>Loading: {loading ? 'Yes' : 'No'}</p>
+            <p>Connected ID: {connectedId || 'None'}</p>
+          </div>
         )}
         </div>
       </div>
