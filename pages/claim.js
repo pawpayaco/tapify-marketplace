@@ -1,267 +1,176 @@
 "use client";
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
-import { motion, AnimatePresence } from "framer-motion";
 
-export default function ConnectPage() {
+export default function ClaimPage() {
   const router = useRouter();
   const [uid, setUid] = useState("");
   const [retailers, setRetailers] = useState([]);
   const [search, setSearch] = useState("");
-  const [loadingId, setLoadingId] = useState(null); // Track which button is loading by store ID
-  const [connectedId, setConnectedId] = useState(null);
+  const [loadingId, setLoadingId] = useState(null);
   const [error, setError] = useState("");
-  const [loadingList, setLoadingList] = useState(false);
-  const [showSuccess, setShowSuccess] = useState(false);
 
   useEffect(() => {
-    // Ensure page loads at top
-    window.scrollTo(0, 0);
-    
-    // Get UID from URL (?u=xxxx)
+    // Get UID from URL
     const params = new URLSearchParams(window.location.search);
     const u = params.get("u");
+    console.log('[CLAIM] Page loaded, UID from URL:', u);
     if (u) setUid(u);
 
+    // Fetch retailers
     const fetchRetailers = async () => {
       try {
-        setLoadingList(true);
-        setError("");
-
+        console.log('[CLAIM] Fetching retailers...');
         const response = await fetch('/api/retailers/ready-for-claim');
-        const payload = await response.json();
-
-        if (!response.ok) {
-          throw new Error(payload?.error || 'Failed to load stores');
-        }
-
-        setRetailers(payload?.results || []);
+        const data = await response.json();
+        console.log('[CLAIM] Retailers loaded:', data.results?.length || 0);
+        setRetailers(data.results || []);
       } catch (err) {
-        console.error('[claim] Failed to load retailers:', err);
-        setError(err.message || 'Could not load stores.');
-      } finally {
-        setLoadingList(false);
+        console.error('[CLAIM] Failed to load retailers:', err);
+        setError('Could not load stores.');
       }
     };
 
     fetchRetailers();
   }, []);
 
-  const filteredRetailers = useMemo(() => {
-    const term = search.trim().toLowerCase();
-    if (!term) return retailers;
-
-    return retailers.filter(retailer => {
-      const composite = [retailer.name, retailer.address, retailer.displayLocation]
-        .filter(Boolean)
-        .join(' ')
-        .toLowerCase();
-      return composite.includes(term);
-    });
-  }, [retailers, search]);
-
-  const shippingBadge = (status) => {
-    const normalized = (status || '').toLowerCase();
-    switch (normalized) {
-      case 'priority_queue':
-        return { label: 'Priority Shipping', tone: 'bg-purple-100 text-purple-700' };
-      case 'standard_queue':
-        return { label: 'Queued to Ship', tone: 'bg-blue-100 text-blue-700' };
-      case 'active':
-        return { label: 'Active Display', tone: 'bg-green-100 text-green-700' };
-      case 'shipped':
-        return { label: 'In Transit', tone: 'bg-blue-100 text-blue-700' };
-      default:
-        return { label: 'Preparing', tone: 'bg-gray-100 text-gray-600' };
-    }
-  };
-
-  const handleConnect = async (retailerId) => {
-    console.log('[CLAIM] ========== CONNECT FLOW START ==========');
+  const handleClaim = async (retailerId) => {
+    console.log('[CLAIM] ========== CLAIM BUTTON CLICKED! ==========');
     console.log('[CLAIM] UID:', uid);
     console.log('[CLAIM] Retailer ID:', retailerId);
-    console.log('[CLAIM] Button clicked! loadingId:', loadingId);
 
     if (!uid) {
-      console.error('[CLAIM] ERROR: No UID in URL');
-      setError("No UID detected in URL. Please scan the NFC tag again.");
+      setError("No UID in URL. Please scan your NFC tag again.");
       return;
     }
 
-    console.log('[CLAIM] Setting loadingId to:', retailerId);
     setLoadingId(retailerId);
     setError("");
 
     try {
-      const requestBody = { uid, retailerId };
-      console.log('[CLAIM] Request body:', requestBody);
-      console.log('[CLAIM] Sending POST to /api/claim-display');
-
       const response = await fetch('/api/claim-display', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(requestBody),
+        body: JSON.stringify({ uid, retailerId }),
       });
 
-      console.log('[CLAIM] Response status:', response.status);
-      console.log('[CLAIM] Response headers:', Object.fromEntries(response.headers.entries()));
+      const result = await response.json();
+      console.log('[CLAIM] Response:', response.status, result);
 
-      let result = null;
-      const raw = await response.text();
-      console.log('[CLAIM] Raw response:', raw);
-
-      if (raw) {
-        try {
-          result = JSON.parse(raw);
-          console.log('[CLAIM] Parsed response:', result);
-        } catch (parseError) {
-          console.error('[CLAIM] Failed to parse JSON response:', parseError);
-          console.error('[CLAIM] Raw response was:', raw);
-        }
+      if (response.status === 409) {
+        // UID already claimed
+        setError(`This UID is already claimed by another store. Please contact support if this is incorrect.`);
+        setLoadingId(null);
+        return;
       }
 
       if (!response.ok) {
-        const message = result?.error || `Failed to claim display (status ${response.status}).`;
-        console.error('[CLAIM] Request failed:', message);
-        console.error('[CLAIM] Full error details:', result);
-        throw new Error(message);
+        throw new Error(result.error || 'Failed to claim display');
       }
 
-      console.log('[CLAIM] SUCCESS: Display claimed successfully');
-      setConnectedId(retailerId);
-      setShowSuccess(true);
+      // SUCCESS!
+      console.log('[CLAIM] ✅ SUCCESS! Redirecting to success page...');
 
-      // Redirect to claimed page after animation
-      setTimeout(() => {
-        router.push('/claimed');
-      }, 1500);
+      // Immediate redirect - no animation delays
+      router.push('/claimed');
+
     } catch (err) {
-      console.error('[CLAIM] Exception caught:', err);
-      setError(err.message || "Error connecting business.");
+      console.error('[CLAIM] Error:', err);
+      setError(err.message || "Error claiming display.");
       setLoadingId(null);
     }
-    console.log('[CLAIM] ========== CONNECT FLOW END ==========');
   };
+
+  // Filter retailers based on search
+  const filteredRetailers = retailers.filter(retailer => {
+    if (!search.trim()) return true;
+    const term = search.toLowerCase();
+    return (
+      retailer.name?.toLowerCase().includes(term) ||
+      retailer.address?.toLowerCase().includes(term) ||
+      retailer.displayLocation?.toLowerCase().includes(term)
+    );
+  });
 
   return (
     <div className="min-h-screen bg-white pt-32 pb-16">
-      <div className="flex flex-col items-center px-6 pb-12">
-        <div className="max-w-lg w-full">
-          {/* Header */}
-          <div className="text-center mb-8">
-          <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-2">
-            Connect your Display
+      <div className="max-w-2xl mx-auto px-6">
+
+        {/* Header */}
+        <div className="text-center mb-8">
+          <h1 className="text-4xl font-bold text-gray-900 mb-3">
+            Claim Your Display
           </h1>
-          <p className="text-gray-600">
-            select your business below<br />to automatically start earning!
+          <p className="text-lg text-gray-600">
+            Select your business below to start earning commissions
           </p>
         </div>
 
         {/* Search */}
-        <div className="mb-6">
-          <input
-            type="text"
-            placeholder="Search your business name"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="w-full px-4 py-3
-             rounded-2xl
-             bg-white
-             text-gray-900 placeholder-gray-400
-             border-2 border-[#ff6fb3]
-             outline-none focus:ring-2 focus:ring-[#ff6fb3]
-             transition-all"
-          />
-        </div>
-
-        {/* Business List */}
-        <div className="space-y-4">
-          <AnimatePresence mode="popLayout">
-            {filteredRetailers.map((store) => {
-              const badge = shippingBadge(store.shippingStatus);
-              const isSuccess = connectedId === store.id && showSuccess;
-
-              return (
-                <motion.div
-                  key={store.id}
-                  layout
-                  initial={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.9, transition: { duration: 0.4 } }}
-                  className="flex justify-between items-center bg-white rounded-3xl shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_1px_-0.5px_rgba(0,0,0,0.06),0px_3px_3px_-1.5px_rgba(0,0,0,0.06),0px_6px_6px_-3px_rgba(0,0,0,0.06),0px_12px_12px_-6px_rgba(0,0,0,0.06),0px_24px_24px_-12px_rgba(0,0,0,0.06)] border border-transparent p-5 hover:shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_1px_-0.5px_rgba(0,0,0,0.06),0px_3px_3px_-1.5px_rgba(0,0,0,0.06),0px_6px_6px_-3px_rgba(0,0,0,0.06),0px_12px_12px_-6px_rgba(0,0,0,0.06),0px_24px_24px_-12px_rgba(0,0,0,0.06)] transition-all"
-                >
-                  <div>
-                    <p className="font-semibold text-gray-900">{store.name}</p>
-                    {store.address && (
-                      <p className="text-sm text-gray-500 truncate max-w-[240px]">
-                        {store.address}
-                      </p>
-                    )}
-                    <div className={`inline-flex items-center px-3 py-1 mt-2 rounded-full text-xs font-bold ${badge.tone}`}>
-                      {badge.label}
-                    </div>
-                  </div>
-                  <button
-                    type="button"
-                    disabled={loadingId === store.id || connectedId === store.id}
-                    onClick={() => {
-                      console.log('[CLAIM] BUTTON CLICKED!', store.id);
-                      handleConnect(store.id);
-                    }}
-                    className={`px-5 py-2.5 rounded-2xl font-bold text-sm transition-all ${
-                      connectedId === store.id
-                        ? "bg-gray-200 text-gray-500 cursor-not-allowed"
-                        : loadingId === store.id
-                        ? "bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3] text-white opacity-75 cursor-wait"
-                        : "bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3] text-white shadow-lg hover:shadow-xl hover:scale-105 active:scale-95 cursor-pointer"
-                    }`}
-                  >
-                    {loadingId === store.id ? (
-                      <div className="flex items-center gap-2">
-                        <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent"></div>
-                        Claiming...
-                      </div>
-                    ) : connectedId === store.id ? (
-                      "✅ Claimed"
-                    ) : (
-                      "Claim Display"
-                    )}
-                  </button>
-                </motion.div>
-              );
-            })}
-          </AnimatePresence>
-
-          {/* Empty state */}
-          {!loadingList && filteredRetailers.length === 0 && (
-            <div className="bg-white rounded-3xl border border-transparent shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_1px_-0.5px_rgba(0,0,0,0.06),0px_3px_3px_-1.5px_rgba(0,0,0,0.06),0px_6px_6px_-3px_rgba(0,0,0,0.06),0px_12px_12px_-6px_rgba(0,0,0,0.06),0px_24px_24px_-12px_rgba(0,0,0,0.06)] p-6 text-center text-gray-500">
-              No stores ready for claim yet.
-            </div>
-          )}
-          {loadingList && (
-            <div className="bg-white rounded-3xl border border-transparent shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_1px_-0.5px_rgba(0,0,0,0.06),0px_3px_3px_-1.5px_rgba(0,0,0,0.06),0px_6px_6px_-3px_rgba(0,0,0,0.06),0px_12px_12px_-6px_rgba(0,0,0,0.06),0px_24px_24px_-12px_rgba(0,0,0,0.06)] p-6 text-center text-gray-500 flex items-center justify-center gap-2">
-              <div className="animate-spin rounded-full h-5 w-5 border-2 border-gray-400 border-t-transparent"></div>
-              Loading stores…
-            </div>
-          )}
-        </div>
-
-        {/* Error */}
-        {error && (
-          <p className="mt-6 text-center text-sm text-red-600 font-medium">
-            {error}
-          </p>
-        )}
+        <input
+          type="text"
+          placeholder="Search for your business..."
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          className="w-full px-4 py-3 mb-6 rounded-xl border-2 border-gray-300 focus:border-blue-500 outline-none transition-colors"
+        />
 
         {/* Debug Info */}
         {uid && (
-          <div className="mt-6 p-4 bg-gray-100 rounded-xl text-xs text-gray-600">
-            <p><strong>Debug Info:</strong></p>
-            <p>UID from URL: {uid}</p>
-            <p>Retailers loaded: {retailers.length}</p>
-            <p>Loading ID: {loadingId || 'None'}</p>
-            <p>Connected ID: {connectedId || 'None'}</p>
+          <div className="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg text-sm">
+            <p><strong>Debug:</strong></p>
+            <p>UID: {uid}</p>
+            <p>Stores loaded: {retailers.length}</p>
+            <p>Loading: {loadingId || 'None'}</p>
           </div>
         )}
+
+        {/* Error */}
+        {error && (
+          <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg text-red-700">
+            {error}
+          </div>
+        )}
+
+        {/* Retailers List */}
+        <div className="space-y-3">
+          {filteredRetailers.length === 0 && (
+            <div className="p-8 text-center text-gray-500 bg-gray-50 rounded-lg">
+              No stores found
+            </div>
+          )}
+
+          {filteredRetailers.map((store) => (
+            <div
+              key={store.id}
+              className="flex items-center justify-between p-4 bg-white border-2 border-gray-200 rounded-xl hover:border-blue-400 transition-colors"
+            >
+              <div className="flex-1">
+                <h3 className="font-bold text-lg text-gray-900">{store.name}</h3>
+                {store.address && (
+                  <p className="text-sm text-gray-600">{store.address}</p>
+                )}
+              </div>
+
+              <button
+                onClick={() => {
+                  console.log('[CLAIM] Button onClick fired for:', store.id);
+                  handleClaim(store.id);
+                }}
+                disabled={loadingId === store.id}
+                className={`
+                  px-6 py-3 rounded-xl font-bold text-white transition-all
+                  ${loadingId === store.id
+                    ? 'bg-gray-400 cursor-wait'
+                    : 'bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 active:scale-95'
+                  }
+                `}
+                style={{ pointerEvents: 'auto' }}
+              >
+                {loadingId === store.id ? 'Claiming...' : 'Claim Display'}
+              </button>
+            </div>
+          ))}
         </div>
       </div>
     </div>
