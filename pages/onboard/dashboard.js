@@ -190,23 +190,34 @@ export default function RetailerDashboard() {
 
         const retailerIds = allUserRetailers?.map(r => r.id) || [retailerData.id];
 
-        console.log('[Dashboard] Fetching UIDs for retailer IDs:', retailerIds);
+        console.log('🔍 [Dashboard] ========== FETCHING UIDs ==========');
+        console.log('🔍 [Dashboard] Current user ID:', user?.id);
+        console.log('🔍 [Dashboard] Retailer data:', retailerData);
+        console.log('🔍 [Dashboard] All user retailers:', allUserRetailers);
+        console.log('🔍 [Dashboard] Fetching UIDs for retailer IDs:', retailerIds);
 
         // Get UIDs claimed by ANY of this user's retailers
-        const { data: uidsData } = await supabase
+        const { data: uidsData, error: uidsError } = await supabase
           .from('uids')
           .select(`
             *,
             business:business_id (
               id,
-              name,
-              address,
-              city,
-              state
+              name
             )
           `)
           .in('retailer_id', retailerIds)
           .limit(100);
+
+        console.log('📥 [Dashboard] UIDs query result:', { uidsData, uidsError });
+        console.log('📥 [Dashboard] Found', uidsData?.length || 0, 'UIDs');
+        if (uidsData && uidsData.length > 0) {
+          console.log('📥 [Dashboard] UID details:', uidsData.map(u => ({
+            uid: u.uid,
+            retailer_id: u.retailer_id,
+            is_claimed: u.is_claimed
+          })));
+        }
 
         setUids(uidsData || []);
 
