@@ -248,11 +248,13 @@ export default function RetailerDashboard() {
         setScans(scansData);
 
         // Get payout jobs and earnings from API endpoint
+        let payoutsData = [];
         try {
           const earningsResponse = await fetch('/api/retailer-earnings');
           if (earningsResponse.ok) {
             const earningsData = await earningsResponse.json();
-            setPayoutJobs(earningsData.payouts || []);
+            payoutsData = earningsData.payouts || [];
+            setPayoutJobs(payoutsData);
           } else {
             console.warn('[Dashboard] Failed to fetch earnings data');
             setPayoutJobs([]);
@@ -268,9 +270,9 @@ export default function RetailerDashboard() {
           .select('*')
           .eq('retailer_id', retailerData.id)
           .maybeSingle();
-        
+
         setRetailerAccount(accountData);
-        
+
         // Calculate stats
         calculateStatsFromScans(scansData || [], uidsData || [], payoutsData || []);
         calculateWeeklyData(scansData || []);

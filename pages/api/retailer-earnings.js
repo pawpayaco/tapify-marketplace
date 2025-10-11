@@ -1,28 +1,20 @@
-import { supabase } from '../../lib/supabase';
+import { createApiSupabaseClient, requireSession } from '../../lib/api-auth';
 
 /**
  * Get earnings data for the logged-in retailer
  * GET /api/retailer-earnings
  */
 export default async function handler(req, res) {
-  if (!supabase) {
-    return res.status(500).json({ error: 'Supabase client not configured' });
-  }
-
   if (req.method !== 'GET') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
   try {
-    // Get user session
-    const { data: { user }, error: authError } = await supabase.auth.getUser();
-
-    if (authError || !user) {
-      return res.status(401).json({ error: 'Not authenticated' });
-    }
+    // Get authenticated user session
+    const { supabase, user } = await requireSession(req, res);
 
     // Get retailer record
-    const { data: retailer, error: retailerError } = await supabase
+    let { data: retailer, error: retailerError } = await supabase
       .from('retailers')
       .select('id, name, email')
       .eq('created_by_user_id', user.id)
@@ -45,9 +37,7 @@ export default async function handler(req, res) {
         return res.status(404).json({ error: 'Retailer not found' });
       }
 
-      retailer.id = emailRetailer.id;
-      retailer.name = emailRetailer.name;
-      retailer.email = emailRetailer.email;
+      retailer = emailRetailer;
     }
 
     // Get payout jobs for this retailer
