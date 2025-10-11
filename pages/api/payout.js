@@ -28,6 +28,16 @@ async function getDwollaToken() {
 
 // 🔑 Helper: send Dwolla transfer
 async function createDwollaTransfer(token, sourceFundingId, destFundingId, amount) {
+  const requestBody = {
+    _links: {
+      source: { href: `${DWOLLA_BASE_URL}/funding-sources/${sourceFundingId}` },
+      destination: { href: `${DWOLLA_BASE_URL}/funding-sources/${destFundingId}` },
+    },
+    amount: { currency: 'USD', value: amount.toFixed(2) },
+  };
+
+  console.log('[Dwolla Transfer] Request:', JSON.stringify(requestBody, null, 2));
+
   const res = await fetch(`${DWOLLA_BASE_URL}/transfers`, {
     method: 'POST',
     headers: {
@@ -35,18 +45,31 @@ async function createDwollaTransfer(token, sourceFundingId, destFundingId, amoun
       'Content-Type': 'application/json',
       Accept: 'application/vnd.dwolla.v1.hal+json',
     },
-    body: JSON.stringify({
-      _links: {
-        source: { href: `${DWOLLA_BASE_URL}/funding-sources/${sourceFundingId}` },
-        destination: { href: `${DWOLLA_BASE_URL}/funding-sources/${destFundingId}` },
-      },
-      amount: { currency: 'USD', value: amount.toFixed(2) },
-    }),
+    body: JSON.stringify(requestBody),
   });
 
-  const json = await res.json();
-  if (!res.ok) throw new Error(`Dwolla error: ${JSON.stringify(json)}`);
-  return json;
+  console.log('[Dwolla Transfer] Response status:', res.status);
+  console.log('[Dwolla Transfer] Response headers:', JSON.stringify([...res.headers.entries()]));
+
+  const text = await res.text();
+  console.log('[Dwolla Transfer] Response body:', text);
+
+  if (!res.ok) {
+    let errorMessage = `Dwolla API error (${res.status})`;
+    try {
+      const json = JSON.parse(text);
+      errorMessage = `Dwolla API error: ${JSON.stringify(json)}`;
+    } catch (e) {
+      errorMessage = `Dwolla API error (${res.status}): ${text}`;
+    }
+    throw new Error(errorMessage);
+  }
+
+  try {
+    return JSON.parse(text);
+  } catch (e) {
+    throw new Error(`Failed to parse Dwolla response: ${text}`);
+  }
 }
 
 export default async function handler(req, res) {
@@ -109,8 +132,21 @@ export default async function handler(req, res) {
       return res.status(400).json({ error: 'Sourcer bank account missing' });
     }
 
+    // Log funding sources for debugging
+    console.log('[Payout] Funding sources:', {
+      master: env.DWOLLA_MASTER_FUNDING_SOURCE,
+      retailer: retailer?.dwolla_funding_source_id,
+      sourcer: sourcer?.dwolla_funding_source_id,
+      amounts: {
+        retailer_cut: job.retailer_cut,
+        sourcer_cut: job.sourcer_cut,
+        vendor_cut: job.vendor_cut
+      }
+    });
+
     // 3. Get Dwolla token
     const dwollaToken = await getDwollaToken();
+    console.log('[Payout] Dwolla token obtained successfully');
 
     // 4. Send transfers
     const transfers = [];
