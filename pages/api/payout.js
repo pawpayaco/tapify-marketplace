@@ -185,7 +185,7 @@ export default async function handler(req, res) {
         retailer.dwolla_funding_source_id,
         job.retailer_cut
       );
-      transfers.push({ role: 'retailer', response: retailerTransfer });
+      transfers.push({ role: 'retailer', response: retailerTransfer, amount: job.retailer_cut });
     }
 
     if (sourcer?.dwolla_funding_source_id && job.sourcer_cut > 0) {
@@ -195,7 +195,7 @@ export default async function handler(req, res) {
         sourcer.dwolla_funding_source_id,
         job.sourcer_cut
       );
-      transfers.push({ role: 'sourcer', response: sourcerTransfer });
+      transfers.push({ role: 'sourcer', response: sourcerTransfer, amount: job.sourcer_cut });
     }
 
     const transferSummaries = transfers.map((transfer) => {
@@ -212,13 +212,13 @@ export default async function handler(req, res) {
       }
 
       // Handle actual Dwolla transfers (retailer, sourcer)
-      const { role, response } = transfer;
+      const { role, response, amount } = transfer;
       return {
         role,
         id: response?.id ?? null,
         status: response?.status ?? null,
         href: response?._links?.self?.href ?? null,
-        amount: response?.amount?.value ?? null,
+        amount: amount, // Use the amount we passed through
       };
     });
 
