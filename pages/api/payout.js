@@ -237,7 +237,7 @@ export default async function handler(req, res) {
       amount: payoutAmount,
       total_amount: payoutAmount,
       transfer_summary: transferSummaries,
-      status: 'sent',
+      status: 'pending',
       triggered_by: adminUser?.id ?? null,
     });
 
