@@ -1542,16 +1542,37 @@ export default function RetailerDashboard() {
                               </div>
                             </div>
                           ) : (
-                            <div className="mt-3 p-3 bg-blue-50 border-2 border-blue-200 rounded-lg">
-                              <div className="flex items-center gap-2">
-                                <span className="text-lg">📦</span>
-                                <div>
-                                  <p className="font-bold text-blue-900">Standard Display</p>
-                                  <p className="text-xs text-blue-700">
-                                    <a href="https://pawpayaco.com/products/display-setup-for-affiliate" target="_blank" rel="noopener noreferrer" className="underline hover:text-blue-900">
-                                      Upgrade to Priority Display
-                                    </a> for premium placement
-                                  </p>
+                            <div className="mt-3 space-y-2">
+                              <div className="p-3 bg-blue-50 border-2 border-blue-200 rounded-lg">
+                                <div className="flex items-center gap-2">
+                                  <span className="text-lg">📦</span>
+                                  <div>
+                                    <p className="font-bold text-blue-900">Standard Display</p>
+                                    <p className="text-xs text-blue-700">
+                                      <a href="https://pawpayaco.com/products/display-setup-for-affiliate" target="_blank" rel="noopener noreferrer" className="underline hover:text-blue-900">
+                                        Upgrade to Priority Display
+                                      </a> for premium placement
+                                    </p>
+                                  </div>
+                                </div>
+                              </div>
+
+                              {/* Important Notice */}
+                              <div className="p-3 bg-amber-50 border-2 border-amber-400 rounded-lg">
+                                <div className="flex items-start gap-2">
+                                  <span className="text-xl mt-0.5">⚠️</span>
+                                  <div className="flex-1">
+                                    <p className="font-bold text-amber-900 text-xs mb-1">Important: Use Your Account Email</p>
+                                    <p className="text-xs text-amber-800 mb-2">
+                                      When checking out on Shopify, you <span className="font-bold">must use this email</span> to activate the upgrade:
+                                    </p>
+                                    <div className="bg-white px-3 py-2 rounded border border-amber-300">
+                                      <p className="text-xs font-mono font-bold text-amber-900">{retailer?.email}</p>
+                                    </div>
+                                    <p className="text-xs text-amber-700 mt-2">
+                                      Using a different email will prevent automatic activation.
+                                    </p>
+                                  </div>
                                 </div>
                               </div>
                             </div>
