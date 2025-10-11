@@ -196,9 +196,9 @@ export default function ShopifyConnect() {
             </div>
 
             {/* Optional accent bar at bottom */}
-            <div className="mt-8 pt-6 border-t-2 border-transparent">
+            <div className="mt-4 pt-6 border-t-2 border-transparent">
               <p className="text-center text-sm text-gray-500">
-                Still have questions?{' '}
+                Still have questions?<br />
                 <a href="tel:7159791259" className="font-bold hover:underline" style={{ color: '#ff6fb3' }}>
                   Call us at (715) 979-1259
                 </a>

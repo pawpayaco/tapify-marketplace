@@ -74,7 +74,7 @@ export default function AboutPawpaya() {
             initial={{ scale: 0.85, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             transition={{ duration: 0.3, delay: 0.12 }}
-            className="text-xl sm:text-2xl md:text-3xl text-gray-600 max-w-3xl mx-auto leading-relaxed mb-14 font-medium"
+            className="text-xl sm:text-2xl md:text-3xl text-gray-600 max-w-3xl mx-auto leading-relaxed mb-9 font-medium"
           >
             We're bringing custom<br />collars to your store
           </motion.p>
