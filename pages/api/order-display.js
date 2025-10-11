@@ -18,16 +18,45 @@ export default async function handler(req, res) {
       return res.status(400).json({ error: 'Store name and address are required' });
     }
 
-    // Find the retailer for this user
-    const { data: retailer, error: retailerError } = await supabaseAdmin
+    // Find the retailer for this user (try multiple methods)
+    let retailer = null;
+    let retailerError = null;
+
+    // Method 1: Try by created_by_user_id
+    const { data: retailerByUserId, error: userIdError } = await supabaseAdmin
       .from('retailers')
-      .select('id, displays_ordered')
+      .select('id, displays_ordered, email')
       .eq('created_by_user_id', user.id)
       .maybeSingle();
 
-    if (retailerError || !retailer) {
+    if (retailerByUserId) {
+      retailer = retailerByUserId;
+    } else {
+      // Method 2: Try by user email
+      const { data: retailerByEmail, error: emailError } = await supabaseAdmin
+        .from('retailers')
+        .select('id, displays_ordered, email')
+        .eq('email', user.email)
+        .maybeSingle();
+
+      if (retailerByEmail) {
+        retailer = retailerByEmail;
+        // Update the retailer to link it to the user
+        await supabaseAdmin
+          .from('retailers')
+          .update({ created_by_user_id: user.id })
+          .eq('id', retailerByEmail.id);
+      } else {
+        retailerError = emailError || userIdError;
+      }
+    }
+
+    if (!retailer) {
       console.error('[order-display] Retailer lookup error:', retailerError);
-      return res.status(404).json({ error: 'Retailer not found for this user' });
+      return res.status(404).json({
+        error: 'Retailer not found for this user',
+        details: 'Please register as a retailer first'
+      });
     }
 
     // Create a new retailer entry for the additional store location
