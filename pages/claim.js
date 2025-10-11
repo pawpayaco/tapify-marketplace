@@ -35,50 +35,68 @@ export default function ClaimPage() {
   }, []);
 
   const handleClaim = async (retailerId) => {
-    console.log('[CLAIM] ========== CLAIM BUTTON CLICKED! ==========');
-    console.log('[CLAIM] UID:', uid);
-    console.log('[CLAIM] Retailer ID:', retailerId);
+    console.log('🚀 [CLAIM] ========== CLAIM BUTTON CLICKED! ==========');
+    console.log('🚀 [CLAIM] Timestamp:', new Date().toISOString());
+    console.log('🚀 [CLAIM] UID:', uid);
+    console.log('🚀 [CLAIM] Retailer ID:', retailerId);
+    console.log('🚀 [CLAIM] Current loadingId:', loadingId);
 
     if (!uid) {
+      console.error('❌ [CLAIM] ERROR: No UID in URL');
       setError("No UID in URL. Please scan your NFC tag again.");
       return;
     }
 
+    console.log('⏳ [CLAIM] Setting loadingId to:', retailerId);
     setLoadingId(retailerId);
     setError("");
 
     try {
+      const requestBody = { uid, retailerId };
+      console.log('📤 [CLAIM] Sending request to /api/claim-display');
+      console.log('📤 [CLAIM] Request body:', JSON.stringify(requestBody, null, 2));
+
       const response = await fetch('/api/claim-display', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ uid, retailerId }),
+        body: JSON.stringify(requestBody),
       });
 
+      console.log('📥 [CLAIM] Response status:', response.status);
+      console.log('📥 [CLAIM] Response headers:', Object.fromEntries(response.headers.entries()));
+
       const result = await response.json();
-      console.log('[CLAIM] Response:', response.status, result);
+      console.log('📥 [CLAIM] Response body:', JSON.stringify(result, null, 2));
 
       if (response.status === 409) {
-        // UID already claimed
-        setError(`This UID is already claimed by another store. Please contact support if this is incorrect.`);
+        console.warn('⚠️  [CLAIM] UID already claimed!');
+        setError(`This UID is already claimed. Please use a different UID.`);
         setLoadingId(null);
         return;
       }
 
       if (!response.ok) {
+        console.error('❌ [CLAIM] Request failed with status:', response.status);
         throw new Error(result.error || 'Failed to claim display');
       }
 
       // SUCCESS!
-      console.log('[CLAIM] ✅ SUCCESS! Redirecting to success page...');
+      console.log('✅ [CLAIM] SUCCESS! Display claimed successfully!');
+      console.log('✅ [CLAIM] Affiliate URL:', result.affiliate_url);
+      console.log('✅ [CLAIM] Retailer:', result.retailer_name);
+      console.log('🔄 [CLAIM] Redirecting to /claimed...');
 
-      // Immediate redirect - no animation delays
+      // Immediate redirect
       router.push('/claimed');
 
     } catch (err) {
-      console.error('[CLAIM] Error:', err);
+      console.error('💥 [CLAIM] Exception caught:', err);
+      console.error('💥 [CLAIM] Error message:', err.message);
+      console.error('💥 [CLAIM] Error stack:', err.stack);
       setError(err.message || "Error claiming display.");
       setLoadingId(null);
     }
+    console.log('🏁 [CLAIM] ========== CLAIM FLOW COMPLETE ==========');
   };
 
   // Filter retailers based on search
@@ -117,11 +135,15 @@ export default function ClaimPage() {
 
         {/* Debug Info */}
         {uid && (
-          <div className="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg text-sm">
-            <p><strong>Debug:</strong></p>
-            <p>UID: {uid}</p>
-            <p>Stores loaded: {retailers.length}</p>
-            <p>Loading: {loadingId || 'None'}</p>
+          <div className="mb-6 p-4 bg-blue-50 border-2 border-blue-400 rounded-lg text-sm space-y-1">
+            <p className="font-bold text-lg">🔍 Debug Info:</p>
+            <p>✅ UID: <span className="font-mono font-bold">{uid}</span></p>
+            <p>✅ Stores loaded: <span className="font-bold">{retailers.length}</span></p>
+            <p>✅ Filtered stores: <span className="font-bold">{filteredRetailers.length}</span></p>
+            <p>⏳ Loading ID: <span className="font-bold">{loadingId || 'None'}</span></p>
+            <p className="text-xs text-gray-600 mt-2">
+              Open browser console (F12) to see detailed logs when you click a button
+            </p>
           </div>
         )}
 
@@ -153,10 +175,17 @@ export default function ClaimPage() {
               </div>
 
               <button
-                onClick={() => {
-                  console.log('[CLAIM] Button onClick fired for:', store.id);
+                onClick={(e) => {
+                  console.log('🖱️  [CLAIM] BUTTON CLICK EVENT FIRED!', {
+                    storeId: store.id,
+                    storeName: store.name,
+                    event: e.type,
+                    timestamp: new Date().toISOString()
+                  });
                   handleClaim(store.id);
                 }}
+                onMouseDown={() => console.log('👆 [CLAIM] Mouse down on button:', store.id)}
+                onMouseUp={() => console.log('👆 [CLAIM] Mouse up on button:', store.id)}
                 disabled={loadingId === store.id}
                 className={`
                   px-6 py-3 rounded-xl font-bold text-white transition-all
@@ -165,9 +194,9 @@ export default function ClaimPage() {
                     : 'bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 active:scale-95'
                   }
                 `}
-                style={{ pointerEvents: 'auto' }}
+                style={{ pointerEvents: 'auto', touchAction: 'manipulation' }}
               >
-                {loadingId === store.id ? 'Claiming...' : 'Claim Display'}
+                {loadingId === store.id ? '⏳ Claiming...' : 'Claim Display'}
               </button>
             </div>
           ))}
