@@ -509,7 +509,7 @@ export default function RegisterRetailer() {
                 animate={{ scale: 1, opacity: 1 }}
                 transition={{ duration: 0.5, delay: 0.2 }}
                 className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-bold"
-                style={{ background: 'linear-gradient(to right, #FFA08A, #FF8FCF)', color: 'white' }}
+                style={{ background: 'linear-gradient(to right, #ff7a4a, #ff6fb3)', color: 'white' }}
               >
                 <span>🎉</span>
                 <span>Final Step — Claim Your Display</span>
@@ -521,7 +521,7 @@ export default function RegisterRetailer() {
                 className="text-4xl md:text-5xl lg:text-6xl font-black text-gray-900 leading-tight"
               >
                 Claim Your{' '}
-                <span style={{ background: 'linear-gradient(to right, #FFA08A, #FF8FCF)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
+                <span style={{ background: 'linear-gradient(to right, #ff7a4a, #ff6fb3)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
                   Display
                 </span>
               </motion.h1>
@@ -555,14 +555,14 @@ export default function RegisterRetailer() {
                   >
                     <div className="flex items-start gap-4">
                       <div className="flex-shrink-0 w-12 h-12 rounded-xl flex items-center justify-center text-white text-xl font-black shadow-lg"
-                           style={{ background: 'linear-gradient(to right, #FFA08A, #FF8FCF)' }}>
+                           style={{ background: 'linear-gradient(to right, #ff7a4a, #ff6fb3)' }}>
                         {idx + 1}
                       </div>
                       <div className="flex-1">
                         <div className="flex items-center gap-3 mb-2">
                           <h4 className="font-black text-lg text-gray-900">{step.title}</h4>
                           <span className="px-3 py-1 rounded-full text-xs font-bold whitespace-nowrap"
-                                style={{ background: 'linear-gradient(to right, #FFA08A, #FF8FCF)', color: 'white' }}>
+                                style={{ background: 'linear-gradient(to right, #ff7a4a, #ff6fb3)', color: 'white' }}>
                             {step.timing}
                           </span>
                         </div>
@@ -588,7 +588,7 @@ export default function RegisterRetailer() {
               <a
                 href="tel:7159791259"
                 className="inline-block px-6 py-3 rounded-xl font-bold text-white shadow-lg hover:shadow-xl transition-all"
-                style={{ background: 'linear-gradient(to right, #FFA08A, #FF8FCF)' }}
+                style={{ background: 'linear-gradient(to right, #ff7a4a, #ff6fb3)' }}
               >
                 (715) 979-1259
               </a>
@@ -616,7 +616,7 @@ export default function RegisterRetailer() {
                 animate={{ scale: 1, opacity: 1 }}
                 transition={{ duration: 0.5, delay: 0.2 }}
                 className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-bold mb-6"
-                style={{ background: 'linear-gradient(to right, #FFA08A, #FF8FCF)', color: 'white' }}
+                style={{ background: 'linear-gradient(to right, #ff7a4a, #ff6fb3)', color: 'white' }}
               >
                 <span>🎉</span>
                 <span>Final Step</span>
@@ -624,7 +624,7 @@ export default function RegisterRetailer() {
 
               <h1 className="text-3xl sm:text-4xl font-black text-gray-900 leading-tight mb-4">
                 {' '}
-                <span style={{ background: 'linear-gradient(to right, #FFA08A, #FF8FCF)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
+                <span style={{ background: 'linear-gradient(to right, #ff7a4a, #ff6fb3)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
                   Claim Your Display
                 </span>
               </h1>
@@ -1187,7 +1187,7 @@ export default function RegisterRetailer() {
                 disabled={loading}
                 whileHover={{ y: loading ? 0 : -2 }}
                 whileTap={{ scale: loading ? 1 : 0.98 }}
-                className="w-full bg-gradient-to-r from-[#FFA08A] to-[#FF8FCF] text-white py-4 px-6 rounded-2xl font-bold text-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3] text-white py-4 px-6 rounded-2xl font-bold text-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {loading ? (
                   <span className="flex items-center justify-center gap-2">

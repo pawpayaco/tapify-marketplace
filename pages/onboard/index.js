@@ -68,7 +68,7 @@ export default function OnboardIndex() {
             {' '}
             <span className="block mt-2">
               {' '}
-              <span style={{ background: 'linear-gradient(to right, #FFA08A, #FF8FCF)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
+              <span style={{ background: 'linear-gradient(to right, #ff7a4a, #ff6fb3)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
                 Our Offer
               </span>
             </span>
@@ -89,7 +89,7 @@ export default function OnboardIndex() {
             <Link href="/onboard/register">
               <button
                 className="px-6 py-4 rounded-2xl text-lg font-black shadow-xl transition-all text-white"
-                style={{ background: 'linear-gradient(to right, #FFA08A, #FF8FCF)', width: '320px', maxWidth: '100%' }}
+                style={{ background: 'linear-gradient(to right, #ff7a4a, #ff6fb3)', width: '320px', maxWidth: '100%' }}
               >
                 I'm a Business Owner →
               </button>
@@ -97,7 +97,7 @@ export default function OnboardIndex() {
             <button
               onClick={handleManagerShare}
               className="px-6 py-4 rounded-2xl text-lg font-black shadow-xl transition-all bg-white"
-              style={{ border: '4px solid #FF8FCF', color: '#FF8FCF', width: '320px', maxWidth: '100%' }}
+              style={{ border: '4px solid #ff6fb3', color: '#ff6fb3', width: '320px', maxWidth: '100%' }}
             >
               {isCopied ? 'Copied! ✓' : 'I\'m a Manager — Share This'}
             </button>
@@ -172,7 +172,7 @@ export default function OnboardIndex() {
                 <div key={idx} className="flex items-center gap-3 md:gap-4 flex-1">
                   <div className="flex flex-col items-center text-center flex-1">
                     <div className="w-16 h-16 md:w-20 md:h-20 rounded-full flex items-center justify-center text-2xl md:text-3xl font-black text-white mb-2 md:mb-3 shadow-lg"
-                         style={{ background: 'linear-gradient(to bottom right, #FFA08A, #FF8FCF)' }}>
+                         style={{ background: 'linear-gradient(to bottom right, #ff7a4a, #ff6fb3)' }}>
                       {item.step}
                     </div>
                     <p className="text-gray-900 font-bold text-sm md:text-lg">{item.text}</p>
@@ -266,7 +266,7 @@ export default function OnboardIndex() {
                 <button
                   onClick={handleManagerShare}
                   className="px-6 md:px-8 py-3 md:py-4 rounded-2xl md:rounded-3xl text-base md:text-lg font-black shadow-lg bg-white border-2 whitespace-nowrap"
-                  style={{ borderColor: '#FF8FCF', color: '#FF8FCF' }}
+                  style={{ borderColor: '#ff6fb3', color: '#ff6fb3' }}
                 >
                   {isCopied ? 'Copied! ✓' : 'Share With Owner'}
                 </button>
@@ -284,7 +284,7 @@ export default function OnboardIndex() {
                 <Link href="/onboard/register">
                   <button
                     className="px-8 md:px-10 py-3 md:py-4 rounded-2xl md:rounded-3xl text-base md:text-lg font-black transition-all shadow-xl text-white whitespace-nowrap"
-                    style={{ background: 'linear-gradient(to right, #FFA08A, #FF8FCF)' }}
+                    style={{ background: 'linear-gradient(to right, #ff7a4a, #ff6fb3)' }}
                   >
                     Register Now →
                   </button>

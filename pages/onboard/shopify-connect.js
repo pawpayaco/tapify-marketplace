@@ -70,7 +70,7 @@ export default function ShopifyConnect() {
             {/* Success Content */}
             <div className="text-center">
               <h1 className="text-3xl sm:text-4xl font-black mb-2 leading-tight">
-                <span style={{ background: 'linear-gradient(to right, #FFA08A, #FF8FCF)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
+                <span style={{ background: 'linear-gradient(to right, #ff7a4a, #ff6fb3)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
                   Success!
                 </span>
               </h1>
@@ -87,7 +87,7 @@ export default function ShopifyConnect() {
                 whileTap={{ scale: 0.98 }}
                 onClick={() => setShowSuccessModal(false)}
                 className="px-8 py-3 rounded-2xl font-black text-lg text-white shadow-lg"
-                style={{ background: 'linear-gradient(to right, #FFA08A, #FF8FCF)' }}
+                style={{ background: 'linear-gradient(to right, #ff7a4a, #ff6fb3)' }}
               >
                 Got it! →
               </motion.button>
@@ -109,7 +109,7 @@ export default function ShopifyConnect() {
           >
             <div className="mb-6">
               <h2 className="text-3xl md:text-4xl font-black text-gray-900 mb-3">
-                <span style={{ background: 'linear-gradient(to right, #FFA08A, #FF8FCF)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
+                <span style={{ background: 'linear-gradient(to right, #ff7a4a, #ff6fb3)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
                   Priority<br />Upgrade
                 </span><br />
                 for Just $50
@@ -123,19 +123,19 @@ export default function ShopifyConnect() {
               <h3 className="font-black text-lg text-gray-900 mb-4">Priority Benefits:</h3>
               <ul className="space-y-3 text-gray-700 text-sm md:text-base">
                 <li className="flex items-start gap-3">
-                  <span className="font-bold text-xl flex-shrink-0" style={{ color: '#FF8FCF' }}>✓</span>
+                  <span className="font-bold text-xl flex-shrink-0" style={{ color: '#ff6fb3' }}>✓</span>
                   <span>Arrives at the beginning of November (vs. after Black Friday)</span>
                 </li>
                 <li className="flex items-start gap-3">
-                  <span className="font-bold text-xl flex-shrink-0" style={{ color: '#FF8FCF' }}>✓</span>
+                  <span className="font-bold text-xl flex-shrink-0" style={{ color: '#ff6fb3' }}>✓</span>
                   <span>5 items sold in Novemeber is literally nothing. Many people have multiple dogs.</span>
                 </li>
                 <li className="flex items-start gap-3">
-                  <span className="font-bold text-xl flex-shrink-0" style={{ color: '#FF8FCF' }}>✓</span>
+                  <span className="font-bold text-xl flex-shrink-0" style={{ color: '#ff6fb3' }}>✓</span>
                   <span>Start earning extra profit sooner</span>
                 </li>
                 <li className="flex items-start gap-3">
-                  <span className="font-bold text-xl flex-shrink-0" style={{ color: '#FF8FCF' }}>✓</span>
+                  <span className="font-bold text-xl flex-shrink-0" style={{ color: '#ff6fb3' }}>✓</span>
                   <span>Be among the first stores to secure this product</span>
                 </li>
               </ul>
@@ -146,7 +146,7 @@ export default function ShopifyConnect() {
               whileTap={{ scale: 0.98 }}
               onClick={handlePriorityUpgrade}
               className="w-full py-4 rounded-2xl font-black text-lg text-white shadow-lg"
-              style={{ background: 'linear-gradient(to right, #FFA08A, #FF8FCF)' }}
+              style={{ background: 'linear-gradient(to right, #ff7a4a, #ff6fb3)' }}
             >
               Upgrade for $50 →
             </motion.button>

@@ -64,8 +64,8 @@ export default function AboutPawpaya() {
 
           <h1 className="text-6xl sm:text-7xl md:text-8xl font-black text-gray-900 mb-6 leading-tight">
             Meet Pawpaya
-            <span className="block mt-2 bg-gradient-to-r from-[#FFA08A] to-[#FF8FCF] bg-clip-text text-transparent">
-              Cute Collars + NFC Tech
+            <span className="block mt-2 bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3] bg-clip-text text-transparent">
+              Cute Collars<br />+<br />NFC Tech
             </span>
           </h1>
 
@@ -75,14 +75,14 @@ export default function AboutPawpaya() {
             transition={{ duration: 0.3, delay: 0.12 }}
             className="text-xl sm:text-2xl md:text-3xl text-gray-600 max-w-3xl mx-auto leading-relaxed mb-14 font-medium"
           >
-            We're bringing custom collars to your store
+            We're bringing custom<br />collars to your store
           </motion.p>
 
           {/* CTA Buttons */}
           <div className="flex flex-col md:flex-row gap-4 justify-center items-center">
             <Link href="/onboard">
               <button
-                className="bg-gradient-to-r from-[#FFA08A] to-[#FF8FCF] text-white px-8 py-4 rounded-2xl text-lg font-black shadow-lg hover:shadow-xl transition-all hover:scale-105"
+                className="bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3] text-white px-8 py-4 rounded-2xl text-lg font-black shadow-lg hover:shadow-xl transition-all hover:scale-105"
               >
                 Learn About Partnership →
               </button>
@@ -90,7 +90,7 @@ export default function AboutPawpaya() {
             <a
               href="#how-it-works"
               className="bg-white border-4 px-8 py-4 rounded-2xl text-lg font-black shadow-lg hover:shadow-xl transition-all hover:scale-105 inline-block cursor-pointer"
-              style={{ borderColor: '#FF8FCF', color: '#FF8FCF' }}
+              style={{ borderColor: '#ff6fb3', color: '#ff6fb3' }}
               onClick={(e) => {
                 e.preventDefault();
                 document.getElementById('how-it-works')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -221,7 +221,7 @@ export default function AboutPawpaya() {
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-block px-8 py-4 rounded-2xl text-lg md:text-xl font-black text-white shadow-lg transition-all hover:shadow-xl hover:scale-105"
-                style={{ background: 'linear-gradient(to right, #FFA08A, #FF8FCF)' }}
+                style={{ background: 'linear-gradient(to right, #ff7a4a, #ff6fb3)' }}
               >
                 Start Customizing →
               </a>
@@ -259,7 +259,7 @@ export default function AboutPawpaya() {
                     { step: '3', title: 'Earn Per Sale', desc: 'Earn 30% commission on every Pawpaya product ordered from your display automatically' }
                   ].map((item, idx) => (
                     <div key={idx} className="flex gap-4 items-start">
-                      <div className="w-10 h-10 flex-shrink-0 rounded-full bg-gradient-to-br from-[#FFA08A] to-[#FF8FCF] flex items-center justify-center text-white font-black text-lg shadow-lg">
+                      <div className="w-10 h-10 flex-shrink-0 rounded-full bg-gradient-to-br from-[#ff7a4a] to-[#ff6fb3] flex items-center justify-center text-white font-black text-lg shadow-lg">
                         {item.step}
                       </div>
                       <div className="flex-1">
@@ -282,7 +282,7 @@ export default function AboutPawpaya() {
             className="mt-12 md:mt-16 mb-8 md:mb-12"
           >
             <div className="rounded-3xl md:rounded-[2rem] p-6 md:p-10 shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_1px_-0.5px_rgba(0,0,0,0.06),0px_3px_3px_-1.5px_rgba(0,0,0,0.06),0px_6px_6px_-3px_rgba(0,0,0,0.06),0px_12px_12px_-6px_rgba(0,0,0,0.06),0px_24px_24px_-12px_rgba(0,0,0,0.06)] text-white"
-                 style={{ background: 'linear-gradient(to bottom right, #FFA08A, #FF8FCF)' }}>
+                 style={{ background: 'linear-gradient(to bottom right, #ff7a4a, #ff6fb3)' }}>
               <h2 className="text-3xl sm:text-4xl md:text-5xl mb-4 md:mb-5 text-left" style={{ fontWeight: 600 }}>
                 Your Opportunity
               </h2>
@@ -293,7 +293,7 @@ export default function AboutPawpaya() {
                 <Link href="/onboard">
                   <button
                     className="bg-white px-10 md:px-12 py-4 md:py-5 rounded-2xl md:rounded-3xl text-lg md:text-xl font-black transition-all shadow-2xl whitespace-nowrap"
-                    style={{ color: '#FF8FCF' }}
+                    style={{ color: '#ff6fb3' }}
                   >
                     See What We're Offering →
                   </button>
