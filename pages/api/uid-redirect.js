@@ -107,14 +107,36 @@ export default async function handler(req, res) {
     }
 
     // Valid claim with affiliate URL - redirect to Shopify
+    // ✅ CRITICAL FIX: Ensure UID is always passed as 'ref' query parameter for tracking
+    let finalUrl = affiliate_url;
+    try {
+      const urlObj = new URL(affiliate_url);
+
+      // Check if ref parameter already exists
+      if (!urlObj.searchParams.has('ref')) {
+        // Add ref parameter with the UID
+        urlObj.searchParams.set('ref', uid);
+        finalUrl = urlObj.toString();
+        console.log('[uid-redirect] Added ref parameter to URL:', finalUrl);
+      } else {
+        console.log('[uid-redirect] ref parameter already exists in URL:', affiliate_url);
+      }
+    } catch (urlError) {
+      console.error('[uid-redirect] Failed to parse affiliate URL, appending ref manually:', urlError.message);
+      // Fallback: append ref parameter manually
+      const separator = affiliate_url.includes('?') ? '&' : '?';
+      finalUrl = `${affiliate_url}${separator}ref=${uid}`;
+    }
+
     await logEvent('uid-redirect', 'scan_redirect', {
       uid,
       retailer_id: uidRow.retailer_id,
       affiliate_url,
+      final_url: finalUrl,
     });
 
-    console.log('[uid-redirect] Redirecting to affiliate URL:', affiliate_url);
-    return res.redirect(302, affiliate_url);
+    console.log('[uid-redirect] Redirecting to URL with tracking:', finalUrl);
+    return res.redirect(302, finalUrl);
   } catch (err) {
     console.error('[uid-redirect] Handler error', err);
     await logEvent('uid-redirect', 'error', { uid, message: err.message });
