@@ -974,28 +974,30 @@ export default function RetailerDashboard() {
                         <div className="text-xs md:text-sm text-gray-500">Max: {maxScans}</div>
                       </div>
                       <div className="flex items-end justify-between gap-2 h-48">
-                        {weeklyData.map((day, idx) => (
-                          <motion.div 
-                            key={idx} 
-                            initial={{ height: 0 }}
-                            animate={{ height: 'auto' }}
-                            transition={{ duration: 0.5, delay: idx * 0.1 }}
-                            className="flex-1 flex flex-col items-center gap-2"
-                          >
-                            <div className="w-full flex flex-col justify-end h-full">
-                              <motion.div
-                                whileHover={{ scale: 1.1 }}
-                                className="w-full bg-gradient-to-t from-blue-500 to-blue-400 rounded-t-xl relative group shadow-lg"
-                                style={{ height: `${(day.scans / maxScans) * 100}%` }}
-                              >
-                                <div className="absolute -top-10 left-1/2 transform -translate-x-1/2 bg-gray-900 text-white text-xs px-3 py-1.5 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap font-semibold shadow-lg">
-                                  {day.scans} scans
-                                </div>
-                              </motion.div>
+                        {weeklyData.map((day, idx) => {
+                          const barHeight = Math.max((day.scans / maxScans) * 100, day.scans > 0 ? 8 : 0);
+                          return (
+                            <div
+                              key={idx}
+                              className="flex-1 flex flex-col items-center gap-2 h-full"
+                            >
+                              <div className="w-full flex flex-col justify-end h-full">
+                                <motion.div
+                                  initial={{ height: 0 }}
+                                  animate={{ height: `${barHeight}%` }}
+                                  transition={{ duration: 0.6, delay: idx * 0.1, ease: "easeOut" }}
+                                  whileHover={{ scaleY: 1.05 }}
+                                  className="w-full bg-gradient-to-t from-[#ff7a4a] to-[#ff6fb3] rounded-t-xl relative group shadow-lg origin-bottom min-h-[4px]"
+                                >
+                                  <div className="absolute -top-10 left-1/2 transform -translate-x-1/2 bg-gray-900 text-white text-xs px-3 py-1.5 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap font-semibold shadow-lg z-10">
+                                    {day.scans} scans
+                                  </div>
+                                </motion.div>
+                              </div>
+                              <span className="text-sm font-bold text-gray-600">{day.day}</span>
                             </div>
-                            <span className="text-sm font-bold text-gray-600">{day.day}</span>
-                          </motion.div>
-                        ))}
+                          );
+                        })}
                       </div>
                     </div>
 
@@ -1006,28 +1008,30 @@ export default function RetailerDashboard() {
                         <div className="text-xs md:text-sm text-gray-500">Max: ${maxRevenue.toFixed(2)}</div>
                       </div>
                       <div className="flex items-end justify-between gap-2 h-48">
-                        {weeklyData.map((day, idx) => (
-                          <motion.div 
-                            key={idx}
-                            initial={{ height: 0 }}
-                            animate={{ height: 'auto' }}
-                            transition={{ duration: 0.5, delay: idx * 0.1 + 0.3 }}
-                            className="flex-1 flex flex-col items-center gap-2"
-                          >
-                            <div className="w-full flex flex-col justify-end h-full">
-                              <motion.div
-                                whileHover={{ scale: 1.1 }}
-                                className="w-full bg-gradient-to-t from-[#ff7a4a] to-[#ff6fb3] rounded-t-xl relative group shadow-lg"
-                                style={{ height: `${(day.revenue / maxRevenue) * 100}%` }}
-                              >
-                                <div className="absolute -top-10 left-1/2 transform -translate-x-1/2 bg-gray-900 text-white text-xs px-3 py-1.5 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap font-semibold shadow-lg">
-                                  ${day.revenue.toFixed(2)}
-                                </div>
-                              </motion.div>
+                        {weeklyData.map((day, idx) => {
+                          const barHeight = Math.max((day.revenue / maxRevenue) * 100, day.revenue > 0 ? 8 : 0);
+                          return (
+                            <div
+                              key={idx}
+                              className="flex-1 flex flex-col items-center gap-2 h-full"
+                            >
+                              <div className="w-full flex flex-col justify-end h-full">
+                                <motion.div
+                                  initial={{ height: 0 }}
+                                  animate={{ height: `${barHeight}%` }}
+                                  transition={{ duration: 0.6, delay: idx * 0.1 + 0.3, ease: "easeOut" }}
+                                  whileHover={{ scaleY: 1.05 }}
+                                  className="w-full bg-gradient-to-t from-[#ff7a4a] to-[#ff6fb3] rounded-t-xl relative group shadow-lg origin-bottom min-h-[4px]"
+                                >
+                                  <div className="absolute -top-10 left-1/2 transform -translate-x-1/2 bg-gray-900 text-white text-xs px-3 py-1.5 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap font-semibold shadow-lg z-10">
+                                    ${day.revenue.toFixed(2)}
+                                  </div>
+                                </motion.div>
+                              </div>
+                              <span className="text-sm font-bold text-gray-600">{day.day}</span>
                             </div>
-                            <span className="text-sm font-bold text-gray-600">{day.day}</span>
-                          </motion.div>
-                        ))}
+                          );
+                        })}
                       </div>
                     </div>
                   </div>
