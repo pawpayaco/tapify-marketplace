@@ -576,7 +576,7 @@ export default function RegisterRetailer() {
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.85 }}
-              className="bg-white rounded-[23px] p-5 md:p-6 shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_1px_-0.5px_rgba(0,0,0,0.06),0px_3px_3px_-1.5px_rgba(0,0,0,0.06),0px_6px_6px_-3px_rgba(0,0,0,0.06),0px_12px_12px_-6px_rgba(0,0,0,0.06),0px_24px_24px_-12px_rgba(0,0,0,0.06)] border border-transparent"
+              className="bg-white rounded-[20px] p-5 md:p-6 shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_1px_-0.5px_rgba(0,0,0,0.06),0px_3px_3px_-1.5px_rgba(0,0,0,0.06),0px_6px_6px_-3px_rgba(0,0,0,0.06),0px_12px_12px_-6px_rgba(0,0,0,0.06),0px_24px_24px_-12px_rgba(0,0,0,0.06)] border border-transparent"
             >
               <div className="mb-4 md:mb-6">
                 <h3 className="text-2xl font-black text-gray-900 mb-2">What Happens Next</h3>
@@ -589,7 +589,7 @@ export default function RegisterRetailer() {
                     className="relative"
                   >
                     <div className="flex items-start gap-4">
-                      <div className="flex-shrink-0 w-12 h-12 rounded-[23px] flex items-center justify-center text-white text-xl font-black shadow-lg"
+                      <div className="flex-shrink-0 w-12 h-12 rounded-[20px] flex items-center justify-center text-white text-xl font-black shadow-lg"
                            style={{ background: 'linear-gradient(to right, #ff7a4a, #ff6fb3)' }}>
                         {idx + 1}
                       </div>
@@ -614,7 +614,7 @@ export default function RegisterRetailer() {
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.9 }}
-              className="bg-white rounded-[23px] p-5 md:p-6 shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_1px_-0.5px_rgba(0,0,0,0.06),0px_3px_3px_-1.5px_rgba(0,0,0,0.06),0px_6px_6px_-3px_rgba(0,0,0,0.06),0px_12px_12px_-6px_rgba(0,0,0,0.06),0px_24px_24px_-12px_rgba(0,0,0,0.06)] border border-transparent"
+              className="bg-white rounded-[20px] p-5 md:p-6 shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_1px_-0.5px_rgba(0,0,0,0.06),0px_3px_3px_-1.5px_rgba(0,0,0,0.06),0px_6px_6px_-3px_rgba(0,0,0,0.06),0px_12px_12px_-6px_rgba(0,0,0,0.06),0px_24px_24px_-12px_rgba(0,0,0,0.06)] border border-transparent"
             >
               <h3 className="text-xl font-black text-gray-900 mb-3">Managers</h3>
               <p className="text-gray-600 mb-4 leading-relaxed">
@@ -623,7 +623,7 @@ export default function RegisterRetailer() {
               <button
                 onClick={handleManagerShare}
                 type="button"
-                className="w-full px-6 py-3 rounded-[23px] font-bold shadow-lg transition-all bg-white border-2"
+                className="w-full px-6 py-3 rounded-[20px] font-bold shadow-lg transition-all bg-white border-2"
                 style={{ borderColor: '#ff6fb3', color: '#ff6fb3' }}
               >
                 {isCopied ? 'Copied! ✓' : 'Share With Owner'}
@@ -635,7 +635,7 @@ export default function RegisterRetailer() {
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 1.0 }}
-              className="bg-white rounded-[23px] p-5 md:p-6 shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_1px_-0.5px_rgba(0,0,0,0.06),0px_3px_3px_-1.5px_rgba(0,0,0,0.06),0px_6px_6px_-3px_rgba(0,0,0,0.06),0px_12px_12px_-6px_rgba(0,0,0,0.06),0px_24px_24px_-12px_rgba(0,0,0,0.06)] border border-transparent text-center"
+              className="bg-white rounded-[20px] p-5 md:p-6 shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_1px_-0.5px_rgba(0,0,0,0.06),0px_3px_3px_-1.5px_rgba(0,0,0,0.06),0px_6px_6px_-3px_rgba(0,0,0,0.06),0px_12px_12px_-6px_rgba(0,0,0,0.06),0px_24px_24px_-12px_rgba(0,0,0,0.06)] border border-transparent text-center"
             >
               <h3 className="text-xl font-black text-gray-900 mb-3">Questions?</h3>
               <p className="text-gray-600 mb-4 leading-relaxed">
@@ -643,7 +643,7 @@ export default function RegisterRetailer() {
               </p>
               <a
                 href="tel:7159791259"
-                className="inline-block px-6 py-3 rounded-[23px] font-bold text-white shadow-lg hover:shadow-xl transition-all"
+                className="inline-block px-6 py-3 rounded-[20px] font-bold text-white shadow-lg hover:shadow-xl transition-all"
                 style={{ background: 'linear-gradient(to right, #ff7a4a, #ff6fb3)' }}
               >
                 (715) 979-1259
@@ -657,7 +657,7 @@ export default function RegisterRetailer() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.4 }}
-            className="bg-white rounded-[23px] shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_1px_-0.5px_rgba(0,0,0,0.06),0px_3px_3px_-1.5px_rgba(0,0,0,0.06),0px_6px_6px_-3px_rgba(0,0,0,0.06),0px_12px_12px_-6px_rgba(0,0,0,0.06),0px_24px_24px_-12px_rgba(0,0,0,0.06)] p-8 lg:p-10 border border-transparent order-1 lg:order-2 w-full"
+            className="bg-white rounded-[20px] shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_1px_-0.5px_rgba(0,0,0,0.06),0px_3px_3px_-1.5px_rgba(0,0,0,0.06),0px_6px_6px_-3px_rgba(0,0,0,0.06),0px_12px_12px_-6px_rgba(0,0,0,0.06),0px_24px_24px_-12px_rgba(0,0,0,0.06)] p-8 lg:p-10 border border-transparent order-1 lg:order-2 w-full"
             style={{
               overflow: 'visible',
               height: 'auto',
@@ -734,14 +734,14 @@ export default function RegisterRetailer() {
                       }
                     }}
                     required
-                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-[23px] hover:border-gray-300 focus:border-[#ff6fb3] focus:ring-2 focus:ring-[#ff6fb3]/20 transition-all text-gray-900 placeholder-gray-400"
+                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-[20px] hover:border-gray-300 focus:border-[#ff6fb3] focus:ring-2 focus:ring-[#ff6fb3]/20 transition-all text-gray-900 placeholder-gray-400"
                     placeholder="Start typing your store name..."
                   />
 
                   {/* Dropdown - Absolutely Positioned, No Animations, Max 3 Items */}
                   {showSuggestions && storeQuery.length >= 1 && (
                     <div
-                      className="absolute z-50 w-full mt-2 bg-white border-2 border-gray-300 rounded-[23px] shadow-2xl"
+                      className="absolute z-50 w-full mt-2 bg-white border-2 border-gray-300 rounded-[20px] shadow-2xl"
                       style={{
                         position: 'absolute',
                         top: '100%',
@@ -823,7 +823,7 @@ export default function RegisterRetailer() {
                               type="button"
                               onClick={handleAddNewStore}
                               disabled={loading}
-                              className="w-full text-left px-4 py-4 bg-gradient-to-r from-green-50 via-emerald-50 to-green-50 hover:from-green-100 hover:via-emerald-100 hover:to-green-100 transition-all disabled:opacity-50 disabled:cursor-not-allowed group rounded-[23px]"
+                              className="w-full text-left px-4 py-4 bg-gradient-to-r from-green-50 via-emerald-50 to-green-50 hover:from-green-100 hover:via-emerald-100 hover:to-green-100 transition-all disabled:opacity-50 disabled:cursor-not-allowed group rounded-[20px]"
                             >
                               <div className="flex items-center gap-3">
                                 <div className="w-8 h-8 rounded-full bg-gradient-to-br from-green-500 to-emerald-600 flex items-center justify-center flex-shrink-0">
@@ -841,7 +841,7 @@ export default function RegisterRetailer() {
                               </div>
                             </button>
                           ) : (
-                            <div className="px-4 py-8 text-gray-500 text-sm flex items-center justify-center gap-2 bg-white rounded-[23px]">
+                            <div className="px-4 py-8 text-gray-500 text-sm flex items-center justify-center gap-2 bg-white rounded-[20px]">
                               <div className="animate-spin rounded-full h-4 w-4 border-2 border-gray-400 border-t-transparent"></div>
                               Searching retailers...
                             </div>
@@ -856,7 +856,7 @@ export default function RegisterRetailer() {
                   <motion.div
                     initial={{ opacity: 0, scale: 0.95, y: -10 }}
                     animate={{ opacity: 1, scale: 1, y: 0 }}
-                    className="mt-3 bg-gradient-to-r from-green-50 to-emerald-50 border-2 border-green-200 rounded-[23px] px-4 py-3 flex items-center gap-3"
+                    className="mt-3 bg-gradient-to-r from-green-50 to-emerald-50 border-2 border-green-200 rounded-[20px] px-4 py-3 flex items-center gap-3"
                   >
                     <div className="w-6 h-6 rounded-full bg-gradient-to-br from-green-500 to-emerald-600 flex items-center justify-center flex-shrink-0">
                       <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
@@ -882,7 +882,7 @@ export default function RegisterRetailer() {
                     value={formData.ownerName}
                     onChange={handleChange}
                     required
-                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-[23px] focus:ring-2 focus:ring-[#ff6fb3] focus:border-transparent transition-all text-gray-900 placeholder-gray-400 hover:border-gray-300"
+                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-[20px] focus:ring-2 focus:ring-[#ff6fb3] focus:border-transparent transition-all text-gray-900 placeholder-gray-400 hover:border-gray-300"
                     placeholder="John Doe"
                   />
                 </div>
@@ -897,7 +897,7 @@ export default function RegisterRetailer() {
                     name="managerName"
                     value={formData.managerName}
                     onChange={handleChange}
-                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-[23px] focus:ring-2 focus:ring-[#ff6fb3] focus:border-transparent transition-all text-gray-900 placeholder-gray-400 hover:border-gray-300"
+                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-[20px] focus:ring-2 focus:ring-[#ff6fb3] focus:border-transparent transition-all text-gray-900 placeholder-gray-400 hover:border-gray-300"
                     placeholder="Jane Smith (optional)"
                   />
                 </div>
@@ -916,7 +916,7 @@ export default function RegisterRetailer() {
                     value={formData.email}
                     onChange={handleChange}
                     required
-                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-[23px] focus:ring-2 focus:ring-[#ff6fb3] focus:border-transparent transition-all text-gray-900 placeholder-gray-400 hover:border-gray-300"
+                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-[20px] focus:ring-2 focus:ring-[#ff6fb3] focus:border-transparent transition-all text-gray-900 placeholder-gray-400 hover:border-gray-300"
                     placeholder="owner@store.com"
                   />
                 </div>
@@ -931,7 +931,7 @@ export default function RegisterRetailer() {
                     name="phone"
                     value={formData.phone}
                     onChange={handleChange}
-                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-[23px] focus:ring-2 focus:ring-[#ff6fb3] focus:border-transparent transition-all text-gray-900 placeholder-gray-400 hover:border-gray-300"
+                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-[20px] focus:ring-2 focus:ring-[#ff6fb3] focus:border-transparent transition-all text-gray-900 placeholder-gray-400 hover:border-gray-300"
                     placeholder="(555) 123-4567 (optional)"
                   />
                 </div>
@@ -950,7 +950,7 @@ export default function RegisterRetailer() {
                   onChange={handleChange}
                   required
                   minLength={6}
-                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-[23px] focus:ring-2 focus:ring-[#ff6fb3] focus:border-transparent transition-all text-gray-900 placeholder-gray-400 hover:border-gray-300"
+                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-[20px] focus:ring-2 focus:ring-[#ff6fb3] focus:border-transparent transition-all text-gray-900 placeholder-gray-400 hover:border-gray-300"
                   placeholder="At least 6 characters"
                 />
                 <p className="text-xs text-gray-500 mt-1">Create a password to access your account dashboard</p>
@@ -1018,7 +1018,7 @@ export default function RegisterRetailer() {
                           <button
                             type="button"
                             onClick={() => removeAdditionalStore(store.id)}
-                            className="text-red-500 hover:text-red-700 p-1 rounded-[23px] hover:bg-red-50 transition-colors"
+                            className="text-red-500 hover:text-red-700 p-1 rounded-[20px] hover:bg-red-50 transition-colors"
                             title="Remove this store"
                           >
                             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -1048,14 +1048,14 @@ export default function RegisterRetailer() {
                                   }
                                 }}
                                 required
-                                className="w-full px-4 py-3 border-2 border-gray-200 rounded-[23px] hover:border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all text-gray-900 placeholder-gray-400"
+                                className="w-full px-4 py-3 border-2 border-gray-200 rounded-[20px] hover:border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all text-gray-900 placeholder-gray-400"
                                 placeholder="Start typing store name..."
                               />
 
                               {/* Dropdown - Absolutely Positioned, No Animations, Max 3 Items */}
                               {store.showSuggestions && store.storeQuery.length >= 1 && (
                                 <div
-                                  className="absolute z-50 w-full mt-2 bg-white border-2 border-gray-300 rounded-[23px] shadow-2xl"
+                                  className="absolute z-50 w-full mt-2 bg-white border-2 border-gray-300 rounded-[20px] shadow-2xl"
                                   style={{
                                     position: 'absolute',
                                     top: '100%',
@@ -1137,7 +1137,7 @@ export default function RegisterRetailer() {
                                         type="button"
                                         onClick={() => handleAddNewAdditionalStore(store.id)}
                                         disabled={store.isCreatingNew}
-                                        className="w-full text-left px-4 py-4 bg-gradient-to-r from-green-50 via-emerald-50 to-green-50 hover:from-green-100 hover:via-emerald-100 hover:to-green-100 transition-all disabled:opacity-50 disabled:cursor-not-allowed group rounded-[23px]"
+                                        className="w-full text-left px-4 py-4 bg-gradient-to-r from-green-50 via-emerald-50 to-green-50 hover:from-green-100 hover:via-emerald-100 hover:to-green-100 transition-all disabled:opacity-50 disabled:cursor-not-allowed group rounded-[20px]"
                                       >
                                         <div className="flex items-center gap-3">
                                           <div className="w-8 h-8 rounded-full bg-gradient-to-br from-green-500 to-emerald-600 flex items-center justify-center flex-shrink-0">
@@ -1155,7 +1155,7 @@ export default function RegisterRetailer() {
                                         </div>
                                       </button>
                                     ) : (
-                                      <div className="px-4 py-8 text-gray-500 text-sm flex items-center justify-center gap-2 bg-white rounded-[23px]">
+                                      <div className="px-4 py-8 text-gray-500 text-sm flex items-center justify-center gap-2 bg-white rounded-[20px]">
                                         <div className="animate-spin rounded-full h-4 w-4 border-2 border-gray-400 border-t-transparent"></div>
                                         Searching retailers...
                                       </div>
@@ -1175,7 +1175,7 @@ export default function RegisterRetailer() {
                               type="text"
                               value={store.managerName}
                               onChange={(e) => handleAdditionalStoreFieldChange(store.id, 'managerName', e.target.value)}
-                              className="w-full px-4 py-3 border-2 border-gray-200 rounded-[23px] focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all text-gray-900 placeholder-gray-400 hover:border-gray-300"
+                              className="w-full px-4 py-3 border-2 border-gray-200 rounded-[20px] focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all text-gray-900 placeholder-gray-400 hover:border-gray-300"
                               placeholder="Store manager's name (optional)"
                             />
                           </div>
@@ -1209,7 +1209,7 @@ export default function RegisterRetailer() {
                   onClick={addAdditionalStore}
                   whileHover={{ y: -2 }}
                   whileTap={{ scale: 0.98 }}
-                  className="mt-6 px-6 py-3 rounded-[23px] text-sm font-bold transition-all flex items-center gap-2 text-gray-700 hover:text-gray-900 border-2 border-gray-200 hover:border-gray-300"
+                  className="mt-6 px-6 py-3 rounded-[20px] text-sm font-bold transition-all flex items-center gap-2 text-gray-700 hover:text-gray-900 border-2 border-gray-200 hover:border-gray-300"
                 >
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
@@ -1227,7 +1227,7 @@ export default function RegisterRetailer() {
                 <motion.div
                   initial={{ opacity: 0, scale: 0.9 }}
                   animate={{ opacity: 1, scale: 1 }}
-                  className="bg-red-50 border-2 border-red-200 text-red-700 px-4 py-3 rounded-[23px] flex items-start gap-2 shadow-lg"
+                  className="bg-red-50 border-2 border-red-200 text-red-700 px-4 py-3 rounded-[20px] flex items-start gap-2 shadow-lg"
                 >
                   <svg className="w-5 h-5 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                     <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
@@ -1243,7 +1243,7 @@ export default function RegisterRetailer() {
                 disabled={loading}
                 whileHover={{ y: loading ? 0 : -2 }}
                 whileTap={{ scale: loading ? 1 : 0.98 }}
-                className="w-full bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3] text-white py-4 px-6 rounded-[23px] font-bold text-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3] text-white py-4 px-6 rounded-[20px] font-bold text-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {loading ? (
                   <span className="flex items-center justify-center gap-2">

@@ -200,7 +200,7 @@ export default function Home() {
                       whileTap={{ scale: 0.98 }}
                       className="inline-flex items-center justify-center text-[#ff7a4a] px-5 sm:px-6 md:px-8 py-2.5 sm:py-3 md:py-4 font-bold text-sm sm:text-base md:text-xl shadow-xl hover:shadow-2xl transition-all bg-white"
                       style={{
-                        borderRadius: '9999px'
+                        borderRadius: '20px'
                       }}
                     >
                       Claim Your Free Display →

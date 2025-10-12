@@ -228,7 +228,7 @@ export default function AboutPawpaya() {
                 href="https://pawpayaco.com/products/diy-builder-kit-copy"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-block px-8 py-4 rounded-[23px] text-lg md:text-xl font-black text-white shadow-lg transition-all hover:shadow-xl hover:scale-105"
+                className="inline-block px-8 py-4 rounded-[20px] text-lg md:text-xl font-black text-white shadow-lg transition-all hover:shadow-xl hover:scale-105"
                 style={{ background: 'linear-gradient(to right, #ff7a4a, #ff6fb3)' }}
               >
                 Start Customizing →
