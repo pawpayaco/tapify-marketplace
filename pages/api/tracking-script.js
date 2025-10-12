@@ -134,6 +134,14 @@ export default function handler(req, res) {
     });
   }
 
+  // Check if cart has items
+  function checkCartHasItems() {
+    return fetch('/cart.js')
+      .then(r => r.json())
+      .then(cart => cart.item_count > 0)
+      .catch(() => false);
+  }
+
   // Initialize tracking on page load
   function init() {
     // Capture ref/email/retailer_id if in URL
@@ -148,23 +156,27 @@ export default function handler(req, res) {
     console.log('[Tapify] Init - Already added flag:', sessionStorage.getItem('tapify_ref_added'));
 
     if (storedRef || retailerEmail || retailerId) {
-      console.log('[Tapify] ✅ Attribution available - will be added to cart');
+      console.log('[Tapify] ✅ Attribution available');
 
-      // If we have attribution but haven't added it yet, try adding it now
-      // This ensures attribution is added even if the user already has items in cart
+      // ✅ NEW APPROACH: Only add attribution immediately if cart already has items
+      // This prevents race conditions with checkout
       if (!sessionStorage.getItem('tapify_ref_added')) {
-        console.log('[Tapify] Attempting to add attribution to existing cart...');
-        setTimeout(() => {
-          addRefToCart().then(() => {
-            sessionStorage.setItem('tapify_ref_added', 'true');
-            console.log('[Tapify] ✅ Attribution added to cart on page load');
-          }).catch(err => {
-            console.log('[Tapify] Could not add to cart on page load (cart may be empty):', err.message);
-          });
-        }, 1000); // Wait 1 second for page to fully load
+        checkCartHasItems().then(hasItems => {
+          if (hasItems) {
+            console.log('[Tapify] Cart has items, adding attribution immediately');
+            addRefToCart().then(() => {
+              sessionStorage.setItem('tapify_ref_added', 'true');
+              console.log('[Tapify] ✅ Attribution added to existing cart');
+            }).catch(err => {
+              console.log('[Tapify] Could not add attribution:', err.message);
+            });
+          } else {
+            console.log('[Tapify] Cart is empty, will add attribution when item is added');
+          }
+        });
       }
     } else {
-      console.log('[Tapify] ⚠️ No attribution found - customer may have come directly (no ref/email/retailer_id)');
+      console.log('[Tapify] ⚠️ No attribution found - customer may have come directly');
     }
   }
 
@@ -195,16 +207,19 @@ export default function handler(req, res) {
             if ((ref || retailerEmail || retailerId) && !sessionStorage.getItem('tapify_ref_added')) {
               console.log('[Tapify] Product being added to cart, will attach attribution');
 
-              // Add ref immediately after cart add completes
-              setTimeout(() => {
+              // ✅ FIXED: Use Shopify's cart.add event instead of setTimeout
+              // Wait for Shopify to finish adding the product, then add attribution
+              document.addEventListener('cart:requestComplete', function addAttribution() {
+                console.log('[Tapify] Cart updated, adding attribution now');
                 addRefToCart().then(() => {
                   sessionStorage.setItem('tapify_ref_added', 'true');
-                  console.log('[Tapify] Attribution added, checkout is now safe');
+                  console.log('[Tapify] ✅ Attribution added successfully');
                 }).catch(err => {
                   console.error('[Tapify] Failed to add attribution:', err);
-                  sessionStorage.setItem('tapify_ref_added', 'true');
                 });
-              }, 300);
+                // Remove this one-time listener
+                document.removeEventListener('cart:requestComplete', addAttribution);
+              }, { once: true });
             }
           });
         });
@@ -224,16 +239,17 @@ export default function handler(req, res) {
             if ((ref || retailerEmail || retailerId) && !sessionStorage.getItem('tapify_ref_added')) {
               console.log('[Tapify] Add-to-cart button clicked, will attach attribution');
 
-              // Add attribution immediately after add-to-cart
-              setTimeout(() => {
+              // ✅ FIXED: Use Shopify's cart event instead of setTimeout
+              document.addEventListener('cart:requestComplete', function addAttribution() {
+                console.log('[Tapify] Cart updated, adding attribution now');
                 addRefToCart().then(() => {
                   sessionStorage.setItem('tapify_ref_added', 'true');
-                  console.log('[Tapify] Attribution added, checkout is now safe');
+                  console.log('[Tapify] ✅ Attribution added successfully');
                 }).catch(err => {
                   console.error('[Tapify] Failed to add attribution:', err);
-                  sessionStorage.setItem('tapify_ref_added', 'true');
                 });
-              }, 300);
+                document.removeEventListener('cart:requestComplete', addAttribution);
+              }, { once: true });
             }
           });
         });
@@ -250,44 +266,55 @@ export default function handler(req, res) {
   function setupCheckoutInterceptor() {
     console.log('[Tapify] Setting up checkout interceptor');
 
-    // Use capture phase to intercept before Shopify's handlers
-    document.addEventListener('click', function(e) {
-      const target = e.target.closest('a[href*="/checkout"], button[name="checkout"], [data-action="checkout"]');
+    let isProcessingCheckout = false;
 
-      if (target) {
+    // Use capture phase to intercept before Shopify's handlers
+    document.addEventListener('click', function checkoutHandler(e) {
+      const target = e.target.closest('a[href*="/checkout"], button[name="checkout"], [data-action="checkout"], .cart__checkout, [name="checkout"]');
+
+      if (target && !isProcessingCheckout) {
         const ref = getStoredRef();
         const retailerEmail = sessionStorage.getItem('tapify_retailer_email') || localStorage.getItem('tapify_retailer_email');
         const retailerId = sessionStorage.getItem('tapify_retailer_id') || localStorage.getItem('tapify_retailer_id');
 
         // If we have attribution but haven't added it yet, block and add it first
         if ((ref || retailerEmail || retailerId) && !sessionStorage.getItem('tapify_ref_added')) {
-          console.log('[Tapify] ⚠️ Checkout clicked before attribution added - blocking and adding now');
+          console.log('[Tapify] ⚠️ Checkout clicked before attribution added - adding now');
+
+          // ✅ CRITICAL FIX: Block the event completely
           e.preventDefault();
           e.stopPropagation();
           e.stopImmediatePropagation();
 
-          // Add attribution BEFORE allowing checkout
-          addRefToCart().then(() => {
-            sessionStorage.setItem('tapify_ref_added', 'true');
-            console.log('[Tapify] ✅ Attribution added, proceeding to checkout');
+          isProcessingCheckout = true;
 
-            // Now proceed to checkout
-            if (target.tagName === 'A') {
-              window.location.href = target.href;
-            } else {
-              target.click();
-            }
-          }).catch(err => {
-            console.error('[Tapify] Failed to add attribution before checkout:', err);
-            sessionStorage.setItem('tapify_ref_added', 'true');
+          // Add attribution FIRST
+          addRefToCart()
+            .then(() => {
+              sessionStorage.setItem('tapify_ref_added', 'true');
+              console.log('[Tapify] ✅ Attribution added successfully');
 
-            // Proceed anyway
-            if (target.tagName === 'A') {
-              window.location.href = target.href;
-            } else {
-              target.click();
-            }
-          });
+              // ✅ FIX: Wait briefly for Shopify to process, then proceed
+              return new Promise(resolve => setTimeout(resolve, 150));
+            })
+            .then(() => {
+              console.log('[Tapify] Proceeding to checkout...');
+              isProcessingCheckout = false;
+
+              // ✅ FIX: Navigate directly to checkout URL (don't re-click)
+              if (target.tagName === 'A' && target.href) {
+                window.location.href = target.href;
+              } else {
+                // For forms/buttons, navigate to checkout directly
+                window.location.href = '/checkout';
+              }
+            })
+            .catch(err => {
+              console.error('[Tapify] Failed to add attribution:', err);
+              isProcessingCheckout = false;
+              // Even if attribution fails, allow checkout
+              window.location.href = '/checkout';
+            });
 
           return false;
         }
