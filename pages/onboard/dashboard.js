@@ -302,7 +302,7 @@ export default function RetailerDashboard() {
     // Users can manually refresh by navigating away and back
     // Webhook updates will be visible on next page load
 
-  }, [user]);
+  }, [user?.id, user?.email]);
 
   // Calculate statistics from scans
   const calculateStatsFromScans = (scansData, uidsData, payoutsData) => {

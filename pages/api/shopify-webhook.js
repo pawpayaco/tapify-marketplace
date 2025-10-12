@@ -314,9 +314,32 @@ export default async function handler(req, res) {
     let orderType = null;
     let targetRetailerId = retailerId; // from UID or email lookup
 
+    // ✅ NEW: Check if this is a retailer self-purchase (Priority Display + UID owner matches order email)
+    let isRetailerSelfPurchase = false;
+    if (uid && retailerId && hasPriorityDisplay) {
+      // Fetch the retailer who owns this UID to check if order email matches
+      const { data: uidOwner } = await supabaseAdmin
+        .from('retailers')
+        .select('id, email, name')
+        .eq('id', retailerId)
+        .maybeSingle();
+
+      const orderEmail = order.email ?? order.customer?.email;
+
+      if (uidOwner && orderEmail && uidOwner.email?.toLowerCase() === orderEmail.toLowerCase()) {
+        isRetailerSelfPurchase = true;
+        console.log('[shopify-webhook] 🎯 Detected retailer self-purchase:', {
+          retailer_id: uidOwner.id,
+          retailer_name: uidOwner.name,
+          email: orderEmail,
+          uid: uid
+        });
+      }
+    }
+
     // FLOW 1: Retailer buying Priority Display for themselves
-    // Criteria: Priority Display product + NO UID + email matches a retailer
-    if (hasPriorityDisplay && !uid && retailerId) {
+    // Criteria: Priority Display product + (NO UID OR self-purchase via own UID) + email matches a retailer
+    if (hasPriorityDisplay && (!uid || isRetailerSelfPurchase) && retailerId) {
       orderType = 'retailer_upgrade';
 
       console.log('[shopify-webhook] FLOW 1: Retailer Upgrade detected', {
@@ -400,8 +423,8 @@ export default async function handler(req, res) {
     }
 
     // FLOW 2: Customer sale via affiliate link
-    // Criteria: HAS UID (customer came through retailer's affiliate link)
-    if (uid && retailerId) {
+    // Criteria: HAS UID (customer came through retailer's affiliate link) + NOT a retailer self-purchase
+    if (uid && retailerId && !isRetailerSelfPurchase) {
       orderType = 'customer_sale';
 
       console.log('[shopify-webhook] FLOW 2: Customer Sale detected', {
