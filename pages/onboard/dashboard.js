@@ -1290,7 +1290,7 @@ export default function RetailerDashboard() {
                                       When checking out on Shopify, you <span className="font-bold">must use this email</span> to activate the upgrade:
                                     </p>
                                     <p className="text-xs text-amber-800 mb-2">
-                                      Dashboard takes ~30 seconds to register upgrade.
+                                      Dashboard takes ~30 seconds to register upgrade - wait and refresh the tab.
                                     </p>
                                     <div className="bg-white px-3 py-2 rounded border border-amber-300">
                                       <p className="text-xs font-mono font-bold text-amber-900">{retailer?.email}</p>

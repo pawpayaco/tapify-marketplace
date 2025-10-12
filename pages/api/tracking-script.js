@@ -143,9 +143,28 @@ export default function handler(req, res) {
     const retailerEmail = sessionStorage.getItem('tapify_retailer_email') || localStorage.getItem('tapify_retailer_email');
     const retailerId = sessionStorage.getItem('tapify_retailer_id') || localStorage.getItem('tapify_retailer_id');
 
+    console.log('[Tapify] Init - Current URL:', window.location.href);
+    console.log('[Tapify] Init - Stored attribution:', { ref: storedRef, email: retailerEmail, retailerId });
+    console.log('[Tapify] Init - Already added flag:', sessionStorage.getItem('tapify_ref_added'));
+
     if (storedRef || retailerEmail || retailerId) {
-      console.log('[Tapify] Found stored attribution:', { ref: storedRef, email: retailerEmail, retailerId });
-      console.log('[Tapify] Attribution will be added when product is added to cart or checkout is clicked');
+      console.log('[Tapify] ✅ Attribution available - will be added to cart');
+
+      // If we have attribution but haven't added it yet, try adding it now
+      // This ensures attribution is added even if the user already has items in cart
+      if (!sessionStorage.getItem('tapify_ref_added')) {
+        console.log('[Tapify] Attempting to add attribution to existing cart...');
+        setTimeout(() => {
+          addRefToCart().then(() => {
+            sessionStorage.setItem('tapify_ref_added', 'true');
+            console.log('[Tapify] ✅ Attribution added to cart on page load');
+          }).catch(err => {
+            console.log('[Tapify] Could not add to cart on page load (cart may be empty):', err.message);
+          });
+        }, 1000); // Wait 1 second for page to fully load
+      }
+    } else {
+      console.log('[Tapify] ⚠️ No attribution found - customer may have come directly (no ref/email/retailer_id)');
     }
   }
 
