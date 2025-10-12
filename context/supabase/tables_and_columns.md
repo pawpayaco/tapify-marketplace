@@ -1,8 +1,14 @@
 # Tables & Columns (public schema)
 
+> **⚠️ NOTICE (Updated Oct 11, 2025):**
+> This file may be outdated. For the **most accurate and up-to-date schema**:
+> - 📄 **Source of Truth:** `full_dump.sql` (complete database export from October 11, 2025)
+> - 🚨 **Schema Gaps:** `SCHEMA_GAPS.md` (missing columns and fixes needed)
+> - 💳 **Payment Tables:** `../PAYMENT_SYSTEM_COMPLETE.md` (verified schemas with status indicators)
+
 Source: information_schema.columns. This is structure only (no data).
 
-**Last Updated:** 2025-10-06 (Post-consolidation migration)
+**Last Updated:** 2025-10-06 (Post-consolidation migration - may be missing Oct 11 changes)
 
 ## Recent Schema Changes (October 2025)
 

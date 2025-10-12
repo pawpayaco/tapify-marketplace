@@ -84,15 +84,17 @@ Outlines how Shopify powers checkout, product data, and order events that sync i
 ### 🧠 Supabase (Database + Backend)
 Central data layer handling authentication, relationships, payouts, and display attribution.
 
-| File | Purpose |
-|------|----------|
-| **overview.md** | Explains the DB’s purpose and key entities (`retailers`, `vendors`, `uids`, `payout_jobs`, etc). |
-| **tables_and_columns.md** | Raw schema reference (auto-generated via `information_schema`). |
-| **foreign_keys.md** | Documents real and inferred FK relationships. |
-| **fk_candidates.md** | Notes potential relationships not yet formalized. |
-| **constraints.md** | Table constraints, default values, and checks. |
-| **row_counts.md** | Approximate record counts for debugging or scaling analytics. |
-| **queries/** | SQL snapshots of your schema (for reproducibility and Claude context). |
+| File | Purpose | Status |
+|------|----------|--------|
+| **full_dump.sql** | 📄 **SOURCE OF TRUTH** - Complete database export (Oct 11, 2025). All schemas, indexes, constraints. | ✅ Current |
+| **SCHEMA_GAPS.md** | 🚨 **CRITICAL** - Documents 8 schema gaps and provides migration script to fix them. | ✅ Current |
+| **overview.md** | Explains the DB's purpose and key entities (`retailers`, `vendors`, `uids`, `payout_jobs`, etc). | ✅ Updated |
+| **tables_and_columns.md** | Raw schema reference (auto-generated via `information_schema`). | ⚠️ Oct 6 (may be outdated) |
+| **foreign_keys.md** | Documents real and inferred FK relationships. | ⚠️ Older |
+| **fk_candidates.md** | Notes potential relationships not yet formalized. | ⚠️ Older |
+| **constraints.md** | Table constraints, default values, and checks. | ⚠️ Older |
+| **row_counts.md** | Approximate record counts for debugging or scaling analytics. | ⚠️ Older |
+| **queries/** | SQL snapshots of your schema (for reproducibility and Claude context). | ⚠️ Older |
 
 ---
 
@@ -108,13 +110,14 @@ Defines all visual patterns, design tokens, and UI philosophy.
 
 ### 🧱 Root-Level Files
 
-| File | Purpose |
-|------|----------|
-| **AuthContext.js** | React Auth Provider using Supabase session logic. Wraps the app in `_app.js`. |
-| **CLAUDE.md** | Developer guidance file for Claude Code — defines how AI should interpret this repo. |
-| **GAME_PLAN_2.0.md** | Tapify’s master vision document: strategy, phases, payout logic, and architecture. |
-| **data_model.md** | Conceptual overview of entity relationships and data flow (Supabase ↔ Shopify ↔ Next.js). |
-| **payouts_flow.md** | Documents how Dwolla/Plaid payouts are triggered and reconciled through Supabase. |
+| File | Purpose | Status |
+|------|----------|--------|
+| **PAYMENT_SYSTEM_COMPLETE.md** | 💳 **CRITICAL** - Complete payment system documentation with 8 confirmed issues, verified against actual database. | ✅ Current (Oct 11) |
+| **AuthContext.js** | React Auth Provider using Supabase session logic. Wraps the app in `_app.js`. | ✅ Current |
+| **CLAUDE.md** | Developer guidance file for Claude Code — defines how AI should interpret this repo. | ✅ Current |
+| **GAME_PLAN_2.0.md** | Tapify's master vision document: strategy, phases, payout logic, and architecture. | ✅ Current |
+| **data_model.md** | Conceptual overview of entity relationships and data flow (Supabase ↔ Shopify ↔ Next.js). | ⚠️ Older |
+| **payouts_flow.md** | Documents how Dwolla/Plaid payouts are triggered and reconciled through Supabase. | ⚠️ Older |
 
 ---
 

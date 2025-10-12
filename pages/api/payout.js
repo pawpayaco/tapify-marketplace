@@ -116,7 +116,8 @@ export default async function handler(req, res) {
     if (jobError || !job) {
       return res.status(404).json({ error: 'Payout job not found' });
     }
-    if (job.status !== 'pending') {
+    // Allow both 'pending' and 'priority_display' status (customer sales via Priority Display)
+    if (!['pending', 'priority_display'].includes(job.status)) {
       return res.status(400).json({ error: 'Payout already processed' });
     }
 

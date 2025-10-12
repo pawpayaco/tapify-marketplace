@@ -102,7 +102,8 @@ async function createPayoutJob(orderId, retailerId, vendorId, total, sourceUid, 
   const retailerCut = Number((total * (retailerPercent / 100)).toFixed(2));
   const sourcerCut = sourcerId ? Number((total * (sourcerPercent / 100)).toFixed(2)) : 0;
   const tapifyCut = sourcerId ? Number((total * (tapifyPercent / 100)).toFixed(2)) : 0;
-  const vendorCut = Number((total * (vendorPercent / 100)).toFixed(2));
+  // Calculate vendor cut as remainder to ensure sum equals total (avoids rounding errors)
+  const vendorCut = Number((total - retailerCut - sourcerCut - tapifyCut).toFixed(2));
 
   const { data, error } = await supabaseAdmin
     .from('payout_jobs')
@@ -306,6 +307,204 @@ export default async function handler(req, res) {
 
     console.log('[shopify-webhook] Priority Display detected:', hasPriorityDisplay);
 
+    // ============================================================================
+    // FLOW DETECTION: Retailer Upgrade vs Customer Sale vs Unattributed
+    // ============================================================================
+
+    let orderType = null;
+    let targetRetailerId = retailerId; // from UID or email lookup
+
+    // FLOW 1: Retailer buying Priority Display for themselves
+    // Criteria: Priority Display product + NO UID + email matches a retailer
+    if (hasPriorityDisplay && !uid && retailerId) {
+      orderType = 'retailer_upgrade';
+
+      console.log('[shopify-webhook] FLOW 1: Retailer Upgrade detected', {
+        retailer_id: retailerId,
+        retailer_email: order.email,
+        order_total: order.total_price
+      });
+
+      // ✅ Update retailer's Priority Display status
+      const { error: priorityUpdateError } = await supabaseAdmin
+        .from('retailers')
+        .update({ priority_display_active: true })
+        .eq('id', retailerId);
+
+      if (priorityUpdateError) {
+        console.error('[shopify-webhook] Failed to update priority_display_active', priorityUpdateError.message);
+      } else {
+        console.log('[shopify-webhook] ✅ Priority Display activated for retailer:', retailerId);
+      }
+
+      // ✅ Create order record for tracking (but NO payout job)
+      const orderRecord = {
+        shopify_order_id: String(order.id),
+        shopify_order_number: order.order_number ? String(order.order_number) : null,
+        shop_domain: shopDomain,
+        customer_email: order.email ?? order.customer?.email ?? null,
+        customer_name: order.customer
+          ? `${order.customer.first_name ?? ''} ${order.customer.last_name ?? ''}`.trim()
+          : null,
+        retailer_id: retailerId, // Link to retailer who purchased
+        vendor_id: pawpayaVendorId,
+        business_id: businessId,
+        currency: order.currency ?? 'USD',
+        total: toNumber(order.total_price),
+        subtotal: toNumber(order.subtotal_price),
+        tax_total: toNumber(order.total_tax),
+        discount_total: toNumber(order.total_discounts),
+        product_name: order?.line_items?.[0]?.title ?? 'Unknown Product',
+        amount: toNumber(order.total_price ?? order.subtotal_price ?? 0),
+        commission: Number((order.total_price * 0.2).toFixed(2)),
+        financial_status: order.financial_status ?? null,
+        fulfillment_status: order.fulfillment_status ?? null,
+        processed_at: order.created_at ?? new Date().toISOString(),
+        source_uid: null, // NO UID for retailer upgrades
+        is_priority_display: true,
+        line_items: order.line_items ?? [],
+        raw_payload: order,
+      };
+
+      const safeOrderRecord = await fillMissingDefaults('orders', orderRecord);
+
+      const { data: orderData, error: insertError } = await supabaseAdmin
+        .from('orders')
+        .insert(safeOrderRecord)
+        .select('id')
+        .single();
+
+      if (insertError) {
+        console.error('[shopify-webhook] Failed to insert order', insertError.message);
+        throw insertError;
+      }
+
+      console.log('[shopify-webhook] Order created (retailer upgrade, no payout job)');
+
+      await logEvent('shopify-webhook', 'order_received', {
+        shop_domain: shopDomain,
+        shopify_order_id: orderRecord.shopify_order_id,
+        retailer_id: retailerId,
+        total: orderRecord.total,
+        is_priority_display: true,
+        order_type: 'retailer_upgrade'
+      });
+
+      return res.status(200).json({
+        success: true,
+        type: 'retailer_upgrade',
+        message: 'Priority Display activated for retailer',
+        retailer_id: retailerId,
+        order_id: orderData?.id
+      });
+    }
+
+    // FLOW 2: Customer sale via affiliate link
+    // Criteria: HAS UID (customer came through retailer's affiliate link)
+    if (uid && retailerId) {
+      orderType = 'customer_sale';
+
+      console.log('[shopify-webhook] FLOW 2: Customer Sale detected', {
+        uid,
+        retailer_id: retailerId,
+        is_priority_display: hasPriorityDisplay,
+        order_total: order.total_price
+      });
+
+      // ✅ Create order record
+      const orderRecord = {
+        shopify_order_id: String(order.id),
+        shopify_order_number: order.order_number ? String(order.order_number) : null,
+        shop_domain: shopDomain,
+        customer_email: order.email ?? order.customer?.email ?? null,
+        customer_name: order.customer
+          ? `${order.customer.first_name ?? ''} ${order.customer.last_name ?? ''}`.trim()
+          : null,
+        retailer_id: retailerId, // From UID lookup
+        vendor_id: pawpayaVendorId,
+        business_id: businessId,
+        currency: order.currency ?? 'USD',
+        total: toNumber(order.total_price),
+        subtotal: toNumber(order.subtotal_price),
+        tax_total: toNumber(order.total_tax),
+        discount_total: toNumber(order.total_discounts),
+        product_name: order?.line_items?.[0]?.title ?? 'Unknown Product',
+        amount: toNumber(order.total_price ?? order.subtotal_price ?? 0),
+        commission: Number((order.total_price * 0.2).toFixed(2)),
+        financial_status: order.financial_status ?? null,
+        fulfillment_status: order.fulfillment_status ?? null,
+        processed_at: order.created_at ?? new Date().toISOString(),
+        source_uid: uid, // ✅ UID present
+        is_priority_display: hasPriorityDisplay, // Track if Priority Display
+        line_items: order.line_items ?? [],
+        raw_payload: order,
+      };
+
+      const safeOrderRecord = await fillMissingDefaults('orders', orderRecord);
+
+      const { data: orderData, error: insertError } = await supabaseAdmin
+        .from('orders')
+        .insert(safeOrderRecord)
+        .select('id')
+        .single();
+
+      if (insertError) {
+        console.error('[shopify-webhook] Failed to insert order', insertError.message);
+        throw insertError;
+      }
+
+      // ✅ Create payout job with commissions
+      const payoutJob = await createPayoutJob(
+        orderData.id,
+        retailerId,
+        pawpayaVendorId,
+        orderRecord.total,
+        uid,
+        hasPriorityDisplay
+      );
+
+      if (payoutJob) {
+        console.log('[shopify-webhook] ✅ Payout job created:', payoutJob.id);
+      }
+
+      // Update scan conversion tracking
+      if (orderRecord.total > 0) {
+        await markLatestScanConverted(uid, orderRecord.total);
+      }
+
+      // Update UID last order tracking
+      await supabaseAdmin
+        .from('uids')
+        .update({
+          last_order_at: new Date().toISOString(),
+          last_order_total: orderRecord.total,
+        })
+        .eq('uid', uid);
+
+      console.log('[shopify-webhook] Order + payout job created');
+
+      await logEvent('shopify-webhook', 'order_received', {
+        shop_domain: shopDomain,
+        shopify_order_id: orderRecord.shopify_order_id,
+        retailer_id: retailerId,
+        total: orderRecord.total,
+        is_priority_display: hasPriorityDisplay,
+        order_type: 'customer_sale'
+      });
+
+      return res.status(200).json({
+        success: true,
+        type: 'customer_sale',
+        message: 'Customer order processed with commission payout',
+        retailer_id: retailerId,
+        order_id: orderData?.id
+      });
+    }
+
+    // FLOW 3: Unattributed order (no UID, no matching retailer email)
+    // This is an order that came from somewhere else - still create order but no payout
+    console.log('[shopify-webhook] FLOW 3: Unattributed order (no UID, no matching retailer)');
+
     const orderRecord = {
       shopify_order_id: String(order.id),
       shopify_order_number: order.order_number ? String(order.order_number) : null,
@@ -314,6 +513,7 @@ export default async function handler(req, res) {
       customer_name: order.customer
         ? `${order.customer.first_name ?? ''} ${order.customer.last_name ?? ''}`.trim()
         : null,
+      vendor_id: pawpayaVendorId,
       currency: order.currency ?? 'USD',
       total: toNumber(order.total_price),
       subtotal: toNumber(order.subtotal_price),
@@ -325,133 +525,40 @@ export default async function handler(req, res) {
       financial_status: order.financial_status ?? null,
       fulfillment_status: order.fulfillment_status ?? null,
       processed_at: order.created_at ?? new Date().toISOString(),
-      source_uid: uid,
-      retailer_id: retailerId,
-      business_id: businessId,
-      vendor_id: pawpayaVendorId,
-      is_priority_display: hasPriorityDisplay,  // ✅ FIXED: Ensure boolean type
+      is_priority_display: hasPriorityDisplay,
       line_items: order.line_items ?? [],
       raw_payload: order,
     };
 
-    const { data: existingOrder } = await supabaseAdmin
+    const safeOrderRecord = await fillMissingDefaults('orders', orderRecord);
+
+    const { data: orderData, error: insertError } = await supabaseAdmin
       .from('orders')
+      .insert(safeOrderRecord)
       .select('id')
-      .eq('shopify_order_id', orderRecord.shopify_order_id)
-      .maybeSingle();
+      .single();
 
-    let orderId = existingOrder?.id ?? null;
-
-    if (existingOrder) {
-      const { error: updateError } = await supabaseAdmin
-        .from('orders')
-        .update(orderRecord)
-        .eq('id', existingOrder.id);
-      if (updateError) {
-        console.error('[shopify-webhook] Failed to update existing order', updateError.message);
-      }
-    } else {
-      // ✅ Automatically fill missing NOT NULL columns before inserting
-      const safeOrderRecord = await fillMissingDefaults('orders', orderRecord);
-
-      const { data: insertedOrder, error: insertError } = await supabaseAdmin
-        .from('orders')
-        .insert(safeOrderRecord)
-        .select('id')
-        .maybeSingle();
-
-      if (insertError) {
-        console.error('[shopify-webhook] Failed to insert order', insertError.message);
-        console.error('[shopify-webhook] Error details:', JSON.stringify(insertError, null, 2));
-        throw insertError;
-      }
-      orderId = insertedOrder?.id ?? null;
+    if (insertError) {
+      console.error('[shopify-webhook] Failed to insert order', insertError.message);
+      throw insertError;
     }
 
-    // Update retailer priority_display_active flag if Priority Display was purchased
-    if (hasPriorityDisplay && retailerId) {
-      console.log('[shopify-webhook] Priority Display detected, updating retailer flag for retailer:', retailerId);
-      const { error: retailerUpdateError } = await supabaseAdmin
-        .from('retailers')
-        .update({ priority_display_active: true })
-        .eq('id', retailerId);
-
-      if (retailerUpdateError) {
-        console.error('[shopify-webhook] Failed to update retailer priority flag', retailerUpdateError.message);
-      } else {
-        console.log('[shopify-webhook] ✅ Priority Display order processed for retailer:', retailerId);
-      }
-    }
-
-    // ✅ IMPROVED: Better handling of missing retailer_id
-    if (orderId && orderRecord.total > 0) {
-      if (retailerId) {
-        const payoutJob = await createPayoutJob(
-          orderId,
-          retailerId,
-          pawpayaVendorId,
-          orderRecord.total,
-          uid,
-          hasPriorityDisplay
-        );
-        if (payoutJob) {
-          console.log('[shopify-webhook] ✅ Payout job created:', payoutJob.id);
-        }
-      } else {
-        console.warn(
-          '[shopify-webhook] ⚠️ No retailer_id for order - payout_job skipped.',
-          'Order:', orderId,
-          'UID:', uid || 'none'
-        );
-        // TODO: Optionally create a "pending_claim" payout job for manual admin review
-      }
-    }
-
-    if (uid && orderRecord.total > 0) {
-      await markLatestScanConverted(uid, orderRecord.total);
-    }
-
-    if (uid) {
-      await supabaseAdmin
-        .from('uids')
-        .update({
-          last_order_at: new Date().toISOString(),
-          last_order_total: orderRecord.total,
-        })
-        .eq('uid', uid);
-    }
-
-    // Optional: business express shipping flag
-    const hasExpressShipping = order.line_items?.some(
-      (item) =>
-        item.product_id &&
-        item.variant_id &&
-        (item.title?.toLowerCase().includes('express') ||
-          item.title?.toLowerCase().includes('priority') ||
-          item.sku?.toLowerCase().includes('priority'))
-    );
-
-    if (hasExpressShipping && businessId) {
-      console.log('[shopify-webhook] Express shipping purchase detected');
-      const { error: businessUpdateError } = await supabaseAdmin
-        .from('businesses')
-        .update({ display_shipping: true })
-        .eq('id', businessId);
-      if (businessUpdateError) {
-        console.error('[shopify-webhook] Failed to update business', businessUpdateError.message);
-      }
-    }
+    console.log('[shopify-webhook] Unattributed order created (no payout job)');
 
     await logEvent('shopify-webhook', 'order_received', {
       shop_domain: shopDomain,
       shopify_order_id: orderRecord.shopify_order_id,
-      retailer_id: retailerId,
       total: orderRecord.total,
       is_priority_display: hasPriorityDisplay,
+      order_type: 'unattributed'
     });
 
-    console.log('[shopify-webhook] ✅ Webhook processed successfully');
-    return res.status(200).json({ received: true });
+    return res.status(200).json({
+      success: true,
+      type: 'unattributed',
+      message: 'Order recorded without attribution',
+      order_id: orderData?.id
+    });
   } catch (error) {
     console.error('[shopify-webhook] Handler error', error);
     console.error('[shopify-webhook] Stack trace:', error.stack);

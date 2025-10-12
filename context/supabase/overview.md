@@ -1,7 +1,13 @@
 # Supabase Overview
 
+> **⚠️ NOTICE (Updated Oct 11, 2025):**
+> This file contains general overview information. For the **most accurate and up-to-date schema**:
+> - 📄 **Source of Truth:** `full_dump.sql` (complete database export)
+> - 🚨 **Critical Issues:** `SCHEMA_GAPS.md` (migration script for schema fixes)
+> - 💳 **Payment System:** `../PAYMENT_SYSTEM_COMPLETE.md` (payment flow documentation)
+
 ## Purpose
-Central DB for **Tapify (Next.js app)** and **Pawpaya (Shopify integrations)**.  
+Central DB for **Tapify (Next.js app)** and **Pawpaya (Shopify integrations)**.
 Source of truth for managers, retailers, vendors, NFC UIDs, orders, payouts, and outreach.
 
 ## Access
