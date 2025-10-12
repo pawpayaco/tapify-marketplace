@@ -1269,8 +1269,8 @@ export default function RetailerDashboard() {
                                         rel="noopener noreferrer"
                                         className="underline hover:text-blue-900"
                                       >
-                                        Upgrade to Priority Display
-                                      </a> for premium placement
+                                        Upgrade to Priority Shipping
+                                      </a> for four extra weeks of profit during Q4 and Black Friday
                                     </p>
                                   </div>
                                 </div>
@@ -1517,105 +1517,6 @@ export default function RetailerDashboard() {
                       </div>
                     </div>
                     <p className="text-xs text-gray-500 mt-2">Contact support to update your store information</p>
-                  </div>
-                </motion.div>
-
-                {/* Display Confirmation */}
-                <motion.div
-                  className="bg-gradient-to-br from-gray-50 to-white border-2 border-gray-200 rounded-2xl p-4 md:p-8 shadow-lg"
-                >
-                  <h4 className="font-bold text-gray-900 text-base md:text-lg mb-4 md:mb-6">Display Confirmation</h4>
-                  <div className="space-y-4">
-                    <div className="bg-gradient-to-br from-purple-50 to-pink-50 border-2 border-purple-200 rounded-xl p-4">
-                      <div className="flex items-start gap-3">
-                        <div className="flex-shrink-0 w-10 h-10 bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3] rounded-full flex items-center justify-center">
-                          <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                          </svg>
-                        </div>
-                        <div className="flex-1">
-                          <div className="flex items-center justify-between mb-2">
-                            <h5 className="font-bold text-gray-900">Displays Owned</h5>
-                            <span className="text-2xl font-black bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3] bg-clip-text text-transparent">
-                              {retailer?.displays_ordered || 1}
-                            </span>
-                          </div>
-                          <p className="text-sm text-gray-600 mb-3">
-                            You have {retailer?.displays_ordered || 1} {(retailer?.displays_ordered || 1) === 1 ? 'display' : 'displays'} registered to your store
-                          </p>
-
-                          {/* Display Status */}
-                          {retailer?.priority_display_active ? (
-                            // Priority Display Active - Show purple shipping badge
-                            <div className="mt-3 p-3 rounded-lg border-2 bg-gradient-to-r from-purple-50 to-pink-50 border-purple-300">
-                              <div className="flex items-center gap-2">
-                                <span className="text-lg">⚡</span>
-                                <div>
-                                  <p className="font-bold text-purple-900">Priority Shipping</p>
-                                  <p className="text-xs text-purple-700">
-                                    Your displays ship with priority delivery
-                                  </p>
-                                </div>
-                              </div>
-                            </div>
-                          ) : (
-                            // Standard Display - Show upgrade option + email warning
-                            <div className="mt-3 space-y-2">
-                              <div className="p-3 bg-blue-50 border-2 border-blue-200 rounded-lg">
-                                <div className="flex items-center gap-2">
-                                  <span className="text-lg">📦</span>
-                                  <div>
-                                    <p className="font-bold text-blue-900">Standard Display</p>
-                                    <p className="text-xs text-blue-700">
-                                      <a
-                                        href={`https://pawpayaco.com/products/display-setup-for-affiliate?email=${encodeURIComponent(retailer?.email || '')}&retailer_id=${retailer?.id || ''}`}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        className="underline hover:text-blue-900"
-                                      >
-                                        Upgrade to Priority Display
-                                      </a> for premium placement
-                                    </p>
-                                  </div>
-                                </div>
-                              </div>
-
-                              {/* Important Notice */}
-                              <div className="p-3 bg-amber-50 border-2 border-amber-400 rounded-lg">
-                                <div className="flex items-start gap-2">
-                                  <span className="text-xl mt-0.5">⚠️</span>
-                                  <div className="flex-1">
-                                    <p className="font-bold text-amber-900 text-xs mb-1">Important: Use Your Account Email</p>
-                                    <p className="text-xs text-amber-800 mb-2">
-                                      When checking out on Shopify, you <span className="font-bold">must use this email</span> to activate the upgrade:
-                                    </p>
-                                    <div className="bg-white px-3 py-2 rounded border border-amber-300">
-                                      <p className="text-xs font-mono font-bold text-amber-900">{retailer?.email}</p>
-                                    </div>
-                                    <p className="text-xs text-amber-700 mt-2">
-                                      Using a different email will prevent automatic activation.
-                                    </p>
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                          )}
-
-                          {/* Order Another Display Button */}
-                          <motion.button
-                            onClick={() => setIsOrderModalOpen(true)}
-                            whileHover={{ scale: 1.02 }}
-                            whileTap={{ scale: 0.98 }}
-                            className="mt-4 w-full px-6 py-3 bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3] text-white rounded-xl font-bold shadow-lg hover:shadow-xl transition-all flex items-center justify-center gap-2"
-                          >
-                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-                            </svg>
-                            Order Another Display
-                          </motion.button>
-                        </div>
-                      </div>
-                    </div>
                   </div>
                 </motion.div>
 
