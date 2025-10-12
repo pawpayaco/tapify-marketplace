@@ -191,7 +191,7 @@ export default function OrderDisplayModal({ isOpen, onClose, onSuccess }) {
           onClick={(e) => e.stopPropagation()}
         >
           {/* Header */}
-          <div className="sticky top-0 bg-white border-b-2 border-gray-100 px-8 py-6 rounded-t-3xl z-10">
+          <div className="sticky top-0 bg-white border-b-2 border-gray-100 px-8 py-6 rounded-t-[15px] z-10">
             <div className="flex items-center justify-between">
               <div>
                 <h2 className="text-3xl font-bold text-gray-900">Order Another Display</h2>

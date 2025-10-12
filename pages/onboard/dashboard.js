@@ -987,7 +987,7 @@ export default function RetailerDashboard() {
                                   animate={{ height: `${barHeight}%` }}
                                   transition={{ duration: 0.6, delay: idx * 0.1, ease: "easeOut" }}
                                   whileHover={{ scaleY: 1.05 }}
-                                  className="w-full bg-gradient-to-t from-[#ff7a4a] to-[#ff6fb3] rounded-t-xl relative group shadow-lg origin-bottom min-h-[4px]"
+                                  className="w-full bg-gradient-to-t from-[#ff7a4a] to-[#ff6fb3] rounded-t-[15px] relative group shadow-lg origin-bottom min-h-[4px]"
                                 >
                                   <div className="absolute -top-10 left-1/2 transform -translate-x-1/2 bg-gray-900 text-white text-xs px-3 py-1.5 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap font-semibold shadow-lg z-10">
                                     {day.scans} scans
@@ -1021,7 +1021,7 @@ export default function RetailerDashboard() {
                                   animate={{ height: `${barHeight}%` }}
                                   transition={{ duration: 0.6, delay: idx * 0.1 + 0.3, ease: "easeOut" }}
                                   whileHover={{ scaleY: 1.05 }}
-                                  className="w-full bg-gradient-to-t from-[#ff7a4a] to-[#ff6fb3] rounded-t-xl relative group shadow-lg origin-bottom min-h-[4px]"
+                                  className="w-full bg-gradient-to-t from-[#ff7a4a] to-[#ff6fb3] rounded-t-[15px] relative group shadow-lg origin-bottom min-h-[4px]"
                                 >
                                   <div className="absolute -top-10 left-1/2 transform -translate-x-1/2 bg-gray-900 text-white text-xs px-3 py-1.5 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap font-semibold shadow-lg z-10">
                                     ${day.revenue.toFixed(2)}
@@ -1292,7 +1292,7 @@ export default function RetailerDashboard() {
                                     <p className="text-xs text-amber-800 mb-2">
                                       Dashboard takes ~30 seconds to register upgrade - wait and refresh the tab.
                                     </p>
-                                    <div className="bg-white px-3 py-2 rounded border border-amber-300">
+                                    <div className="bg-white px-3 py-2 rounded-[15px] border border-amber-300">
                                       <p className="text-xs font-mono font-bold text-amber-900">{retailer?.email}</p>
                                     </div>
                                     <p className="text-xs text-amber-700 mt-2">

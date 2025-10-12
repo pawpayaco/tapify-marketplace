@@ -408,7 +408,7 @@ export default function StoresDataGrid({ onRefresh }) {
                               navigator.clipboard.writeText(store.email);
                               showToast('Email copied to clipboard');
                             }}
-                            className="p-1 hover:bg-gray-100 rounded transition-colors"
+                            className="p-1 hover:bg-gray-100 rounded-[15px] transition-colors"
                             title="Copy email"
                           >
                             <svg className="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -614,7 +614,7 @@ function EditProfileModal({ isOpen, onClose, store, onSuccess }) {
         className="bg-white rounded-2xl shadow-xl max-w-lg w-full max-h-[85vh] overflow-y-auto"
       >
         {/* Header */}
-        <div className="bg-gradient-to-r from-blue-500 to-purple-600 text-white p-5 rounded-t-2xl">
+        <div className="bg-gradient-to-r from-blue-500 to-purple-600 text-white p-5 rounded-t-[15px]">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-xl bg-white/20 backdrop-blur-sm flex items-center justify-center">

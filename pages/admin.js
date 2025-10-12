@@ -609,11 +609,11 @@ export default function Admin({
                       <div className="space-y-1">
                         <p className="text-sm text-blue-700">
                           <span className="font-medium">Email:</span> 
-                          <span className="ml-2 font-mono bg-blue-100 px-2 py-1 rounded text-xs">{user.email}</span>
+                          <span className="ml-2 font-mono bg-blue-100 px-2 py-1 rounded-[15px] text-xs">{user.email}</span>
                         </p>
                         <p className="text-sm text-blue-700">
                           <span className="font-medium">User ID:</span> 
-                          <span className="ml-2 font-mono bg-blue-100 px-2 py-1 rounded text-xs">{user.id}</span>
+                          <span className="ml-2 font-mono bg-blue-100 px-2 py-1 rounded-[15px] text-xs">{user.id}</span>
                         </p>
                       </div>
                     </div>
