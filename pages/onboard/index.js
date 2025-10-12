@@ -313,7 +313,7 @@ export default function OnboardIndex() {
             </p>
             <a
               href="tel:7159791259"
-              className="inline-block px-6 py-3 rounded-[23px] font-bold text-white shadow-lg hover:shadow-xl transition-all"
+              className="inline-block px-6 py-3 rounded-[15px] font-bold text-white shadow-lg hover:shadow-xl transition-all"
               style={{ background: 'linear-gradient(to right, #ff7a4a, #ff6fb3)' }}
             >
               (715) 979-1259

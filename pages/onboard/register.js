@@ -643,7 +643,7 @@ export default function RegisterRetailer() {
               </p>
               <a
                 href="tel:7159791259"
-                className="inline-block px-6 py-3 rounded-[20px] font-bold text-white shadow-lg hover:shadow-xl transition-all"
+                className="inline-block px-6 py-3 rounded-[15px] font-bold text-white shadow-lg hover:shadow-xl transition-all"
                 style={{ background: 'linear-gradient(to right, #ff7a4a, #ff6fb3)' }}
               >
                 (715) 979-1259
@@ -734,7 +734,7 @@ export default function RegisterRetailer() {
                       }
                     }}
                     required
-                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-[20px] hover:border-gray-300 focus:border-[#ff6fb3] focus:ring-2 focus:ring-[#ff6fb3]/20 transition-all text-gray-900 placeholder-gray-400"
+                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-[15px] hover:border-gray-300 focus:border-[#ff6fb3] focus:ring-2 focus:ring-[#ff6fb3]/20 transition-all text-gray-900 placeholder-gray-400"
                     placeholder="Start typing your store name..."
                   />
 
@@ -882,7 +882,7 @@ export default function RegisterRetailer() {
                     value={formData.ownerName}
                     onChange={handleChange}
                     required
-                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-[20px] focus:ring-2 focus:ring-[#ff6fb3] focus:border-transparent transition-all text-gray-900 placeholder-gray-400 hover:border-gray-300"
+                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-[15px] focus:ring-2 focus:ring-[#ff6fb3] focus:border-transparent transition-all text-gray-900 placeholder-gray-400 hover:border-gray-300"
                     placeholder="John Doe"
                   />
                 </div>
@@ -897,7 +897,7 @@ export default function RegisterRetailer() {
                     name="managerName"
                     value={formData.managerName}
                     onChange={handleChange}
-                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-[20px] focus:ring-2 focus:ring-[#ff6fb3] focus:border-transparent transition-all text-gray-900 placeholder-gray-400 hover:border-gray-300"
+                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-[15px] focus:ring-2 focus:ring-[#ff6fb3] focus:border-transparent transition-all text-gray-900 placeholder-gray-400 hover:border-gray-300"
                     placeholder="Jane Smith (optional)"
                   />
                 </div>
@@ -916,7 +916,7 @@ export default function RegisterRetailer() {
                     value={formData.email}
                     onChange={handleChange}
                     required
-                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-[20px] focus:ring-2 focus:ring-[#ff6fb3] focus:border-transparent transition-all text-gray-900 placeholder-gray-400 hover:border-gray-300"
+                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-[15px] focus:ring-2 focus:ring-[#ff6fb3] focus:border-transparent transition-all text-gray-900 placeholder-gray-400 hover:border-gray-300"
                     placeholder="owner@store.com"
                   />
                 </div>
@@ -931,7 +931,7 @@ export default function RegisterRetailer() {
                     name="phone"
                     value={formData.phone}
                     onChange={handleChange}
-                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-[20px] focus:ring-2 focus:ring-[#ff6fb3] focus:border-transparent transition-all text-gray-900 placeholder-gray-400 hover:border-gray-300"
+                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-[15px] focus:ring-2 focus:ring-[#ff6fb3] focus:border-transparent transition-all text-gray-900 placeholder-gray-400 hover:border-gray-300"
                     placeholder="(555) 123-4567 (optional)"
                   />
                 </div>
@@ -950,7 +950,7 @@ export default function RegisterRetailer() {
                   onChange={handleChange}
                   required
                   minLength={6}
-                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-[20px] focus:ring-2 focus:ring-[#ff6fb3] focus:border-transparent transition-all text-gray-900 placeholder-gray-400 hover:border-gray-300"
+                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-[15px] focus:ring-2 focus:ring-[#ff6fb3] focus:border-transparent transition-all text-gray-900 placeholder-gray-400 hover:border-gray-300"
                   placeholder="At least 6 characters"
                 />
                 <p className="text-xs text-gray-500 mt-1">Create a password to access your account dashboard</p>
@@ -1048,7 +1048,7 @@ export default function RegisterRetailer() {
                                   }
                                 }}
                                 required
-                                className="w-full px-4 py-3 border-2 border-gray-200 rounded-[20px] hover:border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all text-gray-900 placeholder-gray-400"
+                                className="w-full px-4 py-3 border-2 border-gray-200 rounded-[15px] hover:border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all text-gray-900 placeholder-gray-400"
                                 placeholder="Start typing store name..."
                               />
 
@@ -1175,7 +1175,7 @@ export default function RegisterRetailer() {
                               type="text"
                               value={store.managerName}
                               onChange={(e) => handleAdditionalStoreFieldChange(store.id, 'managerName', e.target.value)}
-                              className="w-full px-4 py-3 border-2 border-gray-200 rounded-[20px] focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all text-gray-900 placeholder-gray-400 hover:border-gray-300"
+                              className="w-full px-4 py-3 border-2 border-gray-200 rounded-[15px] focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all text-gray-900 placeholder-gray-400 hover:border-gray-300"
                               placeholder="Store manager's name (optional)"
                             />
                           </div>
