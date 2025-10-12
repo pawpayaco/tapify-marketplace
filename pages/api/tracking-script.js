@@ -43,18 +43,31 @@ export default function handler(req, res) {
     }
   }
 
-  // Add ref to cart as attribute
+  // Global flag to prevent concurrent cart updates
+  let isUpdatingCart = false;
+  let updateQueue = [];
+
+  // Add ref to cart as attribute (with queue to prevent race conditions)
   function addRefToCart() {
     const ref = getStoredRef();
     if (!ref) {
       console.log('[Tapify] No ref parameter to add to cart');
-      return;
+      return Promise.resolve();
     }
 
+    // If already updating, queue this request
+    if (isUpdatingCart) {
+      console.log('[Tapify] Cart update in progress, queuing request');
+      return new Promise((resolve) => {
+        updateQueue.push(resolve);
+      });
+    }
+
+    isUpdatingCart = true;
     console.log('[Tapify] Adding ref to cart attributes:', ref);
 
     // Add as cart attribute (Shopify Ajax API)
-    fetch('/cart/update.js', {
+    return fetch('/cart/update.js', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -73,9 +86,27 @@ export default function handler(req, res) {
     .then(data => {
       console.log('[Tapify] ✅ Successfully added ref to cart attributes');
       console.log('[Tapify] Cart attributes:', data.attributes);
+      isUpdatingCart = false;
+
+      // Process queued requests
+      if (updateQueue.length > 0) {
+        updateQueue.forEach(resolve => resolve());
+        updateQueue = [];
+      }
+
+      return data;
     })
     .catch(error => {
       console.error('[Tapify] Failed to add ref to cart:', error);
+      isUpdatingCart = false;
+
+      // Reject queued requests
+      if (updateQueue.length > 0) {
+        updateQueue.forEach(resolve => resolve());
+        updateQueue = [];
+      }
+
+      throw error;
     });
   }
 
@@ -84,15 +115,18 @@ export default function handler(req, res) {
     // Capture ref if in URL
     captureRefParameter();
 
-    // Add ref to cart if we have one stored
+    // Add ref to cart ONLY if cart is empty and we have a stored ref
+    // This ensures we add it once after first page load, not during checkout
     const storedRef = getStoredRef();
     if (storedRef) {
       console.log('[Tapify] Found stored ref:', storedRef);
 
-      // Add to cart immediately if on cart or checkout page
-      if (window.location.pathname.includes('/cart') ||
-          window.location.pathname.includes('/checkout')) {
-        addRefToCart();
+      // IMPORTANT: Only add ref on initial page load, NOT when navigating to cart/checkout
+      // This prevents race conditions during checkout
+      if (!sessionStorage.getItem('tapify_ref_added')) {
+        // Mark that we'll add ref on next cart update
+        sessionStorage.setItem('tapify_ref_pending', 'true');
+        console.log('[Tapify] Ref will be added on next cart update');
       }
     }
   }
@@ -118,10 +152,24 @@ export default function handler(req, res) {
         addToCartForms.forEach(form => {
           form.addEventListener('submit', function(e) {
             const ref = getStoredRef();
-            if (ref) {
+            const pending = sessionStorage.getItem('tapify_ref_pending');
+            if (ref && pending === 'true' && !sessionStorage.getItem('tapify_ref_added')) {
               console.log('[Tapify] Product being added to cart, will attach ref:', ref);
-              // Wait a moment for cart to update, then add ref
-              setTimeout(addRefToCart, 500);
+
+              // CRITICAL FIX: Add ref immediately after cart add completes
+              // Use shorter delay (300ms instead of 800ms) to reduce window for race condition
+              setTimeout(() => {
+                addRefToCart().then(() => {
+                  sessionStorage.setItem('tapify_ref_added', 'true');
+                  sessionStorage.removeItem('tapify_ref_pending');
+                  console.log('[Tapify] Ref added, checkout is now safe');
+                }).catch(err => {
+                  console.error('[Tapify] Failed to add ref:', err);
+                  // Mark as added anyway to prevent retry
+                  sessionStorage.setItem('tapify_ref_added', 'true');
+                  sessionStorage.removeItem('tapify_ref_pending');
+                });
+              }, 300);
             }
           });
         });
@@ -135,22 +183,30 @@ export default function handler(req, res) {
         addToCartButtons.forEach(button => {
           button.addEventListener('click', function(e) {
             const ref = getStoredRef();
-            if (ref) {
+            const pending = sessionStorage.getItem('tapify_ref_pending');
+            if (ref && pending === 'true' && !sessionStorage.getItem('tapify_ref_added')) {
               console.log('[Tapify] Add-to-cart button clicked, will attach ref:', ref);
-              setTimeout(addRefToCart, 500);
+
+              // CRITICAL FIX: Use shorter delay to complete before user can click checkout
+              setTimeout(() => {
+                addRefToCart().then(() => {
+                  sessionStorage.setItem('tapify_ref_added', 'true');
+                  sessionStorage.removeItem('tapify_ref_pending');
+                  console.log('[Tapify] Ref added, checkout is now safe');
+                }).catch(err => {
+                  console.error('[Tapify] Failed to add ref:', err);
+                  sessionStorage.setItem('tapify_ref_added', 'true');
+                  sessionStorage.removeItem('tapify_ref_pending');
+                });
+              }, 300);
             }
           });
         });
       }
 
-      // On cart page, ensure ref is attached
-      if (window.location.pathname.includes('/cart')) {
-        const ref = getStoredRef();
-        if (ref) {
-          console.log('[Tapify] On cart page, attaching ref');
-          addRefToCart();
-        }
-      }
+      // ⚠️ REMOVED: Do NOT call addRefToCart() on cart page load
+      // This was causing race conditions during checkout
+      // Ref is now added only once when product is first added to cart
     } catch (err) {
       console.error('[Tapify] Error setting up cart hooks:', err);
     }
