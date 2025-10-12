@@ -1,5 +1,5 @@
 // pages/api/stores/bulk-update.js
-// Bulk operations for stores (mark cold email sent, etc.)
+// Bulk operations for stores (mark cold called, etc.)
 
 import { supabaseAdmin } from '../../../lib/supabase';
 import { requireAdmin, AuthError } from '../../../lib/api-auth';
@@ -7,13 +7,13 @@ import { logEvent } from '../../../utils/logger';
 
 /**
  * POST /api/stores/bulk-update
- * 
- * Bulk update retailers (e.g., mark cold_email_sent for multiple stores)
- * 
+ *
+ * Bulk update retailers (e.g., mark cold_called for multiple stores)
+ *
  * Request body:
  * {
  *   retailer_ids: string[] (required),
- *   action: 'mark_cold_email_sent' | 'mark_converted' (required),
+ *   action: 'mark_cold_called' | 'mark_converted' (required),
  *   campaign: string (optional, for tracking)
  * }
  */
@@ -64,20 +64,21 @@ export default async function handler(req, res) {
     
     // Determine what to update based on action
     switch (action) {
+      case 'mark_cold_called':
       case 'mark_cold_email_sent':
         updateData = {
           cold_email_sent: true,
           cold_email_sent_at: new Date().toISOString(),
         };
         break;
-        
+
       case 'mark_converted':
         updateData = {
           converted: true,
           converted_at: new Date().toISOString(),
         };
         break;
-        
+
       default:
         return res.status(400).json({
           error: `Unknown action: ${action}`,
@@ -96,15 +97,15 @@ export default async function handler(req, res) {
       throw error;
     }
 
-    // If campaign is provided and action is mark_cold_email_sent, 
+    // If campaign is provided and action is mark_cold_called,
     // create outreach records
-    if (campaign && action === 'mark_cold_email_sent') {
+    if (campaign && (action === 'mark_cold_called' || action === 'mark_cold_email_sent')) {
       const outreachRecords = retailer_ids.map(id => ({
         retailer_id: id,
         campaign,
-        channel: 'email',
+        channel: 'phone',
         registered: false,
-        notes: `Cold email sent via bulk action`,
+        notes: `Cold called via bulk action`,
       }));
 
       const { error: outreachError } = await supabaseAdmin

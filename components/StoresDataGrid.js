@@ -63,7 +63,7 @@ export default function StoresDataGrid({ onRefresh }) {
       // First try to get retailers data (including both phone and store_phone)
       const { data: retailersData, error: retailersError } = await supabase
         .from('retailers')
-        .select('id, name, address, phone, store_phone, email, owner_name, cold_email_sent, cold_email_sent_at, converted, converted_at, created_at')
+        .select('id, name, address, phone, store_phone, owner_name, cold_email_sent, cold_email_sent_at, outreach_notes, converted, converted_at, created_at')
         .order('created_at', { ascending: false });
 
       if (retailersError) throw retailersError;
@@ -90,7 +90,7 @@ export default function StoresDataGrid({ onRefresh }) {
         });
       }
 
-      // Merge the data
+      // Merge the data and map old database columns to UI property names
       const processedData = (retailersData || []).map(store => {
         const ownerData = ownersMap[store.id];
 
@@ -99,7 +99,10 @@ export default function StoresDataGrid({ onRefresh }) {
           // Use retailer phone/email if available, check multiple sources
           phone: store.phone || store.store_phone || ownerData?.owner_phone || '',
           email: store.email || ownerData?.owner_email || '',
-          owner_name: store.owner_name || ownerData?.owner_name || ''
+          owner_name: store.owner_name || ownerData?.owner_name || '',
+          // Map old database columns to new UI property names (until migration is run)
+          cold_called: store.cold_email_sent,
+          cold_called_at: store.cold_email_sent_at
         };
       });
 
@@ -121,13 +124,13 @@ export default function StoresDataGrid({ onRefresh }) {
   // Filter stores
   const filteredStores = useMemo(() => {
     return stores.filter(store => {
-      // Text search (name, address, email, phone)
+      // Text search (name, address, phone, notes)
       const searchLower = searchText.toLowerCase();
-      const matchesSearch = !searchText || 
+      const matchesSearch = !searchText ||
         store.name?.toLowerCase().includes(searchLower) ||
         store.address?.toLowerCase().includes(searchLower) ||
-        store.email?.toLowerCase().includes(searchLower) ||
-        store.phone?.toLowerCase().includes(searchLower);
+        store.phone?.toLowerCase().includes(searchLower) ||
+        store.outreach_notes?.toLowerCase().includes(searchLower);
 
       // Status filter
       const matchesStatus = 
@@ -135,11 +138,11 @@ export default function StoresDataGrid({ onRefresh }) {
         (statusFilter === 'prospect' && !store.converted) ||
         (statusFilter === 'converted' && store.converted);
 
-      // Email sent filter
+      // Cold called filter
       const matchesEmailSent =
         emailSentFilter === 'all' ||
-        (emailSentFilter === 'sent' && store.cold_email_sent) ||
-        (emailSentFilter === 'not-sent' && !store.cold_email_sent);
+        (emailSentFilter === 'sent' && store.cold_called) ||
+        (emailSentFilter === 'not-sent' && !store.cold_called);
 
       return matchesSearch && matchesStatus && matchesEmailSent;
     });
@@ -151,10 +154,10 @@ export default function StoresDataGrid({ onRefresh }) {
     setTimeout(() => setToast(null), 3000);
   };
 
-  // Toggle email sent status
+  // Toggle cold called status (using old database column names)
   const handleToggleEmailSent = async (store) => {
-    const newStatus = !store.cold_email_sent;
-    
+    const newStatus = !store.cold_called;
+
     try {
       const { error } = await supabase
         .from('retailers')
@@ -166,14 +169,20 @@ export default function StoresDataGrid({ onRefresh }) {
 
       if (error) throw error;
 
-      // Update local state
+      // Update local state (using mapped property names)
       setStores(prev => prev.map(s =>
-        s.id === store.id ? { ...s, cold_email_sent: newStatus, cold_email_sent_at: newStatus ? new Date().toISOString() : null } : s
+        s.id === store.id ? {
+          ...s,
+          cold_email_sent: newStatus,
+          cold_email_sent_at: newStatus ? new Date().toISOString() : null,
+          cold_called: newStatus,
+          cold_called_at: newStatus ? new Date().toISOString() : null
+        } : s
       ));
 
-      showToast(newStatus ? '✅ Marked as email sent' : '📧 Marked as email not sent');
+      showToast(newStatus ? '✅ Marked as called' : '📞 Marked as not called');
     } catch (err) {
-      console.error('[StoresDataGrid] Error updating email status:', err);
+      console.error('[StoresDataGrid] Error updating cold called status:', err);
       showToast('Failed to update status', 'error');
     }
   };
@@ -186,14 +195,14 @@ export default function StoresDataGrid({ onRefresh }) {
 
   // Export to CSV
   const handleExportCSV = () => {
-    const headers = ['Name', 'Address', 'Phone', 'Email', 'Status', 'Email Sent'];
+    const headers = ['Name', 'Address', 'Phone', 'Notes', 'Status', 'Cold Called'];
     const rows = filteredStores.map(store => [
       store.name || '',
       store.address || '',
       store.phone || '',
-      store.email || '',
+      store.outreach_notes || '',
       store.converted ? 'Converted' : 'Prospect',
-      store.cold_email_sent ? 'Yes' : 'No'
+      store.cold_called ? 'Yes' : 'No'
     ]);
 
     const csv = [
@@ -258,7 +267,7 @@ export default function StoresDataGrid({ onRefresh }) {
               <div className="relative">
                 <input
                   type="text"
-                  placeholder="Search by name, address, email, or phone..."
+                  placeholder="Search by name, address, phone, or notes..."
                   value={searchText}
                   onChange={(e) => setSearchText(e.target.value)}
                   className="w-full px-4 py-3 pl-11 border-2 border-gray-300 rounded-[23px] focus:ring-2 focus:ring-[#ff6fb3] focus:border-transparent text-gray-900 placeholder-gray-500"
@@ -280,15 +289,15 @@ export default function StoresDataGrid({ onRefresh }) {
               <option value="converted">✅ Converted</option>
             </select>
 
-            {/* Email Sent Filter */}
+            {/* Cold Called Filter */}
             <select
               value={emailSentFilter}
               onChange={(e) => setEmailSentFilter(e.target.value)}
               className="px-4 py-3 border-2 border-gray-300 rounded-[23px] focus:ring-2 focus:ring-[#ff6fb3] focus:border-transparent text-gray-900 font-medium"
             >
-              <option value="all">All Emails</option>
-              <option value="sent">📧 Email Sent</option>
-              <option value="not-sent">📭 Not Sent</option>
+              <option value="all">All Calls</option>
+              <option value="sent">📞 Called</option>
+              <option value="not-sent">📭 Not Called</option>
             </select>
 
             {/* Export Button */}
@@ -317,13 +326,13 @@ export default function StoresDataGrid({ onRefresh }) {
           <table className="w-full table-fixed">
             <thead className="bg-gradient-to-r from-gray-100 to-gray-200 border-b-2 border-gray-300">
               <tr>
-                <th className="w-[20%] px-4 py-4 text-left font-bold text-gray-700 text-sm">Name</th>
-                <th className="w-[25%] px-4 py-4 text-left font-bold text-gray-700 text-sm">Address</th>
-                <th className="w-[15%] px-4 py-4 text-left font-bold text-gray-700 text-sm">Phone</th>
-                <th className="w-[20%] px-4 py-4 text-left font-bold text-gray-700 text-sm">Email</th>
-                <th className="w-[10%] px-2 py-4 text-center font-bold text-gray-700 text-sm">Cold Email</th>
+                <th className="w-[12%] px-4 py-4 text-left font-bold text-gray-700 text-sm">Name</th>
+                <th className="w-[15%] px-4 py-4 text-left font-bold text-gray-700 text-sm">Address</th>
+                <th className="w-[12%] px-4 py-4 text-left font-bold text-gray-700 text-sm">Phone</th>
+                <th className="w-[20%] px-4 py-4 text-left font-bold text-gray-700 text-sm">Notes</th>
+                <th className="w-[10%] px-2 py-4 text-center font-bold text-gray-700 text-sm">Cold Called</th>
                 <th className="w-[10%] px-2 py-4 text-center font-bold text-gray-700 text-sm">Status</th>
-                <th className="w-[15%] px-2 py-4 text-center font-bold text-gray-700 text-sm">Actions</th>
+                <th className="w-[11%] px-2 py-4 text-center font-bold text-gray-700 text-sm">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100">
@@ -359,25 +368,25 @@ export default function StoresDataGrid({ onRefresh }) {
                     className="hover:bg-gray-50 transition-colors"
                   >
                     {/* Name */}
-                    <td className="w-[20%] px-4 py-4">
-                      <div className="font-bold text-gray-900 truncate" title={store.name}>
+                    <td className="w-[12%] px-4 py-4">
+                      <div className="font-bold text-gray-900 break-words" title={store.name}>
                         {store.name || '-'}
                       </div>
                       {store.owner_name && (
-                        <div className="text-xs text-gray-500 mt-1 truncate" title={store.owner_name}>
-                          Owner/Management: {store.owner_name}
+                        <div className="text-xs text-gray-500 mt-1 break-words" title={store.owner_name}>
+                          Owner: {store.owner_name}
                         </div>
                       )}
                     </td>
 
                     {/* Address */}
-                    <td className="w-[25%] px-4 py-4">
-                      <div className="flex items-center gap-2">
-                        <div className="text-gray-700 text-sm truncate flex-1" title={store.address}>
+                    <td className="w-[15%] px-4 py-4">
+                      <div className="flex items-start gap-2">
+                        <div className="text-gray-700 text-sm break-words flex-1" title={store.address}>
                           {store.address || '-'}
                         </div>
                         {isAddressInvalid(store.address) && (
-                          <div 
+                          <div
                             className="flex-shrink-0 w-5 h-5 rounded-full bg-yellow-100 flex items-center justify-center"
                             title="⚠️ Address appears incomplete or invalid. Click Edit to verify with USPS."
                           >
@@ -390,36 +399,20 @@ export default function StoresDataGrid({ onRefresh }) {
                     </td>
 
                     {/* Phone */}
-                    <td className="w-[15%] px-4 py-4">
-                      <div className="text-gray-700 text-sm truncate" title={store.phone}>
+                    <td className="w-[12%] px-4 py-4">
+                      <div className="text-gray-700 text-sm break-words" title={store.phone}>
                         {store.phone || '-'}
                       </div>
                     </td>
 
-                    {/* Email */}
+                    {/* Notes */}
                     <td className="w-[20%] px-4 py-4">
-                      <div className="flex items-center gap-2">
-                        <div className="text-gray-700 text-sm truncate flex-1" title={store.email}>
-                          {store.email || '-'}
-                        </div>
-                        {store.email && (
-                          <button
-                            onClick={() => {
-                              navigator.clipboard.writeText(store.email);
-                              showToast('Email copied to clipboard');
-                            }}
-                            className="p-1 hover:bg-gray-100 rounded-[23px] transition-colors"
-                            title="Copy email"
-                          >
-                            <svg className="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
-                            </svg>
-                          </button>
-                        )}
+                      <div className="text-gray-700 text-sm break-words max-h-20 overflow-y-auto" title={store.outreach_notes}>
+                        {store.outreach_notes || '-'}
                       </div>
                     </td>
 
-                    {/* Cold Email Toggle */}
+                    {/* Cold Called Toggle */}
                     <td className="w-[10%] px-2 py-4 text-center">
                       <motion.button
                         whileHover={{ scale: 1.1 }}
@@ -427,20 +420,21 @@ export default function StoresDataGrid({ onRefresh }) {
                         onClick={() => handleToggleEmailSent(store)}
                         className={[
                           "relative inline-flex items-center h-6 w-12 rounded-full transition-colors",
-                          store.cold_email_sent ? "bg-green-500" : "bg-gray-300"
+                          store.cold_called ? "bg-green-500" : "bg-gray-300"
                         ].join(" ")}
-                        title={store.cold_email_sent ? "Email sent" : "Email not sent"}
+                        title={store.cold_called ? "Called" : "Not called"}
                       >
                         <span
                           className={[
                             "inline-block w-4 h-4 bg-white rounded-full shadow-lg transform transition-transform",
-                            store.cold_email_sent ? "translate-x-6" : "translate-x-1"
+                            store.cold_called ? "translate-x-6" : "translate-x-1"
                           ].join(" ")}
                         />
                       </motion.button>
-                      {store.cold_email_sent && store.cold_email_sent_at && (
+                      {store.cold_called && store.cold_called_at && (
                         <div className="text-xs text-gray-500 mt-1">
-                          {new Date(store.cold_email_sent_at).toLocaleDateString()}
+                          <div>{new Date(store.cold_called_at).toLocaleDateString()}</div>
+                          <div>{new Date(store.cold_called_at).toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit' })}</div>
                         </div>
                       )}
                     </td>
@@ -457,7 +451,8 @@ export default function StoresDataGrid({ onRefresh }) {
                       </span>
                       {store.converted && store.converted_at && (
                         <div className="text-xs text-gray-500 mt-1">
-                          {new Date(store.converted_at).toLocaleDateString()}
+                          <div>{new Date(store.converted_at).toLocaleDateString()}</div>
+                          <div>{new Date(store.converted_at).toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit' })}</div>
                         </div>
                       )}
                     </td>
@@ -533,8 +528,8 @@ function EditProfileModal({ isOpen, onClose, store, onSuccess }) {
     name: '',
     address: '',
     phone: '',
-    email: '',
-    owner_name: ''
+    owner_name: '',
+    outreach_notes: ''
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -545,8 +540,8 @@ function EditProfileModal({ isOpen, onClose, store, onSuccess }) {
         name: store.name || '',
         address: store.address || '',
         phone: store.phone || '',
-        email: store.email || '',
-        owner_name: store.owner_name || ''
+        owner_name: store.owner_name || '',
+        outreach_notes: store.outreach_notes || ''
       });
     }
   }, [store]);
@@ -564,34 +559,12 @@ function EditProfileModal({ isOpen, onClose, store, onSuccess }) {
           name: formData.name,
           address: formData.address,
           phone: formData.phone,
-          email: formData.email,
-          owner_name: formData.owner_name
+          owner_name: formData.owner_name,
+          outreach_notes: formData.outreach_notes
         })
         .eq('id', store.id);
 
       if (updateError) throw updateError;
-
-      // If email is provided, also update retailer_owners table
-      if (formData.email) {
-        const { error: ownerError } = await supabase
-          .from('retailer_owners')
-          .upsert({
-            retailer_id: store.id,
-            owner_name: formData.owner_name || null,
-            owner_email: formData.email,
-            owner_phone: formData.phone || null,
-            collected_by: 'admin',
-            collected_at: new Date().toISOString()
-          }, {
-            onConflict: 'retailer_id,owner_email',
-            ignoreDuplicates: false
-          });
-
-        if (ownerError) {
-          console.warn('[EditProfile] Owner upsert warning:', ownerError);
-          // Don't fail the whole operation
-        }
-      }
 
       onSuccess();
       onClose();
@@ -623,7 +596,7 @@ function EditProfileModal({ isOpen, onClose, store, onSuccess }) {
                 </svg>
               </div>
               <div>
-                <h2 className="text-xl font-bold">Edit Store Profile</h2>
+                <h2 className="text-xl font-bold">Edit Profile</h2>
                 <p className="text-white/80 text-sm">Update store and owner information</p>
               </div>
             </div>
@@ -690,25 +663,10 @@ function EditProfileModal({ isOpen, onClose, store, onSuccess }) {
             />
           </div>
 
-          {/* Email */}
-          <div>
-            <label className="block text-sm font-bold text-gray-700 mb-2">
-              Owner Email
-            </label>
-            <input
-              type="email"
-              value={formData.email}
-              onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-              className="w-full px-4 py-3 border-2 border-gray-300 rounded-[23px] focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-              placeholder="owner@example.com"
-            />
-            <p className="text-xs text-gray-500 mt-1">This will be used for login when they register</p>
-          </div>
-
           {/* Phone */}
           <div>
             <label className="block text-sm font-bold text-gray-700 mb-2">
-              Owner Phone
+              Phone
             </label>
             <input
               type="tel"
@@ -716,6 +674,20 @@ function EditProfileModal({ isOpen, onClose, store, onSuccess }) {
               onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
               className="w-full px-4 py-3 border-2 border-gray-300 rounded-[23px] focus:ring-2 focus:ring-purple-500 focus:border-transparent"
               placeholder="(555) 123-4567"
+            />
+          </div>
+
+          {/* Notes */}
+          <div>
+            <label className="block text-sm font-bold text-gray-700 mb-2">
+              Outreach Notes
+            </label>
+            <textarea
+              value={formData.outreach_notes}
+              onChange={(e) => setFormData({ ...formData, outreach_notes: e.target.value })}
+              rows={4}
+              className="w-full px-4 py-3 border-2 border-gray-300 rounded-[23px] focus:ring-2 focus:ring-purple-500 focus:border-transparent resize-none"
+              placeholder="Add any notes about calls, conversations, or follow-ups..."
             />
           </div>
 
