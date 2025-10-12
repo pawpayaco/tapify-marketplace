@@ -168,8 +168,9 @@ export async function getServerSideProps(context) {
           location,
           address,
           converted,
-          onboarding_completed,
+          converted_at,
           express_shipping,
+          priority_display_active,
           created_at,
           displays:displays (
             id,
@@ -177,7 +178,6 @@ export async function getServerSideProps(context) {
           )
         `)
         .eq('converted', true)
-        .eq('onboarding_completed', true)
         .order('created_at', { ascending: false }),
       supabaseAdmin.from('sourcer_accounts').select('*').order('created_at', { ascending: false }),
       supabaseAdmin.from('uids').select('*').order('registered_at', { ascending: false }).limit(100),

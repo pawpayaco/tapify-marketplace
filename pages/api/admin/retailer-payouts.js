@@ -25,9 +25,8 @@ export default async function handler(req, res) {
     // Step 1: Get all retailers
     const { data: retailers, error: retailersError } = await supabaseAdmin
       .from('retailers')
-      .select('id, name, email, location, created_at, converted, onboarding_completed')
+      .select('id, name, email, location, created_at, converted')
       .eq('converted', true)
-      .eq('onboarding_completed', true)
       .order('name');
 
     if (retailersError) {
