@@ -275,7 +275,7 @@ export default function RetailerDashboard() {
 
         // Calculate stats
         calculateStatsFromScans(scansData || [], uidsData || [], payoutsData || []);
-        calculateWeeklyData(scansData || []);
+        calculateWeeklyData(scansData || [], payoutsData || []);
         
       } catch (error) {
         console.error('Error fetching retailer data:', error);
@@ -330,28 +330,36 @@ export default function RetailerDashboard() {
   };
 
   // Calculate weekly chart data
-  const calculateWeeklyData = (scansData) => {
+  const calculateWeeklyData = (scansData, payoutsData = []) => {
     const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
     const weekData = [];
-    
+
     for (let i = 0; i < 7; i++) {
       const targetDate = new Date();
       targetDate.setDate(targetDate.getDate() - (6 - i));
       targetDate.setHours(0, 0, 0, 0);
-      
+
       const dayScans = scansData.filter(scan => {
         const scanDate = new Date(scan.timestamp);
         return scanDate.toDateString() === targetDate.toDateString();
       });
-      
+
+      // Calculate revenue from payout_jobs created on this day
+      const dayPayouts = payoutsData.filter(payout => {
+        const payoutDate = new Date(payout.created_at);
+        return payoutDate.toDateString() === targetDate.toDateString();
+      });
+
+      const dayRevenue = dayPayouts.reduce((sum, p) => sum + (p.retailer_cut || 0), 0);
+
       weekData.push({
         day: days[targetDate.getDay()],
         scans: dayScans.length,
         orders: dayScans.filter(s => s.converted).length,
-        revenue: dayScans.reduce((sum, s) => sum + (s.revenue || 0), 0)
+        revenue: dayRevenue
       });
     }
-    
+
     setWeeklyData(weekData);
   };
 
@@ -995,7 +1003,7 @@ export default function RetailerDashboard() {
                     <div>
                       <div className="flex items-center justify-between mb-4">
                         <h4 className="font-bold text-gray-700 text-xs md:text-sm">Revenue per Day</h4>
-                        <div className="text-xs md:text-sm text-gray-500">Max: ${maxRevenue}</div>
+                        <div className="text-xs md:text-sm text-gray-500">Max: ${maxRevenue.toFixed(2)}</div>
                       </div>
                       <div className="flex items-end justify-between gap-2 h-48">
                         {weeklyData.map((day, idx) => (
@@ -1013,7 +1021,7 @@ export default function RetailerDashboard() {
                                 style={{ height: `${(day.revenue / maxRevenue) * 100}%` }}
                               >
                                 <div className="absolute -top-10 left-1/2 transform -translate-x-1/2 bg-gray-900 text-white text-xs px-3 py-1.5 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap font-semibold shadow-lg">
-                                  ${day.revenue}
+                                  ${day.revenue.toFixed(2)}
                                 </div>
                               </motion.div>
                             </div>
@@ -1025,110 +1033,6 @@ export default function RetailerDashboard() {
                   </div>
                 </div>
 
-                {/* Top Products */}
-                <div>
-                  <h3 className="text-xs font-bold text-gray-900 mb-4 md:mb-6">Top Performing Products</h3>
-
-                  {topProducts.length > 0 ? (
-                    <>
-                      {/* Desktop Table View */}
-                      <div className="hidden md:block bg-white rounded-2xl border border-transparent overflow-hidden shadow-lg">
-                        <table className="w-full">
-                          <thead className="bg-gradient-to-r from-pink-50 to-purple-50">
-                            <tr>
-                              <th className="text-left py-4 px-6 font-bold text-gray-700">Product</th>
-                              <th className="text-center py-4 px-6 font-bold text-gray-700">Scans</th>
-                              <th className="text-center py-4 px-6 font-bold text-gray-700">Conversions</th>
-                              <th className="text-right py-4 px-6 font-bold text-gray-700">Revenue</th>
-                            </tr>
-                          </thead>
-                          <tbody className="divide-y divide-gray-100">
-                            {topProducts.map((product, idx) => (
-                              <motion.tr
-                                key={idx}
-                                initial={{ opacity: 0, x: -20 }}
-                                animate={{ opacity: 1, x: 0 }}
-                                transition={{ duration: 0.3, delay: idx * 0.1 }}
-                                whileHover={{ backgroundColor: '#fafafa' }}
-                                className="transition-colors"
-                              >
-                                <td className="py-4 px-6">
-                                  <div className="flex items-center gap-3">
-                                    <div className="w-2 h-2 rounded-full bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3]"></div>
-                                    <span className="font-semibold text-gray-900">{product.name}</span>
-                                  </div>
-                                </td>
-                                <td className="py-4 px-6 text-center">
-                                  <span className="inline-block bg-blue-100 text-blue-700 px-4 py-1.5 rounded-full text-sm font-bold">
-                                    {product.scans}
-                                  </span>
-                                </td>
-                                <td className="py-4 px-6 text-center">
-                                  <span className="inline-block bg-green-100 text-green-700 px-4 py-1.5 rounded-full text-sm font-bold">
-                                    {product.conversions}
-                                  </span>
-                                </td>
-                                <td className="py-4 px-6 text-right">
-                                  <span className="font-bold text-gray-900">${product.revenue.toLocaleString()}</span>
-                                </td>
-                              </motion.tr>
-                            ))}
-                          </tbody>
-                        </table>
-                      </div>
-
-                      {/* Mobile Card View */}
-                      <div className="md:hidden space-y-3">
-                        {topProducts.map((product, idx) => (
-                          <motion.div
-                            key={idx}
-                            initial={{ opacity: 0, y: 10 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ duration: 0.3, delay: idx * 0.1 }}
-                            className="bg-white rounded-2xl border border-transparent p-4 shadow-lg"
-                          >
-                            <div className="flex items-center gap-2 mb-3">
-                              <div className="w-2 h-2 rounded-full bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3]"></div>
-                              <span className="font-bold text-gray-900">{product.name}</span>
-                            </div>
-                            <div className="grid grid-cols-3 gap-3">
-                              <div className="text-center">
-                                <div className="text-xs text-gray-500 mb-1">Scans</div>
-                                <span className="inline-block bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-xs font-bold">
-                                  {product.scans}
-                                </span>
-                              </div>
-                              <div className="text-center">
-                                <div className="text-xs text-gray-500 mb-1">Conversions</div>
-                                <span className="inline-block bg-green-100 text-green-700 px-3 py-1 rounded-full text-xs font-bold">
-                                  {product.conversions}
-                                </span>
-                              </div>
-                              <div className="text-center">
-                                <div className="text-xs text-gray-500 mb-1">Revenue</div>
-                                <span className="font-bold text-gray-900 text-sm">${product.revenue.toLocaleString()}</span>
-                              </div>
-                            </div>
-                          </motion.div>
-                        ))}
-                      </div>
-                    </>
-                  ) : (
-                    <div className="bg-white rounded-2xl border border-transparent shadow-lg py-12 md:py-20 text-center">
-                      <div className="flex flex-col items-center gap-4 max-w-sm mx-auto px-4">
-                        <div className="w-20 h-20 bg-gradient-to-br from-gray-100 to-gray-200 rounded-full flex items-center justify-center">
-                          <svg className="w-10 h-10 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-                          </svg>
-                        </div>
-                        <div>
-                          <p className="text-gray-900 font-bold text-lg mb-1">No product data yet</p>
-                          <p className="text-gray-500 text-sm">Product performance will show here once you have scans</p>
-                        </div>
-                      </div>
-                    </div>
-                  )}
-                </div>
               </motion.div>
             )}
 
@@ -1311,6 +1215,108 @@ export default function RetailerDashboard() {
                 className="space-y-4 md:space-y-6"
               >
                 <h3 className="text-sm md:text-base font-black text-gray-900">Store Settings</h3>
+
+                {/* Display Confirmation */}
+                <motion.div
+                  className="bg-gradient-to-br from-gray-50 to-white border-2 border-gray-200 rounded-2xl p-4 md:p-8 shadow-lg"
+                >
+                  <h4 className="font-bold text-gray-900 text-base md:text-lg mb-4 md:mb-6">Display Confirmation</h4>
+                  <div className="space-y-4">
+                    <div className="bg-gradient-to-br from-purple-50 to-pink-50 border-2 border-purple-200 rounded-xl p-4">
+                      <div className="flex items-start gap-3">
+                        <div className="flex-shrink-0 w-10 h-10 bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3] rounded-full flex items-center justify-center">
+                          <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                          </svg>
+                        </div>
+                        <div className="flex-1">
+                          <div className="flex items-center justify-between mb-2">
+                            <h5 className="font-bold text-gray-900">Displays Owned</h5>
+                            <span className="text-2xl font-black bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3] bg-clip-text text-transparent">
+                              {retailer?.displays_ordered || 1}
+                            </span>
+                          </div>
+                          <p className="text-sm text-gray-600 mb-3">
+                            You have {retailer?.displays_ordered || 1} {(retailer?.displays_ordered || 1) === 1 ? 'display' : 'displays'} registered to your store
+                          </p>
+
+                          {/* Display Status */}
+                          {retailer?.priority_display_active ? (
+                            // Priority Display Active - Show purple shipping badge
+                            <div className="mt-3 p-3 rounded-lg border-2 bg-gradient-to-r from-purple-50 to-pink-50 border-purple-300">
+                              <div className="flex items-center gap-2">
+                                <span className="text-lg">⚡</span>
+                                <div>
+                                  <p className="font-bold text-purple-900">Priority Shipping</p>
+                                  <p className="text-xs text-purple-700">
+                                    Your displays ship with priority delivery
+                                  </p>
+                                </div>
+                              </div>
+                            </div>
+                          ) : (
+                            // Standard Display - Show upgrade option + email warning
+                            <div className="mt-3 space-y-2">
+                              <div className="p-3 bg-blue-50 border-2 border-blue-200 rounded-lg">
+                                <div className="flex items-center gap-2">
+                                  <span className="text-lg">📦</span>
+                                  <div>
+                                    <p className="font-bold text-blue-900">Standard Display</p>
+                                    <p className="text-xs text-blue-700">
+                                      <a
+                                        href={`https://pawpayaco.com/products/display-setup-for-affiliate?email=${encodeURIComponent(retailer?.email || '')}&retailer_id=${retailer?.id || ''}`}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="underline hover:text-blue-900"
+                                      >
+                                        Upgrade to Priority Display
+                                      </a> for premium placement
+                                    </p>
+                                  </div>
+                                </div>
+                              </div>
+
+                              {/* Important Notice */}
+                              <div className="p-3 bg-amber-50 border-2 border-amber-400 rounded-lg">
+                                <div className="flex items-start gap-2">
+                                  <span className="text-xl mt-0.5">⚠️</span>
+                                  <div className="flex-1">
+                                    <p className="font-bold text-amber-900 text-xs mb-1">Important: Use Your Account Email</p>
+                                    <p className="text-xs text-amber-800 mb-2">
+                                      When checking out on Shopify, you <span className="font-bold">must use this email</span> to activate the upgrade:
+                                    </p>
+                                    <p className="text-xs text-amber-800 mb-2">
+                                      Dashboard takes ~30 seconds to register upgrade.
+                                    </p>
+                                    <div className="bg-white px-3 py-2 rounded border border-amber-300">
+                                      <p className="text-xs font-mono font-bold text-amber-900">{retailer?.email}</p>
+                                    </div>
+                                    <p className="text-xs text-amber-700 mt-2">
+                                      Using a different email will prevent automatic activation.
+                                    </p>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          )}
+
+                          {/* Order Another Display Button */}
+                          <motion.button
+                            onClick={() => setIsOrderModalOpen(true)}
+                            whileHover={{ scale: 1.02 }}
+                            whileTap={{ scale: 0.98 }}
+                            className="mt-4 w-full px-6 py-3 bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3] text-white rounded-xl font-bold shadow-lg hover:shadow-xl transition-all flex items-center justify-center gap-2"
+                          >
+                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                            </svg>
+                            Order Another Display
+                          </motion.button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </motion.div>
 
                 {/* Bank Connection Section */}
                 <div className="bg-gradient-to-br from-gray-50 to-white border-2 border-gray-200 rounded-2xl p-4 md:p-8 shadow-lg">
