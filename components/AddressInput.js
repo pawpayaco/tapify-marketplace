@@ -230,9 +230,9 @@ export default function AddressInput({
         {success && <span className="text-green-600 text-xs ml-2"> </span>}
       </label>
 
-      <div 
+      <div
         className={[
-          "border-2 transition-all overflow-hidden bg-white rounded-[23px]",
+          "border-2 transition-all overflow-hidden bg-white rounded-[15px]",
           showSuggestions && query.length >= 3
             ? "border-gray-300 shadow-lg"
             : error 

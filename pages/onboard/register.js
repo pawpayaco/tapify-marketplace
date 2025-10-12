@@ -1209,7 +1209,7 @@ export default function RegisterRetailer() {
                   onClick={addAdditionalStore}
                   whileHover={{ y: -2 }}
                   whileTap={{ scale: 0.98 }}
-                  className="mt-6 px-6 py-3 rounded-[20px] text-sm font-bold transition-all flex items-center gap-2 text-gray-700 hover:text-gray-900 border-2 border-gray-200 hover:border-gray-300"
+                  className="mt-6 px-6 py-3 rounded-[15px] text-sm font-bold transition-all flex items-center gap-2 text-gray-700 hover:text-gray-900 border-2 border-gray-200 hover:border-gray-300"
                 >
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
