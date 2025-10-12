@@ -1,16 +1,44 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
+import { supabase } from '../../lib/supabase';
+import { useAuthContext } from '../../context/AuthContext';
 
 export default function ShopifyConnect() {
   const router = useRouter();
+  const { user } = useAuthContext();
   const [loading, setLoading] = useState(false);
   const [showSuccessModal, setShowSuccessModal] = useState(true);
+  const [retailer, setRetailer] = useState(null);
+
+  // Fetch retailer data on mount
+  useEffect(() => {
+    const fetchRetailer = async () => {
+      if (!user?.email) return;
+
+      const { data } = await supabase
+        .from('retailers')
+        .select('id, email')
+        .eq('created_by_user_id', user.id)
+        .maybeSingle();
+
+      if (data) {
+        setRetailer(data);
+      }
+    };
+
+    fetchRetailer();
+  }, [user]);
 
   const handlePriorityUpgrade = () => {
+    // Build URL with retailer identification
+    const upgradeUrl = retailer
+      ? `https://pawpayaco.com/products/display-setup-for-affiliate?email=${encodeURIComponent(retailer.email)}&retailer_id=${retailer.id}`
+      : 'https://pawpayaco.com/products/display-setup-for-affiliate';
+
     // Open Shopify in new tab
-    window.open('https://pawpayaco.com/products/display-setup-for-affiliate', '_blank');
+    window.open(upgradeUrl, '_blank');
     // Navigate current tab to dashboard
     router.push('/onboard/dashboard');
   };

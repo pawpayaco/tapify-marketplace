@@ -1557,7 +1557,12 @@ export default function RetailerDashboard() {
                                   <div>
                                     <p className="font-bold text-blue-900">Standard Display</p>
                                     <p className="text-xs text-blue-700">
-                                      <a href="https://pawpayaco.com/products/display-setup-for-affiliate" target="_blank" rel="noopener noreferrer" className="underline hover:text-blue-900">
+                                      <a
+                                        href={`https://pawpayaco.com/products/display-setup-for-affiliate?email=${encodeURIComponent(retailer?.email || '')}&retailer_id=${retailer?.id || ''}`}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="underline hover:text-blue-900"
+                                      >
                                         Upgrade to Priority Display
                                       </a> for premium placement
                                     </p>

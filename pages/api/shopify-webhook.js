@@ -160,9 +160,11 @@ export default async function handler(req, res) {
     const order = JSON.parse(rawBody.toString('utf8'));
     const shopDomain = req.headers['x-shopify-shop-domain'] || null;
 
-    // ✅ IMPROVED: Extract UID from multiple sources
+    // ✅ IMPROVED: Extract UID and retailer attribution from multiple sources
     // Priority: 1) note_attributes, 2) cart attributes, 3) landing_site_ref, 4) landing_site URL, 5) referring_site
     let uid = null;
+    let cartRetailerEmail = null;
+    let cartRetailerId = null;
 
     // Method 1a: Check note_attributes (for theme-based tracking via cart attributes)
     const refAttr = order?.note_attributes?.find?.((attr) => attr?.name === 'ref');
@@ -171,10 +173,33 @@ export default async function handler(req, res) {
       console.log('[shopify-webhook] UID extracted from note_attributes:', uid);
     }
 
-    // Method 1b: Check order.attributes object (alternative format for cart attributes)
+    // Method 1b: Check note_attributes for retailer_email and retailer_id (Priority Display attribution)
+    const emailAttr = order?.note_attributes?.find?.((attr) => attr?.name === 'retailer_email');
+    if (emailAttr?.value) {
+      cartRetailerEmail = emailAttr.value;
+      console.log('[shopify-webhook] Retailer email extracted from note_attributes:', cartRetailerEmail);
+    }
+
+    const retailerIdAttr = order?.note_attributes?.find?.((attr) => attr?.name === 'retailer_id');
+    if (retailerIdAttr?.value) {
+      cartRetailerId = retailerIdAttr.value;
+      console.log('[shopify-webhook] Retailer ID extracted from note_attributes:', cartRetailerId);
+    }
+
+    // Method 1c: Check order.attributes object (alternative format for cart attributes)
     if (!uid && order?.attributes?.ref) {
       uid = order.attributes.ref;
       console.log('[shopify-webhook] UID extracted from order.attributes.ref:', uid);
+    }
+
+    if (!cartRetailerEmail && order?.attributes?.retailer_email) {
+      cartRetailerEmail = order.attributes.retailer_email;
+      console.log('[shopify-webhook] Retailer email extracted from order.attributes:', cartRetailerEmail);
+    }
+
+    if (!cartRetailerId && order?.attributes?.retailer_id) {
+      cartRetailerId = order.attributes.retailer_id;
+      console.log('[shopify-webhook] Retailer ID extracted from order.attributes:', cartRetailerId);
     }
 
     // Method 2: Check Shopify's landing_site_ref field
@@ -223,7 +248,29 @@ export default async function handler(req, res) {
     let retailerId = null;
     let businessId = null;
 
-    if (uid) {
+    // ✅ PRIORITY 1: Use cart retailer_id if available (most direct attribution)
+    if (cartRetailerId) {
+      console.log('[shopify-webhook] Using cart retailer_id for attribution:', cartRetailerId);
+
+      const { data: retailerRecord, error: retailerError } = await supabaseAdmin
+        .from('retailers')
+        .select('id, business_id, email, name')
+        .eq('id', cartRetailerId)
+        .maybeSingle();
+
+      if (retailerError) {
+        console.error('[shopify-webhook] Failed to fetch retailer by cart retailer_id', retailerError.message);
+      } else if (retailerRecord) {
+        retailerId = retailerRecord.id;
+        businessId = retailerRecord.business_id ?? null;
+        console.log('[shopify-webhook] ✅ Retailer attributed via cart retailer_id:', retailerRecord.name, `(${retailerId})`);
+      } else {
+        console.warn('[shopify-webhook] ⚠️ Cart retailer_id not found in database:', cartRetailerId);
+      }
+    }
+
+    // ✅ PRIORITY 2: Use UID if no cart retailer_id (standard NFC/QR code flow)
+    if (!retailerId && uid) {
       // Check if ref is in retailer-{id} format (fallback for new registrations without claimed UIDs)
       if (uid.startsWith('retailer-')) {
         const extractedRetailerId = uid.replace('retailer-', '');
@@ -267,8 +314,8 @@ export default async function handler(req, res) {
           console.warn('[shopify-webhook] ⚠️ UID not found in database:', uid);
         }
       }
-    } else {
-      console.log('[shopify-webhook] No UID provided in order note_attributes');
+    } else if (!retailerId) {
+      console.log('[shopify-webhook] No UID or cart retailer_id provided');
     }
 
     // ✅ NEW: Fallback to email-based retailer lookup for Priority Display purchases

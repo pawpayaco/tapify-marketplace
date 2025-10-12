@@ -17,6 +17,8 @@ export default function handler(req, res) {
     try {
       const urlParams = new URLSearchParams(window.location.search);
       const ref = urlParams.get('ref');
+      const email = urlParams.get('email');
+      const retailerId = urlParams.get('retailer_id');
 
       if (ref) {
         console.log('[Tapify] Captured ref parameter:', ref);
@@ -27,6 +29,19 @@ export default function handler(req, res) {
         // Store timestamp to track when it was captured
         sessionStorage.setItem('tapify_ref_timestamp', Date.now());
         console.log('[Tapify] Ref stored successfully');
+      }
+
+      // ✅ NEW: Capture email and retailer_id for Priority Display attribution
+      if (email) {
+        console.log('[Tapify] Captured retailer email:', email);
+        sessionStorage.setItem('tapify_retailer_email', email);
+        localStorage.setItem('tapify_retailer_email', email);
+      }
+
+      if (retailerId) {
+        console.log('[Tapify] Captured retailer ID:', retailerId);
+        sessionStorage.setItem('tapify_retailer_id', retailerId);
+        localStorage.setItem('tapify_retailer_id', retailerId);
       }
     } catch (err) {
       console.error('[Tapify] Error capturing ref:', err);
@@ -50,8 +65,11 @@ export default function handler(req, res) {
   // Add ref to cart as attribute (with queue to prevent race conditions)
   function addRefToCart() {
     const ref = getStoredRef();
-    if (!ref) {
-      console.log('[Tapify] No ref parameter to add to cart');
+    const retailerEmail = sessionStorage.getItem('tapify_retailer_email') || localStorage.getItem('tapify_retailer_email');
+    const retailerId = sessionStorage.getItem('tapify_retailer_id') || localStorage.getItem('tapify_retailer_id');
+
+    if (!ref && !retailerEmail && !retailerId) {
+      console.log('[Tapify] No ref/email/retailer_id to add to cart');
       return Promise.resolve();
     }
 
@@ -64,7 +82,16 @@ export default function handler(req, res) {
     }
 
     isUpdatingCart = true;
-    console.log('[Tapify] Adding ref to cart attributes:', ref);
+    console.log('[Tapify] Adding attribution to cart attributes:', { ref, retailerEmail, retailerId });
+
+    // Build cart attributes
+    const attributes = {
+      tapify_source: 'nfc_display'
+    };
+
+    if (ref) attributes.ref = ref;
+    if (retailerEmail) attributes.retailer_email = retailerEmail;
+    if (retailerId) attributes.retailer_id = retailerId;
 
     // Add as cart attribute (Shopify Ajax API)
     return fetch('/cart/update.js', {
@@ -73,10 +100,7 @@ export default function handler(req, res) {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        attributes: {
-          ref: ref,
-          tapify_source: 'nfc_display'
-        }
+        attributes: attributes
       })
     })
     .then(response => {
@@ -112,21 +136,24 @@ export default function handler(req, res) {
 
   // Initialize tracking on page load
   function init() {
-    // Capture ref if in URL
+    // Capture ref/email/retailer_id if in URL
     captureRefParameter();
 
-    // Add ref to cart ONLY if cart is empty and we have a stored ref
+    // Add ref to cart ONLY if cart is empty and we have stored attribution
     // This ensures we add it once after first page load, not during checkout
     const storedRef = getStoredRef();
-    if (storedRef) {
-      console.log('[Tapify] Found stored ref:', storedRef);
+    const retailerEmail = sessionStorage.getItem('tapify_retailer_email') || localStorage.getItem('tapify_retailer_email');
+    const retailerId = sessionStorage.getItem('tapify_retailer_id') || localStorage.getItem('tapify_retailer_id');
 
-      // IMPORTANT: Only add ref on initial page load, NOT when navigating to cart/checkout
+    if (storedRef || retailerEmail || retailerId) {
+      console.log('[Tapify] Found stored attribution:', { ref: storedRef, email: retailerEmail, retailerId });
+
+      // IMPORTANT: Only add attribution on initial page load, NOT when navigating to cart/checkout
       // This prevents race conditions during checkout
       if (!sessionStorage.getItem('tapify_ref_added')) {
-        // Mark that we'll add ref on next cart update
+        // Mark that we'll add attribution on next cart update
         sessionStorage.setItem('tapify_ref_pending', 'true');
-        console.log('[Tapify] Ref will be added on next cart update');
+        console.log('[Tapify] Attribution will be added on next cart update');
       }
     }
   }
