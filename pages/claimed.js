@@ -20,7 +20,7 @@ export default function ClaimedSuccess() {
         initial={{ scale: 0.8, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
         transition={{ duration: 0.5, type: "spring" }}
-        className="max-w-md w-full bg-white rounded-3xl shadow-2xl p-8 text-center"
+        className="max-w-md w-full bg-white rounded-[23px] shadow-2xl p-8 text-center"
       >
         <motion.div
           initial={{ scale: 0 }}
@@ -45,7 +45,7 @@ export default function ClaimedSuccess() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.5 }}
-          className="bg-gradient-to-r from-purple-50 to-pink-50 border-2 border-purple-200 rounded-xl p-4 mb-6"
+          className="bg-gradient-to-r from-purple-50 to-pink-50 border-2 border-purple-200 rounded-[23px] p-4 mb-6"
         >
           <p className="text-sm text-gray-700">
             Redirecting to your dashboard...
@@ -57,7 +57,7 @@ export default function ClaimedSuccess() {
 
         <button
           onClick={() => router.push('/onboard/dashboard')}
-          className="bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3] text-white px-6 py-3 rounded-xl font-bold hover:shadow-lg transition-all"
+          className="bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3] text-white px-6 py-3 rounded-[15px] font-bold hover:shadow-lg transition-all"
         >
           Go to Dashboard Now →
         </button>

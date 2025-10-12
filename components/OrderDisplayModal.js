@@ -187,7 +187,7 @@ export default function OrderDisplayModal({ isOpen, onClose, onSuccess }) {
           animate={{ scale: 1, opacity: 1 }}
           exit={{ scale: 0.95, opacity: 0 }}
           transition={{ type: 'spring', duration: 0.3 }}
-          className="bg-white rounded-3xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto"
+          className="bg-white rounded-[23px] shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto"
           onClick={(e) => e.stopPropagation()}
         >
           {/* Header */}
@@ -233,13 +233,13 @@ export default function OrderDisplayModal({ isOpen, onClose, onSuccess }) {
                     }
                   }}
                   required
-                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-2xl hover:border-gray-300 focus:border-[#ff6fb3] focus:ring-2 focus:ring-[#ff6fb3]/20 transition-all text-gray-900 placeholder-gray-400"
+                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-[23px] hover:border-gray-300 focus:border-[#ff6fb3] focus:ring-2 focus:ring-[#ff6fb3]/20 transition-all text-gray-900 placeholder-gray-400"
                   placeholder="Start typing store name..."
                 />
 
                 {/* Dropdown */}
                 {showSuggestions && storeQuery.length >= 1 && (
-                  <div className="absolute z-50 w-full mt-2 bg-white border-2 border-gray-300 rounded-2xl shadow-2xl max-h-64 overflow-y-auto">
+                  <div className="absolute z-50 w-full mt-2 bg-white border-2 border-gray-300 rounded-[23px] shadow-2xl max-h-64 overflow-y-auto">
                     {storeSuggestions.length > 0 ? (
                       <>
                         {storeSuggestions.slice(0, 3).map((store) => {
@@ -290,7 +290,7 @@ export default function OrderDisplayModal({ isOpen, onClose, onSuccess }) {
                         type="button"
                         onClick={handleAddNewStore}
                         disabled={loading}
-                        className="w-full px-4 py-4 bg-gradient-to-r from-green-50 to-emerald-50 hover:from-green-100 hover:to-emerald-100 transition-all disabled:opacity-50 rounded-2xl"
+                        className="w-full px-4 py-4 bg-gradient-to-r from-green-50 to-emerald-50 hover:from-green-100 hover:to-emerald-100 transition-all disabled:opacity-50 rounded-[23px]"
                       >
                         <div className="flex items-center gap-3">
                           <div className="w-8 h-8 rounded-full bg-gradient-to-br from-green-500 to-emerald-600 flex items-center justify-center">
@@ -325,7 +325,7 @@ export default function OrderDisplayModal({ isOpen, onClose, onSuccess }) {
                 type="text"
                 value={formData.managerName}
                 onChange={(e) => setFormData(prev => ({ ...prev, managerName: e.target.value }))}
-                className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-[#ff6fb3] focus:border-transparent transition-all text-gray-900 placeholder-gray-400 hover:border-gray-300"
+                className="w-full px-4 py-3 border-2 border-gray-200 rounded-[23px] focus:ring-2 focus:ring-[#ff6fb3] focus:border-transparent transition-all text-gray-900 placeholder-gray-400 hover:border-gray-300"
                 placeholder="Store manager's name (optional)"
               />
             </div>
@@ -349,7 +349,7 @@ export default function OrderDisplayModal({ isOpen, onClose, onSuccess }) {
 
             {/* Error Message */}
             {error && (
-              <div className="bg-red-50 border-2 border-red-200 text-red-700 px-4 py-3 rounded-xl flex items-start gap-2">
+              <div className="bg-red-50 border-2 border-red-200 text-red-700 px-4 py-3 rounded-[23px] flex items-start gap-2">
                 <svg className="w-5 h-5 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                   <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
                 </svg>
@@ -362,7 +362,7 @@ export default function OrderDisplayModal({ isOpen, onClose, onSuccess }) {
               <button
                 type="button"
                 onClick={onClose}
-                className="flex-1 px-6 py-3 border-2 border-gray-200 rounded-xl font-bold text-gray-700 hover:bg-gray-50 transition-all"
+                className="flex-1 px-6 py-3 border-2 border-gray-200 rounded-[23px] font-bold text-gray-700 hover:bg-gray-50 transition-all"
                 disabled={loading}
               >
                 Cancel
@@ -370,7 +370,7 @@ export default function OrderDisplayModal({ isOpen, onClose, onSuccess }) {
               <button
                 type="submit"
                 disabled={loading}
-                className="flex-1 bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3] text-white py-3 px-6 rounded-xl font-bold transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                className="flex-1 bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3] text-white py-3 px-6 rounded-[23px] font-bold transition-all disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {loading ? (
                   <span className="flex items-center justify-center gap-2">

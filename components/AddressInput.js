@@ -232,7 +232,7 @@ export default function AddressInput({
 
       <div 
         className={[
-          "border-2 transition-all overflow-hidden bg-white rounded-2xl",
+          "border-2 transition-all overflow-hidden bg-white rounded-[23px]",
           showSuggestions && query.length >= 3
             ? "border-gray-300 shadow-lg"
             : error 

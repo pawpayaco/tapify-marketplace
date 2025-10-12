@@ -720,7 +720,7 @@ export default function RetailerDashboard() {
           {/* Weekly Scans */}
           <motion.div
             variants={fadeInUp}
-            className="bg-white rounded-3xl p-4 md:p-6 border border-transparent text-center shadow-lg"
+            className="bg-white rounded-[23px] p-4 md:p-6 border border-transparent text-center shadow-lg"
           >
             <p className="text-gray-600 text-base md:text-lg font-semibold mb-2">Weekly scans</p>
             <p className="text-xl md:text-2xl font-bold text-gray-900 mb-1">{stats.weeklyScans}</p>
@@ -730,7 +730,7 @@ export default function RetailerDashboard() {
           {/* Revenue */}
           <motion.div
             variants={fadeInUp}
-            className="bg-white rounded-3xl p-4 md:p-6 border border-transparent text-center shadow-lg"
+            className="bg-white rounded-[23px] p-4 md:p-6 border border-transparent text-center shadow-lg"
           >
             <p className="text-gray-600 text-base md:text-lg font-semibold mb-2">Revenue earned</p>
             <p className="text-xl md:text-2xl font-bold text-gray-900 mb-1">${stats.revenue.toLocaleString()}</p>
@@ -740,7 +740,7 @@ export default function RetailerDashboard() {
           {/* Displays Claimed */}
           <motion.div
             variants={fadeInUp}
-            className="bg-white rounded-3xl p-4 md:p-6 border border-transparent text-center shadow-lg"
+            className="bg-white rounded-[23px] p-4 md:p-6 border border-transparent text-center shadow-lg"
           >
             <p className="text-gray-600 text-base md:text-lg font-semibold mb-2">Displays active</p>
             <p className="text-xl md:text-2xl font-bold text-gray-900 mb-1">{stats.displaysClaimed}</p>
@@ -750,7 +750,7 @@ export default function RetailerDashboard() {
           {/* Conversion Rate */}
           <motion.div
             variants={fadeInUp}
-            className="bg-white rounded-3xl p-4 md:p-6 border border-transparent text-center shadow-lg"
+            className="bg-white rounded-[23px] p-4 md:p-6 border border-transparent text-center shadow-lg"
           >
             <p className="text-gray-600 text-base md:text-lg font-semibold mb-2">Conversion rate</p>
             <p className="text-xl md:text-2xl font-bold text-gray-900 mb-1">{stats.conversionRate}%</p>
@@ -800,7 +800,7 @@ export default function RetailerDashboard() {
         </motion.div>
 
           {/* Tab Content */}
-          <div className="bg-white rounded-3xl shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_1px_-0.5px_rgba(0,0,0,0.06),0px_3px_3px_-1.5px_rgba(0,0,0,0.06),0px_6px_6px_-3px_rgba(0,0,0,0.06),0px_12px_12px_-6px_rgba(0,0,0,0.06),0px_24px_24px_-12px_rgba(0,0,0,0.06)] border border-transparent p-4 md:p-8">
+          <div className="bg-white rounded-[23px] shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_1px_-0.5px_rgba(0,0,0,0.06),0px_3px_3px_-1.5px_rgba(0,0,0,0.06),0px_6px_6px_-3px_rgba(0,0,0,0.06),0px_12px_12px_-6px_rgba(0,0,0,0.06),0px_24px_24px_-12px_rgba(0,0,0,0.06)] border border-transparent p-4 md:p-8">
             {/* Stats Tab */}
             {activeTab === 'stats' && (
               <motion.div
@@ -827,7 +827,7 @@ export default function RetailerDashboard() {
                   {scans.length > 0 ? (
                     <>
                       {/* Desktop Table View */}
-                      <div className="hidden md:block bg-gradient-to-br from-gray-50 to-white border-2 border-gray-200 rounded-2xl overflow-hidden shadow-lg">
+                      <div className="hidden md:block bg-gradient-to-br from-gray-50 to-white border-2 border-gray-200 rounded-[23px] overflow-hidden shadow-lg">
                         <table className="w-full">
                           <thead className="bg-gradient-to-r from-pink-50 to-purple-50">
                             <tr>
@@ -888,7 +888,7 @@ export default function RetailerDashboard() {
                             initial={{ opacity: 0, y: 10 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ duration: 0.3, delay: Math.min(idx * 0.05, 0.5) }}
-                            className="bg-gradient-to-br from-gray-50 to-white border-2 border-gray-200 rounded-2xl p-4 shadow-lg"
+                            className="bg-gradient-to-br from-gray-50 to-white border-2 border-gray-200 rounded-[23px] p-4 shadow-lg"
                           >
                             <div className="flex items-center justify-between mb-3">
                               <div>
@@ -935,7 +935,7 @@ export default function RetailerDashboard() {
                       </div>
                     </>
                   ) : (
-                    <div className="bg-white rounded-2xl border border-transparent shadow-lg py-12 md:py-20 text-center">
+                    <div className="bg-white rounded-[23px] border border-transparent shadow-lg py-12 md:py-20 text-center">
                       <div className="flex flex-col items-center gap-4 max-w-sm mx-auto px-4">
                         <div className="w-20 h-20 bg-gradient-to-br from-gray-100 to-gray-200 rounded-full flex items-center justify-center">
                           <svg className="w-10 h-10 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -951,7 +951,7 @@ export default function RetailerDashboard() {
                   )}
 
                   {stats.unpaidEarnings > 0 && (
-                    <div className="bg-gradient-to-r from-yellow-100 to-orange-100 border-2 border-yellow-300 rounded-2xl p-6">
+                    <div className="bg-gradient-to-r from-yellow-100 to-orange-100 border-2 border-yellow-300 rounded-[23px] p-6">
                       <div className="flex items-center justify-between">
                         <div>
                           <h4 className="text-lg font-bold text-gray-900 mb-1">Unpaid Earnings</h4>
@@ -966,7 +966,7 @@ export default function RetailerDashboard() {
                 {/* Weekly Performance Chart */}
                 <div>
                   <h3 className="text-xs font-bold text-gray-900 mb-4 md:mb-6">Weekly Performance</h3>
-                  <div className="bg-gradient-to-br from-gray-50 to-white rounded-2xl p-4 md:p-8 border border-transparent">
+                  <div className="bg-gradient-to-br from-gray-50 to-white rounded-[23px] p-4 md:p-8 border border-transparent">
                     {/* Bar Chart - Scans */}
                     <div className="mb-10">
                       <div className="flex items-center justify-between mb-4">
@@ -989,7 +989,7 @@ export default function RetailerDashboard() {
                                   whileHover={{ scaleY: 1.05 }}
                                   className="w-full bg-gradient-to-t from-[#ff7a4a] to-[#ff6fb3] rounded-t-[15px] relative group shadow-lg origin-bottom min-h-[4px]"
                                 >
-                                  <div className="absolute -top-10 left-1/2 transform -translate-x-1/2 bg-gray-900 text-white text-xs px-3 py-1.5 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap font-semibold shadow-lg z-10">
+                                  <div className="absolute -top-10 left-1/2 transform -translate-x-1/2 bg-gray-900 text-white text-xs px-3 py-1.5 rounded-[23px] opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap font-semibold shadow-lg z-10">
                                     {day.scans} scans
                                   </div>
                                 </motion.div>
@@ -1023,7 +1023,7 @@ export default function RetailerDashboard() {
                                   whileHover={{ scaleY: 1.05 }}
                                   className="w-full bg-gradient-to-t from-[#ff7a4a] to-[#ff6fb3] rounded-t-[15px] relative group shadow-lg origin-bottom min-h-[4px]"
                                 >
-                                  <div className="absolute -top-10 left-1/2 transform -translate-x-1/2 bg-gray-900 text-white text-xs px-3 py-1.5 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap font-semibold shadow-lg z-10">
+                                  <div className="absolute -top-10 left-1/2 transform -translate-x-1/2 bg-gray-900 text-white text-xs px-3 py-1.5 rounded-[23px] opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap font-semibold shadow-lg z-10">
                                     ${day.revenue.toFixed(2)}
                                   </div>
                                 </motion.div>
@@ -1054,7 +1054,7 @@ export default function RetailerDashboard() {
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                     onClick={handleExportPayouts}
-                    className="px-3 py-2 md:px-5 md:py-2.5 bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3] text-white rounded-xl text-xs md:text-sm font-bold hover:shadow-lg transition-all"
+                    className="px-3 py-2 md:px-5 md:py-2.5 bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3] text-white rounded-[23px] text-xs md:text-sm font-bold hover:shadow-lg transition-all"
                   >
                     Export CSV
                   </motion.button>
@@ -1062,7 +1062,7 @@ export default function RetailerDashboard() {
 
                 {/* Summary Cards */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 mb-4 md:mb-8">
-                  <div className="bg-gradient-to-br from-gray-50 to-white border-2 border-gray-200 rounded-3xl p-4 md:p-6 shadow-lg">
+                  <div className="bg-gradient-to-br from-gray-50 to-white border-2 border-gray-200 rounded-[23px] p-4 md:p-6 shadow-lg">
                     <h4 className="font-bold text-gray-700 mb-2 text-sm md:text-base">Pending Earnings</h4>
                     <p className="text-2xl md:text-3xl font-bold text-gray-900">
                       ${payoutJobs
@@ -1072,7 +1072,7 @@ export default function RetailerDashboard() {
                     </p>
                   </div>
 
-                  <div className="bg-gradient-to-br from-gray-50 to-white border-2 border-gray-200 rounded-3xl p-4 md:p-6 shadow-lg">
+                  <div className="bg-gradient-to-br from-gray-50 to-white border-2 border-gray-200 rounded-[23px] p-4 md:p-6 shadow-lg">
                     <h4 className="font-bold text-gray-700 mb-2 text-sm md:text-base">Total Paid Out</h4>
                     <p className="text-2xl md:text-3xl font-bold text-gray-900">
                       ${payoutJobs
@@ -1082,7 +1082,7 @@ export default function RetailerDashboard() {
                     </p>
                   </div>
 
-                  <div className="bg-gradient-to-br from-gray-50 to-white border-2 border-gray-200 rounded-3xl p-4 md:p-6 shadow-lg">
+                  <div className="bg-gradient-to-br from-gray-50 to-white border-2 border-gray-200 rounded-[23px] p-4 md:p-6 shadow-lg">
                     <h4 className="font-bold text-gray-700 mb-2 text-sm md:text-base">Lifetime Earnings</h4>
                     <p className="text-2xl md:text-3xl font-bold text-gray-900">
                       ${payoutJobs
@@ -1096,7 +1096,7 @@ export default function RetailerDashboard() {
                 {payoutJobs.length > 0 ? (
                   <>
                     {/* Desktop Table View */}
-                    <div className="hidden md:block bg-gradient-to-br from-gray-50 to-white border-2 border-gray-200 rounded-2xl overflow-hidden shadow-lg">
+                    <div className="hidden md:block bg-gradient-to-br from-gray-50 to-white border-2 border-gray-200 rounded-[23px] overflow-hidden shadow-lg">
                       <table className="w-full">
                         <thead className="bg-gradient-to-r from-pink-50 to-purple-50">
                           <tr>
@@ -1147,7 +1147,7 @@ export default function RetailerDashboard() {
                           initial={{ opacity: 0, y: 10 }}
                           animate={{ opacity: 1, y: 0 }}
                           transition={{ duration: 0.3, delay: idx * 0.1 }}
-                          className="bg-gradient-to-br from-gray-50 to-white border-2 border-gray-200 rounded-2xl p-4 shadow-lg"
+                          className="bg-gradient-to-br from-gray-50 to-white border-2 border-gray-200 rounded-[23px] p-4 shadow-lg"
                         >
                           <div className="flex items-center justify-between mb-3">
                             <div>
@@ -1192,7 +1192,7 @@ export default function RetailerDashboard() {
                     </div>
                   </>
                 ) : (
-                  <div className="bg-white rounded-2xl border border-transparent shadow-lg py-12 md:py-20 text-center">
+                  <div className="bg-white rounded-[23px] border border-transparent shadow-lg py-12 md:py-20 text-center">
                     <div className="flex flex-col items-center gap-4 max-w-sm mx-auto px-4">
                       <div className="w-20 h-20 bg-gradient-to-br from-gray-100 to-gray-200 rounded-full flex items-center justify-center">
                         <svg className="w-10 h-10 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -1222,11 +1222,11 @@ export default function RetailerDashboard() {
 
                 {/* Display Confirmation */}
                 <motion.div
-                  className="bg-gradient-to-br from-gray-50 to-white border-2 border-gray-200 rounded-2xl p-4 md:p-8 shadow-lg"
+                  className="bg-gradient-to-br from-gray-50 to-white border-2 border-gray-200 rounded-[23px] p-4 md:p-8 shadow-lg"
                 >
                   <h4 className="font-bold text-gray-900 text-base md:text-lg mb-4 md:mb-6">Display Confirmation</h4>
                   <div className="space-y-4">
-                    <div className="bg-gradient-to-br from-purple-50 to-pink-50 border-2 border-purple-200 rounded-xl p-4">
+                    <div className="bg-gradient-to-br from-purple-50 to-pink-50 border-2 border-purple-200 rounded-[23px] p-4">
                       <div className="flex items-start gap-3">
                         <div className="flex-shrink-0 w-10 h-10 bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3] rounded-full flex items-center justify-center">
                           <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -1247,7 +1247,7 @@ export default function RetailerDashboard() {
                           {/* Display Status */}
                           {retailer?.priority_display_active ? (
                             // Priority Display Active - Show purple shipping badge
-                            <div className="mt-3 p-3 rounded-lg border-2 bg-gradient-to-r from-purple-50 to-pink-50 border-purple-300">
+                            <div className="mt-3 p-3 rounded-[23px] border-2 bg-gradient-to-r from-purple-50 to-pink-50 border-purple-300">
                               <div className="flex items-center gap-2">
                                 <span className="text-lg">⚡</span>
                                 <div>
@@ -1261,7 +1261,7 @@ export default function RetailerDashboard() {
                           ) : (
                             // Standard Display - Show upgrade option + email warning
                             <div className="mt-3 space-y-2">
-                              <div className="p-3 bg-blue-50 border-2 border-blue-200 rounded-lg">
+                              <div className="p-3 bg-blue-50 border-2 border-blue-200 rounded-[23px]">
                                 <div className="flex items-center gap-2">
                                   <span className="text-lg">📦</span>
                                   <div>
@@ -1281,7 +1281,7 @@ export default function RetailerDashboard() {
                               </div>
 
                               {/* Important Notice */}
-                              <div className="p-3 bg-amber-50 border-2 border-amber-400 rounded-lg">
+                              <div className="p-3 bg-amber-50 border-2 border-amber-400 rounded-[23px]">
                                 <div className="flex items-start gap-2">
                                   <span className="text-xl mt-0.5">⚠️</span>
                                   <div className="flex-1">
@@ -1292,7 +1292,7 @@ export default function RetailerDashboard() {
                                     <p className="text-xs text-amber-800 mb-2">
                                       Dashboard takes ~30 seconds to register upgrade - wait and refresh the tab.
                                     </p>
-                                    <div className="bg-white px-3 py-2 rounded-[15px] border border-amber-300">
+                                    <div className="bg-white px-3 py-2 rounded-[23px] border border-amber-300">
                                       <p className="text-xs font-mono font-bold text-amber-900">{retailer?.email}</p>
                                     </div>
                                     <p className="text-xs text-amber-700 mt-2">
@@ -1309,7 +1309,7 @@ export default function RetailerDashboard() {
                             onClick={() => setIsOrderModalOpen(true)}
                             whileHover={{ scale: 1.02 }}
                             whileTap={{ scale: 0.98 }}
-                            className="mt-4 w-full px-6 py-3 bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3] text-white rounded-xl font-bold shadow-lg hover:shadow-xl transition-all flex items-center justify-center gap-2"
+                            className="mt-4 w-full px-6 py-3 bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3] text-white rounded-[23px] font-bold shadow-lg hover:shadow-xl transition-all flex items-center justify-center gap-2"
                           >
                             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
@@ -1323,13 +1323,13 @@ export default function RetailerDashboard() {
                 </motion.div>
 
                 {/* Bank Connection Section */}
-                <div className="bg-gradient-to-br from-gray-50 to-white border-2 border-gray-200 rounded-2xl p-4 md:p-8 shadow-lg">
+                <div className="bg-gradient-to-br from-gray-50 to-white border-2 border-gray-200 rounded-[23px] p-4 md:p-8 shadow-lg">
                   <h4 className="font-bold text-gray-900 text-base md:text-lg mb-4 md:mb-6">Bank Connection</h4>
                   
                   {retailerAccount?.plaid_access_token ? (
-                    <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 p-4 md:p-6 bg-green-50 border-2 border-green-200 rounded-2xl">
+                    <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 p-4 md:p-6 bg-green-50 border-2 border-green-200 rounded-[23px]">
                       <div className="flex items-center gap-4">
-                        <div className="w-12 h-12 bg-gradient-to-br from-green-400 to-emerald-500 rounded-2xl flex items-center justify-center">
+                        <div className="w-12 h-12 bg-gradient-to-br from-green-400 to-emerald-500 rounded-[23px] flex items-center justify-center">
                           <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                           </svg>
@@ -1344,7 +1344,7 @@ export default function RetailerDashboard() {
                         whileTap={{ scale: removingBank ? 1 : 0.95 }}
                         onClick={() => setShowRemoveConfirm(true)}
                         disabled={removingBank}
-                        className={`w-full md:w-auto px-6 py-2.5 border-2 border-red-300 text-red-700 rounded-2xl text-sm font-bold hover:bg-red-50 transition-all flex items-center justify-center gap-2 ${
+                        className={`w-full md:w-auto px-6 py-2.5 border-2 border-red-300 text-red-700 rounded-[23px] text-sm font-bold hover:bg-red-50 transition-all flex items-center justify-center gap-2 ${
                           removingBank ? 'opacity-75 cursor-not-allowed' : ''
                         }`}
                       >
@@ -1372,7 +1372,7 @@ export default function RetailerDashboard() {
                           whileTap={{ scale: (plaidLoading || connecting) ? 1 : 0.95 }}
                           onClick={handlePlaidConnect}
                           disabled={plaidLoading || connecting || !plaidScriptLoaded}
-                          className={`px-8 py-3 bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3] text-white rounded-2xl font-bold hover:shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_1px_-0.5px_rgba(0,0,0,0.06),0px_3px_3px_-1.5px_rgba(0,0,0,0.06),0px_6px_6px_-3px_rgba(0,0,0,0.06),0px_12px_12px_-6px_rgba(0,0,0,0.06),0px_24px_24px_-12px_rgba(0,0,0,0.06)] transition-all flex items-center gap-2 mx-auto ${
+                          className={`px-8 py-3 bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3] text-white rounded-[23px] font-bold hover:shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_1px_-0.5px_rgba(0,0,0,0.06),0px_3px_3px_-1.5px_rgba(0,0,0,0.06),0px_6px_6px_-3px_rgba(0,0,0,0.06),0px_12px_12px_-6px_rgba(0,0,0,0.06),0px_24px_24px_-12px_rgba(0,0,0,0.06)] transition-all flex items-center gap-2 mx-auto ${
                             (plaidLoading || connecting || !plaidScriptLoaded) ? 'opacity-75 cursor-not-allowed' : ''
                           }`}
                         >
@@ -1389,7 +1389,7 @@ export default function RetailerDashboard() {
                           <motion.button
                             whileHover={{ scale: 1.05 }}
                             whileTap={{ scale: 0.95 }}
-                            className="px-8 py-3 bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3] text-white rounded-2xl font-bold hover:shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_1px_-0.5px_rgba(0,0,0,0.06),0px_3px_3px_-1.5px_rgba(0,0,0,0.06),0px_6px_6px_-3px_rgba(0,0,0,0.06),0px_12px_12px_-6px_rgba(0,0,0,0.06),0px_24px_24px_-12px_rgba(0,0,0,0.06)] transition-all mx-auto"
+                            className="px-8 py-3 bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3] text-white rounded-[23px] font-bold hover:shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_1px_-0.5px_rgba(0,0,0,0.06),0px_3px_3px_-1.5px_rgba(0,0,0,0.06),0px_6px_6px_-3px_rgba(0,0,0,0.06),0px_12px_12px_-6px_rgba(0,0,0,0.06),0px_24px_24px_-12px_rgba(0,0,0,0.06)] transition-all mx-auto"
                           >
                             Complete registration first
                           </motion.button>
@@ -1397,7 +1397,7 @@ export default function RetailerDashboard() {
                       )}
                       
                       {/* Bank Availability Info */}
-                      <div className="mt-6 p-4 bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-xl text-center">
+                      <div className="mt-6 p-4 bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-[23px] text-center">
                         <div className="flex items-center justify-center gap-2 mb-2">
                           <div className="w-2 h-2 bg-green-500 rounded-full"></div>
                           <span className="text-sm font-semibold text-blue-800">Chase & Schwab available in 2 weeks</span>
@@ -1410,7 +1410,7 @@ export default function RetailerDashboard() {
 
                 {/* Your Displays Section */}
                 <motion.div
-                  className="bg-gradient-to-br from-gray-50 to-white border-2 border-gray-200 rounded-2xl p-4 md:p-8 shadow-lg"
+                  className="bg-gradient-to-br from-gray-50 to-white border-2 border-gray-200 rounded-[23px] p-4 md:p-8 shadow-lg"
                 >
                   <h4 className="font-bold text-gray-900 text-base md:text-lg mb-4 md:mb-6">Your Displays (UIDs)</h4>
 
@@ -1430,7 +1430,7 @@ export default function RetailerDashboard() {
                           initial={{ opacity: 0, y: 20 }}
                           animate={{ opacity: 1, y: 0 }}
                           transition={{ delay: idx * 0.1 }}
-                          className="bg-gradient-to-br from-gray-50 to-white border-2 border-gray-200 rounded-3xl p-6 shadow-lg"
+                          className="bg-gradient-to-br from-gray-50 to-white border-2 border-gray-200 rounded-[23px] p-6 shadow-lg"
                         >
                           <div className="flex items-start justify-between mb-4">
                             <div className="inline-flex items-center gap-2 bg-gray-100 px-4 py-2.5 rounded-full">
@@ -1446,7 +1446,7 @@ export default function RetailerDashboard() {
 
                           <div className="mb-3">
                             <span className="text-xs text-gray-500 font-semibold">UID:</span>
-                            <p className="font-mono text-sm text-gray-900 bg-gray-100 px-3 py-1.5 rounded-lg mt-1">
+                            <p className="font-mono text-sm text-gray-900 bg-gray-100 px-3 py-1.5 rounded-[23px] mt-1">
                               {uid.uid}
                             </p>
                           </div>
@@ -1480,7 +1480,7 @@ export default function RetailerDashboard() {
                   </div>
 
                   {uids.length === 0 && (
-                    <div className="bg-gradient-to-br from-gray-50 to-white border-2 border-gray-200 rounded-3xl p-12 text-center shadow-lg">
+                    <div className="bg-gradient-to-br from-gray-50 to-white border-2 border-gray-200 rounded-[23px] p-12 text-center shadow-lg">
                       <div className="flex flex-col items-center gap-4 max-w-sm mx-auto px-4">
                         <div className="w-20 h-20 bg-gradient-to-br from-gray-100 to-gray-200 rounded-full flex items-center justify-center">
                           <svg className="w-10 h-10 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -1498,25 +1498,25 @@ export default function RetailerDashboard() {
 
                 {/* Store Profile */}
                 <motion.div
-                  className="bg-gradient-to-br from-gray-50 to-white border-2 border-gray-200 rounded-2xl p-4 md:p-8 shadow-lg"
+                  className="bg-gradient-to-br from-gray-50 to-white border-2 border-gray-200 rounded-[23px] p-4 md:p-8 shadow-lg"
                 >
                   <h4 className="font-bold text-gray-900 text-base md:text-lg mb-4 md:mb-6">Store Profile</h4>
                   <div className="space-y-4">
                     <div>
                       <label className="block text-sm font-bold text-gray-700 mb-2">Store Name</label>
-                      <div className="w-full px-4 py-3 border border-transparent rounded-xl bg-gray-50 text-gray-900">
+                      <div className="w-full px-4 py-3 border border-transparent rounded-[23px] bg-gray-50 text-gray-900">
                         {retailer?.name || 'Not set'}
                       </div>
                     </div>
                     <div>
                       <label className="block text-sm font-bold text-gray-700 mb-2">Address</label>
-                      <div className="w-full px-4 py-3 border border-transparent rounded-xl bg-gray-50 text-gray-900">
+                      <div className="w-full px-4 py-3 border border-transparent rounded-[23px] bg-gray-50 text-gray-900">
                         {retailer?.address || retailer?.location || 'Not set'}
                       </div>
                     </div>
                     <div>
                       <label className="block text-sm font-bold text-gray-700 mb-2">Owner Name</label>
-                      <div className="w-full px-4 py-3 border border-transparent rounded-xl bg-gray-50 text-gray-900">
+                      <div className="w-full px-4 py-3 border border-transparent rounded-[23px] bg-gray-50 text-gray-900">
                         {retailer?.owner_name || 'Not set'}
                       </div>
                     </div>
@@ -1526,25 +1526,25 @@ export default function RetailerDashboard() {
 
                 {/* Store Contact Information */}
                 <motion.div
-                  className="bg-gradient-to-br from-gray-50 to-white border-2 border-gray-200 rounded-2xl p-4 md:p-8 shadow-lg"
+                  className="bg-gradient-to-br from-gray-50 to-white border-2 border-gray-200 rounded-[23px] p-4 md:p-8 shadow-lg"
                 >
                   <h4 className="font-bold text-gray-900 text-base md:text-lg mb-4 md:mb-6">Store Contact Information</h4>
                   <div className="space-y-4">
                     <div>
                       <label className="block text-sm font-bold text-gray-700 mb-2">Manager Name</label>
-                      <div className="w-full px-4 py-3 border border-transparent rounded-xl bg-gray-50 text-gray-900">
+                      <div className="w-full px-4 py-3 border border-transparent rounded-[23px] bg-gray-50 text-gray-900">
                         {retailer?.manager_name || 'Not set'}
                       </div>
                     </div>
                     <div>
                       <label className="block text-sm font-bold text-gray-700 mb-2">Store Phone</label>
-                      <div className="w-full px-4 py-3 border border-transparent rounded-xl bg-gray-50 text-gray-900">
+                      <div className="w-full px-4 py-3 border border-transparent rounded-[23px] bg-gray-50 text-gray-900">
                         {retailer?.phone || retailer?.store_phone || 'Not set'}
                       </div>
                     </div>
                     <div>
                       <label className="block text-sm font-bold text-gray-700 mb-2">Store Email</label>
-                      <div className="w-full px-4 py-3 border border-transparent rounded-xl bg-gray-50 text-gray-900">
+                      <div className="w-full px-4 py-3 border border-transparent rounded-[23px] bg-gray-50 text-gray-900">
                         {retailer?.email || 'Not set'}
                       </div>
                     </div>
@@ -1554,7 +1554,7 @@ export default function RetailerDashboard() {
 
                 {/* Account Actions */}
                 <motion.div
-                  className="bg-gradient-to-br from-gray-50 to-white border-2 border-gray-200 rounded-2xl p-4 md:p-8 shadow-lg"
+                  className="bg-gradient-to-br from-gray-50 to-white border-2 border-gray-200 rounded-[23px] p-4 md:p-8 shadow-lg"
                 >
                   <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                     <div>
@@ -1563,7 +1563,7 @@ export default function RetailerDashboard() {
                     </div>
                     <button
                       onClick={() => signOut()}
-                      className="px-6 py-3 font-bold text-gray-700 hover:text-gray-900 transition-all rounded-2xl border border-transparent/80 hover:border-gray-400 bg-white/80 backdrop-blur-sm hover:bg-white/90 shadow-sm hover:shadow-md"
+                      className="px-6 py-3 font-bold text-gray-700 hover:text-gray-900 transition-all rounded-[23px] border border-transparent/80 hover:border-gray-400 bg-white/80 backdrop-blur-sm hover:bg-white/90 shadow-sm hover:shadow-md"
                     >
                       Sign Out
                     </button>
@@ -1580,7 +1580,7 @@ export default function RetailerDashboard() {
                       setSettingsChanged(false);
                     }
                   }}
-                  className={`w-full py-4 px-6 rounded-2xl font-bold text-lg transition-all ${
+                  className={`w-full py-4 px-6 rounded-[23px] font-bold text-lg transition-all ${
                     settingsChanged
                       ? 'bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3] text-white hover:shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_1px_-0.5px_rgba(0,0,0,0.06),0px_3px_3px_-1.5px_rgba(0,0,0,0.06),0px_6px_6px_-3px_rgba(0,0,0,0.06),0px_12px_12px_-6px_rgba(0,0,0,0.06),0px_24px_24px_-12px_rgba(0,0,0,0.06)] cursor-pointer'
                       : 'bg-gray-200 text-gray-500 cursor-not-allowed'
@@ -1609,7 +1609,7 @@ export default function RetailerDashboard() {
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 20 }}
               onClick={(e) => e.stopPropagation()}
-              className="bg-white rounded-3xl shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_1px_-0.5px_rgba(0,0,0,0.06),0px_3px_3px_-1.5px_rgba(0,0,0,0.06),0px_6px_6px_-3px_rgba(0,0,0,0.06),0px_12px_12px_-6px_rgba(0,0,0,0.06),0px_24px_24px_-12px_rgba(0,0,0,0.06)] max-w-md w-full p-6 md:p-8 border border-transparent"
+              className="bg-white rounded-[23px] shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_1px_-0.5px_rgba(0,0,0,0.06),0px_3px_3px_-1.5px_rgba(0,0,0,0.06),0px_6px_6px_-3px_rgba(0,0,0,0.06),0px_12px_12px_-6px_rgba(0,0,0,0.06),0px_24px_24px_-12px_rgba(0,0,0,0.06)] max-w-md w-full p-6 md:p-8 border border-transparent"
             >
               <div className="flex items-center justify-center w-16 h-16 bg-red-100 rounded-full mx-auto mb-4">
                 <svg className="w-8 h-8 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -1625,7 +1625,7 @@ export default function RetailerDashboard() {
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
                   onClick={() => setShowRemoveConfirm(false)}
-                  className="flex-1 px-6 py-3 border border-transparent text-gray-700 rounded-2xl font-bold hover:bg-gray-50 transition-all"
+                  className="flex-1 px-6 py-3 border border-transparent text-gray-700 rounded-[23px] font-bold hover:bg-gray-50 transition-all"
                 >
                   Cancel
                 </motion.button>
@@ -1633,7 +1633,7 @@ export default function RetailerDashboard() {
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
                   onClick={handleRemoveBank}
-                  className="flex-1 px-6 py-3 bg-gradient-to-r from-red-500 to-red-600 text-white rounded-2xl font-bold hover:shadow-lg transition-all"
+                  className="flex-1 px-6 py-3 bg-gradient-to-r from-red-500 to-red-600 text-white rounded-[23px] font-bold hover:shadow-lg transition-all"
                 >
                   Remove Bank
                 </motion.button>
@@ -1653,7 +1653,7 @@ export default function RetailerDashboard() {
             className="fixed bottom-8 right-8 z-50"
           >
             <div className={[
-              "rounded-2xl px-6 py-4 shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_1px_-0.5px_rgba(0,0,0,0.06),0px_3px_3px_-1.5px_rgba(0,0,0,0.06),0px_6px_6px_-3px_rgba(0,0,0,0.06),0px_12px_12px_-6px_rgba(0,0,0,0.06),0px_24px_24px_-12px_rgba(0,0,0,0.06)] border-2 flex items-center gap-3 min-w-[300px]",
+              "rounded-[23px] px-6 py-4 shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_1px_-0.5px_rgba(0,0,0,0.06),0px_3px_3px_-1.5px_rgba(0,0,0,0.06),0px_6px_6px_-3px_rgba(0,0,0,0.06),0px_12px_12px_-6px_rgba(0,0,0,0.06),0px_24px_24px_-12px_rgba(0,0,0,0.06)] border-2 flex items-center gap-3 min-w-[300px]",
               toast.type === 'success' 
                 ? "bg-gradient-to-r from-green-400 to-emerald-500 border-green-300 text-white" 
                 : "bg-gradient-to-r from-red-400 to-rose-500 border-red-300 text-white"

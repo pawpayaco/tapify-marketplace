@@ -125,14 +125,14 @@ export default function AdminAddOwnerModal({ isOpen, onClose, retailer, onSucces
               initial={{ opacity: 0, scale: 0.9, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.9, y: 20 }}
-              className="bg-white rounded-3xl shadow-2xl border-2 border-gray-100 p-6 md:p-8 w-full max-w-lg max-h-[90vh] overflow-y-auto"
+              className="bg-white rounded-[23px] shadow-2xl border-2 border-gray-100 p-6 md:p-8 w-full max-w-lg max-h-[90vh] overflow-y-auto"
             >
               {/* Header */}
               <div className="mb-6 pb-6 border-b-2 border-gray-100">
                 <div className="flex items-start justify-between">
                   <div className="flex-1">
                     <div className="flex items-center gap-3 mb-2">
-                      <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center">
+                      <div className="w-12 h-12 rounded-[23px] bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center">
                         <span className="text-2xl">📧</span>
                       </div>
                       <div>
@@ -140,7 +140,7 @@ export default function AdminAddOwnerModal({ isOpen, onClose, retailer, onSucces
                         <p className="text-gray-500 text-xs">Outreach Tracking</p>
                       </div>
                     </div>
-                    <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-2xl px-4 py-3 mt-3">
+                    <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-[23px] px-4 py-3 mt-3">
                       <p className="text-sm text-gray-700">
                         <span className="font-bold text-gray-900">Store:</span> {retailer?.name}
                       </p>
@@ -160,7 +160,7 @@ export default function AdminAddOwnerModal({ isOpen, onClose, retailer, onSucces
                   <button
                     onClick={handleClose}
                     disabled={loading}
-                    className="ml-4 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-xl p-2 transition-all disabled:opacity-50"
+                    className="ml-4 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-[23px] p-2 transition-all disabled:opacity-50"
                   >
                     <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -181,7 +181,7 @@ export default function AdminAddOwnerModal({ isOpen, onClose, retailer, onSucces
                     name="ownerName"
                     value={formData.ownerName}
                     onChange={handleChange}
-                    className="w-full px-4 py-3 rounded-2xl border-2 border-gray-200 outline-none focus:ring-2 focus:ring-[#ff6fb3] focus:border-transparent transition-all"
+                    className="w-full px-4 py-3 rounded-[23px] border-2 border-gray-200 outline-none focus:ring-2 focus:ring-[#ff6fb3] focus:border-transparent transition-all"
                     placeholder="John Doe"
                   />
                 </div>
@@ -197,7 +197,7 @@ export default function AdminAddOwnerModal({ isOpen, onClose, retailer, onSucces
                     value={formData.ownerEmail}
                     onChange={handleChange}
                     required
-                    className="w-full px-4 py-3 rounded-2xl border-2 border-gray-200 outline-none focus:ring-2 focus:ring-[#ff6fb3] focus:border-transparent transition-all"
+                    className="w-full px-4 py-3 rounded-[23px] border-2 border-gray-200 outline-none focus:ring-2 focus:ring-[#ff6fb3] focus:border-transparent transition-all"
                     placeholder="owner@example.com"
                   />
                 </div>
@@ -212,7 +212,7 @@ export default function AdminAddOwnerModal({ isOpen, onClose, retailer, onSucces
                     name="ownerPhone"
                     value={formData.ownerPhone}
                     onChange={handleChange}
-                    className="w-full px-4 py-3 rounded-2xl border-2 border-gray-200 outline-none focus:ring-2 focus:ring-[#ff6fb3] focus:border-transparent transition-all"
+                    className="w-full px-4 py-3 rounded-[23px] border-2 border-gray-200 outline-none focus:ring-2 focus:ring-[#ff6fb3] focus:border-transparent transition-all"
                     placeholder="(555) 123-4567"
                   />
                 </div>
@@ -227,7 +227,7 @@ export default function AdminAddOwnerModal({ isOpen, onClose, retailer, onSucces
                     value={formData.notes}
                     onChange={handleChange}
                     rows={3}
-                    className="w-full px-4 py-3 rounded-2xl border-2 border-gray-200 outline-none focus:ring-2 focus:ring-[#ff6fb3] focus:border-transparent transition-all resize-none"
+                    className="w-full px-4 py-3 rounded-[23px] border-2 border-gray-200 outline-none focus:ring-2 focus:ring-[#ff6fb3] focus:border-transparent transition-all resize-none"
                     placeholder="Additional notes about this owner..."
                   />
                 </div>
@@ -237,7 +237,7 @@ export default function AdminAddOwnerModal({ isOpen, onClose, retailer, onSucces
                   <motion.div
                     initial={{ opacity: 0, scale: 0.9 }}
                     animate={{ opacity: 1, scale: 1 }}
-                    className="bg-red-50 border-2 border-red-200 text-red-700 px-4 py-3 rounded-2xl text-sm flex items-center gap-2"
+                    className="bg-red-50 border-2 border-red-200 text-red-700 px-4 py-3 rounded-[23px] text-sm flex items-center gap-2"
                   >
                     <svg className="w-5 h-5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                       <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
@@ -251,7 +251,7 @@ export default function AdminAddOwnerModal({ isOpen, onClose, retailer, onSucces
                   <motion.div
                     initial={{ opacity: 0, scale: 0.8 }}
                     animate={{ opacity: 1, scale: 1 }}
-                    className="bg-gradient-to-r from-green-400 to-emerald-500 border-2 border-green-300 text-white px-4 py-4 rounded-2xl text-sm font-bold flex items-center gap-3"
+                    className="bg-gradient-to-r from-green-400 to-emerald-500 border-2 border-green-300 text-white px-4 py-4 rounded-[23px] text-sm font-bold flex items-center gap-3"
                   >
                     <motion.div
                       initial={{ scale: 0 }}
@@ -274,8 +274,8 @@ export default function AdminAddOwnerModal({ isOpen, onClose, retailer, onSucces
                     whileHover={!loading && !success ? { scale: 1.02 } : {}}
                     whileTap={!loading && !success ? { scale: 0.98 } : {}}
                     className={[
-                      "flex-1 px-6 py-3 rounded-2xl font-bold transition-all disabled:cursor-not-allowed",
-                      success 
+                      "flex-1 px-6 py-3 rounded-[15px] font-bold transition-all disabled:cursor-not-allowed",
+                      success
                         ? "bg-gradient-to-r from-green-400 to-emerald-500 text-white"
                         : "bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3] text-white hover:shadow-lg disabled:opacity-50"
                     ].join(" ")}
@@ -296,12 +296,12 @@ export default function AdminAddOwnerModal({ isOpen, onClose, retailer, onSucces
                       '✨ Add Owner Info'
                     )}
                   </motion.button>
-                  
+
                   <button
                     type="button"
                     onClick={handleClose}
                     disabled={loading || success}
-                    className="px-6 py-3 rounded-2xl border-2 border-gray-300 text-gray-700 font-bold hover:bg-gray-50 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="px-6 py-3 rounded-[15px] border-2 border-gray-300 text-gray-700 font-bold hover:bg-gray-50 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     Cancel
                   </button>

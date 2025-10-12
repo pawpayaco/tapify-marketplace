@@ -84,9 +84,9 @@ const journey = [
   },
   {
     icon: '🛒',
-    title: 'Payouts',
+    title: 'Earn Commission',
     description:
-      'Orders flow automatically through your affiliate link and 30% comission gets paid out to your bank via ACH with Plaid and Dwolla.'
+      'Orders flow automatically through your affiliate link and 30% commission gets paid out to your bank via ACH with Plaid and Dwolla.'
   }
 ];
 
@@ -161,7 +161,7 @@ export default function Home() {
       {/* Franchise Owner Funnel Card - First Section */}
       <section className="pb-8 sm:pb-12 md:pb-20 px-4 sm:px-6 lg:px-8">
         <div className="max-w-6xl mx-auto">
-          <div className="bg-gradient-to-br from-[#ff7a4a]/90 via-[#ff6fb3]/90 to-[#ff7a4a]/70 rounded-2xl sm:rounded-3xl md:rounded-[2rem] p-6 sm:p-8 md:p-12 lg:p-16 shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_1px_-0.5px_rgba(0,0,0,0.06),0px_3px_3px_-1.5px_rgba(0,0,0,0.06),0px_6px_6px_-3px_rgba(0,0,0,0.06),0px_12px_12px_-6px_rgba(0,0,0,0.06),0px_24px_24px_-12px_rgba(0,0,0,0.06)] text-center relative z-10">
+          <div className="bg-gradient-to-br from-[#ff7a4a]/90 via-[#ff6fb3]/90 to-[#ff7a4a]/70 rounded-[23px] sm:rounded-[23px] md:rounded-[23px] p-6 sm:p-8 md:p-12 lg:p-16 shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_1px_-0.5px_rgba(0,0,0,0.06),0px_3px_3px_-1.5px_rgba(0,0,0,0.06),0px_6px_6px_-3px_rgba(0,0,0,0.06),0px_12px_12px_-6px_rgba(0,0,0,0.06),0px_24px_24px_-12px_rgba(0,0,0,0.06)] text-center relative z-10">
             <div className="text-white">
               {/* Pre-heading */}
               <div className="text-xs sm:text-xs md:text-sm font-semibold opacity-90 uppercase tracking-wide mb-2 sm:mb-3 md:mb-4 px-4 py-2.5">
@@ -220,7 +220,7 @@ export default function Home() {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.2 }}
-            className="bg-white rounded-3xl p-5 md:p-6 shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_1px_-0.5px_rgba(0,0,0,0.06),0px_3px_3px_-1.5px_rgba(0,0,0,0.06),0px_6px_6px_-3px_rgba(0,0,0,0.06),0px_12px_12px_-6px_rgba(0,0,0,0.06),0px_24px_24px_-12px_rgba(0,0,0,0.06)] border border-transparent text-center"
+            className="bg-white rounded-[23px] p-5 md:p-6 shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_1px_-0.5px_rgba(0,0,0,0.06),0px_3px_3px_-1.5px_rgba(0,0,0,0.06),0px_6px_6px_-3px_rgba(0,0,0,0.06),0px_12px_12px_-6px_rgba(0,0,0,0.06),0px_24px_24px_-12px_rgba(0,0,0,0.06)] border border-transparent text-center"
           >
             <h3 className="text-xl font-black text-gray-900 mb-3">Managers</h3>
             <p className="text-gray-600 mb-4 leading-relaxed">
@@ -231,7 +231,7 @@ export default function Home() {
               type="button"
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
-              className="w-full sm:w-auto px-6 py-3 rounded-xl font-bold shadow-lg transition-all bg-white border-2"
+              className="w-full sm:w-auto px-6 py-3 rounded-[15px] font-bold shadow-lg transition-all bg-white border-2"
               style={{ borderColor: '#ff6fb3', color: '#ff6fb3' }}
             >
               {isCopied ? 'Copied! ✓' : 'Share With Owner'}
@@ -257,7 +257,7 @@ export default function Home() {
                 <CardWrapper
                   key={card.title}
                   {...cardProps}
-                  className="rounded-3xl md:rounded-[2rem] p-8 md:p-10 shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_1px_-0.5px_rgba(0,0,0,0.06),0px_3px_3px_-1.5px_rgba(0,0,0,0.06),0px_6px_6px_-3px_rgba(0,0,0,0.06),0px_12px_12px_-6px_rgba(0,0,0,0.06),0px_24px_24px_-12px_rgba(0,0,0,0.06)] border border-transparent transition-all h-full bg-white hover:shadow-[0px_0px_0px_1px_rgba(0,0,0,0.08),0px_2px_2px_-0.5px_rgba(0,0,0,0.08),0px_4px_4px_-1.5px_rgba(0,0,0,0.08),0px_8px_8px_-3px_rgba(0,0,0,0.08),0px_16px_16px_-6px_rgba(0,0,0,0.08),0px_32px_32px_-12px_rgba(0,0,0,0.08)]"
+                  className="rounded-[23px] md:rounded-[23px] p-8 md:p-10 shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_1px_-0.5px_rgba(0,0,0,0.06),0px_3px_3px_-1.5px_rgba(0,0,0,0.06),0px_6px_6px_-3px_rgba(0,0,0,0.06),0px_12px_12px_-6px_rgba(0,0,0,0.06),0px_24px_24px_-12px_rgba(0,0,0,0.06)] border border-transparent transition-all h-full bg-white hover:shadow-[0px_0px_0px_1px_rgba(0,0,0,0.08),0px_2px_2px_-0.5px_rgba(0,0,0,0.08),0px_4px_4px_-1.5px_rgba(0,0,0,0.08),0px_8px_8px_-3px_rgba(0,0,0,0.08),0px_16px_16px_-6px_rgba(0,0,0,0.08),0px_32px_32px_-12px_rgba(0,0,0,0.08)]"
                 >
                 <h3 className="text-2xl md:text-3xl font-bold mb-3 md:mb-4 text-gray-900">
                   {card.title}
@@ -270,7 +270,7 @@ export default function Home() {
                     whileHover={{ scale: 1.03 }}
                     whileTap={{ scale: 0.96 }}
                     onClick={handleCopyEmail}
-                    className={`inline-flex items-center justify-center px-6 py-3 rounded-2xl font-bold text-sm md:text-base shadow-lg transition-all ${
+                    className={`inline-flex items-center justify-center px-6 py-3 rounded-[15px] font-bold text-sm md:text-base shadow-lg transition-all ${
                       copiedEmail
                         ? 'bg-gradient-to-r from-green-500 to-green-600 text-white'
                         : 'bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3] text-white hover:shadow-xl'
@@ -281,7 +281,7 @@ export default function Home() {
                 ) : card.external ? (
                   <a
                     href={card.href}
-                    className="inline-flex items-center justify-center px-6 py-3 rounded-2xl font-bold text-sm md:text-base shadow-lg transition-all bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3] text-white hover:shadow-xl"
+                    className="inline-flex items-center justify-center px-6 py-3 rounded-[23px] font-bold text-sm md:text-base shadow-lg transition-all bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3] text-white hover:shadow-xl"
                   >
                     {card.buttonLabel} →
                   </a>
@@ -290,7 +290,7 @@ export default function Home() {
                     <motion.span
                       whileHover={{ scale: 1.03 }}
                       whileTap={{ scale: 0.96 }}
-                      className="inline-flex items-center justify-center px-6 py-3 rounded-2xl font-bold text-sm md:text-base shadow-lg transition-all bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3] text-white hover:shadow-xl"
+                      className="inline-flex items-center justify-center px-6 py-3 rounded-[15px] font-bold text-sm md:text-base shadow-lg transition-all bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3] text-white hover:shadow-xl"
                     >
                       {card.buttonLabel} →
                     </motion.span>
@@ -311,7 +311,7 @@ export default function Home() {
             whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
-            className="bg-gradient-to-br from-[#fff3ea] via-[#fff6fb] to-[#f0f4ff] rounded-3xl md:rounded-[2rem] p-8 sm:p-10 md:p-12 lg:p-14 shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_1px_-0.5px_rgba(0,0,0,0.06),0px_3px_3px_-1.5px_rgba(0,0,0,0.06),0px_6px_6px_-3px_rgba(0,0,0,0.06),0px_12px_12px_-6px_rgba(0,0,0,0.06),0px_24px_24px_-12px_rgba(0,0,0,0.06)] border border-transparent text-center"
+            className="bg-gradient-to-br from-[#fff3ea] via-[#fff6fb] to-[#f0f4ff] rounded-[23px] md:rounded-[23px] p-8 sm:p-10 md:p-12 lg:p-14 shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_1px_-0.5px_rgba(0,0,0,0.06),0px_3px_3px_-1.5px_rgba(0,0,0,0.06),0px_6px_6px_-3px_rgba(0,0,0,0.06),0px_12px_12px_-6px_rgba(0,0,0,0.06),0px_24px_24px_-12px_rgba(0,0,0,0.06)] border border-transparent text-center"
           >
             <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 mb-3 md:mb-4 px-2">
               Test it Out
@@ -324,7 +324,7 @@ export default function Home() {
                 <motion.span
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
-                  className="inline-flex items-center justify-center bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3] text-white px-6 md:px-8 py-3 rounded-2xl font-bold text-base md:text-lg shadow-xl hover:shadow-2xl transition-all"
+                  className="inline-flex items-center justify-center bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3] text-white px-6 md:px-8 py-3 rounded-[15px] font-bold text-base md:text-lg shadow-xl hover:shadow-2xl transition-all"
                 >
                   Get Your Display →
                 </motion.span>
@@ -361,7 +361,7 @@ export default function Home() {
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: index * 0.1 }}
               >
-                <div className="relative bg-white rounded-3xl md:rounded-[2rem] p-8 md:p-10 shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_1px_-0.5px_rgba(0,0,0,0.06),0px_3px_3px_-1.5px_rgba(0,0,0,0.06),0px_6px_6px_-3px_rgba(0,0,0,0.06),0px_12px_12px_-6px_rgba(0,0,0,0.06),0px_24px_24px_-12px_rgba(0,0,0,0.06)] border border-transparent h-full">
+                <div className="relative bg-white rounded-[23px] md:rounded-[23px] p-8 md:p-10 shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_1px_-0.5px_rgba(0,0,0,0.06),0px_3px_3px_-1.5px_rgba(0,0,0,0.06),0px_6px_6px_-3px_rgba(0,0,0,0.06),0px_12px_12px_-6px_rgba(0,0,0,0.06),0px_24px_24px_-12px_rgba(0,0,0,0.06)] border border-transparent h-full">
                   <div className="absolute -top-4 md:-top-6 left-1/2 transform -translate-x-1/2">
                     <div className="bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3] text-white w-10 h-10 md:w-12 md:h-12 rounded-full flex items-center justify-center font-bold shadow-lg text-sm md:text-base">
                       {index + 1}
@@ -404,7 +404,7 @@ export default function Home() {
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: index * 0.1 }}
               >
-                <div className="bg-white rounded-3xl md:rounded-[2rem] p-8 md:p-10 shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_1px_-0.5px_rgba(0,0,0,0.06),0px_3px_3px_-1.5px_rgba(0,0,0,0.06),0px_6px_6px_-3px_rgba(0,0,0,0.06),0px_12px_12px_-6px_rgba(0,0,0,0.06),0px_24px_24px_-12px_rgba(0,0,0,0.06)] border border-transparent hover:shadow-[0px_0px_0px_1px_rgba(0,0,0,0.08),0px_2px_2px_-0.5px_rgba(0,0,0,0.08),0px_4px_4px_-1.5px_rgba(0,0,0,0.08),0px_8px_8px_-3px_rgba(0,0,0,0.08),0px_16px_16px_-6px_rgba(0,0,0,0.08),0px_32px_32px_-12px_rgba(0,0,0,0.08)] transition-all h-full">
+                <div className="bg-white rounded-[23px] md:rounded-[23px] p-8 md:p-10 shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_1px_-0.5px_rgba(0,0,0,0.06),0px_3px_3px_-1.5px_rgba(0,0,0,0.06),0px_6px_6px_-3px_rgba(0,0,0,0.06),0px_12px_12px_-6px_rgba(0,0,0,0.06),0px_24px_24px_-12px_rgba(0,0,0,0.06)] border border-transparent hover:shadow-[0px_0px_0px_1px_rgba(0,0,0,0.08),0px_2px_2px_-0.5px_rgba(0,0,0,0.08),0px_4px_4px_-1.5px_rgba(0,0,0,0.08),0px_8px_8px_-3px_rgba(0,0,0,0.08),0px_16px_16px_-6px_rgba(0,0,0,0.08),0px_32px_32px_-12px_rgba(0,0,0,0.08)] transition-all h-full">
                   <div className="text-sm md:text-base font-semibold text-[#ff7a4a] mb-2 md:mb-3">Coming Soon</div>
                   <h3 className="text-xl md:text-2xl font-bold text-gray-900 mb-2 md:mb-3">{item.title}</h3>
                   <p className="text-base md:text-lg text-gray-600 leading-relaxed">{item.description}</p>
@@ -423,7 +423,7 @@ export default function Home() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
-            className="bg-white rounded-3xl p-5 md:p-6 shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_1px_-0.5px_rgba(0,0,0,0.06),0px_3px_3px_-1.5px_rgba(0,0,0,0.06),0px_6px_6px_-3px_rgba(0,0,0,0.06),0px_12px_12px_-6px_rgba(0,0,0,0.06),0px_24px_24px_-12px_rgba(0,0,0,0.06)] border border-transparent text-center"
+            className="bg-white rounded-[23px] p-5 md:p-6 shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_1px_-0.5px_rgba(0,0,0,0.06),0px_3px_3px_-1.5px_rgba(0,0,0,0.06),0px_6px_6px_-3px_rgba(0,0,0,0.06),0px_12px_12px_-6px_rgba(0,0,0,0.06),0px_24px_24px_-12px_rgba(0,0,0,0.06)] border border-transparent text-center"
           >
             <h3 className="text-xl font-black text-gray-900 mb-3">Questions?</h3>
             <p className="text-gray-600 mb-4 leading-relaxed">
@@ -431,7 +431,7 @@ export default function Home() {
             </p>
             <a
               href="tel:7159791259"
-              className="inline-block px-6 py-3 rounded-xl font-bold text-white shadow-lg hover:shadow-xl transition-all"
+              className="inline-block px-6 py-3 rounded-[23px] font-bold text-white shadow-lg hover:shadow-xl transition-all"
               style={{ background: 'linear-gradient(to right, #ff7a4a, #ff6fb3)' }}
             >
               (715) 979-1259

@@ -140,7 +140,7 @@ export default function AdminStores({ user, isAdmin, error }) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-red-50 to-orange-50 p-8">
         <div className="max-w-2xl mx-auto">
-          <div className="bg-red-100 border-l-4 border-red-500 rounded-lg shadow-lg p-6">
+          <div className="bg-red-100 border-l-4 border-red-500 rounded-[23px] shadow-lg p-6">
             <h1 className="text-2xl font-bold text-red-900 mb-2">🚫 Access Denied</h1>
             <p className="text-red-800 mb-4">You are not authorized to access the stores admin panel.</p>
             {error && (
@@ -152,13 +152,13 @@ export default function AdminStores({ user, isAdmin, error }) {
             <div className="flex gap-3 mt-4">
               <button
                 onClick={() => router.push('/admin')}
-                className="px-6 py-3 bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3] text-white rounded-lg font-bold hover:shadow-lg"
+                className="px-6 py-3 bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3] text-white rounded-[15px] font-bold hover:shadow-lg"
               >
                 ← Back to Admin
               </button>
               <button
                 onClick={() => router.push('/')}
-                className="px-6 py-3 bg-gray-600 text-white rounded-lg font-bold hover:bg-gray-700"
+                className="px-6 py-3 bg-gray-600 text-white rounded-[15px] font-bold hover:bg-gray-700"
               >
                 Home
               </button>
@@ -190,7 +190,7 @@ export default function AdminStores({ user, isAdmin, error }) {
               <div className="flex items-center gap-3 mb-2">
                 <button
                   onClick={() => router.push('/admin')}
-                  className="p-2 hover:bg-white/20 rounded-lg transition-all"
+                  className="p-2 hover:bg-white/20 rounded-[15px] transition-all"
                 >
                   <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -217,7 +217,7 @@ export default function AdminStores({ user, isAdmin, error }) {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
-          className="bg-white rounded-3xl shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_1px_-0.5px_rgba(0,0,0,0.06),0px_3px_3px_-1.5px_rgba(0,0,0,0.06),0px_6px_6px_-3px_rgba(0,0,0,0.06),0px_12px_12px_-6px_rgba(0,0,0,0.06),0px_24px_24px_-12px_rgba(0,0,0,0.06)] border border-transparent p-4 mb-6"
+          className="bg-white rounded-[23px] shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_1px_-0.5px_rgba(0,0,0,0.06),0px_3px_3px_-1.5px_rgba(0,0,0,0.06),0px_6px_6px_-3px_rgba(0,0,0,0.06),0px_12px_12px_-6px_rgba(0,0,0,0.06),0px_24px_24px_-12px_rgba(0,0,0,0.06)] border border-transparent p-4 mb-6"
         >
           <div className="flex items-center justify-between gap-3">
             <div className="text-gray-700 font-bold text-lg">
@@ -229,7 +229,7 @@ export default function AdminStores({ user, isAdmin, error }) {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={() => setShowAddProspectModal(true)}
-              className="rounded-2xl px-6 py-3 text-sm font-bold bg-gradient-to-r from-green-500 to-emerald-600 text-white shadow-lg hover:shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_1px_-0.5px_rgba(0,0,0,0.06),0px_3px_3px_-1.5px_rgba(0,0,0,0.06),0px_6px_6px_-3px_rgba(0,0,0,0.06),0px_12px_12px_-6px_rgba(0,0,0,0.06),0px_24px_24px_-12px_rgba(0,0,0,0.06)] transition-all flex items-center gap-2"
+              className="rounded-[15px] px-6 py-3 text-sm font-bold bg-gradient-to-r from-green-500 to-emerald-600 text-white shadow-lg hover:shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_1px_-0.5px_rgba(0,0,0,0.06),0px_3px_3px_-1.5px_rgba(0,0,0,0.06),0px_6px_6px_-3px_rgba(0,0,0,0.06),0px_12px_12px_-6px_rgba(0,0,0,0.06),0px_24px_24px_-12px_rgba(0,0,0,0.06)] transition-all flex items-center gap-2"
             >
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />

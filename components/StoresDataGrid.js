@@ -216,7 +216,7 @@ export default function StoresDataGrid({ onRefresh }) {
 
   if (loading) {
     return (
-      <div className="bg-white rounded-3xl shadow-xl border-2 border-gray-100 p-12">
+      <div className="bg-white rounded-[23px] shadow-xl border-2 border-gray-100 p-12">
         <div className="text-center">
           <div className="animate-spin rounded-full h-16 w-16 border-4 border-[#ff7a4a] border-t-transparent mx-auto mb-4"></div>
           <p className="text-gray-600 font-semibold">Loading stores...</p>
@@ -227,7 +227,7 @@ export default function StoresDataGrid({ onRefresh }) {
 
   if (error) {
     return (
-      <div className="bg-white rounded-3xl shadow-xl border-2 border-red-200 p-8">
+      <div className="bg-white rounded-[23px] shadow-xl border-2 border-red-200 p-8">
         <div className="text-center">
           <div className="text-5xl mb-4">⚠️</div>
           <h3 className="text-xl font-bold text-red-900 mb-2">Error Loading Stores</h3>
@@ -236,7 +236,7 @@ export default function StoresDataGrid({ onRefresh }) {
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             onClick={fetchStores}
-            className="px-6 py-3 bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3] text-white rounded-2xl font-bold"
+            className="px-6 py-3 bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3] text-white rounded-[23px] font-bold"
           >
             Try Again
           </motion.button>
@@ -247,7 +247,7 @@ export default function StoresDataGrid({ onRefresh }) {
 
   return (
     <>
-      <div className="bg-white rounded-3xl shadow-xl border-2 border-gray-100 overflow-hidden">
+      <div className="bg-white rounded-[23px] shadow-xl border-2 border-gray-100 overflow-hidden">
         
         {/* Filters Header */}
         <div className="bg-gradient-to-r from-gray-50 to-gray-100 border-b-2 border-gray-200 p-6">
@@ -261,7 +261,7 @@ export default function StoresDataGrid({ onRefresh }) {
                   placeholder="Search by name, address, email, or phone..."
                   value={searchText}
                   onChange={(e) => setSearchText(e.target.value)}
-                  className="w-full px-4 py-3 pl-11 border-2 border-gray-300 rounded-2xl focus:ring-2 focus:ring-[#ff6fb3] focus:border-transparent text-gray-900 placeholder-gray-500"
+                  className="w-full px-4 py-3 pl-11 border-2 border-gray-300 rounded-[23px] focus:ring-2 focus:ring-[#ff6fb3] focus:border-transparent text-gray-900 placeholder-gray-500"
                 />
                 <svg className="w-5 h-5 text-gray-400 absolute left-3 top-1/2 transform -translate-y-1/2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
@@ -273,7 +273,7 @@ export default function StoresDataGrid({ onRefresh }) {
             <select
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
-              className="px-4 py-3 border-2 border-gray-300 rounded-2xl focus:ring-2 focus:ring-[#ff6fb3] focus:border-transparent text-gray-900 font-medium"
+              className="px-4 py-3 border-2 border-gray-300 rounded-[23px] focus:ring-2 focus:ring-[#ff6fb3] focus:border-transparent text-gray-900 font-medium"
             >
               <option value="all">All Status</option>
               <option value="prospect">🟡 Prospect</option>
@@ -284,7 +284,7 @@ export default function StoresDataGrid({ onRefresh }) {
             <select
               value={emailSentFilter}
               onChange={(e) => setEmailSentFilter(e.target.value)}
-              className="px-4 py-3 border-2 border-gray-300 rounded-2xl focus:ring-2 focus:ring-[#ff6fb3] focus:border-transparent text-gray-900 font-medium"
+              className="px-4 py-3 border-2 border-gray-300 rounded-[23px] focus:ring-2 focus:ring-[#ff6fb3] focus:border-transparent text-gray-900 font-medium"
             >
               <option value="all">All Emails</option>
               <option value="sent">📧 Email Sent</option>
@@ -297,7 +297,7 @@ export default function StoresDataGrid({ onRefresh }) {
               whileTap={{ scale: 0.95 }}
               onClick={handleExportCSV}
               disabled={filteredStores.length === 0}
-              className="px-6 py-3 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-2xl font-bold hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+              className="px-6 py-3 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-[23px] font-bold hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
             >
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
@@ -408,7 +408,7 @@ export default function StoresDataGrid({ onRefresh }) {
                               navigator.clipboard.writeText(store.email);
                               showToast('Email copied to clipboard');
                             }}
-                            className="p-1 hover:bg-gray-100 rounded-[15px] transition-colors"
+                            className="p-1 hover:bg-gray-100 rounded-[23px] transition-colors"
                             title="Copy email"
                           >
                             <svg className="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -469,7 +469,7 @@ export default function StoresDataGrid({ onRefresh }) {
                           whileHover={{ scale: 1.05 }}
                           whileTap={{ scale: 0.95 }}
                           onClick={() => handleEditClick(store)}
-                          className="px-3 py-1.5 rounded-lg bg-gradient-to-r from-blue-500 to-purple-600 text-white text-xs font-bold hover:shadow-lg flex items-center gap-1"
+                          className="px-3 py-1.5 rounded-[23px] bg-gradient-to-r from-blue-500 to-purple-600 text-white text-xs font-bold hover:shadow-lg flex items-center gap-1"
                           title="Edit store profile and owner info"
                         >
                           <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -512,7 +512,7 @@ export default function StoresDataGrid({ onRefresh }) {
             className="fixed top-8 right-8 z-50"
           >
             <div className={[
-              "px-6 py-4 rounded-2xl shadow-2xl font-bold text-white flex items-center gap-3",
+              "px-6 py-4 rounded-[23px] shadow-2xl font-bold text-white flex items-center gap-3",
               toast.type === 'error' ? "bg-red-500" : "bg-green-500"
             ].join(" ")}>
               <span className="text-2xl">{toast.type === 'error' ? '❌' : '✅'}</span>
@@ -611,13 +611,13 @@ function EditProfileModal({ isOpen, onClose, store, onSuccess }) {
         initial={{ opacity: 0, scale: 0.95, y: 20 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
         exit={{ opacity: 0, scale: 0.95, y: 20 }}
-        className="bg-white rounded-2xl shadow-xl max-w-lg w-full max-h-[85vh] overflow-y-auto"
+        className="bg-white rounded-[23px] shadow-xl max-w-lg w-full max-h-[85vh] overflow-y-auto"
       >
         {/* Header */}
         <div className="bg-gradient-to-r from-blue-500 to-purple-600 text-white p-5 rounded-t-[15px]">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-white/20 backdrop-blur-sm flex items-center justify-center">
+              <div className="w-10 h-10 rounded-[23px] bg-white/20 backdrop-blur-sm flex items-center justify-center">
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                 </svg>
@@ -629,7 +629,7 @@ function EditProfileModal({ isOpen, onClose, store, onSuccess }) {
             </div>
             <button
               onClick={onClose}
-              className="p-2 hover:bg-white/20 rounded-lg transition-colors"
+              className="p-2 hover:bg-white/20 rounded-[23px] transition-colors"
             >
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -650,7 +650,7 @@ function EditProfileModal({ isOpen, onClose, store, onSuccess }) {
               value={formData.name}
               onChange={(e) => setFormData({ ...formData, name: e.target.value })}
               required
-              className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+              className="w-full px-4 py-3 border-2 border-gray-300 rounded-[23px] focus:ring-2 focus:ring-purple-500 focus:border-transparent"
               placeholder="e.g., Starbucks Coffee"
             />
           </div>
@@ -685,7 +685,7 @@ function EditProfileModal({ isOpen, onClose, store, onSuccess }) {
               type="text"
               value={formData.owner_name}
               onChange={(e) => setFormData({ ...formData, owner_name: e.target.value })}
-              className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+              className="w-full px-4 py-3 border-2 border-gray-300 rounded-[23px] focus:ring-2 focus:ring-purple-500 focus:border-transparent"
               placeholder="e.g., John Smith or Management Group"
             />
           </div>
@@ -699,7 +699,7 @@ function EditProfileModal({ isOpen, onClose, store, onSuccess }) {
               type="email"
               value={formData.email}
               onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-              className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+              className="w-full px-4 py-3 border-2 border-gray-300 rounded-[23px] focus:ring-2 focus:ring-purple-500 focus:border-transparent"
               placeholder="owner@example.com"
             />
             <p className="text-xs text-gray-500 mt-1">This will be used for login when they register</p>
@@ -714,7 +714,7 @@ function EditProfileModal({ isOpen, onClose, store, onSuccess }) {
               type="tel"
               value={formData.phone}
               onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-              className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+              className="w-full px-4 py-3 border-2 border-gray-300 rounded-[23px] focus:ring-2 focus:ring-purple-500 focus:border-transparent"
               placeholder="(555) 123-4567"
             />
           </div>
@@ -722,7 +722,7 @@ function EditProfileModal({ isOpen, onClose, store, onSuccess }) {
 
           {/* Error Message */}
           {error && (
-            <div className="bg-red-50 border-2 border-red-200 rounded-xl p-4 flex items-start gap-3">
+            <div className="bg-red-50 border-2 border-red-200 rounded-[23px] p-4 flex items-start gap-3">
               <svg className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
                 <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
               </svg>
@@ -737,7 +737,7 @@ function EditProfileModal({ isOpen, onClose, store, onSuccess }) {
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
               onClick={onClose}
-              className="flex-1 px-6 py-3 border-2 border-gray-300 text-gray-700 rounded-xl font-bold hover:bg-gray-50"
+              className="flex-1 px-6 py-3 border-2 border-gray-300 text-gray-700 rounded-[23px] font-bold hover:bg-gray-50"
             >
               Cancel
             </motion.button>
@@ -746,7 +746,7 @@ function EditProfileModal({ isOpen, onClose, store, onSuccess }) {
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
               disabled={loading}
-              className="flex-1 px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-xl font-bold hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+              className="flex-1 px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-[23px] font-bold hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {loading ? (
                 <span className="flex items-center justify-center gap-2">

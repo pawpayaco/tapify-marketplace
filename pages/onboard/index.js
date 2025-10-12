@@ -95,7 +95,7 @@ export default function OnboardIndex() {
           <div className="flex flex-col md:flex-row gap-6 justify-center items-center">
             <Link href="/onboard/register">
               <button
-                className="px-6 py-4 rounded-2xl text-lg font-black shadow-xl transition-all text-white"
+                className="px-6 py-4 rounded-[15px] text-lg font-black shadow-xl transition-all text-white"
                 style={{ background: 'linear-gradient(to right, #ff7a4a, #ff6fb3)', width: '320px', maxWidth: '100%' }}
               >
                 I'm a Business Owner →
@@ -103,7 +103,7 @@ export default function OnboardIndex() {
             </Link>
             <button
               onClick={handleManagerShare}
-              className="px-6 py-4 rounded-2xl text-lg font-black shadow-xl transition-all bg-white"
+              className="px-6 py-4 rounded-[15px] text-lg font-black shadow-xl transition-all bg-white"
               style={{ border: '4px solid #ff6fb3', color: '#ff6fb3', width: '320px', maxWidth: '100%' }}
             >
               {isCopied ? 'Copied! ✓' : 'I\'m a Manager — Share This'}
@@ -139,7 +139,7 @@ export default function OnboardIndex() {
             </h2>
           </div>
           <div className="max-w-7xl mx-auto">
-            <div className="bg-gradient-to-br from-gray-50 to-white border-2 border-gray-200 rounded-3xl pt-8 px-8 pb-6 md:pt-12 md:px-12 md:pb-8 lg:pt-16 lg:px-16 lg:pb-10">
+            <div className="bg-gradient-to-br from-gray-50 to-white border-2 border-gray-200 rounded-[23px] pt-8 px-8 pb-6 md:pt-12 md:px-12 md:pb-8 lg:pt-16 lg:px-16 lg:pb-10">
               <ImageModalGallery
                 images={[
                   { src: "/images/image40.jpg", alt: "Pawpaya display hero angle" },
@@ -148,7 +148,7 @@ export default function OnboardIndex() {
                 ]}
               />
               <div className="mt-6 text-center">
-                <div className="inline-block bg-white px-6 py-3 rounded-2xl shadow-md">
+                <div className="inline-block bg-white px-6 py-3 rounded-[23px] shadow-md">
                   <p className="text-gray-700 font-bold text-sm md:text-base">Includes hooks to hang on metal peg board next to other collars</p>
                 </div>
               </div>
@@ -168,7 +168,7 @@ export default function OnboardIndex() {
             How It Works
           </h2>
 
-          <div className="bg-white rounded-3xl md:rounded-[2rem] py-6 md:py-8 px-4 md:px-10 shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_1px_-0.5px_rgba(0,0,0,0.06),0px_3px_3px_-1.5px_rgba(0,0,0,0.06),0px_6px_6px_-3px_rgba(0,0,0,0.06),0px_12px_12px_-6px_rgba(0,0,0,0.06),0px_24px_24px_-12px_rgba(0,0,0,0.06)] border border-transparent">
+          <div className="bg-white rounded-[23px] md:rounded-[23px] py-6 md:py-8 px-4 md:px-10 shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_1px_-0.5px_rgba(0,0,0,0.06),0px_3px_3px_-1.5px_rgba(0,0,0,0.06),0px_6px_6px_-3px_rgba(0,0,0,0.06),0px_12px_12px_-6px_rgba(0,0,0,0.06),0px_24px_24px_-12px_rgba(0,0,0,0.06)] border border-transparent">
             <div className="grid grid-cols-2 place-items-center md:flex md:flex-row md:items-center md:justify-between gap-4 md:gap-3">
               {[
                 { step: '1', text: 'Sees display' },
@@ -223,7 +223,7 @@ export default function OnboardIndex() {
               <motion.div
                 key={idx}
                 variants={fadeInUp}
-                className="relative overflow-hidden rounded-3xl md:rounded-[2rem] p-8 md:p-10 shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_1px_-0.5px_rgba(0,0,0,0.06),0px_3px_3px_-1.5px_rgba(0,0,0,0.06),0px_6px_6px_-3px_rgba(0,0,0,0.06),0px_12px_12px_-6px_rgba(0,0,0,0.06),0px_24px_24px_-12px_rgba(0,0,0,0.06)] border border-transparent text-center transition-all"
+                className="relative overflow-hidden rounded-[23px] md:rounded-[23px] p-8 md:p-10 shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_1px_-0.5px_rgba(0,0,0,0.06),0px_3px_3px_-1.5px_rgba(0,0,0,0.06),0px_6px_6px_-3px_rgba(0,0,0,0.06),0px_12px_12px_-6px_rgba(0,0,0,0.06),0px_24px_24px_-12px_rgba(0,0,0,0.06)] border border-transparent text-center transition-all"
                 style={{
                   backgroundImage: 'url(/gradient-bg.png)',
                   backgroundSize: 'cover',
@@ -260,7 +260,7 @@ export default function OnboardIndex() {
           transition={{ duration: 0.6 }}
           className="mb-12 md:mb-16"
         >
-          <div className="bg-white rounded-3xl md:rounded-[2rem] p-8 md:p-10 shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_1px_-0.5px_rgba(0,0,0,0.06),0px_3px_3px_-1.5px_rgba(0,0,0,0.06),0px_6px_6px_-3px_rgba(0,0,0,0.06),0px_12px_12px_-6px_rgba(0,0,0,0.06),0px_24px_24px_-12px_rgba(0,0,0,0.06)] border border-transparent">
+          <div className="bg-white rounded-[23px] md:rounded-[23px] p-8 md:p-10 shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_1px_-0.5px_rgba(0,0,0,0.06),0px_3px_3px_-1.5px_rgba(0,0,0,0.06),0px_6px_6px_-3px_rgba(0,0,0,0.06),0px_12px_12px_-6px_rgba(0,0,0,0.06),0px_24px_24px_-12px_rgba(0,0,0,0.06)] border border-transparent">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-0">
               {/* For Managers */}
               <div className="flex flex-col md:pr-8 md:border-r md:border-gray-200">
@@ -272,7 +272,7 @@ export default function OnboardIndex() {
                 </p>
                 <button
                   onClick={handleManagerShare}
-                  className="px-6 md:px-8 py-3 md:py-4 rounded-2xl md:rounded-3xl text-base md:text-lg font-black shadow-lg bg-white border-2 whitespace-nowrap"
+                  className="px-6 md:px-8 py-3 md:py-4 rounded-[15px] md:rounded-[15px] text-base md:text-lg font-black shadow-lg bg-white border-2 whitespace-nowrap"
                   style={{ borderColor: '#ff6fb3', color: '#ff6fb3' }}
                 >
                   {isCopied ? 'Copied! ✓' : 'Share With Owner'}
@@ -290,7 +290,7 @@ export default function OnboardIndex() {
                 </p>
                 <Link href="/onboard/register">
                   <button
-                    className="px-8 md:px-10 py-3 md:py-4 rounded-2xl md:rounded-3xl text-base md:text-lg font-black transition-all shadow-xl text-white whitespace-nowrap"
+                    className="px-8 md:px-10 py-3 md:py-4 rounded-[15px] md:rounded-[15px] text-base md:text-lg font-black transition-all shadow-xl text-white whitespace-nowrap"
                     style={{ background: 'linear-gradient(to right, #ff7a4a, #ff6fb3)' }}
                   >
                     Register Now →
@@ -305,7 +305,7 @@ export default function OnboardIndex() {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.5 }}
-            className="mt-12 md:mt-16 bg-white rounded-3xl p-5 md:p-6 shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_1px_-0.5px_rgba(0,0,0,0.06),0px_3px_3px_-1.5px_rgba(0,0,0,0.06),0px_6px_6px_-3px_rgba(0,0,0,0.06),0px_12px_12px_-6px_rgba(0,0,0,0.06),0px_24px_24px_-12px_rgba(0,0,0,0.06)] border border-transparent text-center"
+            className="mt-12 md:mt-16 bg-white rounded-[23px] p-5 md:p-6 shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_1px_-0.5px_rgba(0,0,0,0.06),0px_3px_3px_-1.5px_rgba(0,0,0,0.06),0px_6px_6px_-3px_rgba(0,0,0,0.06),0px_12px_12px_-6px_rgba(0,0,0,0.06),0px_24px_24px_-12px_rgba(0,0,0,0.06)] border border-transparent text-center"
           >
             <h3 className="text-xl font-black text-gray-900 mb-3">Questions?</h3>
             <p className="text-gray-600 mb-4 leading-relaxed">
@@ -313,7 +313,7 @@ export default function OnboardIndex() {
             </p>
             <a
               href="tel:7159791259"
-              className="inline-block px-6 py-3 rounded-xl font-bold text-white shadow-lg hover:shadow-xl transition-all"
+              className="inline-block px-6 py-3 rounded-[23px] font-bold text-white shadow-lg hover:shadow-xl transition-all"
               style={{ background: 'linear-gradient(to right, #ff7a4a, #ff6fb3)' }}
             >
               (715) 979-1259

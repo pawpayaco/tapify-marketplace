@@ -22,7 +22,7 @@ export default function RetailerPayoutRow({ retailerData, onProcessPayout, onPro
         {/* Expand Button */}
         <button
           onClick={() => setExpanded(!expanded)}
-          className="flex-shrink-0 w-8 h-8 flex items-center justify-center rounded-lg hover:bg-gray-200 transition-colors"
+          className="flex-shrink-0 w-8 h-8 flex items-center justify-center rounded-[23px] hover:bg-gray-200 transition-colors"
         >
           <svg
             className={`w-5 h-5 text-gray-600 transition-transform ${expanded ? 'rotate-90' : ''}`}
@@ -92,7 +92,7 @@ export default function RetailerPayoutRow({ retailerData, onProcessPayout, onPro
             whileTap={{ scale: 0.95 }}
             onClick={handleProcessAll}
             disabled={processingPayouts.size > 0}
-            className="px-6 py-3 rounded-2xl bg-gradient-to-r from-green-400 to-emerald-500 text-white font-bold hover:shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap"
+            className="px-6 py-3 rounded-[23px] bg-gradient-to-r from-green-400 to-emerald-500 text-white font-bold hover:shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap"
           >
             💰 Pay All ({summary.pending_count})
           </motion.button>
@@ -118,7 +118,7 @@ export default function RetailerPayoutRow({ retailerData, onProcessPayout, onPro
                     {uids.map((uid) => (
                       <div
                         key={uid.uid}
-                        className="bg-white rounded-xl p-3 border border-gray-200 shadow-sm"
+                        className="bg-white rounded-[23px] p-3 border border-gray-200 shadow-sm"
                       >
                         <div className="flex items-center justify-between mb-2">
                           <span className="font-mono font-bold text-purple-700">{uid.uid}</span>
@@ -139,7 +139,7 @@ export default function RetailerPayoutRow({ retailerData, onProcessPayout, onPro
               {payouts.length > 0 ? (
                 <div>
                   <h4 className="text-sm font-bold text-gray-700 mb-3">💵 Payout Transactions</h4>
-                  <div className="bg-white rounded-xl overflow-hidden shadow-sm border border-gray-200">
+                  <div className="bg-white rounded-[23px] overflow-hidden shadow-sm border border-gray-200">
                     <table className="w-full text-sm">
                       <thead className="bg-gray-100">
                         <tr>
@@ -200,7 +200,7 @@ export default function RetailerPayoutRow({ retailerData, onProcessPayout, onPro
                                     whileTap={{ scale: 0.95 }}
                                     onClick={() => onProcessPayout(payout.id)}
                                     disabled={isProcessing}
-                                    className={`px-4 py-2 rounded-xl text-xs font-bold transition-all ${
+                                    className={`px-4 py-2 rounded-[23px] text-xs font-bold transition-all ${
                                       isProcessing
                                         ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
                                         : 'bg-gradient-to-r from-green-400 to-emerald-500 text-white hover:shadow-lg'

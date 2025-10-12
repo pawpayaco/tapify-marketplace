@@ -19,7 +19,7 @@ export default function ClaimedPage() {
             duration: 0.6,
             ease: [0.23, 1, 0.32, 1]
           }}
-          className="bg-white rounded-2xl sm:rounded-3xl shadow-xl border-2 border-gray-100 p-8 md:p-12 text-center"
+          className="bg-white rounded-[23px] sm:rounded-[23px] shadow-xl border-2 border-gray-100 p-8 md:p-12 text-center"
         >
           {/* Success Icon with animation */}
           <motion.div
@@ -70,7 +70,7 @@ export default function ClaimedPage() {
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.6 }}
-            className="bg-orange-50 border-2 border-orange-200 rounded-2xl p-6 mb-6"
+            className="bg-orange-50 border-2 border-orange-200 rounded-[23px] p-6 mb-6"
           >
             <div className="text-5xl mb-3">👆</div>
             <p className="text-lg font-bold text-gray-900 mb-2">

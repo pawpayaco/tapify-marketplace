@@ -160,7 +160,7 @@ export default function DashboardSettings({ retailerId }) {
       </div>
 
       {/* Priority Display Upgrade Card */}
-      <div className="bg-white rounded-lg shadow-md overflow-hidden">
+      <div className="bg-white rounded-[23px] shadow-md overflow-hidden">
         <div className="bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3] p-4">
           <h2 className="text-2xl font-bold text-white">Priority Display</h2>
         </div>
@@ -180,7 +180,7 @@ export default function DashboardSettings({ retailerId }) {
               {/* Status Display */}
               <div className="mb-4">
                 {priorityDisplayActive ? (
-                  <div className="flex items-center gap-3 p-4 bg-green-50 border border-green-200 rounded-lg">
+                  <div className="flex items-center gap-3 p-4 bg-green-50 border border-green-200 rounded-[23px]">
                     <svg
                       className="w-8 h-8 text-green-600"
                       fill="none"
@@ -202,7 +202,7 @@ export default function DashboardSettings({ retailerId }) {
                     </div>
                   </div>
                 ) : (
-                  <div className="flex items-center gap-3 p-4 bg-gray-50 border border-gray-200 rounded-lg">
+                  <div className="flex items-center gap-3 p-4 bg-gray-50 border border-gray-200 rounded-[23px]">
                     <svg
                       className="w-8 h-8 text-gray-400"
                       fill="none"
@@ -260,7 +260,7 @@ export default function DashboardSettings({ retailerId }) {
                 <button
                   onClick={handleUpgradeClick}
                   disabled={!uid}
-                  className="px-8 py-4 bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3] text-white font-bold text-lg rounded-lg hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed shadow-lg"
+                  className="px-8 py-4 bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3] text-white font-bold text-lg rounded-[23px] hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed shadow-lg"
                 >
                   Upgrade to $50<br />Priority Display
                 </button>
@@ -271,7 +271,7 @@ export default function DashboardSettings({ retailerId }) {
       </div>
 
       {/* Display Shipping Preferences */}
-      <div className="bg-white rounded-lg shadow-md overflow-hidden">
+      <div className="bg-white rounded-[23px] shadow-md overflow-hidden">
         <div className="bg-gradient-to-r from-blue-500 to-indigo-600 p-4">
           <h2 className="text-2xl font-bold text-white">Display Shipping Preferences</h2>
         </div>
@@ -279,7 +279,7 @@ export default function DashboardSettings({ retailerId }) {
         <div className="p-6">
           {priorityDisplayActive ? (
             <div>
-              <div className="flex items-center gap-3 mb-4 p-4 bg-green-50 border border-green-200 rounded-lg">
+              <div className="flex items-center gap-3 mb-4 p-4 bg-green-50 border border-green-200 rounded-[23px]">
                 <svg
                   className="w-6 h-6 text-green-600 flex-shrink-0"
                   fill="none"
@@ -337,7 +337,7 @@ export default function DashboardSettings({ retailerId }) {
               <button
                 onClick={handleUpgradeClick}
                 disabled={!uid}
-                className="px-6 py-3 bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3] text-white font-bold rounded-lg hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed shadow-lg"
+                className="px-6 py-3 bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3] text-white font-bold rounded-[23px] hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed shadow-lg"
               >
                 Upgrade to Priority Display
               </button>
@@ -347,7 +347,7 @@ export default function DashboardSettings({ retailerId }) {
       </div>
 
       {/* Account Settings Form */}
-      <div className="bg-white rounded-lg shadow-md p-6">
+      <div className="bg-white rounded-[23px] shadow-md p-6">
         <h2 className="text-2xl font-bold mb-4">Account Information</h2>
 
         <form onSubmit={handleSaveSettings} className="space-y-4">
@@ -359,7 +359,7 @@ export default function DashboardSettings({ retailerId }) {
               type="text"
               value={retailer?.name || ''}
               onChange={(e) => setRetailer({ ...retailer, name: e.target.value })}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full px-4 py-2 border border-gray-300 rounded-[23px] focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               required
             />
           </div>
@@ -373,7 +373,7 @@ export default function DashboardSettings({ retailerId }) {
                 type="tel"
                 value={retailer?.phone || ''}
                 onChange={(e) => setRetailer({ ...retailer, phone: e.target.value })}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full px-4 py-2 border border-gray-300 rounded-[23px] focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               />
             </div>
 
@@ -385,7 +385,7 @@ export default function DashboardSettings({ retailerId }) {
                 type="email"
                 value={retailer?.email || ''}
                 onChange={(e) => setRetailer({ ...retailer, email: e.target.value })}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full px-4 py-2 border border-gray-300 rounded-[23px] focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               />
             </div>
           </div>
@@ -398,7 +398,7 @@ export default function DashboardSettings({ retailerId }) {
               value={retailer?.address || ''}
               onChange={(e) => setRetailer({ ...retailer, address: e.target.value })}
               rows={3}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full px-4 py-2 border border-gray-300 rounded-[23px] focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             />
           </div>
 
@@ -412,7 +412,7 @@ export default function DashboardSettings({ retailerId }) {
                   type="text"
                   value={uid}
                   readOnly
-                  className="flex-1 px-4 py-2 bg-gray-100 border border-gray-300 rounded-lg text-gray-700"
+                  className="flex-1 px-4 py-2 bg-gray-100 border border-gray-300 rounded-[23px] text-gray-700"
                 />
                 <button
                   type="button"
@@ -420,7 +420,7 @@ export default function DashboardSettings({ retailerId }) {
                     navigator.clipboard.writeText(uid);
                     alert('Tracking ID copied to clipboard!');
                   }}
-                  className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                  className="px-4 py-2 bg-blue-600 text-white rounded-[23px] hover:bg-blue-700 transition-colors"
                 >
                   Copy
                 </button>
@@ -432,14 +432,14 @@ export default function DashboardSettings({ retailerId }) {
             <button
               type="button"
               onClick={() => loadRetailerSettings()}
-              className="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+              className="px-6 py-2 border border-gray-300 text-gray-700 rounded-[23px] hover:bg-gray-50 transition-colors"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={saving}
-              className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              className="px-6 py-2 bg-blue-600 text-white rounded-[23px] hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {saving ? 'Saving...' : 'Save Changes'}
             </button>

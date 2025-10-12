@@ -36,7 +36,7 @@ export default function ImageModalGallery({ images, className = "" }) {
               boxShadow: "0 10px 15px -3px rgba(0, 0, 0, 0.1)"
             }}
             transition={{ duration: 0.2, ease: "easeOut" }}
-            className="relative aspect-square rounded-2xl overflow-hidden border border-white/20 pointer-events-none"
+            className="relative aspect-square rounded-[23px] overflow-hidden border border-white/20 pointer-events-none"
           >
             <Image
               src={image.src}

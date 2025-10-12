@@ -89,7 +89,7 @@ export default function Footer() {
               <motion.a
                 href="#"
                 whileHover={{ scale: 1.1, y: -2 }}
-                className="bg-white p-3 rounded-xl hover:bg-gradient-to-r hover:from-[#ff7a4a] hover:to-[#ff6fb3] hover:text-white transition-all shadow-md border-2 border-gray-200"
+                className="bg-white p-3 rounded-[23px] hover:bg-gradient-to-r hover:from-[#ff7a4a] hover:to-[#ff6fb3] hover:text-white transition-all shadow-md border-2 border-gray-200"
                 aria-label="Instagram"
               >
                 <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
@@ -99,7 +99,7 @@ export default function Footer() {
               <motion.a
                 href="#"
                 whileHover={{ scale: 1.1, y: -2 }}
-                className="bg-white p-3 rounded-xl hover:bg-gradient-to-r hover:from-[#ff7a4a] hover:to-[#ff6fb3] hover:text-white transition-all shadow-md border-2 border-gray-200"
+                className="bg-white p-3 rounded-[23px] hover:bg-gradient-to-r hover:from-[#ff7a4a] hover:to-[#ff6fb3] hover:text-white transition-all shadow-md border-2 border-gray-200"
                 aria-label="TikTok"
               >
                 <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
@@ -109,7 +109,7 @@ export default function Footer() {
               <motion.a
                 href="#"
                 whileHover={{ scale: 1.1, y: -2 }}
-                className="bg-white p-3 rounded-xl hover:bg-gradient-to-r hover:from-[#ff7a4a] hover:to-[#ff6fb3] hover:text-white transition-all shadow-md border-2 border-gray-200"
+                className="bg-white p-3 rounded-[23px] hover:bg-gradient-to-r hover:from-[#ff7a4a] hover:to-[#ff6fb3] hover:text-white transition-all shadow-md border-2 border-gray-200"
                 aria-label="Facebook"
               >
                 <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
