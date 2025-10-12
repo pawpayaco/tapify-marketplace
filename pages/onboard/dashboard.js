@@ -1538,18 +1538,22 @@ export default function RetailerDashboard() {
                             You have {retailer?.displays_ordered || 1} {(retailer?.displays_ordered || 1) === 1 ? 'display' : 'displays'} registered to your store
                           </p>
 
-                          {/* Priority Display Status */}
+                          {/* Display Status */}
                           {retailer?.priority_display_active ? (
-                            <div className="mt-3 p-3 bg-gradient-to-r from-amber-50 to-yellow-50 border-2 border-amber-300 rounded-lg">
+                            // Priority Display Active - Show purple shipping badge
+                            <div className="mt-3 p-3 rounded-lg border-2 bg-gradient-to-r from-purple-50 to-pink-50 border-purple-300">
                               <div className="flex items-center gap-2">
-                                <span className="text-2xl">💎</span>
+                                <span className="text-lg">⚡</span>
                                 <div>
-                                  <p className="font-bold text-amber-900">Priority Display Active</p>
-                                  <p className="text-xs text-amber-700">Premium marketplace placement enabled</p>
+                                  <p className="font-bold text-purple-900">Priority Shipping</p>
+                                  <p className="text-xs text-purple-700">
+                                    Your displays ship with priority delivery
+                                  </p>
                                 </div>
                               </div>
                             </div>
                           ) : (
+                            // Standard Display - Show upgrade option + email warning
                             <div className="mt-3 space-y-2">
                               <div className="p-3 bg-blue-50 border-2 border-blue-200 rounded-lg">
                                 <div className="flex items-center gap-2">
@@ -1590,27 +1594,6 @@ export default function RetailerDashboard() {
                               </div>
                             </div>
                           )}
-
-                          {/* Shipping Status */}
-                          <div className={`mt-3 p-3 rounded-lg border-2 ${
-                            retailer?.priority_display_active
-                              ? 'bg-gradient-to-r from-purple-50 to-pink-50 border-purple-300'
-                              : 'bg-green-50 border-green-200'
-                          }`}>
-                            <div className="flex items-center gap-2">
-                              <span className="text-lg">{retailer?.priority_display_active ? '⚡' : '🚚'}</span>
-                              <div>
-                                <p className={`font-bold ${retailer?.priority_display_active ? 'text-purple-900' : 'text-green-900'}`}>
-                                  {retailer?.priority_display_active ? 'Priority Shipping' : 'Standard Shipping'}
-                                </p>
-                                <p className={`text-xs ${retailer?.priority_display_active ? 'text-purple-700' : 'text-green-700'}`}>
-                                  {retailer?.priority_display_active
-                                    ? 'Your displays ship with priority delivery'
-                                    : 'Free standard delivery (3-5 weeks)'}
-                                </p>
-                              </div>
-                            </div>
-                          </div>
 
                           {/* Order Another Display Button */}
                           <motion.button
