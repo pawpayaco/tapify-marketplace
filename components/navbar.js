@@ -29,7 +29,7 @@ export default function Navbar() {
               href="https://pawpayaco.com/products/diy-builder-kit-copy"
               target="_blank"
               rel="noopener noreferrer"
-              className="py-2.5 sm:py-3.5 font-bold text-sm sm:text-base text-[#ff7a4a] bg-white border-2 border-[#ff7a4a] rounded-[23px] shadow-md whitespace-nowrap w-[170px] text-center"
+              className="py-2.5 sm:py-3.5 font-bold text-sm sm:text-base text-[#ff7a4a] bg-white border-2 border-[#ff7a4a] rounded-[10px] shadow-md whitespace-nowrap w-[170px] text-center"
             >
               See Products
             </Link>
@@ -56,14 +56,14 @@ export default function Navbar() {
             {user ? (
               <Link
                 href="/onboard/dashboard"
-                className="py-2.5 sm:py-3.5 font-bold text-sm sm:text-base text-[#ff7a4a] bg-white border-2 border-[#ff7a4a] rounded-[23px] shadow-md whitespace-nowrap w-[170px] text-center"
+                className="py-2.5 sm:py-3.5 font-bold text-sm sm:text-base text-[#ff7a4a] bg-white border-2 border-[#ff7a4a] rounded-[10px] shadow-md whitespace-nowrap w-[170px] text-center"
               >
                 Dashboard
               </Link>
             ) : (
               <Link
                 href="/login"
-                className="py-2.5 sm:py-3.5 font-bold text-sm sm:text-base text-[#ff7a4a] bg-white border-2 border-[#ff7a4a] rounded-[23px] shadow-md whitespace-nowrap w-[170px] text-center"
+                className="py-2.5 sm:py-3.5 font-bold text-sm sm:text-base text-[#ff7a4a] bg-white border-2 border-[#ff7a4a] rounded-[10px] shadow-md whitespace-nowrap w-[170px] text-center"
               >
                 Login
               </Link>
