@@ -623,7 +623,7 @@ export default function RegisterRetailer() {
               <button
                 onClick={handleManagerShare}
                 type="button"
-                className="w-full px-6 py-3 rounded-[20px] font-bold shadow-lg transition-all bg-white border-2"
+                className="w-full px-6 py-3 rounded-[16px] font-bold shadow-lg transition-all bg-white border-2"
                 style={{ borderColor: '#ff6fb3', color: '#ff6fb3' }}
               >
                 {isCopied ? 'Copied! ✓' : 'Share With Owner'}
@@ -1243,7 +1243,7 @@ export default function RegisterRetailer() {
                 disabled={loading}
                 whileHover={{ y: loading ? 0 : -2 }}
                 whileTap={{ scale: loading ? 1 : 0.98 }}
-                className="w-full bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3] text-white py-4 px-6 rounded-[20px] font-bold text-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3] text-white py-4 px-6 rounded-[16px] font-bold text-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {loading ? (
                   <span className="flex items-center justify-center gap-2">
