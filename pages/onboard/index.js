@@ -149,7 +149,7 @@ export default function OnboardIndex() {
               />
               <div className="mt-6 text-center">
                 <div className="inline-block bg-white px-6 py-3 rounded-[23px] shadow-md">
-                  <p className="text-gray-700 font-bold text-sm md:text-base">Includes hooks to hang on metal peg board next to other collars</p>
+                  <p className="text-gray-700 font-bold text-sm md:text-base">Includes hooks for peg board and slat wall</p>
                 </div>
               </div>
             </div>
