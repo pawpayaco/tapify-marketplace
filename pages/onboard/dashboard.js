@@ -1226,7 +1226,7 @@ export default function RetailerDashboard() {
                 >
                   <h4 className="font-bold text-gray-900 text-base md:text-lg mb-4 md:mb-6">Display Confirmation</h4>
                   <div className="space-y-4">
-                    <div className="bg-gradient-to-br from-purple-50 to-pink-50 border-2 border-purple-200 rounded-[23px] p-4">
+                    <div className="bg-gradient-to-br from-purple-50 to-pink-50 border-2 border-purple-200 rounded-[15px] p-4">
                       <div className="flex items-start gap-3">
                         <div className="flex-shrink-0 w-10 h-10 bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3] rounded-full flex items-center justify-center">
                           <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -1247,7 +1247,7 @@ export default function RetailerDashboard() {
                           {/* Display Status */}
                           {retailer?.priority_display_active ? (
                             // Priority Display Active - Show purple shipping badge
-                            <div className="mt-3 p-3 rounded-[23px] border-2 bg-gradient-to-r from-purple-50 to-pink-50 border-purple-300">
+                            <div className="mt-3 p-3 rounded-[15px] border-2 bg-gradient-to-r from-purple-50 to-pink-50 border-purple-300">
                               <div className="flex items-center gap-2">
                                 <span className="text-lg">⚡</span>
                                 <div>
@@ -1261,7 +1261,7 @@ export default function RetailerDashboard() {
                           ) : (
                             // Standard Display - Show upgrade option + email warning
                             <div className="mt-3 space-y-2">
-                              <div className="p-3 bg-blue-50 border-2 border-blue-200 rounded-[23px]">
+                              <div className="p-3 bg-blue-50 border-2 border-blue-200 rounded-[15px]">
                                 <div className="flex items-center gap-2">
                                   <span className="text-lg">📦</span>
                                   <div>
@@ -1281,7 +1281,7 @@ export default function RetailerDashboard() {
                               </div>
 
                               {/* Important Notice */}
-                              <div className="p-3 bg-amber-50 border-2 border-amber-400 rounded-[23px]">
+                              <div className="p-3 bg-amber-50 border-2 border-amber-400 rounded-[15px]">
                                 <div className="flex items-start gap-2">
                                   <span className="text-xl mt-0.5">⚠️</span>
                                   <div className="flex-1">
@@ -1292,7 +1292,7 @@ export default function RetailerDashboard() {
                                     <p className="text-xs text-amber-800 mb-2">
                                       Dashboard takes ~30 seconds to register upgrade - wait and refresh the tab.
                                     </p>
-                                    <div className="bg-white px-3 py-2 rounded-[23px] border border-amber-300">
+                                    <div className="bg-white px-3 py-2 rounded-[15px] border border-amber-300">
                                       <p className="text-xs font-mono font-bold text-amber-900">{retailer?.email}</p>
                                     </div>
                                     <p className="text-xs text-amber-700 mt-2">
@@ -1309,7 +1309,7 @@ export default function RetailerDashboard() {
                             onClick={() => setIsOrderModalOpen(true)}
                             whileHover={{ scale: 1.02 }}
                             whileTap={{ scale: 0.98 }}
-                            className="mt-4 w-full px-6 py-3 bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3] text-white rounded-[23px] font-bold shadow-lg hover:shadow-xl transition-all flex items-center justify-center gap-2"
+                            className="mt-4 w-full px-6 py-3 bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3] text-white rounded-[16px] font-bold shadow-lg hover:shadow-xl transition-all flex items-center justify-center gap-2"
                           >
                             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
@@ -1372,7 +1372,7 @@ export default function RetailerDashboard() {
                           whileTap={{ scale: (plaidLoading || connecting) ? 1 : 0.95 }}
                           onClick={handlePlaidConnect}
                           disabled={plaidLoading || connecting || !plaidScriptLoaded}
-                          className={`px-8 py-3 bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3] text-white rounded-[23px] font-bold hover:shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_1px_-0.5px_rgba(0,0,0,0.06),0px_3px_3px_-1.5px_rgba(0,0,0,0.06),0px_6px_6px_-3px_rgba(0,0,0,0.06),0px_12px_12px_-6px_rgba(0,0,0,0.06),0px_24px_24px_-12px_rgba(0,0,0,0.06)] transition-all flex items-center gap-2 mx-auto ${
+                          className={`px-8 py-3 bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3] text-white rounded-[16px] font-bold hover:shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_1px_-0.5px_rgba(0,0,0,0.06),0px_3px_3px_-1.5px_rgba(0,0,0,0.06),0px_6px_6px_-3px_rgba(0,0,0,0.06),0px_12px_12px_-6px_rgba(0,0,0,0.06),0px_24px_24px_-12px_rgba(0,0,0,0.06)] transition-all flex items-center gap-2 mx-auto ${
                             (plaidLoading || connecting || !plaidScriptLoaded) ? 'opacity-75 cursor-not-allowed' : ''
                           }`}
                         >
