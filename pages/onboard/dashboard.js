@@ -8,6 +8,12 @@ import Script from 'next/script';
 import OrderDisplayModal from '../../components/OrderDisplayModal';
 
 export default function RetailerDashboard() {
+  // ============================================================================
+  // TEMPORARY: Bank connection disabled while waiting for Dwolla production keys
+  // TO RE-ENABLE: Change this to false and redeploy
+  // ============================================================================
+  const BANK_CONNECTION_DISABLED = true;
+
   const router = useRouter();
   const { user, signOut } = useAuthContext();
   const [activeTab, setActiveTab] = useState('stats');
@@ -1367,23 +1373,40 @@ export default function RetailerDashboard() {
                       <p className="text-gray-700 font-bold text-lg mb-2">No bank account connected</p>
                       <p className="text-gray-500 mb-6">Connect your bank account to receive payouts</p>
                       {retailer?.id ? (
-                        <motion.button
-                          whileHover={{ scale: (plaidLoading || connecting) ? 1 : 1.05 }}
-                          whileTap={{ scale: (plaidLoading || connecting) ? 1 : 0.95 }}
-                          onClick={handlePlaidConnect}
-                          disabled={plaidLoading || connecting || !plaidScriptLoaded}
-                          className={`px-8 py-3 bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3] text-white rounded-[16px] font-bold hover:shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_1px_-0.5px_rgba(0,0,0,0.06),0px_3px_3px_-1.5px_rgba(0,0,0,0.06),0px_6px_6px_-3px_rgba(0,0,0,0.06),0px_12px_12px_-6px_rgba(0,0,0,0.06),0px_24px_24px_-12px_rgba(0,0,0,0.06)] transition-all flex items-center gap-2 mx-auto ${
-                            (plaidLoading || connecting || !plaidScriptLoaded) ? 'opacity-75 cursor-not-allowed' : ''
-                          }`}
-                        >
-                          {(plaidLoading || connecting) && (
-                            <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                            </svg>
+                        <>
+                          {/* TEMPORARY: Disabled during Dwolla production approval */}
+                          {BANK_CONNECTION_DISABLED ? (
+                            <div className="text-center">
+                              <button
+                                disabled
+                                className="px-8 py-3 bg-gray-300 text-gray-500 rounded-[16px] font-bold cursor-not-allowed flex items-center gap-2 mx-auto opacity-50"
+                              >
+                                Connect Bank Account
+                              </button>
+                              <p className="text-xs text-gray-500 mt-3">
+                                Bank connections temporarily unavailable during system upgrade
+                              </p>
+                            </div>
+                          ) : (
+                            <motion.button
+                              whileHover={{ scale: (plaidLoading || connecting) ? 1 : 1.05 }}
+                              whileTap={{ scale: (plaidLoading || connecting) ? 1 : 0.95 }}
+                              onClick={handlePlaidConnect}
+                              disabled={plaidLoading || connecting || !plaidScriptLoaded}
+                              className={`px-8 py-3 bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3] text-white rounded-[16px] font-bold hover:shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_1px_-0.5px_rgba(0,0,0,0.06),0px_3px_3px_-1.5px_rgba(0,0,0,0.06),0px_6px_6px_-3px_rgba(0,0,0,0.06),0px_12px_12px_-6px_rgba(0,0,0,0.06),0px_24px_24px_-12px_rgba(0,0,0,0.06)] transition-all flex items-center gap-2 mx-auto ${
+                                (plaidLoading || connecting || !plaidScriptLoaded) ? 'opacity-75 cursor-not-allowed' : ''
+                              }`}
+                            >
+                              {(plaidLoading || connecting) && (
+                                <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                </svg>
+                              )}
+                              {connecting ? 'Connecting...' : plaidLoading ? 'Opening...' : !plaidScriptLoaded ? 'Loading...' : 'Connect Bank Account'}
+                            </motion.button>
                           )}
-                          {connecting ? 'Connecting...' : plaidLoading ? 'Opening...' : !plaidScriptLoaded ? 'Loading...' : 'Connect Bank Account'}
-                        </motion.button>
+                        </>
                       ) : (
                         <Link href="/onboard/register">
                           <motion.button
