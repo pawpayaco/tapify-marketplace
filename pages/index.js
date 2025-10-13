@@ -3,11 +3,6 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { useState } from 'react';
 
-const fadeInUp = {
-  hidden: { opacity: 0, y: 20 },
-  visible: { opacity: 1, y: 0 }
-};
-
 const benefits = [
   {
     icon: '💰',
@@ -216,11 +211,7 @@ export default function Home() {
       {/* Manager Referral Card */}
       <section className="pb-8 sm:pb-12 px-4 sm:px-6 lg:px-8">
         <div className="max-w-4xl mx-auto">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-            className="bg-white rounded-[23px] p-5 md:p-6 shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_1px_-0.5px_rgba(0,0,0,0.06),0px_3px_3px_-1.5px_rgba(0,0,0,0.06),0px_6px_6px_-3px_rgba(0,0,0,0.06),0px_12px_12px_-6px_rgba(0,0,0,0.06),0px_24px_24px_-12px_rgba(0,0,0,0.06)] border border-transparent text-center"
+          <div className="bg-white rounded-[23px] p-5 md:p-6 shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_1px_-0.5px_rgba(0,0,0,0.06),0px_3px_3px_-1.5px_rgba(0,0,0,0.06),0px_6px_6px_-3px_rgba(0,0,0,0.06),0px_12px_12px_-6px_rgba(0,0,0,0.06),0px_24px_24px_-12px_rgba(0,0,0,0.06)] border border-transparent text-center"
           >
             <h3 className="text-xl font-black text-gray-900 mb-3">Managers</h3>
             <p className="text-gray-600 mb-4 leading-relaxed">
@@ -236,7 +227,7 @@ export default function Home() {
             >
               {isCopied ? 'Copied! ✓' : 'Share With Owner'}
             </motion.button>
-          </motion.div>
+          </div>
         </div>
       </section>
 
@@ -245,18 +236,9 @@ export default function Home() {
         <div className="max-w-7xl mx-auto">
           <div className="grid sm:grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
             {actionCards.map((card, index) => {
-              const CardWrapper = index < 2 ? 'div' : motion.div;
-              const cardProps = index < 2 ? {} : {
-                initial: { opacity: 0, y: 40 },
-                whileInView: { opacity: 1, y: 0 },
-                viewport: { once: true },
-                transition: { duration: 0.5, delay: (index - 2) * 0.1 }
-              };
-
               return (
-                <CardWrapper
+                <div
                   key={card.title}
-                  {...cardProps}
                   className="rounded-[23px] md:rounded-[23px] p-8 md:p-10 shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_1px_-0.5px_rgba(0,0,0,0.06),0px_3px_3px_-1.5px_rgba(0,0,0,0.06),0px_6px_6px_-3px_rgba(0,0,0,0.06),0px_12px_12px_-6px_rgba(0,0,0,0.06),0px_24px_24px_-12px_rgba(0,0,0,0.06)] border border-transparent transition-all h-full bg-white hover:shadow-[0px_0px_0px_1px_rgba(0,0,0,0.08),0px_2px_2px_-0.5px_rgba(0,0,0,0.08),0px_4px_4px_-1.5px_rgba(0,0,0,0.08),0px_8px_8px_-3px_rgba(0,0,0,0.08),0px_16px_16px_-6px_rgba(0,0,0,0.08),0px_32px_32px_-12px_rgba(0,0,0,0.08)]"
                 >
                 <h3 className="text-2xl md:text-3xl font-bold mb-3 md:mb-4 text-gray-900">
@@ -296,7 +278,7 @@ export default function Home() {
                     </motion.span>
                   </Link>
                 )}
-                </CardWrapper>
+                </div>
               );
             })}
           </div>
@@ -306,12 +288,7 @@ export default function Home() {
       {/* Closing CTA */}
       <section className="pt-6 md:pt-10 pb-12 md:pb-20 px-4 sm:px-6 lg:px-8">
         <div className="max-w-5xl mx-auto">
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-            className="bg-gradient-to-br from-[#fff3ea] via-[#fff6fb] to-[#f0f4ff] rounded-[23px] md:rounded-[23px] p-8 sm:p-10 md:p-12 lg:p-14 shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_1px_-0.5px_rgba(0,0,0,0.06),0px_3px_3px_-1.5px_rgba(0,0,0,0.06),0px_6px_6px_-3px_rgba(0,0,0,0.06),0px_12px_12px_-6px_rgba(0,0,0,0.06),0px_24px_24px_-12px_rgba(0,0,0,0.06)] border border-transparent text-center"
+          <div className="bg-gradient-to-br from-[#fff3ea] via-[#fff6fb] to-[#f0f4ff] rounded-[23px] md:rounded-[23px] p-8 sm:p-10 md:p-12 lg:p-14 shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_1px_-0.5px_rgba(0,0,0,0.06),0px_3px_3px_-1.5px_rgba(0,0,0,0.06),0px_6px_6px_-3px_rgba(0,0,0,0.06),0px_12px_12px_-6px_rgba(0,0,0,0.06),0px_24px_24px_-12px_rgba(0,0,0,0.06)] border border-transparent text-center"
           >
             <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 mb-3 md:mb-4 px-2">
               Test it Out
@@ -330,19 +307,14 @@ export default function Home() {
                 </motion.span>
               </Link>
             </div>
-          </motion.div>
+          </div>
         </div>
       </section>
 
       {/* Operating Flow */}
       <section className="py-12 md:py-20 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-            className="text-center mb-8 md:mb-14"
+          <div className="text-center mb-8 md:mb-14"
           >
             <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 mb-3 md:mb-4 px-2">
               How it Works
@@ -350,16 +322,11 @@ export default function Home() {
             <p className="text-lg sm:text-xl md:text-2xl text-gray-600 max-w-3xl mx-auto px-2">
               Every display follows the same simple process. Keep the display up and Pawpaya handles the rest.
             </p>
-          </motion.div>
+          </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
             {journey.map((step, index) => (
-              <motion.div
-                key={step.title}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
+              <div key={step.title}
               >
                 <div className="relative bg-white rounded-[23px] md:rounded-[23px] p-8 md:p-10 shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_1px_-0.5px_rgba(0,0,0,0.06),0px_3px_3px_-1.5px_rgba(0,0,0,0.06),0px_6px_6px_-3px_rgba(0,0,0,0.06),0px_12px_12px_-6px_rgba(0,0,0,0.06),0px_24px_24px_-12px_rgba(0,0,0,0.06)] border border-transparent h-full">
                   <div className="absolute -top-4 md:-top-6 left-1/2 transform -translate-x-1/2">
@@ -371,7 +338,7 @@ export default function Home() {
                   <h3 className="text-xl md:text-2xl font-bold text-gray-900 mb-2 md:mb-3 text-center">{step.title}</h3>
                   <p className="text-base md:text-lg text-gray-600 text-center leading-relaxed">{step.description}</p>
                 </div>
-              </motion.div>
+              </div>
             ))}
           </div>
         </div>
@@ -380,12 +347,7 @@ export default function Home() {
       {/* Roadmap */}
       <section className="py-12 md:py-20 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-            className="text-center mb-8 md:mb-12"
+          <div className="text-center mb-8 md:mb-12"
           >
             <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 mb-3 md:mb-4 px-2">
               What's Next on the Tapify Roadmap
@@ -393,23 +355,18 @@ export default function Home() {
             <p className="text-lg sm:text-xl md:text-2xl text-gray-600 max-w-3xl mx-auto px-2">
               Here's what we are deploying next to make every location self-propelling.
             </p>
-          </motion.div>
+          </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 md:gap-8">
             {roadmap.map((item, index) => (
-              <motion.div
-                key={item.title}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
+              <div key={item.title}
               >
                 <div className="bg-white rounded-[23px] md:rounded-[23px] p-8 md:p-10 shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_1px_-0.5px_rgba(0,0,0,0.06),0px_3px_3px_-1.5px_rgba(0,0,0,0.06),0px_6px_6px_-3px_rgba(0,0,0,0.06),0px_12px_12px_-6px_rgba(0,0,0,0.06),0px_24px_24px_-12px_rgba(0,0,0,0.06)] border border-transparent hover:shadow-[0px_0px_0px_1px_rgba(0,0,0,0.08),0px_2px_2px_-0.5px_rgba(0,0,0,0.08),0px_4px_4px_-1.5px_rgba(0,0,0,0.08),0px_8px_8px_-3px_rgba(0,0,0,0.08),0px_16px_16px_-6px_rgba(0,0,0,0.08),0px_32px_32px_-12px_rgba(0,0,0,0.08)] transition-all h-full">
                   <div className="text-sm md:text-base font-semibold text-[#ff7a4a] mb-2 md:mb-3">Coming Soon</div>
                   <h3 className="text-xl md:text-2xl font-bold text-gray-900 mb-2 md:mb-3">{item.title}</h3>
                   <p className="text-base md:text-lg text-gray-600 leading-relaxed">{item.description}</p>
                 </div>
-              </motion.div>
+              </div>
             ))}
           </div>
         </div>
@@ -418,12 +375,7 @@ export default function Home() {
       {/* Questions Card */}
       <section className="pb-12 md:pb-20 px-4 sm:px-6 lg:px-8">
         <div className="max-w-4xl mx-auto">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-            className="bg-white rounded-[23px] p-5 md:p-6 shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_1px_-0.5px_rgba(0,0,0,0.06),0px_3px_3px_-1.5px_rgba(0,0,0,0.06),0px_6px_6px_-3px_rgba(0,0,0,0.06),0px_12px_12px_-6px_rgba(0,0,0,0.06),0px_24px_24px_-12px_rgba(0,0,0,0.06)] border border-transparent text-center"
+          <div className="bg-white rounded-[23px] p-5 md:p-6 shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_1px_-0.5px_rgba(0,0,0,0.06),0px_3px_3px_-1.5px_rgba(0,0,0,0.06),0px_6px_6px_-3px_rgba(0,0,0,0.06),0px_12px_12px_-6px_rgba(0,0,0,0.06),0px_24px_24px_-12px_rgba(0,0,0,0.06)] border border-transparent text-center"
           >
             <h3 className="text-xl font-black text-gray-900 mb-3">Questions?</h3>
             <p className="text-gray-600 mb-4 leading-relaxed">
@@ -436,7 +388,7 @@ export default function Home() {
             >
               (715) 979-1259
             </a>
-          </motion.div>
+          </div>
         </div>
       </section>
     </div>
