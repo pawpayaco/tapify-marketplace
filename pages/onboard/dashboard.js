@@ -1400,7 +1400,7 @@ export default function RetailerDashboard() {
                       <div className="mt-6 p-4 bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-[23px] text-center">
                         <div className="flex items-center justify-center gap-2 mb-2">
                           <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                          <span className="text-sm font-semibold text-blue-800">Chase & Schwab available in 2 weeks</span>
+                          <span className="text-sm font-semibold text-blue-800">Schwab & PNC available soon</span>
                         </div>
                         <p className="text-xs text-blue-600">All other major banks accepted • Instant setup • Secure connection</p>
                       </div>
