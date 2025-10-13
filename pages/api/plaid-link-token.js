@@ -33,7 +33,7 @@ export default async function handler(req, res) {
       user: {
         client_user_id: user_id,
       },
-      products: ['auth', 'transactions'],
+      products: ['auth'],
       country_codes: ['US'],
       language: 'en',
       webhook: env.NEXT_PUBLIC_BASE_URL
