@@ -142,7 +142,7 @@ export default function Login() {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     required
-                    className="w-full px-3 py-2.5 sm:px-4 sm:py-3 text-sm sm:text-base rounded-[23px] sm:rounded-[23px] border-2 border-gray-200 outline-none focus:ring-2 focus:ring-[#ff6fb3] focus:border-transparent transition-all"
+                    className="w-full px-3 py-2.5 sm:px-4 sm:py-3 text-sm sm:text-base rounded-[15px] border-2 border-gray-200 outline-none focus:ring-2 focus:ring-[#ff6fb3] focus:border-transparent transition-all"
                     placeholder="you@example.com"
                   />
                 </div>
@@ -158,7 +158,7 @@ export default function Login() {
                     onChange={(e) => setPassword(e.target.value)}
                     required
                     minLength={6}
-                    className="w-full px-3 py-2.5 sm:px-4 sm:py-3 text-sm sm:text-base rounded-[23px] sm:rounded-[23px] border-2 border-gray-200 outline-none focus:ring-2 focus:ring-[#ff6fb3] focus:border-transparent transition-all"
+                    className="w-full px-3 py-2.5 sm:px-4 sm:py-3 text-sm sm:text-base rounded-[15px] border-2 border-gray-200 outline-none focus:ring-2 focus:ring-[#ff6fb3] focus:border-transparent transition-all"
                     placeholder="••••••••"
                   />
                 </div>
@@ -197,7 +197,7 @@ export default function Login() {
                   disabled={submitting}
                   whileHover={!submitting ? { scale: 1.02 } : {}}
                   whileTap={!submitting ? { scale: 0.98 } : {}}
-                  className="w-full bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3] text-white py-2.5 sm:py-3 px-4 text-sm sm:text-base rounded-[23px] sm:rounded-[23px] font-bold hover:shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="w-full bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3] text-white py-2.5 sm:py-3 px-4 text-sm sm:text-base rounded-[16px] font-bold hover:shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {submitting ? (
                     <span className="flex items-center justify-center gap-2">

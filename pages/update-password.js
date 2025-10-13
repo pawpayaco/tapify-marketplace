@@ -145,7 +145,7 @@ export default function UpdatePassword() {
                 onChange={(e) => setPassword(e.target.value)}
                 required
                 minLength={6}
-                className="w-full px-4 py-3 rounded-[23px] border border-transparent outline-none focus:ring-2 focus:ring-[#ff6fb3] focus:border-transparent transition-all"
+                className="w-full px-4 py-3 rounded-[15px] border-2 border-gray-200 outline-none focus:ring-2 focus:ring-[#ff6fb3] focus:border-transparent transition-all"
                 placeholder="At least 6 characters"
               />
             </div>
@@ -161,7 +161,7 @@ export default function UpdatePassword() {
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 required
                 minLength={6}
-                className="w-full px-4 py-3 rounded-[23px] border border-transparent outline-none focus:ring-2 focus:ring-[#ff6fb3] focus:border-transparent transition-all"
+                className="w-full px-4 py-3 rounded-[15px] border-2 border-gray-200 outline-none focus:ring-2 focus:ring-[#ff6fb3] focus:border-transparent transition-all"
                 placeholder="Re-enter password"
               />
             </div>
@@ -201,7 +201,7 @@ export default function UpdatePassword() {
               disabled={loading}
               whileHover={!loading ? { scale: 1.02 } : {}}
               whileTap={!loading ? { scale: 0.98 } : {}}
-              className="w-full bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3] text-white py-3 px-4 rounded-[23px] font-bold hover:shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3] text-white py-3 px-4 rounded-[16px] font-bold hover:shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {loading ? (
                 <span className="flex items-center justify-center gap-2">
