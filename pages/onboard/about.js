@@ -144,7 +144,7 @@ export default function AboutPawpaya() {
             <div className="flex flex-col md:grid md:grid-cols-[2.25fr_1fr] gap-8 items-center max-w-6xl mx-auto">
               <div className="order-2 md:order-none bg-white rounded-[23px] p-7 md:p-10 shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_1px_-0.5px_rgba(0,0,0,0.06),0px_3px_3px_-1.5px_rgba(0,0,0,0.06),0px_6px_6px_-3px_rgba(0,0,0,0.06),0px_12px_12px_-6px_rgba(0,0,0,0.06),0px_24px_24px_-12px_rgba(0,0,0,0.06)]">
                 <p className="text-xl md:text-2xl text-gray-600 text-left leading-relaxed">
-                  This free display from Pawpaya serves as in-store marketing that showcases our custom made collar and bracelet sets. Each tap-to-buy display helps your store earn extra profit through automatic affiliate commissions. A seamless, modern way to make the customer experience better.                </p>
+                  This free display from Pawpaya serves as in-store marketing that showcases our custom made collar and bracelet sets. Each tap-to-buy display helps your store earn extra profit through automatic affiliate commissions. A modern way to make the customer experience better.                </p>
               </div>
 
               {/* Rounded Image Card */}
