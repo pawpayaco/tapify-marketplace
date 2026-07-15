@@ -276,3 +276,81 @@
 /* Two-step register: a hairline that fills. Not a pill, not a stepper widget. */
 .t-progress { height: 2px; background: var(--hairline); }
 .t-progress__fill { height: 100%; background: var(--brand-gradient); transition: width var(--t); }
+
+/* ---------------------------------------------------------------- /onboard */
+
+.o-eyebrow { font-size: 13px; color: var(--pewter); margin: 0 0 20px; }
+
+.o-h1 {
+  font-size: clamp(38px, 6vw, 64px);
+  font-weight: 500; line-height: 1.05; letter-spacing: -0.03em; margin: 0;
+}
+.o-h1__brand {
+  background: var(--brand-gradient);
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+.o-h2 { font-size: clamp(24px, 3vw, 34px); font-weight: 500; letter-spacing: -0.02em; margin: 0 0 16px; }
+.o-lede { font-size: 17px; line-height: 1.55; color: var(--graphite); margin: 24px 0 0; max-width: 46ch; }
+.o-body { font-size: 15px; line-height: 1.6; color: var(--graphite); margin: 0; max-width: 48ch; }
+
+.o-actions { display: flex; gap: 12px; margin-top: 36px; flex-wrap: wrap; }
+
+/* Side-by-side: copy and product share the viewport, never stack awkwardly. */
+.o-hero,
+.o-row {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: clamp(32px, 5vw, 80px); align-items: center;
+  max-width: 1120px; margin: 0 auto; padding: clamp(48px, 7vw, 96px) 32px;
+}
+.o-hero__img img,
+.o-row__img img {
+  width: 100%; height: auto; display: block;
+  border-radius: 12px;   /* the brief's one concession: larger surfaces get 12px */
+}
+/* Flip the order so the eye zig-zags down the page instead of marching. */
+.o-row--flip .o-row__img { order: 2; }
+.o-row { border-top: var(--rule); }
+
+.o-steps { border-top: var(--rule); padding: clamp(48px, 7vw, 96px) 0; }
+.o-steps__grid {
+  list-style: none; margin: 0; padding: 0;
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 32px;
+}
+.o-step { border-top: 2px solid var(--ink); padding-top: 20px; }
+.o-step__n { font-size: 13px; color: var(--pewter); font-variant-numeric: tabular-nums; }
+.o-step__t { font-size: 16px; font-weight: 500; margin: 10px 0 8px; letter-spacing: -0.01em; }
+.o-step__p { font-size: 14px; line-height: 1.5; color: var(--pewter); margin: 0; }
+
+.o-doors {
+  border-top: var(--rule);
+  display: grid; grid-template-columns: 1fr 1fr;
+  max-width: 1120px; margin: 0 auto;
+}
+.o-door { padding: clamp(40px, 5vw, 72px) 32px; }
+.o-door + .o-door { border-left: var(--rule); }
+
+.o-close {
+  border-top: var(--rule); text-align: center;
+  padding: clamp(48px, 6vw, 80px) 32px;
+}
+.o-phone {
+  display: inline-block; margin-top: 12px;
+  font-size: clamp(24px, 3vw, 32px); font-weight: 500; letter-spacing: -0.02em;
+  color: var(--ink); text-decoration: none; transition: color var(--t);
+}
+.o-phone:hover { color: var(--coral); }
+
+@media (max-width: 900px) {
+  .o-hero, .o-row { grid-template-columns: 1fr; }
+  /* Image leads on mobile — the product is the pitch. */
+  .o-hero__img { order: -1; }
+  .o-row--flip .o-row__img { order: 0; }
+  .o-steps__grid { grid-template-columns: repeat(2, 1fr); gap: 24px; }
+  .o-doors { grid-template-columns: 1fr; }
+  .o-door + .o-door { border-left: 0; border-top: var(--rule); }
+}
+@media (max-width: 560px) {
+  .o-hero, .o-row { padding-left: 20px; padding-right: 20px; }
+  .o-steps__grid { grid-template-columns: 1fr; }
+  .o-actions .t-btn { width: 100%; }
+}

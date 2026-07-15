@@ -1,16 +1,16 @@
 import Link from 'next/link';
-import { motion } from 'framer-motion';
+import Image from 'next/image';
 import { useState } from 'react';
-import ImageModalGallery from '../../components/ImageModalGallery';
 
+// The one page where Tesla's actual mechanism applies: there IS photography, and
+// it's good. So the display carries the page and the UI gets out of the way.
+// Sections alternate side to side, and stack on mobile.
 export default function OnboardIndex() {
   const [isCopied, setIsCopied] = useState(false);
 
   const handleManagerShare = async () => {
     const shareUrl = window.location.origin + '/onboard/about';
-
     try {
-      // Try to copy to clipboard first
       if (navigator.clipboard && navigator.clipboard.writeText) {
         await navigator.clipboard.writeText(shareUrl);
         setIsCopied(true);
@@ -18,319 +18,113 @@ export default function OnboardIndex() {
       }
     } catch (clipboardErr) {
       console.log('Clipboard write failed:', clipboardErr);
-      // Fallback: still show as copied if we proceed to share
-      setIsCopied(true);
-      setTimeout(() => setIsCopied(false), 2000);
-    }
-
-    // Try native share API if available (separate from clipboard)
-    if (navigator.share) {
-      try {
-        await navigator.share({
-          title: 'Pawpaya Display Program',
-          text: 'I found this program that\'s completely free to sign up, can you check it out?',
-          url: shareUrl
-        });
-      } catch (shareErr) {
-        // User cancelled share or share failed - that's ok, link is already copied
-        if (shareErr.name !== 'AbortError') {
-          console.log('Share failed:', shareErr);
-        }
-      }
-    }
-  };
-
-  const fadeInUp = {
-    hidden: { opacity: 0, y: 30 },
-    visible: { opacity: 1, y: 0 }
-  };
-
-  const staggerContainer = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.1
-      }
     }
   };
 
   return (
-    <div className="min-h-screen bg-white pt-20 md:pt-24 pb-20">
-      {/* Hero Content */}
-      <div className="max-w-[1400px] mx-auto px-4 md:px-8 pb-24 md:pb-32">
-        <section className="text-center">
-          {/* Trust Badge */}
-          <motion.div
-            initial={{ scale: 0.85, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            transition={{ duration: 0.3, delay: 0.1 }}
-            className="inline-flex items-center gap-1.5 bg-gray-100 px-4 py-2.5 rounded-full mb-12 mt-8 md:mt-12 text-xs md:text-sm font-medium text-gray-700"
-          >
-            <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse flex-shrink-0"></span>
-            <span className="whitespace-nowrap">Free display • Zero inventory • Auto commissions</span>
-          </motion.div>
-
-          <h1 className="text-7xl md:text-9xl font-medium text-gray-900 mb-10 leading-tight">
-            {' '}
-            <span className="block mt-2">
-              {' '}
-              <span style={{ background: 'linear-gradient(to right, #ff7a4a, #ff6fb3)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
-                Our Offer
-              </span>
-            </span>
-          </h1>
-          <motion.p
-            initial={{ scale: 0.85, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            transition={{ duration: 0.3, delay: 0.12 }}
-            className="text-2xl sm:text-2xl md:text-3xl text-gray-600 max-w-4xl mx-auto leading-relaxed mb-16 font-medium"
-          >
+    <div className="t-page">
+      {/* Hero — the display is the argument. Two actions, nothing else. */}
+      <section className="o-hero">
+        <div className="o-hero__copy">
+          <p className="o-eyebrow">For pet stores, groomers &amp; self-wash</p>
+          <h1 className="o-h1">
             Free display.<br />
-            30% commission.<br />
-            Product customers love.
-          </motion.p>
-
-          {/* Two-Path CTA Buttons */}
-          <div className="flex flex-col md:flex-row gap-6 justify-center items-center">
-            <Link href="/onboard/register">
-              <button
-                className="px-6 py-4 rounded-[4px] text-lg font-medium transition-all text-white"
-                style={{ background: 'linear-gradient(to right, #ff7a4a, #ff6fb3)', width: '320px', maxWidth: '100%' }}
-              >
-                I'm a Business Owner →
-              </button>
-            </Link>
-            <button
-              onClick={handleManagerShare}
-              className="px-6 py-4 rounded-[4px] text-lg font-medium transition-all bg-white"
-              style={{ border: '4px solid #ff6fb3', color: '#ff6fb3', width: '320px', maxWidth: '100%' }}
-            >
-              {isCopied ? 'Copied! ✓' : 'I\'m a Manager — Share This'}
+            <span className="o-h1__brand">30% of every tap.</span>
+          </h1>
+          <p className="o-lede">
+            We print it, ship it, and stock it. A customer taps their phone, builds a
+            collar, and we mail it to them. You keep 30% and never touch inventory.
+          </p>
+          <div className="o-actions">
+            <Link href="/onboard/register" className="t-btn t-btn--primary">Claim your display</Link>
+            <button onClick={handleManagerShare} className="t-btn t-btn--secondary">
+              {isCopied ? 'Link copied' : 'I’m a manager — share this'}
             </button>
           </div>
-        </section>
-      </div>
+        </div>
+        <div className="o-hero__img">
+          <Image
+            src="/images/image41.jpg"
+            alt="The Pawpaya countertop display, stocked with beaded name collars"
+            width={1200}
+            height={1200}
+            priority
+            sizes="(max-width: 900px) 100vw, 50vw"
+          />
+        </div>
+      </section>
 
-      {/* Subtle Divider */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-16 md:mb-20">
-        <motion.div
-          initial={{ opacity: 0, scaleX: 0 }}
-          whileInView={{ opacity: 1, scaleX: 1 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-          className="h-0.5 bg-gradient-to-r from-transparent via-gray-400 to-transparent max-w-5xl mx-auto"
-        />
-      </div>
+      {/* Alternating rows. Each makes exactly one claim. */}
+      <section className="o-row">
+        <div className="o-row__img">
+          <Image src="/images/image40.jpg" alt="The display on a store counter" width={1000} height={1000} sizes="(max-width: 900px) 100vw, 50vw" />
+        </div>
+        <div className="o-row__copy">
+          <h2 className="o-h2">It sits by your register</h2>
+          <p className="o-body">
+            Comes with hooks for peg board and slat wall, sample collars, and the tags
+            already encoded. You unbox it and put it down. That&apos;s the whole install.
+          </p>
+        </div>
+      </section>
 
-      {/* Main Content */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* What You're Getting Section */}
-        <motion.section
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.3 }}
-          className="mb-16 md:mb-20"
-        >
-          <div className="text-center mb-8 md:mb-12">
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-medium text-gray-900">
-              What You're Getting
-            </h2>
-          </div>
-          <div className="max-w-7xl mx-auto">
-            <div className="bg-white to-white border border-gray-200 rounded-[4px] pt-8 px-8 pb-6 md:pt-12 md:px-12 md:pb-8 lg:pt-16 lg:px-16 lg:pb-10">
-              <ImageModalGallery
-                images={[
-                  { src: "/images/image40.jpg", alt: "Pawpaya display hero angle" },
-                  { src: "/images/image41.jpg", alt: "Pawpaya display close up" },
-                  { src: "/images/image42.jpg", alt: "Pawpaya display lifestyle" }
-                ]}
-              />
-              <div className="mt-6 text-center">
-                <div className="inline-block bg-white px-6 py-3 rounded-[4px]">
-                  <p className="text-gray-700 font-medium text-sm md:text-base">Includes hooks for peg board and slat wall</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </motion.section>
+      <section className="o-row o-row--flip">
+        <div className="o-row__img">
+          <Image src="/images/image42.jpg" alt="A dog wearing a personalized beaded collar" width={1000} height={1000} sizes="(max-width: 900px) 100vw, 50vw" />
+        </div>
+        <div className="o-row__copy">
+          <h2 className="o-h2">They tap. We ship. You get paid.</h2>
+          <p className="o-body">
+            The customer taps their phone on the paw print, picks their dog&apos;s name and
+            colors, and checks out on their own phone. We make it and mail it straight
+            to them. Nothing ships to you, and there&apos;s no wholesale to buy.
+          </p>
+        </div>
+      </section>
 
-        {/* How It Works - Moved to top */}
-        <motion.section
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-          className="mb-16 md:mb-20"
-        >
-          <h2 className="text-3xl sm:text-4xl md:text-5xl font-medium text-gray-900 text-center mb-8 md:mb-12">
-            How It Works
-          </h2>
-
-          <div className="bg-white rounded-[4px] md:rounded-[4px] py-6 md:py-8 px-4 md:px-10 border border-transparent">
-            <div className="grid grid-cols-2 place-items-center md:flex md:flex-row md:items-center md:justify-between gap-4 md:gap-3">
-              {[
-                { step: '1', text: 'Sees display' },
-                { step: '2', text: 'Taps phone to order' },
-                { step: '3', text: 'We ship product' },
-                { step: '4', text: 'You earn commission' }
-              ].map((item, idx) => (
-                <div key={idx} className="flex items-center gap-3 md:gap-4 flex-1">
-                  <div className="flex flex-col items-center text-center flex-1">
-                    <div className="w-16 h-16 md:w-20 md:h-20 rounded-full flex items-center justify-center text-2xl md:text-3xl font-medium text-white mb-2 md:mb-3"
-                         style={{ background: 'linear-gradient(to bottom right, #ff7a4a, #ff6fb3)' }}>
-                      {item.step}
-                    </div>
-                    <p className="text-gray-900 font-medium text-sm md:text-lg">{item.text}</p>
-                  </div>
-                  {idx < 3 && (
-                    <div className="hidden md:block text-4xl text-gray-300">→</div>
-                  )}
-                </div>
-              ))}
-            </div>
-          </div>
-        </motion.section>
-
-        {/* Three Column Cards Section */}
-        <motion.section
-          variants={staggerContainer}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true }}
-          className="mb-16 md:mb-20"
-        >
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
+      {/* The mechanism as a spec row, not four emoji cards. */}
+      <section className="o-steps">
+        <div className="t-wrap">
+          <h2 className="o-h2" style={{ marginBottom: 40 }}>How it works</h2>
+          <ol className="o-steps__grid">
             {[
-              {
-                title: 'Zero Inventory',
-                description: 'No wholesale, stock, or extra work',
-                icon: '✨'
-              },
-              {
-                title: 'Auto ACH Payouts',
-                description: 'Earn 30% of every sale',
-                icon: '💰'
-              },
-              {
-                title: 'Full Support',
-                description: 'Fulfillment to customer service',
-                icon: '🤝',
-                splitTitle: true
-              }
-            ].map((item, idx) => (
-              <motion.div
-                key={idx}
-                variants={fadeInUp}
-                className="relative overflow-hidden rounded-[4px] md:rounded-[4px] p-8 md:p-10 border border-transparent text-center transition-all"
-                style={{
-                  backgroundImage: 'url(/gradient-bg.png)',
-                  backgroundSize: 'cover',
-                  backgroundPosition: 'center'
-                }}
-              >
-                <div className="absolute inset-0 bg-white opacity-40"></div>
-                <div className="relative z-10">
-                  <div className="text-4xl md:text-5xl mb-4 md:mb-5">{item.icon}</div>
-                  <h3 className="text-lg md:text-xl font-medium text-gray-900 mb-2 md:mb-3">
-                    {item.splitTitle ? (
-                      <>
-                        Full<br className="hidden md:block" />
-                        <span className="md:hidden"> </span>Support
-                      </>
-                    ) : (
-                      item.title
-                    )}
-                  </h3>
-                  <p className="text-gray-700 text-base md:text-lg">
-                    {item.description}
-                  </p>
-                </div>
-              </motion.div>
+              ['Customer sees the display', 'Near your register, where they’re already standing.'],
+              ['Taps their phone', 'No app. The tag opens the builder straight away.'],
+              ['We make and ship it', 'Direct to them, usually within a week.'],
+              ['You earn 30%', 'Tracked to your store automatically, paid to your bank.'],
+            ].map(([title, note], i) => (
+              <li key={i} className="o-step">
+                <span className="o-step__n">{i + 1}</span>
+                <h3 className="o-step__t">{title}</h3>
+                <p className="o-step__p">{note}</p>
+              </li>
             ))}
-          </div>
-        </motion.section>
+          </ol>
+        </div>
+      </section>
 
-        {/* For Managers and For Owners - Unified Block */}
-        <motion.section
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-          className="mb-12 md:mb-16"
-        >
-          <div className="bg-white rounded-[4px] md:rounded-[4px] p-8 md:p-10 border border-transparent">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-0">
-              {/* For Managers */}
-              <div className="flex flex-col md:pr-8 md:border-r md:border-gray-200">
-                <h2 className="text-2xl sm:text-3xl md:text-4xl font-medium text-gray-900 mb-4 md:mb-5">
-                  For Managers
-                </h2>
-                <p className="text-base md:text-lg text-gray-700 mb-5 md:mb-6 leading-relaxed flex-grow">
-                  Are you interested? Share it with the store owner using the button below!
-                </p>
-                <button
-                  onClick={handleManagerShare}
-                  className="px-6 md:px-8 py-3 md:py-4 rounded-[4px] md:rounded-[4px] text-base md:text-lg font-medium bg-white border whitespace-nowrap"
-                  style={{ borderColor: '#ff6fb3', color: '#ff6fb3' }}
-                >
-                  {isCopied ? 'Copied! ✓' : 'Share With Owner'}
-                </button>
-              </div>
+      {/* Two doors, because two different people read this page. */}
+      <section className="o-doors">
+        <div className="o-door">
+          <h2 className="o-h2">You own the store</h2>
+          <p className="o-body">Claim a display and we&apos;ll ship it free. Takes about two minutes.</p>
+          <Link href="/onboard/register" className="t-btn t-btn--primary" style={{ marginTop: 24 }}>
+            Claim your display
+          </Link>
+        </div>
+        <div className="o-door">
+          <h2 className="o-h2">You work here</h2>
+          <p className="o-body">Send this to whoever makes the call. If they sign up, you get credited.</p>
+          <button onClick={handleManagerShare} className="t-btn t-btn--secondary" style={{ marginTop: 24 }}>
+            {isCopied ? 'Link copied' : 'Copy the link'}
+          </button>
+        </div>
+      </section>
 
-              {/* For Franchise Owners */}
-              <div className="flex flex-col border-t md:border-t-0 pt-8 md:pt-0 md:pl-8">
-                <h2 className="text-2xl sm:text-3xl md:text-4xl font-medium mb-4 md:mb-5 text-gray-900">
-                  For Owners
-                </h2>
-                <p className="text-base md:text-lg mb-5 md:mb-6 leading-relaxed text-gray-700 flex-grow">
-                  Ready to add a new profit stream with zero cost?
-                  Register now and bring somthing new to your customers!
-                </p>
-                <Link href="/onboard/register">
-                  <button
-                    className="px-8 md:px-10 py-3 md:py-4 rounded-[4px] md:rounded-[4px] text-base md:text-lg font-medium transition-all text-white whitespace-nowrap"
-                    style={{ background: 'linear-gradient(to right, #ff7a4a, #ff6fb3)' }}
-                  >
-                    Register Now →
-                  </button>
-                </Link>
-              </div>
-            </div>
-          </div>
-
-          {/* Questions Card */}
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.5 }}
-            className="mt-12 md:mt-16 bg-white rounded-[4px] p-5 md:p-6 border border-transparent text-center"
-          >
-            <h3 className="text-xl font-medium text-gray-900 mb-3">Questions?</h3>
-            <p className="text-gray-600 mb-4 leading-relaxed">
-              Call us now! We're here to help you out.
-            </p>
-            <a
-              href="tel:7159791259"
-              className="inline-block px-6 py-3 rounded-[4px] font-medium text-white transition-all"
-              style={{ background: 'linear-gradient(to right, #ff7a4a, #ff6fb3)' }}
-            >
-              (715) 979-1259
-            </a>
-          </motion.div>
-
-          {/* Back Link */}
-          <div className="text-center pt-6 md:pt-8">
-            <Link href="/onboard/about" className="text-gray-600 hover:text-gray-900 font-medium inline-flex items-center gap-2 hover:gap-3 transition-all">
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-              </svg>
-              Learn More About Pawpaya
-            </Link>
-          </div>
-        </motion.section>
-      </div>
+      <section className="o-close">
+        <p className="o-body" style={{ margin: 0 }}>Questions? Call us — a real person answers.</p>
+        <a href="tel:+17159791259" className="o-phone">(715) 979-1259</a>
+      </section>
     </div>
   );
 }
