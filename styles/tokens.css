@@ -320,12 +320,10 @@
   text-align: center; padding: clamp(56px, 8vw, 96px) 32px;
   display: flex; flex-direction: column; align-items: center; gap: 20px;
 }
-.o-share {
-  background: 0; border: 0; padding: 0; cursor: pointer;
-  font-family: inherit; font-size: 14px; color: var(--pewter);
-  transition: color var(--t);
-}
-.o-share:hover { color: var(--ink); }
+.o-close__note { font-size: 13px; color: var(--pewter); margin: 8px 0 0; }
+/* The iOS share glyph, so it reads as "send" before the label is read. */
+.o-share { gap: 8px; }
+.o-share__icon { width: 16px; height: 16px; flex-shrink: 0; }
 
 @media (max-width: 900px) {
   .o-hero { grid-template-columns: 1fr; padding-top: 40px; }

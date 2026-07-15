@@ -10,12 +10,29 @@ export default function OnboardIndex() {
 
   const handleManagerShare = async () => {
     const shareUrl = window.location.origin + '/onboard/about';
-    try {
-      if (navigator.clipboard && navigator.clipboard.writeText) {
-        await navigator.clipboard.writeText(shareUrl);
-        setIsCopied(true);
-        setTimeout(() => setIsCopied(false), 2000);
+
+    // Native share sheet where it exists (iOS/iPadOS/macOS, Android) so the
+    // manager can text it to the owner directly. Only fall back to the clipboard
+    // when there's no sheet to open — showing "Link copied" while a share sheet
+    // is up tells the user the wrong thing happened.
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: 'Pawpaya Display Program',
+          text: "I found this program that's completely free to sign up, can you check it out?",
+          url: shareUrl,
+        });
+        return;
+      } catch (shareErr) {
+        if (shareErr.name === 'AbortError') return; // user dismissed the sheet
+        console.log('Share failed, falling back to clipboard:', shareErr);
       }
+    }
+
+    try {
+      await navigator.clipboard.writeText(shareUrl);
+      setIsCopied(true);
+      setTimeout(() => setIsCopied(false), 2000);
     } catch (clipboardErr) {
       console.log('Clipboard write failed:', clipboardErr);
     }
@@ -67,8 +84,14 @@ export default function OnboardIndex() {
 
       <section className="o-close">
         <Link href="/onboard/register" className="t-btn t-btn--primary">Claim your display</Link>
-        <button onClick={handleManagerShare} className="o-share">
-          {isCopied ? 'Link copied' : 'Not the owner? Send this to them'}
+        <p className="o-close__note">Not the owner?</p>
+        <button onClick={handleManagerShare} className="t-btn t-btn--secondary o-share">
+          <svg className="o-share__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+            <path d="M12 16V3" />
+            <path d="M8 7l4-4 4 4" />
+            <path d="M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7" />
+          </svg>
+          {isCopied ? 'Link copied' : 'Send this to them'}
         </button>
       </section>
     </div>
