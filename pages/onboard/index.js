@@ -44,8 +44,8 @@ export default function OnboardIndex() {
         <div className="o-hero__copy">
           <h1 className="o-h1">Personalized collars,<br />made to order.</h1>
           <p className="o-lede">
-            $35 a set — a collar with the dog&apos;s name, and a bracelet to match.
-            We put a free display on your counter. You keep 30%.
+            A collar with the dog&apos;s name, and a bracelet to match. We put a free
+            display on your counter. You keep 30%.
           </p>
           <div className="o-actions">
             <Link href="/onboard/register" className="t-btn t-btn--primary">Claim your display</Link>
