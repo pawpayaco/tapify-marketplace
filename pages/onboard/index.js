@@ -52,15 +52,15 @@ export default function OnboardIndex() {
 
       <section className="o-facts">
         <div className="o-fact">
-          <p className="o-fact__k">Costs you</p>
-          <p className="o-fact__v">Nothing</p>
+          <p className="o-fact__k">Your cost</p>
+          <p className="o-fact__v">$0</p>
         </div>
         <div className="o-fact">
-          <p className="o-fact__k">You stock</p>
-          <p className="o-fact__v">Nothing</p>
+          <p className="o-fact__k">Your inventory</p>
+          <p className="o-fact__v">None</p>
         </div>
         <div className="o-fact">
-          <p className="o-fact__k">You keep</p>
+          <p className="o-fact__k">Your cut</p>
           <p className="o-fact__v">30%</p>
         </div>
       </section>
