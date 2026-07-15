@@ -12,7 +12,10 @@ export default function RetailerDashboard() {
   // TEMPORARY: Bank connection disabled while waiting for Dwolla production keys
   // TO RE-ENABLE: Change this to false and redeploy
   // ============================================================================
-  const BANK_CONNECTION_DISABLED = true;
+  // Re-enabled: linking now goes through /api/plaid-connect, which stores only a
+  // Plaid account reference and never touches Dwolla. Payouts settle manually via
+  // Chase direct deposit from /api/admin/payout-csv until Dwolla is approved.
+  const BANK_CONNECTION_DISABLED = false;
 
   const router = useRouter();
   const { user, signOut } = useAuthContext();
@@ -547,7 +550,7 @@ export default function RetailerDashboard() {
           try {
             console.log('[PLAID CONNECT] Exchanging public token');
             // Exchange public token for access token
-            const exchangeResponse = await fetch('/api/plaid-exchange', {
+            const exchangeResponse = await fetch('/api/plaid-connect', {
               method: 'POST',
               headers: {
                 'Content-Type': 'application/json',
@@ -555,10 +558,7 @@ export default function RetailerDashboard() {
               body: JSON.stringify({
                 public_token,
                 account_id: metadata?.account_id || metadata?.accounts?.[0]?.id,
-                account_type: 'retailer',
-                entity_id: retailer.id,
-                name: retailer.name,
-                email: user.email,
+                retailer_id: retailer.id,
                 metadata
               })
             });
