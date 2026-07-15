@@ -42,7 +42,7 @@ export default function OnboardIndex() {
     <div className="t-page">
       <section className="o-hero">
         <div className="o-hero__copy">
-          <h1 className="o-h1">Personalized collars,<br />made to order.</h1>
+          <h1 className="o-h1">Friendship collars,<br />made to order.</h1>
           <p className="o-lede">
             A collar with the dog&apos;s name, and a bracelet to match. We put a free
             display on your counter. You keep 30%.
