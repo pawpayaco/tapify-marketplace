@@ -134,6 +134,11 @@ export default async function handler(req, res) {
   if (req.method !== 'POST')
     return res.status(405).json({ error: 'Method not allowed' });
 
+  // Declared out here so the catch block can reference it. When this was a
+  // `const` inside the try, `order?.id` in the catch threw ReferenceError,
+  // which escaped the handler as a 500 and destroyed the original error.
+  let order = null;
+
   try {
     const rawBody = await getRawBody(req);
     const hmacHeader = req.headers['x-shopify-hmac-sha256'];
@@ -157,7 +162,7 @@ export default async function handler(req, res) {
       return res.status(401).json({ error: 'Unauthorized' });
     }
 
-    const order = JSON.parse(rawBody.toString('utf8'));
+    order = JSON.parse(rawBody.toString('utf8'));
     const shopDomain = req.headers['x-shopify-shop-domain'] || null;
 
     // ✅ IMPROVED: Extract UID and retailer attribution from multiple sources
