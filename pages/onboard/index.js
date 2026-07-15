@@ -42,13 +42,10 @@ export default function OnboardIndex() {
     <div className="t-page">
       <section className="o-hero">
         <div className="o-hero__copy">
-          <h1 className="o-h1">
-            The collar has their dog&apos;s name.<br />
-            <span className="o-h1__brand">The bracelet is theirs.</span>
-          </h1>
+          <h1 className="o-h1">Personalized collars,<br />made to order.</h1>
           <p className="o-lede">
-            A $35 handmade set your customers design themselves — on a free display
-            that sits on your counter. They tap it, we make it, we ship it to them.
+            $35 a set — a collar with the dog&apos;s name, and a bracelet to match.
+            We put a free display on your counter. You keep 30%.
           </p>
           <div className="o-actions">
             <Link href="/onboard/register" className="t-btn t-btn--primary">Claim your display</Link>
@@ -61,8 +58,8 @@ export default function OnboardIndex() {
             actually want this" better than any sentence can. */}
         <div className="o-hero__img">
           <Image
-            src="/images/image16.jpeg"
-            alt="A dog wearing a beaded collar spelling REY, shaking hands with its owner, who is wearing the matching bracelet"
+            src="/images/hero-set.png"
+            alt="A dog wearing a beaded collar spelling HARRY, with its owner wearing the matching HARRY bracelet"
             width={1200}
             height={1200}
             priority
@@ -102,8 +99,24 @@ export default function OnboardIndex() {
           <p className="o-fact__v">None</p>
         </div>
         <div className="o-fact">
-          <p className="o-fact__k">Your cut of a $35 set</p>
-          <p className="o-fact__v o-fact__v--brand">$10.50</p>
+          <p className="o-fact__k">Your cut</p>
+          <p className="o-fact__v o-fact__v--brand">30%</p>
+        </div>
+      </section>
+
+      {/* What a set actually looks like. Three colorways, no copy needed. */}
+      <section className="o-sets">
+        <div className="t-wrap">
+          <h2 className="o-h2">Every set is made to order</h2>
+          <p className="o-body">
+            Customers pick the colors and type the name right on the display. Five
+            colorways, sizes 10&quot; to 25&quot;, handmade and shipped free.
+          </p>
+          <div className="o-sets__grid">
+            <Image src="/images/diy-kit.webp" alt="A rainbow beaded collar spelling MOZZIE with a matching bracelet" width={900} height={900} sizes="(max-width: 900px) 100vw, 33vw" />
+            <Image src="/images/image3.webp" alt="A pink and lavender beaded collar spelling OAKLEY with a matching bracelet" width={900} height={900} sizes="(max-width: 900px) 100vw, 33vw" />
+            <Image src="/images/image4.webp" alt="A beaded name collar with its matching bracelet" width={900} height={900} sizes="(max-width: 900px) 100vw, 33vw" />
+          </div>
         </div>
       </section>
 
