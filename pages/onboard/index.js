@@ -43,11 +43,12 @@ export default function OnboardIndex() {
       <section className="o-hero">
         <div className="o-hero__copy">
           <h1 className="o-h1">
-            A free display<br />for your store.
+            The collar has their dog&apos;s name.<br />
+            <span className="o-h1__brand">The bracelet is theirs.</span>
           </h1>
           <p className="o-lede">
-            Customers tap it to make a collar for their dog. We ship it to them.
-            You keep <span className="o-pct">30%</span>.
+            A $35 handmade set your customers design themselves — on a free display
+            that sits on your counter. They tap it, we make it, we ship it to them.
           </p>
           <div className="o-actions">
             <Link href="/onboard/register" className="t-btn t-btn--primary">Claim your display</Link>
@@ -55,15 +56,39 @@ export default function OnboardIndex() {
           </div>
         </div>
 
+        {/* This photo is the pitch: the dog's name, the collar, and the owner's
+            matching bracelet, all in one frame. It answers "will my customers
+            actually want this" better than any sentence can. */}
         <div className="o-hero__img">
           <Image
-            src="/images/image41.jpg"
-            alt="The Pawpaya countertop display, stocked with beaded name collars"
+            src="/images/image16.jpeg"
+            alt="A dog wearing a beaded collar spelling REY, shaking hands with its owner, who is wearing the matching bracelet"
             width={1200}
             height={1200}
             priority
             sizes="(max-width: 900px) 100vw, 52vw"
           />
+        </div>
+      </section>
+
+      {/* Now the thing they actually receive. */}
+      <section className="o-row">
+        <div className="o-row__img">
+          <Image
+            src="/images/image41.jpg"
+            alt="The Pawpaya countertop display, stocked with beaded name collars"
+            width={1000}
+            height={1000}
+            sizes="(max-width: 900px) 100vw, 50vw"
+          />
+        </div>
+        <div className="o-row__copy">
+          <h2 className="o-h2">This goes on your counter</h2>
+          <p className="o-body">
+            We print it, stock it, and ship it to you free. Customers tap the paw
+            print with their phone to build their set — no app, nothing for you to
+            ring up, and nothing to restock.
+          </p>
         </div>
       </section>
 
@@ -77,8 +102,8 @@ export default function OnboardIndex() {
           <p className="o-fact__v">None</p>
         </div>
         <div className="o-fact">
-          <p className="o-fact__k">Your cut</p>
-          <p className="o-fact__v">30%</p>
+          <p className="o-fact__k">Your cut of a $35 set</p>
+          <p className="o-fact__v o-fact__v--brand">$10.50</p>
         </div>
       </section>
 
