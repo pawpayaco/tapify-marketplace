@@ -187,14 +187,14 @@ export default function OrderDisplayModal({ isOpen, onClose, onSuccess }) {
           animate={{ scale: 1, opacity: 1 }}
           exit={{ scale: 0.95, opacity: 0 }}
           transition={{ type: 'spring', duration: 0.3 }}
-          className="bg-white rounded-[23px] shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto"
+          className="bg-white rounded-[4px] max-w-2xl w-full max-h-[90vh] overflow-y-auto"
           onClick={(e) => e.stopPropagation()}
         >
           {/* Header */}
           <div className="sticky top-0 bg-white border-b-2 border-gray-100 px-8 py-6 rounded-t-[15px] z-10">
             <div className="flex items-center justify-between">
               <div>
-                <h2 className="text-3xl font-bold text-gray-900">Order Another Display</h2>
+                <h2 className="text-3xl font-medium text-gray-900">Order Another Display</h2>
                 <p className="text-gray-600 mt-1">Add another retail location to grow your earnings</p>
               </div>
               <button
@@ -212,7 +212,7 @@ export default function OrderDisplayModal({ isOpen, onClose, onSuccess }) {
           <form onSubmit={handleSubmit} className="px-8 py-6 space-y-6">
             {/* Store Name with Autocomplete */}
             <div className="relative" ref={suggestionsRef}>
-              <label className="block text-sm font-bold text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-gray-700 mb-2">
                 Store Name <span className="text-red-500">*</span>
                 {selectedRetailer && <span className="text-green-600 text-xs ml-2">Selected ✓</span>}
               </label>
@@ -233,13 +233,13 @@ export default function OrderDisplayModal({ isOpen, onClose, onSuccess }) {
                     }
                   }}
                   required
-                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-[23px] hover:border-gray-300 focus:border-[#ff6fb3] focus:ring-2 focus:ring-[#ff6fb3]/20 transition-all text-gray-900 placeholder-gray-400"
+                  className="w-full px-4 py-3 border border-gray-200 rounded-[4px] hover:border-gray-300 focus:border-[#ff6fb3] focus:ring-2 focus:ring-[#ff6fb3]/20 transition-all text-gray-900 placeholder-gray-400"
                   placeholder="Start typing store name..."
                 />
 
                 {/* Dropdown */}
                 {showSuggestions && storeQuery.length >= 1 && (
-                  <div className="absolute z-50 w-full mt-2 bg-white border-2 border-gray-300 rounded-[23px] shadow-2xl max-h-64 overflow-y-auto">
+                  <div className="absolute z-50 w-full mt-2 bg-white border border-gray-300 rounded-[4px] max-h-64 overflow-y-auto">
                     {storeSuggestions.length > 0 ? (
                       <>
                         {storeSuggestions.slice(0, 3).map((store) => {
@@ -254,10 +254,10 @@ export default function OrderDisplayModal({ isOpen, onClose, onSuccess }) {
                               {isTaken ? (
                                 <div className="flex items-start gap-3">
                                   <div className="w-8 h-8 rounded-full bg-gray-300 flex items-center justify-center flex-shrink-0">
-                                    <span className="text-gray-600 text-xs font-bold">{store.name.charAt(0)}</span>
+                                    <span className="text-gray-600 text-xs font-medium">{store.name.charAt(0)}</span>
                                   </div>
                                   <div className="flex-1">
-                                    <div className="font-bold text-gray-500">{store.name}</div>
+                                    <div className="font-medium text-gray-500">{store.name}</div>
                                     <div className="text-xs text-gray-400">{store.address || 'Address not listed'}</div>
                                     <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-red-100 text-red-800 mt-2">
                                       🚫 Already registered
@@ -272,10 +272,10 @@ export default function OrderDisplayModal({ isOpen, onClose, onSuccess }) {
                                 >
                                   <div className="flex items-start gap-3">
                                     <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#ff7a4a] to-[#ff6fb3] flex items-center justify-center flex-shrink-0">
-                                      <span className="text-white text-xs font-bold">{store.name.charAt(0)}</span>
+                                      <span className="text-white text-xs font-medium">{store.name.charAt(0)}</span>
                                     </div>
                                     <div className="flex-1">
-                                      <div className="font-bold text-gray-900">{store.name}</div>
+                                      <div className="font-medium text-gray-900">{store.name}</div>
                                       <div className="text-xs text-gray-600">{store.address || store.location || 'Address not listed'}</div>
                                     </div>
                                   </div>
@@ -290,24 +290,24 @@ export default function OrderDisplayModal({ isOpen, onClose, onSuccess }) {
                         type="button"
                         onClick={handleAddNewStore}
                         disabled={loading}
-                        className="w-full px-4 py-4 bg-gradient-to-r from-green-50 to-emerald-50 hover:from-green-100 hover:to-emerald-100 transition-all disabled:opacity-50 rounded-[23px]"
+                        className="w-full px-4 py-4 bg-gradient-to-r from-green-50 to-emerald-50 hover:from-green-100 hover:to-emerald-100 transition-all disabled:opacity-50 rounded-[4px]"
                       >
                         <div className="flex items-center gap-3">
-                          <div className="w-8 h-8 rounded-full bg-gradient-to-br from-green-500 to-emerald-600 flex items-center justify-center">
+                          <div className="w-8 h-8 rounded-full bg-white flex items-center justify-center">
                             <span className="text-white text-lg">✨</span>
                           </div>
                           <div className="flex-1 text-left">
-                            <div className="font-bold text-green-700">Add "{storeQuery}" as new store</div>
+                            <div className="font-medium text-green-700">Add "{storeQuery}" as new store</div>
                             <div className="text-xs text-green-600">Store not listed? Click to add it!</div>
                           </div>
                           {loading && (
-                            <div className="animate-spin rounded-full h-5 w-5 border-2 border-green-600 border-t-transparent"></div>
+                            <div className="animate-spin rounded-full h-5 w-5 border border-green-600 border-t-transparent"></div>
                           )}
                         </div>
                       </button>
                     ) : (
                       <div className="px-4 py-8 text-gray-500 text-sm flex items-center justify-center gap-2">
-                        <div className="animate-spin rounded-full h-4 w-4 border-2 border-gray-400 border-t-transparent"></div>
+                        <div className="animate-spin rounded-full h-4 w-4 border border-gray-400 border-t-transparent"></div>
                         Searching...
                       </div>
                     )}
@@ -318,14 +318,14 @@ export default function OrderDisplayModal({ isOpen, onClose, onSuccess }) {
 
             {/* Manager Name */}
             <div>
-              <label className="block text-sm font-bold text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-gray-700 mb-2">
                 Manager's Name
               </label>
               <input
                 type="text"
                 value={formData.managerName}
                 onChange={(e) => setFormData(prev => ({ ...prev, managerName: e.target.value }))}
-                className="w-full px-4 py-3 border-2 border-gray-200 rounded-[23px] focus:ring-2 focus:ring-[#ff6fb3] focus:border-transparent transition-all text-gray-900 placeholder-gray-400 hover:border-gray-300"
+                className="w-full px-4 py-3 border border-gray-200 rounded-[4px] focus:ring-2 focus:ring-[#ff6fb3] focus:border-transparent transition-all text-gray-900 placeholder-gray-400 hover:border-gray-300"
                 placeholder="Store manager's name (optional)"
               />
             </div>
@@ -349,7 +349,7 @@ export default function OrderDisplayModal({ isOpen, onClose, onSuccess }) {
 
             {/* Error Message */}
             {error && (
-              <div className="bg-red-50 border-2 border-red-200 text-red-700 px-4 py-3 rounded-[23px] flex items-start gap-2">
+              <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-[4px] flex items-start gap-2">
                 <svg className="w-5 h-5 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                   <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
                 </svg>
@@ -362,7 +362,7 @@ export default function OrderDisplayModal({ isOpen, onClose, onSuccess }) {
               <button
                 type="button"
                 onClick={onClose}
-                className="flex-1 px-6 py-3 border-2 border-gray-200 rounded-[23px] font-bold text-gray-700 hover:bg-gray-50 transition-all"
+                className="flex-1 px-6 py-3 border border-gray-200 rounded-[4px] font-medium text-gray-700 hover:bg-gray-50 transition-all"
                 disabled={loading}
               >
                 Cancel
@@ -370,7 +370,7 @@ export default function OrderDisplayModal({ isOpen, onClose, onSuccess }) {
               <button
                 type="submit"
                 disabled={loading}
-                className="flex-1 bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3] text-white py-3 px-6 rounded-[23px] font-bold transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                className="flex-1 bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3] text-white py-3 px-6 rounded-[4px] font-medium transition-all disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {loading ? (
                   <span className="flex items-center justify-center gap-2">

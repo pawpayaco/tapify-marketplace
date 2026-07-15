@@ -646,7 +646,7 @@ export default function RetailerDashboard() {
           className="text-center"
         >
           <div className="animate-spin rounded-full h-16 w-16 border-4 border-[#ff6fb3] border-t-transparent mx-auto mb-4"></div>
-          <p className="text-gray-700 font-semibold text-lg">Loading your dashboard...</p>
+          <p className="text-gray-700 font-medium text-lg">Loading your dashboard...</p>
         </motion.div>
       </div>
     );
@@ -687,7 +687,7 @@ export default function RetailerDashboard() {
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
-        className="bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3] text-white shadow-lg relative overflow-hidden"
+        className="bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3] text-white relative overflow-hidden"
       >
         <div className="absolute inset-0 opacity-10 pointer-events-none">
           <div className="absolute top-0 right-0 w-96 h-96 bg-white rounded-full blur-3xl"></div>
@@ -703,7 +703,7 @@ export default function RetailerDashboard() {
                 transition={{ duration: 0.5, delay: 0.2 }}
                 className="flex-1 min-w-0"
               >
-                <h1 className="text-lg sm:text-xl md:text-2xl font-bold leading-tight mb-2">
+                <h1 className="text-lg sm:text-xl md:text-2xl font-medium leading-tight mb-2">
                   Your Dashboard
                 </h1>
                 <p className="text-white/90 text-xs leading-relaxed">
@@ -726,40 +726,40 @@ export default function RetailerDashboard() {
           {/* Weekly Scans */}
           <motion.div
             variants={fadeInUp}
-            className="bg-white rounded-[23px] p-4 md:p-6 border border-transparent text-center shadow-lg"
+            className="bg-white rounded-[4px] p-4 md:p-6 border border-transparent text-center"
           >
-            <p className="text-gray-600 text-base md:text-lg font-semibold mb-2">Weekly scans</p>
-            <p className="text-xl md:text-2xl font-bold text-gray-900 mb-1">{stats.weeklyScans}</p>
+            <p className="text-gray-600 text-base md:text-lg font-medium mb-2">Weekly scans</p>
+            <p className="text-xl md:text-2xl font-medium text-gray-900 mb-1">{stats.weeklyScans}</p>
             <p className="text-xs text-gray-500">Last 7 days</p>
           </motion.div>
 
           {/* Revenue */}
           <motion.div
             variants={fadeInUp}
-            className="bg-white rounded-[23px] p-4 md:p-6 border border-transparent text-center shadow-lg"
+            className="bg-white rounded-[4px] p-4 md:p-6 border border-transparent text-center"
           >
-            <p className="text-gray-600 text-base md:text-lg font-semibold mb-2">Revenue earned</p>
-            <p className="text-xl md:text-2xl font-bold text-gray-900 mb-1">${stats.revenue.toLocaleString()}</p>
+            <p className="text-gray-600 text-base md:text-lg font-medium mb-2">Revenue earned</p>
+            <p className="text-xl md:text-2xl font-medium text-gray-900 mb-1">${stats.revenue.toLocaleString()}</p>
             <p className="text-xs text-gray-500">This month</p>
           </motion.div>
 
           {/* Displays Claimed */}
           <motion.div
             variants={fadeInUp}
-            className="bg-white rounded-[23px] p-4 md:p-6 border border-transparent text-center shadow-lg"
+            className="bg-white rounded-[4px] p-4 md:p-6 border border-transparent text-center"
           >
-            <p className="text-gray-600 text-base md:text-lg font-semibold mb-2">Displays active</p>
-            <p className="text-xl md:text-2xl font-bold text-gray-900 mb-1">{stats.displaysClaimed}</p>
+            <p className="text-gray-600 text-base md:text-lg font-medium mb-2">Displays active</p>
+            <p className="text-xl md:text-2xl font-medium text-gray-900 mb-1">{stats.displaysClaimed}</p>
             <p className="text-xs text-gray-500">In your store</p>
           </motion.div>
 
           {/* Conversion Rate */}
           <motion.div
             variants={fadeInUp}
-            className="bg-white rounded-[23px] p-4 md:p-6 border border-transparent text-center shadow-lg"
+            className="bg-white rounded-[4px] p-4 md:p-6 border border-transparent text-center"
           >
-            <p className="text-gray-600 text-base md:text-lg font-semibold mb-2">Conversion rate</p>
-            <p className="text-xl md:text-2xl font-bold text-gray-900 mb-1">{stats.conversionRate}%</p>
+            <p className="text-gray-600 text-base md:text-lg font-medium mb-2">Conversion rate</p>
+            <p className="text-xl md:text-2xl font-medium text-gray-900 mb-1">{stats.conversionRate}%</p>
             <p className="text-xs text-gray-500">Scans to orders</p>
           </motion.div>
         </motion.div>
@@ -781,11 +781,11 @@ export default function RetailerDashboard() {
               return (
                 <motion.button
                   key={tab.id}
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
+                  
+                  
                   onClick={() => handleTabChange(tab.id)}
                   className={[
-                    "px-4 py-3 md:px-6 text-xs md:text-sm font-bold transition-all relative",
+                    "px-4 py-3 md:px-6 text-xs md:text-sm font-medium transition-all relative",
                     active
                       ? "text-[#ff6fb3]"
                       : "text-gray-600 hover:text-gray-900",
@@ -806,7 +806,7 @@ export default function RetailerDashboard() {
         </motion.div>
 
           {/* Tab Content */}
-          <div className="bg-white rounded-[23px] shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_1px_-0.5px_rgba(0,0,0,0.06),0px_3px_3px_-1.5px_rgba(0,0,0,0.06),0px_6px_6px_-3px_rgba(0,0,0,0.06),0px_12px_12px_-6px_rgba(0,0,0,0.06),0px_24px_24px_-12px_rgba(0,0,0,0.06)] border border-transparent p-4 md:p-8">
+          <div className="bg-white rounded-[4px] border border-transparent p-4 md:p-8">
             {/* Stats Tab */}
             {activeTab === 'stats' && (
               <motion.div
@@ -824,8 +824,8 @@ export default function RetailerDashboard() {
                   className="space-y-4 md:space-y-6"
                 >
                   <div className="flex items-center justify-between mb-3 md:mb-6">
-                    <h3 className="text-xs md:text-sm font-black text-gray-900">Recent Scan Activity</h3>
-                    <div className="text-xs md:text-sm text-gray-500 font-semibold">
+                    <h3 className="text-xs md:text-sm font-medium text-gray-900">Recent Scan Activity</h3>
+                    <div className="text-xs md:text-sm text-gray-500 font-medium">
                       Showing {scans.length} scans
                     </div>
                   </div>
@@ -833,16 +833,16 @@ export default function RetailerDashboard() {
                   {scans.length > 0 ? (
                     <>
                       {/* Desktop Table View */}
-                      <div className="hidden md:block bg-gradient-to-br from-gray-50 to-white border-2 border-gray-200 rounded-[23px] overflow-hidden shadow-lg">
+                      <div className="hidden md:block bg-white to-white border border-gray-200 rounded-[4px] overflow-hidden">
                         <table className="w-full">
                           <thead className="bg-gradient-to-r from-pink-50 to-purple-50">
                             <tr>
-                              <th className="text-left py-4 px-6 font-bold text-gray-700">UID</th>
-                              <th className="text-left py-4 px-6 font-bold text-gray-700">Location</th>
-                              <th className="text-center py-4 px-6 font-bold text-gray-700">Clicked</th>
-                              <th className="text-center py-4 px-6 font-bold text-gray-700">Converted</th>
-                              <th className="text-right py-4 px-6 font-bold text-gray-700">Revenue</th>
-                              <th className="text-right py-4 px-6 font-bold text-gray-700">Date</th>
+                              <th className="text-left py-4 px-6 font-medium text-gray-700">UID</th>
+                              <th className="text-left py-4 px-6 font-medium text-gray-700">Location</th>
+                              <th className="text-center py-4 px-6 font-medium text-gray-700">Clicked</th>
+                              <th className="text-center py-4 px-6 font-medium text-gray-700">Converted</th>
+                              <th className="text-right py-4 px-6 font-medium text-gray-700">Revenue</th>
+                              <th className="text-right py-4 px-6 font-medium text-gray-700">Date</th>
                             </tr>
                           </thead>
                           <tbody>
@@ -867,13 +867,13 @@ export default function RetailerDashboard() {
                                 </td>
                                 <td className="py-4 px-6 text-center">
                                   {scan.converted ? (
-                                    <span className="text-green-600 font-bold text-lg">✓</span>
+                                    <span className="text-green-600 font-medium text-lg">✓</span>
                                   ) : (
                                     <span className="text-gray-300 text-lg">○</span>
                                   )}
                                 </td>
                                 <td className="py-4 px-6 text-right">
-                                  <span className="font-bold text-green-700">
+                                  <span className="font-medium text-green-700">
                                     ${(scan.revenue || 0).toFixed(2)}
                                   </span>
                                 </td>
@@ -894,7 +894,7 @@ export default function RetailerDashboard() {
                             initial={{ opacity: 0, y: 10 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ duration: 0.3, delay: Math.min(idx * 0.05, 0.5) }}
-                            className="bg-gradient-to-br from-gray-50 to-white border-2 border-gray-200 rounded-[23px] p-4 shadow-lg"
+                            className="bg-white to-white border border-gray-200 rounded-[4px] p-4"
                           >
                             <div className="flex items-center justify-between mb-3">
                               <div>
@@ -924,14 +924,14 @@ export default function RetailerDashboard() {
                               <div className="text-center">
                                 <div className="text-xs text-gray-500 mb-1">Converted</div>
                                 {scan.converted ? (
-                                  <span className="text-green-600 font-bold text-lg">✓</span>
+                                  <span className="text-green-600 font-medium text-lg">✓</span>
                                 ) : (
                                   <span className="text-gray-300 text-lg">○</span>
                                 )}
                               </div>
                               <div className="text-center">
                                 <div className="text-xs text-gray-500 mb-1">Revenue</div>
-                                <span className="font-bold text-green-700">
+                                <span className="font-medium text-green-700">
                                   ${(scan.revenue || 0).toFixed(2)}
                                 </span>
                               </div>
@@ -941,15 +941,15 @@ export default function RetailerDashboard() {
                       </div>
                     </>
                   ) : (
-                    <div className="bg-white rounded-[23px] border border-transparent shadow-lg py-12 md:py-20 text-center">
+                    <div className="bg-white rounded-[4px] border border-transparent py-12 md:py-20 text-center">
                       <div className="flex flex-col items-center gap-4 max-w-sm mx-auto px-4">
-                        <div className="w-20 h-20 bg-gradient-to-br from-gray-100 to-gray-200 rounded-full flex items-center justify-center">
+                        <div className="w-20 h-20 bg-white rounded-full flex items-center justify-center">
                           <svg className="w-10 h-10 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
                           </svg>
                         </div>
                         <div>
-                          <p className="text-gray-900 font-bold text-lg mb-1">No scans yet</p>
+                          <p className="text-gray-900 font-medium text-lg mb-1">No scans yet</p>
                           <p className="text-gray-500 text-sm">Scan activity will appear here once customers interact with your displays</p>
                         </div>
                       </div>
@@ -957,13 +957,13 @@ export default function RetailerDashboard() {
                   )}
 
                   {stats.unpaidEarnings > 0 && (
-                    <div className="bg-gradient-to-r from-yellow-100 to-orange-100 border-2 border-yellow-300 rounded-[23px] p-6">
+                    <div className="bg-gradient-to-r from-yellow-100 to-orange-100 border border-yellow-300 rounded-[4px] p-6">
                       <div className="flex items-center justify-between">
                         <div>
-                          <h4 className="text-lg font-bold text-gray-900 mb-1">Unpaid Earnings</h4>
+                          <h4 className="text-lg font-medium text-gray-900 mb-1">Unpaid Earnings</h4>
                           <p className="text-sm text-gray-600">Pending payout to your account</p>
                         </div>
-                        <div className="text-3xl font-bold text-orange-700">${stats.unpaidEarnings.toFixed(2)}</div>
+                        <div className="text-3xl font-medium text-orange-700">${stats.unpaidEarnings.toFixed(2)}</div>
                       </div>
                     </div>
                   )}
@@ -971,12 +971,12 @@ export default function RetailerDashboard() {
 
                 {/* Weekly Performance Chart */}
                 <div>
-                  <h3 className="text-xs font-bold text-gray-900 mb-4 md:mb-6">Weekly Performance</h3>
-                  <div className="bg-gradient-to-br from-gray-50 to-white rounded-[23px] p-4 md:p-8 border border-transparent">
+                  <h3 className="text-xs font-medium text-gray-900 mb-4 md:mb-6">Weekly Performance</h3>
+                  <div className="bg-white to-white rounded-[4px] p-4 md:p-8 border border-transparent">
                     {/* Bar Chart - Scans */}
                     <div className="mb-10">
                       <div className="flex items-center justify-between mb-4">
-                        <h4 className="font-bold text-gray-700 text-xs md:text-sm">Scans per Day</h4>
+                        <h4 className="font-medium text-gray-700 text-xs md:text-sm">Scans per Day</h4>
                         <div className="text-xs md:text-sm text-gray-500">Max: {maxScans}</div>
                       </div>
                       <div className="flex items-end justify-between gap-2 h-48">
@@ -992,15 +992,14 @@ export default function RetailerDashboard() {
                                   initial={{ height: 0 }}
                                   animate={{ height: `${barHeight}%` }}
                                   transition={{ duration: 0.6, delay: idx * 0.1, ease: "easeOut" }}
-                                  whileHover={{ scaleY: 1.05 }}
-                                  className="w-full bg-gradient-to-t from-[#ff7a4a] to-[#ff6fb3] rounded-t-[15px] relative group shadow-lg origin-bottom min-h-[4px]"
+                                  className="w-full bg-gradient-to-t from-[#ff7a4a] to-[#ff6fb3] rounded-t-[15px] relative group origin-bottom min-h-[4px]"
                                 >
-                                  <div className="absolute -top-10 left-1/2 transform -translate-x-1/2 bg-gray-900 text-white text-xs px-3 py-1.5 rounded-[23px] opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap font-semibold shadow-lg z-10">
+                                  <div className="absolute -top-10 left-1/2 transform -translate-x-1/2 bg-gray-900 text-white text-xs px-3 py-1.5 rounded-[4px] opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap font-medium z-10">
                                     {day.scans} scans
                                   </div>
                                 </motion.div>
                               </div>
-                              <span className="text-sm font-bold text-gray-600">{day.day}</span>
+                              <span className="text-sm font-medium text-gray-600">{day.day}</span>
                             </div>
                           );
                         })}
@@ -1010,7 +1009,7 @@ export default function RetailerDashboard() {
                     {/* Revenue Chart */}
                     <div>
                       <div className="flex items-center justify-between mb-4">
-                        <h4 className="font-bold text-gray-700 text-xs md:text-sm">Revenue per Day</h4>
+                        <h4 className="font-medium text-gray-700 text-xs md:text-sm">Revenue per Day</h4>
                         <div className="text-xs md:text-sm text-gray-500">Max: ${maxRevenue.toFixed(2)}</div>
                       </div>
                       <div className="flex items-end justify-between gap-2 h-48">
@@ -1026,15 +1025,14 @@ export default function RetailerDashboard() {
                                   initial={{ height: 0 }}
                                   animate={{ height: `${barHeight}%` }}
                                   transition={{ duration: 0.6, delay: idx * 0.1 + 0.3, ease: "easeOut" }}
-                                  whileHover={{ scaleY: 1.05 }}
-                                  className="w-full bg-gradient-to-t from-[#ff7a4a] to-[#ff6fb3] rounded-t-[15px] relative group shadow-lg origin-bottom min-h-[4px]"
+                                  className="w-full bg-gradient-to-t from-[#ff7a4a] to-[#ff6fb3] rounded-t-[15px] relative group origin-bottom min-h-[4px]"
                                 >
-                                  <div className="absolute -top-10 left-1/2 transform -translate-x-1/2 bg-gray-900 text-white text-xs px-3 py-1.5 rounded-[23px] opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap font-semibold shadow-lg z-10">
+                                  <div className="absolute -top-10 left-1/2 transform -translate-x-1/2 bg-gray-900 text-white text-xs px-3 py-1.5 rounded-[4px] opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap font-medium z-10">
                                     ${day.revenue.toFixed(2)}
                                   </div>
                                 </motion.div>
                               </div>
-                              <span className="text-sm font-bold text-gray-600">{day.day}</span>
+                              <span className="text-sm font-medium text-gray-600">{day.day}</span>
                             </div>
                           );
                         })}
@@ -1055,12 +1053,12 @@ export default function RetailerDashboard() {
                 transition={{ duration: 0.3 }}
               >
                  <div className="flex items-center justify-between mb-4 md:mb-6">
-                   <h3 className="text-sm md:text-base font-black text-gray-900">Payouts</h3>
+                   <h3 className="text-sm md:text-base font-medium text-gray-900">Payouts</h3>
                   <motion.button
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
+                    
+                    
                     onClick={handleExportPayouts}
-                    className="px-3 py-2 md:px-5 md:py-2.5 bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3] text-white rounded-[23px] text-xs md:text-sm font-bold hover:shadow-lg transition-all"
+                    className="px-3 py-2 md:px-5 md:py-2.5 bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3] text-white rounded-[4px] text-xs md:text-sm font-medium transition-all"
                   >
                     Export CSV
                   </motion.button>
@@ -1068,9 +1066,9 @@ export default function RetailerDashboard() {
 
                 {/* Summary Cards */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 mb-4 md:mb-8">
-                  <div className="bg-gradient-to-br from-gray-50 to-white border-2 border-gray-200 rounded-[23px] p-4 md:p-6 shadow-lg">
-                    <h4 className="font-bold text-gray-700 mb-2 text-sm md:text-base">Pending Earnings</h4>
-                    <p className="text-2xl md:text-3xl font-bold text-gray-900">
+                  <div className="bg-white to-white border border-gray-200 rounded-[4px] p-4 md:p-6">
+                    <h4 className="font-medium text-gray-700 mb-2 text-sm md:text-base">Pending Earnings</h4>
+                    <p className="text-2xl md:text-3xl font-medium text-gray-900">
                       ${payoutJobs
                         .filter(p => p.status === 'pending')
                         .reduce((sum, p) => sum + (p.retailer_cut || 0), 0)
@@ -1078,9 +1076,9 @@ export default function RetailerDashboard() {
                     </p>
                   </div>
 
-                  <div className="bg-gradient-to-br from-gray-50 to-white border-2 border-gray-200 rounded-[23px] p-4 md:p-6 shadow-lg">
-                    <h4 className="font-bold text-gray-700 mb-2 text-sm md:text-base">Total Paid Out</h4>
-                    <p className="text-2xl md:text-3xl font-bold text-gray-900">
+                  <div className="bg-white to-white border border-gray-200 rounded-[4px] p-4 md:p-6">
+                    <h4 className="font-medium text-gray-700 mb-2 text-sm md:text-base">Total Paid Out</h4>
+                    <p className="text-2xl md:text-3xl font-medium text-gray-900">
                       ${payoutJobs
                         .filter(p => p.status === 'paid')
                         .reduce((sum, p) => sum + (p.retailer_cut || 0), 0)
@@ -1088,9 +1086,9 @@ export default function RetailerDashboard() {
                     </p>
                   </div>
 
-                  <div className="bg-gradient-to-br from-gray-50 to-white border-2 border-gray-200 rounded-[23px] p-4 md:p-6 shadow-lg">
-                    <h4 className="font-bold text-gray-700 mb-2 text-sm md:text-base">Lifetime Earnings</h4>
-                    <p className="text-2xl md:text-3xl font-bold text-gray-900">
+                  <div className="bg-white to-white border border-gray-200 rounded-[4px] p-4 md:p-6">
+                    <h4 className="font-medium text-gray-700 mb-2 text-sm md:text-base">Lifetime Earnings</h4>
+                    <p className="text-2xl md:text-3xl font-medium text-gray-900">
                       ${payoutJobs
                         .reduce((sum, p) => sum + (p.retailer_cut || 0), 0)
                         .toFixed(2)}
@@ -1102,16 +1100,16 @@ export default function RetailerDashboard() {
                 {payoutJobs.length > 0 ? (
                   <>
                     {/* Desktop Table View */}
-                    <div className="hidden md:block bg-gradient-to-br from-gray-50 to-white border-2 border-gray-200 rounded-[23px] overflow-hidden shadow-lg">
+                    <div className="hidden md:block bg-white to-white border border-gray-200 rounded-[4px] overflow-hidden">
                       <table className="w-full">
                         <thead className="bg-gradient-to-r from-pink-50 to-purple-50">
                           <tr>
-                            <th className="text-left py-4 px-6 font-bold text-gray-700">Date</th>
-                            <th className="text-left py-4 px-6 font-bold text-gray-700">Vendor</th>
-                            <th className="text-right py-4 px-6 font-bold text-gray-700">Your Cut</th>
-                            <th className="text-right py-4 px-6 font-bold text-gray-700">Total Amount</th>
-                            <th className="text-center py-4 px-6 font-bold text-gray-700">Status</th>
-                            <th className="text-right py-4 px-6 font-bold text-gray-700">Paid Date</th>
+                            <th className="text-left py-4 px-6 font-medium text-gray-700">Date</th>
+                            <th className="text-left py-4 px-6 font-medium text-gray-700">Vendor</th>
+                            <th className="text-right py-4 px-6 font-medium text-gray-700">Your Cut</th>
+                            <th className="text-right py-4 px-6 font-medium text-gray-700">Total Amount</th>
+                            <th className="text-center py-4 px-6 font-medium text-gray-700">Status</th>
+                            <th className="text-right py-4 px-6 font-medium text-gray-700">Paid Date</th>
                           </tr>
                         </thead>
                         <tbody>
@@ -1122,13 +1120,13 @@ export default function RetailerDashboard() {
                               </td>
                               <td className="py-4 px-6 text-gray-700">Vendor #{payout.vendor_id?.substring(0, 8)}</td>
                               <td className="py-4 px-6 text-right">
-                                <span className="font-bold text-green-700">${(payout.retailer_cut || 0).toFixed(2)}</span>
+                                <span className="font-medium text-green-700">${(payout.retailer_cut || 0).toFixed(2)}</span>
                               </td>
                               <td className="py-4 px-6 text-right">
-                                <span className="font-bold text-gray-900">${(payout.total_amount || 0).toFixed(2)}</span>
+                                <span className="font-medium text-gray-900">${(payout.total_amount || 0).toFixed(2)}</span>
                               </td>
                               <td className="py-4 px-6 text-center">
-                                <span className={`inline-block px-4 py-1.5 rounded-full text-xs font-bold ${
+                                <span className={`inline-block px-4 py-1.5 rounded-full text-xs font-medium ${
                                   payout.status === 'paid'
                                     ? 'bg-green-100 text-green-700'
                                     : 'bg-yellow-100 text-yellow-700'
@@ -1153,16 +1151,16 @@ export default function RetailerDashboard() {
                           initial={{ opacity: 0, y: 10 }}
                           animate={{ opacity: 1, y: 0 }}
                           transition={{ duration: 0.3, delay: idx * 0.1 }}
-                          className="bg-gradient-to-br from-gray-50 to-white border-2 border-gray-200 rounded-[23px] p-4 shadow-lg"
+                          className="bg-white to-white border border-gray-200 rounded-[4px] p-4"
                         >
                           <div className="flex items-center justify-between mb-3">
                             <div>
                               <div className="text-xs text-gray-500 mb-1">Date</div>
-                              <span className="text-sm font-semibold text-gray-900">
+                              <span className="text-sm font-medium text-gray-900">
                                 {new Date(payout.created_at).toLocaleDateString()}
                               </span>
                             </div>
-                            <span className={`px-3 py-1 rounded-full text-xs font-bold ${
+                            <span className={`px-3 py-1 rounded-full text-xs font-medium ${
                               payout.status === 'paid'
                                 ? 'bg-green-100 text-green-700'
                                 : 'bg-yellow-100 text-yellow-700'
@@ -1179,11 +1177,11 @@ export default function RetailerDashboard() {
                           <div className="grid grid-cols-2 gap-3 pt-3 border-t border-gray-100">
                             <div>
                               <div className="text-xs text-gray-500 mb-1">Your Cut</div>
-                              <span className="font-bold text-green-700 text-sm">${(payout.retailer_cut || 0).toFixed(2)}</span>
+                              <span className="font-medium text-green-700 text-sm">${(payout.retailer_cut || 0).toFixed(2)}</span>
                             </div>
                             <div>
                               <div className="text-xs text-gray-500 mb-1">Total Amount</div>
-                              <span className="font-bold text-gray-900 text-sm">${(payout.total_amount || 0).toFixed(2)}</span>
+                              <span className="font-medium text-gray-900 text-sm">${(payout.total_amount || 0).toFixed(2)}</span>
                             </div>
                           </div>
 
@@ -1198,15 +1196,15 @@ export default function RetailerDashboard() {
                     </div>
                   </>
                 ) : (
-                  <div className="bg-white rounded-[23px] border border-transparent shadow-lg py-12 md:py-20 text-center">
+                  <div className="bg-white rounded-[4px] border border-transparent py-12 md:py-20 text-center">
                     <div className="flex flex-col items-center gap-4 max-w-sm mx-auto px-4">
-                      <div className="w-20 h-20 bg-gradient-to-br from-gray-100 to-gray-200 rounded-full flex items-center justify-center">
+                      <div className="w-20 h-20 bg-white rounded-full flex items-center justify-center">
                         <svg className="w-10 h-10 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                         </svg>
                       </div>
                       <div>
-                        <p className="text-gray-900 font-bold text-lg mb-1">No payouts yet</p>
+                        <p className="text-gray-900 font-medium text-lg mb-1">No payouts yet</p>
                         <p className="text-gray-500 text-sm">Your payout history will appear here</p>
                       </div>
                     </div>
@@ -1224,15 +1222,15 @@ export default function RetailerDashboard() {
                 transition={{ duration: 0.3 }}
                 className="space-y-4 md:space-y-6"
               >
-                <h3 className="text-sm md:text-base font-black text-gray-900">Store Settings</h3>
+                <h3 className="text-sm md:text-base font-medium text-gray-900">Store Settings</h3>
 
                 {/* Display Confirmation */}
                 <motion.div
-                  className="bg-gradient-to-br from-gray-50 to-white border-2 border-gray-200 rounded-[23px] p-4 md:p-8 shadow-lg"
+                  className="bg-white to-white border border-gray-200 rounded-[4px] p-4 md:p-8"
                 >
-                  <h4 className="font-bold text-gray-900 text-base md:text-lg mb-4 md:mb-6">Display Confirmation</h4>
+                  <h4 className="font-medium text-gray-900 text-base md:text-lg mb-4 md:mb-6">Display Confirmation</h4>
                   <div className="space-y-4">
-                    <div className="bg-gradient-to-br from-purple-50 to-pink-50 border-2 border-purple-200 rounded-[15px] p-4">
+                    <div className="bg-white border border-purple-200 rounded-[4px] p-4">
                       <div className="flex items-start gap-3">
                         <div className="flex-shrink-0 w-10 h-10 bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3] rounded-full flex items-center justify-center">
                           <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -1241,8 +1239,8 @@ export default function RetailerDashboard() {
                         </div>
                         <div className="flex-1">
                           <div className="flex items-center justify-between mb-2">
-                            <h5 className="font-bold text-gray-900">Displays Owned</h5>
-                            <span className="text-2xl font-black bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3] bg-clip-text text-transparent">
+                            <h5 className="font-medium text-gray-900">Displays Owned</h5>
+                            <span className="text-2xl font-medium bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3] bg-clip-text text-transparent">
                               {retailer?.displays_ordered || 1}
                             </span>
                           </div>
@@ -1253,11 +1251,11 @@ export default function RetailerDashboard() {
                           {/* Display Status */}
                           {retailer?.priority_display_active ? (
                             // Priority Display Active - Show purple shipping badge
-                            <div className="mt-3 p-3 rounded-[15px] border-2 bg-gradient-to-r from-purple-50 to-pink-50 border-purple-300">
+                            <div className="mt-3 p-3 rounded-[4px] border bg-gradient-to-r from-purple-50 to-pink-50 border-purple-300">
                               <div className="flex items-center gap-2">
                                 <span className="text-lg">⚡</span>
                                 <div>
-                                  <p className="font-bold text-purple-900">Priority Shipping</p>
+                                  <p className="font-medium text-purple-900">Priority Shipping</p>
                                   <p className="text-xs text-purple-700">
                                     Your displays ship with priority delivery
                                   </p>
@@ -1267,11 +1265,11 @@ export default function RetailerDashboard() {
                           ) : (
                             // Standard Display - Show upgrade option + email warning
                             <div className="mt-3 space-y-2">
-                              <div className="p-3 bg-blue-50 border-2 border-blue-200 rounded-[15px]">
+                              <div className="p-3 bg-blue-50 border border-blue-200 rounded-[4px]">
                                 <div className="flex items-center gap-2">
                                   <span className="text-lg">📦</span>
                                   <div>
-                                    <p className="font-bold text-blue-900">Standard Display</p>
+                                    <p className="font-medium text-blue-900">Standard Display</p>
                                     <p className="text-xs text-blue-700">
                                       <a
                                         href={`https://pawpayaco.com/products/display-setup-for-affiliate?email=${encodeURIComponent(retailer?.email || '')}&retailer_id=${retailer?.id || ''}`}
@@ -1287,19 +1285,19 @@ export default function RetailerDashboard() {
                               </div>
 
                               {/* Important Notice */}
-                              <div className="p-3 bg-amber-50 border-2 border-amber-400 rounded-[15px]">
+                              <div className="p-3 bg-amber-50 border border-amber-400 rounded-[4px]">
                                 <div className="flex items-start gap-2">
                                   <span className="text-xl mt-0.5">⚠️</span>
                                   <div className="flex-1">
-                                    <p className="font-bold text-amber-900 text-xs mb-1">Important: Use Your Account Email</p>
+                                    <p className="font-medium text-amber-900 text-xs mb-1">Important: Use Your Account Email</p>
                                     <p className="text-xs text-amber-800 mb-2">
-                                      When checking out on Shopify, you <span className="font-bold">must use this email</span> to activate the upgrade:
+                                      When checking out on Shopify, you <span className="font-medium">must use this email</span> to activate the upgrade:
                                     </p>
                                     <p className="text-xs text-amber-800 mb-2">
                                       Dashboard takes ~30 seconds to register upgrade - wait and refresh the tab.
                                     </p>
-                                    <div className="bg-white px-3 py-2 rounded-[15px] border border-amber-300">
-                                      <p className="text-xs font-mono font-bold text-amber-900">{retailer?.email}</p>
+                                    <div className="bg-white px-3 py-2 rounded-[4px] border border-amber-300">
+                                      <p className="text-xs font-mono font-medium text-amber-900">{retailer?.email}</p>
                                     </div>
                                     <p className="text-xs text-amber-700 mt-2">
                                       Using a different email will prevent automatic activation.
@@ -1313,9 +1311,9 @@ export default function RetailerDashboard() {
                           {/* Order Another Display Button */}
                           <motion.button
                             onClick={() => setIsOrderModalOpen(true)}
-                            whileHover={{ scale: 1.02 }}
-                            whileTap={{ scale: 0.98 }}
-                            className="mt-4 w-full px-6 py-3 bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3] text-white rounded-[16px] font-bold shadow-lg hover:shadow-xl transition-all flex items-center justify-center gap-2"
+                            
+                            
+                            className="mt-4 w-full px-6 py-3 bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3] text-white rounded-[4px] font-medium transition-all flex items-center justify-center gap-2"
                           >
                             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
@@ -1329,19 +1327,19 @@ export default function RetailerDashboard() {
                 </motion.div>
 
                 {/* Bank Connection Section */}
-                <div className="bg-gradient-to-br from-gray-50 to-white border-2 border-gray-200 rounded-[23px] p-4 md:p-8 shadow-lg">
-                  <h4 className="font-bold text-gray-900 text-base md:text-lg mb-4 md:mb-6">Bank Connection</h4>
+                <div className="bg-white to-white border border-gray-200 rounded-[4px] p-4 md:p-8">
+                  <h4 className="font-medium text-gray-900 text-base md:text-lg mb-4 md:mb-6">Bank Connection</h4>
                   
                   {retailerAccount?.is_connected ? (
-                    <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 p-4 md:p-6 bg-green-50 border-2 border-green-200 rounded-[23px]">
+                    <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 p-4 md:p-6 bg-green-50 border border-green-200 rounded-[4px]">
                       <div className="flex items-center gap-4">
-                        <div className="w-12 h-12 bg-gradient-to-br from-green-400 to-emerald-500 rounded-[23px] flex items-center justify-center">
+                        <div className="w-12 h-12 bg-white rounded-[4px] flex items-center justify-center">
                           <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                           </svg>
                         </div>
                         <div>
-                          <p className="font-bold text-gray-900">
+                          <p className="font-medium text-gray-900">
                             {retailerAccount?.institution_name || 'Bank Account Connected'}
                             {retailerAccount?.account_mask && (
                               <span className="ml-2 font-mono text-gray-500">••••{retailerAccount.account_mask}</span>
@@ -1355,11 +1353,9 @@ export default function RetailerDashboard() {
                         </div>
                       </div>
                       <motion.button
-                        whileHover={{ scale: removingBank ? 1 : 1.05 }}
-                        whileTap={{ scale: removingBank ? 1 : 0.95 }}
                         onClick={() => setShowRemoveConfirm(true)}
                         disabled={removingBank}
-                        className={`w-full md:w-auto px-6 py-2.5 border-2 border-red-300 text-red-700 rounded-[23px] text-sm font-bold hover:bg-red-50 transition-all flex items-center justify-center gap-2 ${
+                        className={`w-full md:w-auto px-6 py-2.5 border border-red-300 text-red-700 rounded-[4px] text-sm font-medium hover:bg-red-50 transition-all flex items-center justify-center gap-2 ${
                           removingBank ? 'opacity-75 cursor-not-allowed' : ''
                         }`}
                       >
@@ -1374,12 +1370,12 @@ export default function RetailerDashboard() {
                     </div>
                   ) : (
                     <div className="text-center pt-8 pb-4">
-                      <div className="w-20 h-20 bg-gradient-to-br from-gray-100 to-gray-200 rounded-full flex items-center justify-center mx-auto mb-4">
+                      <div className="w-20 h-20 bg-white rounded-full flex items-center justify-center mx-auto mb-4">
                         <svg className="w-10 h-10 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
                         </svg>
                       </div>
-                      <p className="text-gray-700 font-bold text-lg mb-2">No bank account connected</p>
+                      <p className="text-gray-700 font-medium text-lg mb-2">No bank account connected</p>
                       <p className="text-gray-500 mb-6">Connect your bank account to receive payouts</p>
                       {retailer?.id ? (
                         <>
@@ -1388,7 +1384,7 @@ export default function RetailerDashboard() {
                             <div className="text-center">
                               <button
                                 disabled
-                                className="px-8 py-3 bg-gray-300 text-gray-500 rounded-[16px] font-bold cursor-not-allowed flex items-center gap-2 mx-auto opacity-50"
+                                className="px-8 py-3 bg-gray-300 text-gray-500 rounded-[4px] font-medium cursor-not-allowed flex items-center gap-2 mx-auto opacity-50"
                               >
                                 Connect Bank Account
                               </button>
@@ -1402,7 +1398,7 @@ export default function RetailerDashboard() {
                               whileTap={{ scale: (plaidLoading || connecting) ? 1 : 0.95 }}
                               onClick={handlePlaidConnect}
                               disabled={plaidLoading || connecting || !plaidScriptLoaded}
-                              className={`px-8 py-3 bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3] text-white rounded-[16px] font-bold hover:shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_1px_-0.5px_rgba(0,0,0,0.06),0px_3px_3px_-1.5px_rgba(0,0,0,0.06),0px_6px_6px_-3px_rgba(0,0,0,0.06),0px_12px_12px_-6px_rgba(0,0,0,0.06),0px_24px_24px_-12px_rgba(0,0,0,0.06)] transition-all flex items-center gap-2 mx-auto ${
+                              className={`px-8 py-3 bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3] text-white rounded-[4px] font-medium hover: transition-all flex items-center gap-2 mx-auto ${
                                 (plaidLoading || connecting || !plaidScriptLoaded) ? 'opacity-75 cursor-not-allowed' : ''
                               }`}
                             >
@@ -1419,9 +1415,9 @@ export default function RetailerDashboard() {
                       ) : (
                         <Link href="/onboard/register">
                           <motion.button
-                            whileHover={{ scale: 1.05 }}
-                            whileTap={{ scale: 0.95 }}
-                            className="px-8 py-3 bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3] text-white rounded-[23px] font-bold hover:shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_1px_-0.5px_rgba(0,0,0,0.06),0px_3px_3px_-1.5px_rgba(0,0,0,0.06),0px_6px_6px_-3px_rgba(0,0,0,0.06),0px_12px_12px_-6px_rgba(0,0,0,0.06),0px_24px_24px_-12px_rgba(0,0,0,0.06)] transition-all mx-auto"
+                            
+                            
+                            className="px-8 py-3 bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3] text-white rounded-[4px] font-medium hover: transition-all mx-auto"
                           >
                             Complete registration first
                           </motion.button>
@@ -1429,10 +1425,10 @@ export default function RetailerDashboard() {
                       )}
                       
                       {/* Bank Availability Info */}
-                      <div className="mt-6 p-4 bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-[23px] text-center">
+                      <div className="mt-6 p-4 bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-[4px] text-center">
                         <div className="flex items-center justify-center gap-2 mb-2">
                           <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                          <span className="text-sm font-semibold text-blue-800">Chase, Schwab, and PNC available soon</span>
+                          <span className="text-sm font-medium text-blue-800">Chase, Schwab, and PNC available soon</span>
                         </div>
                         <p className="text-xs text-blue-600">All other major banks accepted • Instant setup • Secure connection</p>
                       </div>
@@ -1442,9 +1438,9 @@ export default function RetailerDashboard() {
 
                 {/* Your Displays Section */}
                 <motion.div
-                  className="bg-gradient-to-br from-gray-50 to-white border-2 border-gray-200 rounded-[23px] p-4 md:p-8 shadow-lg"
+                  className="bg-white to-white border border-gray-200 rounded-[4px] p-4 md:p-8"
                 >
-                  <h4 className="font-bold text-gray-900 text-base md:text-lg mb-4 md:mb-6">Your Displays (UIDs)</h4>
+                  <h4 className="font-medium text-gray-900 text-base md:text-lg mb-4 md:mb-6">Your Displays (UIDs)</h4>
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
                     {uids.map((uid, idx) => {
@@ -1462,29 +1458,29 @@ export default function RetailerDashboard() {
                           initial={{ opacity: 0, y: 20 }}
                           animate={{ opacity: 1, y: 0 }}
                           transition={{ delay: idx * 0.1 }}
-                          className="bg-gradient-to-br from-gray-50 to-white border-2 border-gray-200 rounded-[23px] p-6 shadow-lg"
+                          className="bg-white to-white border border-gray-200 rounded-[4px] p-6"
                         >
                           <div className="flex items-start justify-between mb-4">
                             <div className="inline-flex items-center gap-2 bg-gray-100 px-4 py-2.5 rounded-full">
                               <span className={`w-2 h-2 ${displayStatus.dotColor} rounded-full animate-pulse`}></span>
-                              <span className="text-sm font-bold text-gray-700">{displayStatus.badge}</span>
+                              <span className="text-sm font-medium text-gray-700">{displayStatus.badge}</span>
                             </div>
-                            <span className={`px-3 py-1.5 rounded-full text-xs font-bold border-2 ${statusColors[displayStatus.color]}`}>
+                            <span className={`px-3 py-1.5 rounded-full text-xs font-medium border ${statusColors[displayStatus.color]}`}>
                               {displayStatus.status.includes('Active') ? 'Active' : displayStatus.status.split(' ')[0]}
                             </span>
                           </div>
 
-                          <h5 className="text-lg font-bold text-gray-900 mb-2">Display UID</h5>
+                          <h5 className="text-lg font-medium text-gray-900 mb-2">Display UID</h5>
 
                           <div className="mb-3">
-                            <span className="text-xs text-gray-500 font-semibold">UID:</span>
-                            <p className="font-mono text-sm text-gray-900 bg-gray-100 px-3 py-1.5 rounded-[23px] mt-1">
+                            <span className="text-xs text-gray-500 font-medium">UID:</span>
+                            <p className="font-mono text-sm text-gray-900 bg-gray-100 px-3 py-1.5 rounded-[4px] mt-1">
                               {uid.uid}
                             </p>
                           </div>
 
                           <div className="space-y-2">
-                            <div className="text-sm font-semibold text-gray-700">
+                            <div className="text-sm font-medium text-gray-700">
                               {displayStatus.status}
                             </div>
                             
@@ -1512,15 +1508,15 @@ export default function RetailerDashboard() {
                   </div>
 
                   {uids.length === 0 && (
-                    <div className="bg-gradient-to-br from-gray-50 to-white border-2 border-gray-200 rounded-[23px] p-12 text-center shadow-lg">
+                    <div className="bg-white to-white border border-gray-200 rounded-[4px] p-12 text-center">
                       <div className="flex flex-col items-center gap-4 max-w-sm mx-auto px-4">
-                        <div className="w-20 h-20 bg-gradient-to-br from-gray-100 to-gray-200 rounded-full flex items-center justify-center">
+                        <div className="w-20 h-20 bg-white rounded-full flex items-center justify-center">
                           <svg className="w-10 h-10 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                           </svg>
                         </div>
                         <div>
-                          <p className="text-gray-900 font-bold text-lg mb-1">No displays assigned yet</p>
+                          <p className="text-gray-900 font-medium text-lg mb-1">No displays assigned yet</p>
                           <p className="text-gray-500 text-sm">Contact support to get your first display</p>
                         </div>
                       </div>
@@ -1530,25 +1526,25 @@ export default function RetailerDashboard() {
 
                 {/* Store Profile */}
                 <motion.div
-                  className="bg-gradient-to-br from-gray-50 to-white border-2 border-gray-200 rounded-[23px] p-4 md:p-8 shadow-lg"
+                  className="bg-white to-white border border-gray-200 rounded-[4px] p-4 md:p-8"
                 >
-                  <h4 className="font-bold text-gray-900 text-base md:text-lg mb-4 md:mb-6">Store Profile</h4>
+                  <h4 className="font-medium text-gray-900 text-base md:text-lg mb-4 md:mb-6">Store Profile</h4>
                   <div className="space-y-4">
                     <div>
-                      <label className="block text-sm font-bold text-gray-700 mb-2">Store Name</label>
-                      <div className="w-full px-4 py-3 border border-transparent rounded-[23px] bg-gray-50 text-gray-900">
+                      <label className="block text-sm font-medium text-gray-700 mb-2">Store Name</label>
+                      <div className="w-full px-4 py-3 border border-transparent rounded-[4px] bg-gray-50 text-gray-900">
                         {retailer?.name || 'Not set'}
                       </div>
                     </div>
                     <div>
-                      <label className="block text-sm font-bold text-gray-700 mb-2">Address</label>
-                      <div className="w-full px-4 py-3 border border-transparent rounded-[23px] bg-gray-50 text-gray-900">
+                      <label className="block text-sm font-medium text-gray-700 mb-2">Address</label>
+                      <div className="w-full px-4 py-3 border border-transparent rounded-[4px] bg-gray-50 text-gray-900">
                         {retailer?.address || retailer?.location || 'Not set'}
                       </div>
                     </div>
                     <div>
-                      <label className="block text-sm font-bold text-gray-700 mb-2">Owner Name</label>
-                      <div className="w-full px-4 py-3 border border-transparent rounded-[23px] bg-gray-50 text-gray-900">
+                      <label className="block text-sm font-medium text-gray-700 mb-2">Owner Name</label>
+                      <div className="w-full px-4 py-3 border border-transparent rounded-[4px] bg-gray-50 text-gray-900">
                         {retailer?.owner_name || 'Not set'}
                       </div>
                     </div>
@@ -1558,25 +1554,25 @@ export default function RetailerDashboard() {
 
                 {/* Store Contact Information */}
                 <motion.div
-                  className="bg-gradient-to-br from-gray-50 to-white border-2 border-gray-200 rounded-[23px] p-4 md:p-8 shadow-lg"
+                  className="bg-white to-white border border-gray-200 rounded-[4px] p-4 md:p-8"
                 >
-                  <h4 className="font-bold text-gray-900 text-base md:text-lg mb-4 md:mb-6">Store Contact Information</h4>
+                  <h4 className="font-medium text-gray-900 text-base md:text-lg mb-4 md:mb-6">Store Contact Information</h4>
                   <div className="space-y-4">
                     <div>
-                      <label className="block text-sm font-bold text-gray-700 mb-2">Manager Name</label>
-                      <div className="w-full px-4 py-3 border border-transparent rounded-[23px] bg-gray-50 text-gray-900">
+                      <label className="block text-sm font-medium text-gray-700 mb-2">Manager Name</label>
+                      <div className="w-full px-4 py-3 border border-transparent rounded-[4px] bg-gray-50 text-gray-900">
                         {retailer?.manager_name || 'Not set'}
                       </div>
                     </div>
                     <div>
-                      <label className="block text-sm font-bold text-gray-700 mb-2">Store Phone</label>
-                      <div className="w-full px-4 py-3 border border-transparent rounded-[23px] bg-gray-50 text-gray-900">
+                      <label className="block text-sm font-medium text-gray-700 mb-2">Store Phone</label>
+                      <div className="w-full px-4 py-3 border border-transparent rounded-[4px] bg-gray-50 text-gray-900">
                         {retailer?.phone || retailer?.store_phone || 'Not set'}
                       </div>
                     </div>
                     <div>
-                      <label className="block text-sm font-bold text-gray-700 mb-2">Store Email</label>
-                      <div className="w-full px-4 py-3 border border-transparent rounded-[23px] bg-gray-50 text-gray-900">
+                      <label className="block text-sm font-medium text-gray-700 mb-2">Store Email</label>
+                      <div className="w-full px-4 py-3 border border-transparent rounded-[4px] bg-gray-50 text-gray-900">
                         {retailer?.email || 'Not set'}
                       </div>
                     </div>
@@ -1586,16 +1582,16 @@ export default function RetailerDashboard() {
 
                 {/* Account Actions */}
                 <motion.div
-                  className="bg-gradient-to-br from-gray-50 to-white border-2 border-gray-200 rounded-[23px] p-4 md:p-8 shadow-lg"
+                  className="bg-white to-white border border-gray-200 rounded-[4px] p-4 md:p-8"
                 >
                   <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                     <div>
-                      <h4 className="font-bold text-gray-900 text-base md:text-lg mb-2">Account</h4>
+                      <h4 className="font-medium text-gray-900 text-base md:text-lg mb-2">Account</h4>
                       <p className="text-sm text-gray-600">Sign out to switch accounts or end your session securely.</p>
                     </div>
                     <button
                       onClick={() => signOut()}
-                      className="px-6 py-3 font-bold text-gray-700 hover:text-gray-900 transition-all rounded-[23px] border border-transparent/80 hover:border-gray-400 bg-white/80 backdrop-blur-sm hover:bg-white/90 shadow-sm hover:shadow-md"
+                      className="px-6 py-3 font-medium text-gray-700 hover:text-gray-900 transition-all rounded-[4px] border border-transparent/80 hover:border-gray-400 bg-white/80 backdrop-blur-sm hover:bg-white/90"
                     >
                       Sign Out
                     </button>
@@ -1603,18 +1599,16 @@ export default function RetailerDashboard() {
                 </motion.div>
 
                 {/* Save Button */}
-                <motion.button 
-                  whileHover={{ scale: settingsChanged ? 1.02 : 1 }}
-                  whileTap={{ scale: settingsChanged ? 0.98 : 1 }}
+                <motion.button
                   onClick={() => {
                     if (settingsChanged) {
                       showToast('Settings saved successfully!', 'success');
                       setSettingsChanged(false);
                     }
                   }}
-                  className={`w-full py-4 px-6 rounded-[23px] font-bold text-lg transition-all ${
+                  className={`w-full py-4 px-6 rounded-[4px] font-medium text-lg transition-all ${
                     settingsChanged
-                      ? 'bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3] text-white hover:shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_1px_-0.5px_rgba(0,0,0,0.06),0px_3px_3px_-1.5px_rgba(0,0,0,0.06),0px_6px_6px_-3px_rgba(0,0,0,0.06),0px_12px_12px_-6px_rgba(0,0,0,0.06),0px_24px_24px_-12px_rgba(0,0,0,0.06)] cursor-pointer'
+                      ? 'bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3] text-white hover: cursor-pointer'
                       : 'bg-gray-200 text-gray-500 cursor-not-allowed'
                   }`}
                   disabled={!settingsChanged}
@@ -1641,31 +1635,31 @@ export default function RetailerDashboard() {
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 20 }}
               onClick={(e) => e.stopPropagation()}
-              className="bg-white rounded-[23px] shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_1px_-0.5px_rgba(0,0,0,0.06),0px_3px_3px_-1.5px_rgba(0,0,0,0.06),0px_6px_6px_-3px_rgba(0,0,0,0.06),0px_12px_12px_-6px_rgba(0,0,0,0.06),0px_24px_24px_-12px_rgba(0,0,0,0.06)] max-w-md w-full p-6 md:p-8 border border-transparent"
+              className="bg-white rounded-[4px] max-w-md w-full p-6 md:p-8 border border-transparent"
             >
               <div className="flex items-center justify-center w-16 h-16 bg-red-100 rounded-full mx-auto mb-4">
                 <svg className="w-8 h-8 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
                 </svg>
               </div>
-              <h3 className="text-xs md:text-sm font-bold text-gray-900 text-center mb-2">Remove Bank Account?</h3>
+              <h3 className="text-xs md:text-sm font-medium text-gray-900 text-center mb-2">Remove Bank Account?</h3>
               <p className="text-sm text-gray-600 text-center mb-6">
                 This will disconnect your bank account. Your payout history will be preserved, but you won't be able to receive new payouts until you connect a new bank account.
               </p>
               <div className="flex gap-3">
                 <motion.button
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
+                  
+                  
                   onClick={() => setShowRemoveConfirm(false)}
-                  className="flex-1 px-6 py-3 border border-transparent text-gray-700 rounded-[23px] font-bold hover:bg-gray-50 transition-all"
+                  className="flex-1 px-6 py-3 border border-transparent text-gray-700 rounded-[4px] font-medium hover:bg-gray-50 transition-all"
                 >
                   Cancel
                 </motion.button>
                 <motion.button
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
+                  
+                  
                   onClick={handleRemoveBank}
-                  className="flex-1 px-6 py-3 bg-gradient-to-r from-red-500 to-red-600 text-white rounded-[23px] font-bold hover:shadow-lg transition-all"
+                  className="flex-1 px-6 py-3 bg-gradient-to-r from-red-500 to-red-600 text-white rounded-[4px] font-medium transition-all"
                 >
                   Remove Bank
                 </motion.button>
@@ -1685,7 +1679,7 @@ export default function RetailerDashboard() {
             className="fixed bottom-8 right-8 z-50"
           >
             <div className={[
-              "rounded-[23px] px-6 py-4 shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_1px_-0.5px_rgba(0,0,0,0.06),0px_3px_3px_-1.5px_rgba(0,0,0,0.06),0px_6px_6px_-3px_rgba(0,0,0,0.06),0px_12px_12px_-6px_rgba(0,0,0,0.06),0px_24px_24px_-12px_rgba(0,0,0,0.06)] border-2 flex items-center gap-3 min-w-[300px]",
+              "rounded-[4px] px-6 py-4 border flex items-center gap-3 min-w-[300px]",
               toast.type === 'success' 
                 ? "bg-gradient-to-r from-green-400 to-emerald-500 border-green-300 text-white" 
                 : "bg-gradient-to-r from-red-400 to-rose-500 border-red-300 text-white"
@@ -1699,7 +1693,7 @@ export default function RetailerDashboard() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
               )}
-              <p className="font-bold">{toast.message}</p>
+              <p className="font-medium">{toast.message}</p>
             </div>
           </motion.div>
         )}

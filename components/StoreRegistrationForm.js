@@ -148,9 +148,9 @@ export default function StoreRegistrationForm({ preselectedStore = null, onSucce
   };
 
   return (
-    <div className="bg-white rounded-[23px] shadow-xl border-2 border-gray-100 p-6 md:p-8 overflow-hidden max-w-full">
+    <div className="bg-white rounded-[4px] border border-gray-100 p-6 md:p-8 overflow-hidden max-w-full">
       <div className="mb-6">
-        <h2 className="text-2xl font-bold text-gray-900 mb-2">Register Store Owner</h2>
+        <h2 className="text-2xl font-medium text-gray-900 mb-2">Register Store Owner</h2>
         <p className="text-gray-600">
           Select a store and enter owner contact information. This will mark the retailer as converted.
         </p>
@@ -159,20 +159,20 @@ export default function StoreRegistrationForm({ preselectedStore = null, onSucce
       <form onSubmit={handleSubmit} className="space-y-6">
         {/* Store Selection */}
         <div>
-          <label className="block text-sm font-bold text-gray-700 mb-2">
+          <label className="block text-sm font-medium text-gray-700 mb-2">
             Store / Retailer *
           </label>
           
           {selectedStore ? (
-            <div className="flex items-center gap-3 p-4 rounded-[23px] border-2 border-green-200 bg-green-50">
+            <div className="flex items-center gap-3 p-4 rounded-[4px] border border-green-200 bg-green-50">
               <div className="flex-1 min-w-0">
-                <div className="font-bold text-gray-900 truncate">{selectedStore.name}</div>
+                <div className="font-medium text-gray-900 truncate">{selectedStore.name}</div>
                 <div className="text-sm text-gray-600 truncate">{selectedStore.address}</div>
               </div>
               <button
                 type="button"
                 onClick={() => setSelectedStore(null)}
-                className="px-3 py-1.5 rounded-[23px] bg-gray-200 text-gray-700 font-bold hover:bg-gray-300 flex-shrink-0"
+                className="px-3 py-1.5 rounded-[4px] bg-gray-200 text-gray-700 font-medium hover:bg-gray-300 flex-shrink-0"
               >
                 Change
               </button>
@@ -188,11 +188,11 @@ export default function StoreRegistrationForm({ preselectedStore = null, onSucce
                 }}
                 onFocus={() => setShowDropdown(true)}
                 placeholder="Search by name or address..."
-                className="w-full h-12 px-4 rounded-[23px] border-2 border-gray-200 outline-none focus:ring-2 focus:ring-[#ff6fb3] focus:border-transparent"
+                className="w-full h-12 px-4 rounded-[4px] border border-gray-200 outline-none focus:ring-2 focus:ring-[#ff6fb3] focus:border-transparent"
               />
 
               {showDropdown && (
-                <div className="absolute z-10 left-0 right-0 mt-2 bg-white border-2 border-gray-200 rounded-[23px] shadow-xl max-h-64 overflow-auto">
+                <div className="absolute z-10 left-0 right-0 mt-2 bg-white border border-gray-200 rounded-[4px] max-h-64 overflow-auto">
                   {loadingStores ? (
                     <div className="p-4 text-center text-gray-500">Loading stores...</div>
                   ) : filteredStores.length === 0 ? (
@@ -205,7 +205,7 @@ export default function StoreRegistrationForm({ preselectedStore = null, onSucce
                         onClick={() => selectStore(store)}
                         className="w-full text-left p-4 hover:bg-gray-50 border-b border-gray-100 last:border-b-0 block"
                       >
-                        <div className="font-bold text-gray-900 truncate overflow-hidden text-ellipsis whitespace-nowrap">{store.name}</div>
+                        <div className="font-medium text-gray-900 truncate overflow-hidden text-ellipsis whitespace-nowrap">{store.name}</div>
                         <div className="text-sm text-gray-600 truncate overflow-hidden text-ellipsis whitespace-nowrap">{store.address}</div>
                       </button>
                     ))
@@ -218,7 +218,7 @@ export default function StoreRegistrationForm({ preselectedStore = null, onSucce
 
         {/* Owner Name */}
         <div>
-          <label className="block text-sm font-bold text-gray-700 mb-2">
+          <label className="block text-sm font-medium text-gray-700 mb-2">
             Owner Name
           </label>
           <input
@@ -226,13 +226,13 @@ export default function StoreRegistrationForm({ preselectedStore = null, onSucce
             value={ownerName}
             onChange={(e) => setOwnerName(e.target.value)}
             placeholder="John Doe"
-            className="w-full h-12 px-4 rounded-[23px] border-2 border-gray-200 outline-none focus:ring-2 focus:ring-[#ff6fb3] focus:border-transparent"
+            className="w-full h-12 px-4 rounded-[4px] border border-gray-200 outline-none focus:ring-2 focus:ring-[#ff6fb3] focus:border-transparent"
           />
         </div>
 
         {/* Owner Phone */}
         <div>
-          <label className="block text-sm font-bold text-gray-700 mb-2">
+          <label className="block text-sm font-medium text-gray-700 mb-2">
             Owner Phone
           </label>
           <input
@@ -240,13 +240,13 @@ export default function StoreRegistrationForm({ preselectedStore = null, onSucce
             value={ownerPhone}
             onChange={(e) => setOwnerPhone(e.target.value)}
             placeholder="(555) 123-4567"
-            className="w-full h-12 px-4 rounded-[23px] border-2 border-gray-200 outline-none focus:ring-2 focus:ring-[#ff6fb3] focus:border-transparent"
+            className="w-full h-12 px-4 rounded-[4px] border border-gray-200 outline-none focus:ring-2 focus:ring-[#ff6fb3] focus:border-transparent"
           />
         </div>
 
         {/* Owner Email */}
         <div>
-          <label className="block text-sm font-bold text-gray-700 mb-2">
+          <label className="block text-sm font-medium text-gray-700 mb-2">
             Owner Email
           </label>
           <input
@@ -254,7 +254,7 @@ export default function StoreRegistrationForm({ preselectedStore = null, onSucce
             value={ownerEmail}
             onChange={(e) => setOwnerEmail(e.target.value)}
             placeholder="owner@example.com"
-            className="w-full h-12 px-4 rounded-[23px] border-2 border-gray-200 outline-none focus:ring-2 focus:ring-[#ff6fb3] focus:border-transparent"
+            className="w-full h-12 px-4 rounded-[4px] border border-gray-200 outline-none focus:ring-2 focus:ring-[#ff6fb3] focus:border-transparent"
           />
           <p className="text-xs text-gray-500 mt-1">
             Email is recommended for duplicate detection
@@ -263,7 +263,7 @@ export default function StoreRegistrationForm({ preselectedStore = null, onSucce
 
         {/* Campaign */}
         <div>
-          <label className="block text-sm font-bold text-gray-700 mb-2">
+          <label className="block text-sm font-medium text-gray-700 mb-2">
             Campaign
           </label>
           <input
@@ -271,7 +271,7 @@ export default function StoreRegistrationForm({ preselectedStore = null, onSucce
             value={campaign}
             onChange={(e) => setCampaign(e.target.value)}
             placeholder="cold-email-2025-10"
-            className="w-full h-12 px-4 rounded-[23px] border-2 border-gray-200 outline-none focus:ring-2 focus:ring-[#ff6fb3] focus:border-transparent"
+            className="w-full h-12 px-4 rounded-[4px] border border-gray-200 outline-none focus:ring-2 focus:ring-[#ff6fb3] focus:border-transparent"
           />
           <p className="text-xs text-gray-500 mt-1">
             Campaign identifier for tracking (e.g., cold-email-2025-10)
@@ -280,7 +280,7 @@ export default function StoreRegistrationForm({ preselectedStore = null, onSucce
 
         {/* Notes */}
         <div>
-          <label className="block text-sm font-bold text-gray-700 mb-2">
+          <label className="block text-sm font-medium text-gray-700 mb-2">
             Notes (Optional)
           </label>
           <textarea
@@ -288,14 +288,14 @@ export default function StoreRegistrationForm({ preselectedStore = null, onSucce
             onChange={(e) => setNotes(e.target.value)}
             placeholder="Additional notes about this registration..."
             rows={3}
-            className="w-full px-4 py-3 rounded-[23px] border-2 border-gray-200 outline-none focus:ring-2 focus:ring-[#ff6fb3] focus:border-transparent resize-none"
+            className="w-full px-4 py-3 rounded-[4px] border border-gray-200 outline-none focus:ring-2 focus:ring-[#ff6fb3] focus:border-transparent resize-none"
           />
         </div>
 
         {/* Error Message */}
         {error && (
-          <div className="p-4 rounded-[23px] bg-red-50 border-2 border-red-200">
-            <p className="text-red-800 font-bold">Error:</p>
+          <div className="p-4 rounded-[4px] bg-red-50 border border-red-200">
+            <p className="text-red-800 font-medium">Error:</p>
             <p className="text-red-600 text-sm mt-1">{error}</p>
           </div>
         )}
@@ -307,11 +307,11 @@ export default function StoreRegistrationForm({ preselectedStore = null, onSucce
             disabled={submitting || !selectedStore}
             whileHover={!submitting && selectedStore ? { scale: 1.05 } : {}}
             whileTap={!submitting && selectedStore ? { scale: 0.95 } : {}}
-            className="flex-1 h-12 rounded-[23px] bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3] text-white font-bold hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+            className="flex-1 h-12 rounded-[4px] bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3] text-white font-medium disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {submitting ? (
               <span className="flex items-center justify-center gap-2">
-                <div className="animate-spin rounded-full h-5 w-5 border-2 border-white border-t-transparent"></div>
+                <div className="animate-spin rounded-full h-5 w-5 border border-white border-t-transparent"></div>
                 Registering...
               </span>
             ) : (
@@ -323,9 +323,9 @@ export default function StoreRegistrationForm({ preselectedStore = null, onSucce
             <motion.button
               type="button"
               onClick={onCancel}
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              className="px-6 h-12 rounded-[23px] border-2 border-gray-300 text-gray-700 font-bold hover:bg-gray-50"
+              
+              
+              className="px-6 h-12 rounded-[4px] border border-gray-300 text-gray-700 font-medium hover:bg-gray-50"
             >
               Cancel
             </motion.button>
@@ -346,12 +346,12 @@ export default function StoreRegistrationForm({ preselectedStore = null, onSucce
           className="fixed bottom-8 right-8 z-50"
         >
           <div className={[
-            "rounded-[23px] px-6 py-4 shadow-2xl border-2 flex items-center gap-3 min-w-[300px]",
+            "rounded-[4px] px-6 py-4 border flex items-center gap-3 min-w-[300px]",
             toast.type === 'success' 
               ? "bg-gradient-to-r from-green-400 to-emerald-500 border-green-300 text-white" 
               : "bg-gradient-to-r from-red-400 to-rose-500 border-red-300 text-white"
           ].join(" ")}>
-            <p className="font-bold">{toast.message}</p>
+            <p className="font-medium">{toast.message}</p>
           </div>
         </motion.div>
       )}

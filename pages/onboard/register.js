@@ -543,7 +543,7 @@ export default function RegisterRetailer() {
                 initial={{ scale: 0.85, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
                 transition={{ duration: 0.5, delay: 0.2 }}
-                className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-bold"
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium"
                 style={{ background: 'linear-gradient(to right, #ff7a4a, #ff6fb3)', color: 'white' }}
               >
                 <span>🎉</span>
@@ -553,7 +553,7 @@ export default function RegisterRetailer() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: 0.3 }}
-                className="text-4xl md:text-5xl lg:text-6xl font-black text-gray-900 leading-tight"
+                className="text-4xl md:text-5xl lg:text-6xl font-medium text-gray-900 leading-tight"
               >
                 Claim Your{' '}
                 <span style={{ background: 'linear-gradient(to right, #ff7a4a, #ff6fb3)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
@@ -576,10 +576,10 @@ export default function RegisterRetailer() {
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.85 }}
-              className="bg-white rounded-[20px] p-5 md:p-6 shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_1px_-0.5px_rgba(0,0,0,0.06),0px_3px_3px_-1.5px_rgba(0,0,0,0.06),0px_6px_6px_-3px_rgba(0,0,0,0.06),0px_12px_12px_-6px_rgba(0,0,0,0.06),0px_24px_24px_-12px_rgba(0,0,0,0.06)] border border-transparent"
+              className="bg-white rounded-[4px] p-5 md:p-6 border border-transparent"
             >
               <div className="mb-4 md:mb-6">
-                <h3 className="text-2xl font-black text-gray-900 mb-2">What Happens Next</h3>
+                <h3 className="text-2xl font-medium text-gray-900 mb-2">What Happens Next</h3>
                 <p className="text-gray-600 text-sm"></p>
               </div>
               <div className="space-y-4 md:space-y-5">
@@ -589,14 +589,14 @@ export default function RegisterRetailer() {
                     className="relative"
                   >
                     <div className="flex items-start gap-4">
-                      <div className="flex-shrink-0 w-12 h-12 rounded-[20px] flex items-center justify-center text-white text-xl font-black shadow-lg"
+                      <div className="flex-shrink-0 w-12 h-12 rounded-[4px] flex items-center justify-center text-white text-xl font-medium"
                            style={{ background: 'linear-gradient(to right, #ff7a4a, #ff6fb3)' }}>
                         {idx + 1}
                       </div>
                       <div className="flex-1">
                         <div className="flex items-center gap-3 mb-2">
-                          <h4 className="font-black text-lg text-gray-900">{step.title}</h4>
-                          <span className="px-3 py-1 rounded-full text-xs font-bold whitespace-nowrap"
+                          <h4 className="font-medium text-lg text-gray-900">{step.title}</h4>
+                          <span className="px-3 py-1 rounded-full text-xs font-medium whitespace-nowrap"
                                 style={{ background: 'linear-gradient(to right, #ff7a4a, #ff6fb3)', color: 'white' }}>
                             {step.timing}
                           </span>
@@ -614,16 +614,16 @@ export default function RegisterRetailer() {
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.9 }}
-              className="bg-white rounded-[20px] p-5 md:p-6 shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_1px_-0.5px_rgba(0,0,0,0.06),0px_3px_3px_-1.5px_rgba(0,0,0,0.06),0px_6px_6px_-3px_rgba(0,0,0,0.06),0px_12px_12px_-6px_rgba(0,0,0,0.06),0px_24px_24px_-12px_rgba(0,0,0,0.06)] border border-transparent"
+              className="bg-white rounded-[4px] p-5 md:p-6 border border-transparent"
             >
-              <h3 className="text-xl font-black text-gray-900 mb-3">Managers</h3>
+              <h3 className="text-xl font-medium text-gray-900 mb-3">Managers</h3>
               <p className="text-gray-600 mb-4 leading-relaxed">
                 Think your store would benefit from this? Help the owner discover this opportunity by sharing with them.
               </p>
               <button
                 onClick={handleManagerShare}
                 type="button"
-                className="w-full px-6 py-3 rounded-[16px] font-bold shadow-lg transition-all bg-white border-2"
+                className="w-full px-6 py-3 rounded-[4px] font-medium transition-all bg-white border"
                 style={{ borderColor: '#ff6fb3', color: '#ff6fb3' }}
               >
                 {isCopied ? 'Copied! ✓' : 'Share With Owner'}
@@ -635,15 +635,15 @@ export default function RegisterRetailer() {
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 1.0 }}
-              className="bg-white rounded-[20px] p-5 md:p-6 shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_1px_-0.5px_rgba(0,0,0,0.06),0px_3px_3px_-1.5px_rgba(0,0,0,0.06),0px_6px_6px_-3px_rgba(0,0,0,0.06),0px_12px_12px_-6px_rgba(0,0,0,0.06),0px_24px_24px_-12px_rgba(0,0,0,0.06)] border border-transparent text-center"
+              className="bg-white rounded-[4px] p-5 md:p-6 border border-transparent text-center"
             >
-              <h3 className="text-xl font-black text-gray-900 mb-3">Questions?</h3>
+              <h3 className="text-xl font-medium text-gray-900 mb-3">Questions?</h3>
               <p className="text-gray-600 mb-4 leading-relaxed">
                 Call us now! We're here to help you out.
               </p>
               <a
                 href="tel:7159791259"
-                className="inline-block px-6 py-3 rounded-[15px] font-bold text-white shadow-lg hover:shadow-xl transition-all"
+                className="inline-block px-6 py-3 rounded-[4px] font-medium text-white transition-all"
                 style={{ background: 'linear-gradient(to right, #ff7a4a, #ff6fb3)' }}
               >
                 (715) 979-1259
@@ -657,7 +657,7 @@ export default function RegisterRetailer() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.4 }}
-            className="bg-white rounded-[20px] shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_1px_-0.5px_rgba(0,0,0,0.06),0px_3px_3px_-1.5px_rgba(0,0,0,0.06),0px_6px_6px_-3px_rgba(0,0,0,0.06),0px_12px_12px_-6px_rgba(0,0,0,0.06),0px_24px_24px_-12px_rgba(0,0,0,0.06)] p-8 lg:p-10 border border-transparent order-1 lg:order-2 w-full"
+            className="bg-white rounded-[4px] p-8 lg:p-10 border border-transparent order-1 lg:order-2 w-full"
             style={{
               overflow: 'visible',
               height: 'auto',
@@ -671,14 +671,14 @@ export default function RegisterRetailer() {
                 initial={{ scale: 0.85, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
                 transition={{ duration: 0.5, delay: 0.2 }}
-                className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-bold mb-6"
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium mb-6"
                 style={{ background: 'linear-gradient(to right, #ff7a4a, #ff6fb3)', color: 'white' }}
               >
                 <span>🎉</span>
                 <span>Final Step</span>
               </motion.div>
 
-              <h1 className="text-3xl sm:text-4xl font-black text-gray-900 leading-tight mb-4">
+              <h1 className="text-3xl sm:text-4xl font-medium text-gray-900 leading-tight mb-4">
                 {' '}
                 <span style={{ background: 'linear-gradient(to right, #ff7a4a, #ff6fb3)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
                   Claim Your Display
@@ -692,7 +692,7 @@ export default function RegisterRetailer() {
 
             {/* Form Header - Desktop */}
             <div className="mb-8 hidden lg:block">
-              <h2 className="text-3xl font-bold text-gray-900 mb-1">Registration Form</h2>
+              <h2 className="text-3xl font-medium text-gray-900 mb-1">Registration Form</h2>
               <p className="text-gray-600 text-base">Let's make you more money.</p>
             </div>
 
@@ -710,7 +710,7 @@ export default function RegisterRetailer() {
             >
               {/* Store Name with Autocomplete */}
               <motion.div variants={fadeInUp} className="relative w-full" ref={suggestionsRef}>
-                <label htmlFor="storeName" className="block text-sm font-bold text-gray-700 mb-2">
+                <label htmlFor="storeName" className="block text-sm font-medium text-gray-700 mb-2">
                   Store Name <span className="text-red-500">*</span>
                   {selectedRetailer && <span className="text-green-600 text-xs ml-2">Selected ✓</span>}
                 </label>
@@ -734,14 +734,14 @@ export default function RegisterRetailer() {
                       }
                     }}
                     required
-                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-[15px] hover:border-gray-300 focus:border-[#ff6fb3] focus:ring-2 focus:ring-[#ff6fb3]/20 transition-all text-gray-900 placeholder-gray-400"
+                    className="w-full px-4 py-3 border border-gray-200 rounded-[4px] hover:border-gray-300 focus:border-[#ff6fb3] focus:ring-2 focus:ring-[#ff6fb3]/20 transition-all text-gray-900 placeholder-gray-400"
                     placeholder="Start typing your store name..."
                   />
 
                   {/* Dropdown - Absolutely Positioned, No Animations, Max 3 Items */}
                   {showSuggestions && storeQuery.length >= 1 && (
                     <div
-                      className="absolute z-50 w-full mt-2 bg-white border-2 border-gray-300 rounded-[20px] shadow-2xl"
+                      className="absolute z-50 w-full mt-2 bg-white border border-gray-300 rounded-[4px]"
                       style={{
                         position: 'absolute',
                         top: '100%',
@@ -769,10 +769,10 @@ export default function RegisterRetailer() {
                                     {isTaken ? (
                                       <div className="flex items-start gap-3 w-full overflow-hidden">
                                         <div className="w-8 h-8 rounded-full bg-gray-300 flex items-center justify-center flex-shrink-0 mt-0.5">
-                                          <span className="text-gray-600 text-xs font-bold">{store.name.charAt(0)}</span>
+                                          <span className="text-gray-600 text-xs font-medium">{store.name.charAt(0)}</span>
                                         </div>
                                         <div className="flex-1 min-w-0">
-                                          <div className="font-bold text-gray-500 break-words">
+                                          <div className="font-medium text-gray-500 break-words">
                                             {store.name}
                                           </div>
                                           <div className="text-xs text-gray-400 break-words">
@@ -801,10 +801,10 @@ export default function RegisterRetailer() {
                                       >
                                         <div className="flex items-start gap-3 w-full overflow-hidden">
                                           <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#ff7a4a] to-[#ff6fb3] flex items-center justify-center flex-shrink-0 mt-0.5">
-                                            <span className="text-white text-xs font-bold">{store.name.charAt(0)}</span>
+                                            <span className="text-white text-xs font-medium">{store.name.charAt(0)}</span>
                                           </div>
                                           <div className="flex-1 min-w-0">
-                                            <div className="font-bold text-gray-900 group-hover:text-[#ff6fb3] transition-colors break-words">{store.name}</div>
+                                            <div className="font-medium text-gray-900 group-hover:text-[#ff6fb3] transition-colors break-words">{store.name}</div>
                                             <div className="text-xs text-gray-600 break-words">{store.address || store.location || 'Address not listed'}</div>
                                             {store.email && <div className="text-xs text-gray-500 break-words">{store.email}</div>}
                                           </div>
@@ -823,26 +823,26 @@ export default function RegisterRetailer() {
                               type="button"
                               onClick={handleAddNewStore}
                               disabled={loading}
-                              className="w-full text-left px-4 py-4 bg-gradient-to-r from-green-50 via-emerald-50 to-green-50 hover:from-green-100 hover:via-emerald-100 hover:to-green-100 transition-all disabled:opacity-50 disabled:cursor-not-allowed group rounded-[20px]"
+                              className="w-full text-left px-4 py-4 bg-gradient-to-r from-green-50 via-emerald-50 to-green-50 hover:from-green-100 hover:via-emerald-100 hover:to-green-100 transition-all disabled:opacity-50 disabled:cursor-not-allowed group rounded-[4px]"
                             >
                               <div className="flex items-center gap-3">
-                                <div className="w-8 h-8 rounded-full bg-gradient-to-br from-green-500 to-emerald-600 flex items-center justify-center flex-shrink-0">
+                                <div className="w-8 h-8 rounded-full bg-white flex items-center justify-center flex-shrink-0">
                                   <span className="text-white text-lg">✨</span>
                                 </div>
                                 <div className="flex-1">
-                                  <div className="font-bold text-green-700 group-hover:text-green-800 transition-colors">
+                                  <div className="font-medium text-green-700 group-hover:text-green-800 transition-colors">
                                     Add "{storeQuery}" as new store
                                   </div>
                                   <div className="text-xs text-green-600">Store not listed? Click to add it!</div>
                                 </div>
                                 {loading && (
-                                  <div className="animate-spin rounded-full h-5 w-5 border-2 border-green-600 border-t-transparent"></div>
+                                  <div className="animate-spin rounded-full h-5 w-5 border border-green-600 border-t-transparent"></div>
                                 )}
                               </div>
                             </button>
                           ) : (
-                            <div className="px-4 py-8 text-gray-500 text-sm flex items-center justify-center gap-2 bg-white rounded-[20px]">
-                              <div className="animate-spin rounded-full h-4 w-4 border-2 border-gray-400 border-t-transparent"></div>
+                            <div className="px-4 py-8 text-gray-500 text-sm flex items-center justify-center gap-2 bg-white rounded-[4px]">
+                              <div className="animate-spin rounded-full h-4 w-4 border border-gray-400 border-t-transparent"></div>
                               Searching retailers...
                             </div>
                           )}
@@ -856,14 +856,14 @@ export default function RegisterRetailer() {
                   <motion.div
                     initial={{ opacity: 0, scale: 0.95, y: -10 }}
                     animate={{ opacity: 1, scale: 1, y: 0 }}
-                    className="mt-3 bg-gradient-to-r from-green-50 to-emerald-50 border-2 border-green-200 rounded-[20px] px-4 py-3 flex items-center gap-3"
+                    className="mt-3 bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200 rounded-[4px] px-4 py-3 flex items-center gap-3"
                   >
-                    <div className="w-6 h-6 rounded-full bg-gradient-to-br from-green-500 to-emerald-600 flex items-center justify-center flex-shrink-0">
+                    <div className="w-6 h-6 rounded-full bg-white flex items-center justify-center flex-shrink-0">
                       <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
                         <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                       </svg>
                     </div>
-                    <span className="text-sm font-bold text-green-700 flex-1">{success}</span>
+                    <span className="text-sm font-medium text-green-700 flex-1">{success}</span>
                   </motion.div>
                 )}
 
@@ -872,7 +872,7 @@ export default function RegisterRetailer() {
               {/* Owner & Manager Names - Side by Side */}
               <motion.div variants={fadeInUp} className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <label htmlFor="ownerName" className="block text-sm font-bold text-gray-700 mb-2">
+                  <label htmlFor="ownerName" className="block text-sm font-medium text-gray-700 mb-2">
                     Owner's Name(s) <span className="text-red-500">*</span>
                   </label>
                   <input
@@ -882,13 +882,13 @@ export default function RegisterRetailer() {
                     value={formData.ownerName}
                     onChange={handleChange}
                     required
-                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-[15px] focus:ring-2 focus:ring-[#ff6fb3] focus:border-transparent transition-all text-gray-900 placeholder-gray-400 hover:border-gray-300"
+                    className="w-full px-4 py-3 border border-gray-200 rounded-[4px] focus:ring-2 focus:ring-[#ff6fb3] focus:border-transparent transition-all text-gray-900 placeholder-gray-400 hover:border-gray-300"
                     placeholder="John Doe"
                   />
                 </div>
 
                 <div>
-                  <label htmlFor="managerName" className="block text-sm font-bold text-gray-700 mb-2">
+                  <label htmlFor="managerName" className="block text-sm font-medium text-gray-700 mb-2">
                     Manager's Name
                   </label>
                   <input
@@ -897,7 +897,7 @@ export default function RegisterRetailer() {
                     name="managerName"
                     value={formData.managerName}
                     onChange={handleChange}
-                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-[15px] focus:ring-2 focus:ring-[#ff6fb3] focus:border-transparent transition-all text-gray-900 placeholder-gray-400 hover:border-gray-300"
+                    className="w-full px-4 py-3 border border-gray-200 rounded-[4px] focus:ring-2 focus:ring-[#ff6fb3] focus:border-transparent transition-all text-gray-900 placeholder-gray-400 hover:border-gray-300"
                     placeholder="Jane Smith (optional)"
                   />
                 </div>
@@ -906,7 +906,7 @@ export default function RegisterRetailer() {
               {/* Email & Phone - Side by Side */}
               <motion.div variants={fadeInUp} className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <label htmlFor="email" className="block text-sm font-bold text-gray-700 mb-2">
+                  <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
                     Email Address <span className="text-red-500">*</span>
                   </label>
                   <input
@@ -916,13 +916,13 @@ export default function RegisterRetailer() {
                     value={formData.email}
                     onChange={handleChange}
                     required
-                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-[15px] focus:ring-2 focus:ring-[#ff6fb3] focus:border-transparent transition-all text-gray-900 placeholder-gray-400 hover:border-gray-300"
+                    className="w-full px-4 py-3 border border-gray-200 rounded-[4px] focus:ring-2 focus:ring-[#ff6fb3] focus:border-transparent transition-all text-gray-900 placeholder-gray-400 hover:border-gray-300"
                     placeholder="owner@store.com"
                   />
                 </div>
 
                 <div>
-                  <label htmlFor="phone" className="block text-sm font-bold text-gray-700 mb-2">
+                  <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-2">
                     Phone Number
                   </label>
                   <input
@@ -931,7 +931,7 @@ export default function RegisterRetailer() {
                     name="phone"
                     value={formData.phone}
                     onChange={handleChange}
-                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-[15px] focus:ring-2 focus:ring-[#ff6fb3] focus:border-transparent transition-all text-gray-900 placeholder-gray-400 hover:border-gray-300"
+                    className="w-full px-4 py-3 border border-gray-200 rounded-[4px] focus:ring-2 focus:ring-[#ff6fb3] focus:border-transparent transition-all text-gray-900 placeholder-gray-400 hover:border-gray-300"
                     placeholder="(555) 123-4567 (optional)"
                   />
                 </div>
@@ -939,7 +939,7 @@ export default function RegisterRetailer() {
 
               {/* Password */}
               <motion.div variants={fadeInUp}>
-                <label htmlFor="password" className="block text-sm font-bold text-gray-700 mb-2">
+                <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
                   Create Password <span className="text-red-500">*</span>
                 </label>
                 <input
@@ -950,7 +950,7 @@ export default function RegisterRetailer() {
                   onChange={handleChange}
                   required
                   minLength={6}
-                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-[15px] focus:ring-2 focus:ring-[#ff6fb3] focus:border-transparent transition-all text-gray-900 placeholder-gray-400 hover:border-gray-300"
+                  className="w-full px-4 py-3 border border-gray-200 rounded-[4px] focus:ring-2 focus:ring-[#ff6fb3] focus:border-transparent transition-all text-gray-900 placeholder-gray-400 hover:border-gray-300"
                   placeholder="At least 6 characters"
                 />
                 <p className="text-xs text-gray-500 mt-1">Create a password to access your account dashboard</p>
@@ -1010,15 +1010,15 @@ export default function RegisterRetailer() {
                     >
                         <div className="flex items-center justify-between mb-4">
                           <div className="flex items-center gap-2">
-                            <span className="w-6 h-6 bg-gradient-to-br from-[#ff7a4a] to-[#ff6fb3] rounded-full flex items-center justify-center text-white text-sm font-bold">
+                            <span className="w-6 h-6 bg-gradient-to-br from-[#ff7a4a] to-[#ff6fb3] rounded-full flex items-center justify-center text-white text-sm font-medium">
                               {index + 2}
                             </span>
-                            <span className="font-bold text-gray-900">Store #{index + 2}</span>
+                            <span className="font-medium text-gray-900">Store #{index + 2}</span>
                           </div>
                           <button
                             type="button"
                             onClick={() => removeAdditionalStore(store.id)}
-                            className="text-red-500 hover:text-red-700 p-1 rounded-[20px] hover:bg-red-50 transition-colors"
+                            className="text-red-500 hover:text-red-700 p-1 rounded-[4px] hover:bg-red-50 transition-colors"
                             title="Remove this store"
                           >
                             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -1030,7 +1030,7 @@ export default function RegisterRetailer() {
                         <div className="space-y-4 w-full">
                           {/* Store Name Search - Same as Main Field */}
                           <div className="relative w-full">
-                            <label className="block text-sm font-bold text-gray-700 mb-2">
+                            <label className="block text-sm font-medium text-gray-700 mb-2">
                               Store Name <span className="text-red-500">*</span>
                               {store.selectedRetailer && <span className="text-green-600 text-xs ml-2">Selected ✓</span>}
                             </label>
@@ -1048,14 +1048,14 @@ export default function RegisterRetailer() {
                                   }
                                 }}
                                 required
-                                className="w-full px-4 py-3 border-2 border-gray-200 rounded-[15px] hover:border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all text-gray-900 placeholder-gray-400"
+                                className="w-full px-4 py-3 border border-gray-200 rounded-[4px] hover:border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all text-gray-900 placeholder-gray-400"
                                 placeholder="Start typing store name..."
                               />
 
                               {/* Dropdown - Absolutely Positioned, No Animations, Max 3 Items */}
                               {store.showSuggestions && store.storeQuery.length >= 1 && (
                                 <div
-                                  className="absolute z-50 w-full mt-2 bg-white border-2 border-gray-300 rounded-[20px] shadow-2xl"
+                                  className="absolute z-50 w-full mt-2 bg-white border border-gray-300 rounded-[4px]"
                                   style={{
                                     position: 'absolute',
                                     top: '100%',
@@ -1083,10 +1083,10 @@ export default function RegisterRetailer() {
                                               {isTaken ? (
                                                 <div className="flex items-start gap-3 w-full overflow-hidden">
                                                   <div className="w-8 h-8 rounded-full bg-gray-300 flex items-center justify-center flex-shrink-0 mt-0.5">
-                                                    <span className="text-gray-600 text-xs font-bold">{retailer.name.charAt(0)}</span>
+                                                    <span className="text-gray-600 text-xs font-medium">{retailer.name.charAt(0)}</span>
                                                   </div>
                                                   <div className="flex-1 min-w-0">
-                                                    <div className="font-bold text-gray-500 break-words">
+                                                    <div className="font-medium text-gray-500 break-words">
                                                       {retailer.name}
                                                     </div>
                                                     <div className="text-xs text-gray-400 break-words">
@@ -1115,10 +1115,10 @@ export default function RegisterRetailer() {
                                                 >
                                                   <div className="flex items-start gap-3 w-full overflow-hidden">
                                                     <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#ff7a4a] to-[#ff6fb3] flex items-center justify-center flex-shrink-0 mt-0.5">
-                                                      <span className="text-white text-xs font-bold">{retailer.name.charAt(0)}</span>
+                                                      <span className="text-white text-xs font-medium">{retailer.name.charAt(0)}</span>
                                                     </div>
                                                     <div className="flex-1 min-w-0">
-                                                      <div className="font-bold text-gray-900 group-hover:text-[#ff6fb3] transition-colors break-words">{retailer.name}</div>
+                                                      <div className="font-medium text-gray-900 group-hover:text-[#ff6fb3] transition-colors break-words">{retailer.name}</div>
                                                       <div className="text-xs text-gray-600 break-words">{retailer.address || retailer.location || 'Address not listed'}</div>
                                                       {retailer.email && <div className="text-xs text-gray-500 break-words">{retailer.email}</div>}
                                                     </div>
@@ -1137,26 +1137,26 @@ export default function RegisterRetailer() {
                                         type="button"
                                         onClick={() => handleAddNewAdditionalStore(store.id)}
                                         disabled={store.isCreatingNew}
-                                        className="w-full text-left px-4 py-4 bg-gradient-to-r from-green-50 via-emerald-50 to-green-50 hover:from-green-100 hover:via-emerald-100 hover:to-green-100 transition-all disabled:opacity-50 disabled:cursor-not-allowed group rounded-[20px]"
+                                        className="w-full text-left px-4 py-4 bg-gradient-to-r from-green-50 via-emerald-50 to-green-50 hover:from-green-100 hover:via-emerald-100 hover:to-green-100 transition-all disabled:opacity-50 disabled:cursor-not-allowed group rounded-[4px]"
                                       >
                                         <div className="flex items-center gap-3">
-                                          <div className="w-8 h-8 rounded-full bg-gradient-to-br from-green-500 to-emerald-600 flex items-center justify-center flex-shrink-0">
+                                          <div className="w-8 h-8 rounded-full bg-white flex items-center justify-center flex-shrink-0">
                                             <span className="text-white text-lg">✨</span>
                                           </div>
                                           <div className="flex-1">
-                                            <div className="font-bold text-green-700 group-hover:text-green-800 transition-colors">
+                                            <div className="font-medium text-green-700 group-hover:text-green-800 transition-colors">
                                               Add "{store.storeQuery}" as new store
                                             </div>
                                             <div className="text-xs text-green-600">Store not listed? Click to add it!</div>
                                           </div>
                                           {store.isCreatingNew && (
-                                            <div className="animate-spin rounded-full h-5 w-5 border-2 border-green-600 border-t-transparent"></div>
+                                            <div className="animate-spin rounded-full h-5 w-5 border border-green-600 border-t-transparent"></div>
                                           )}
                                         </div>
                                       </button>
                                     ) : (
-                                      <div className="px-4 py-8 text-gray-500 text-sm flex items-center justify-center gap-2 bg-white rounded-[20px]">
-                                        <div className="animate-spin rounded-full h-4 w-4 border-2 border-gray-400 border-t-transparent"></div>
+                                      <div className="px-4 py-8 text-gray-500 text-sm flex items-center justify-center gap-2 bg-white rounded-[4px]">
+                                        <div className="animate-spin rounded-full h-4 w-4 border border-gray-400 border-t-transparent"></div>
                                         Searching retailers...
                                       </div>
                                     )}
@@ -1168,14 +1168,14 @@ export default function RegisterRetailer() {
 
                           {/* Manager Name */}
                           <div>
-                            <label className="block text-sm font-bold text-gray-700 mb-2">
+                            <label className="block text-sm font-medium text-gray-700 mb-2">
                               Manager's Name
                 </label>
                             <input
                               type="text"
                               value={store.managerName}
                               onChange={(e) => handleAdditionalStoreFieldChange(store.id, 'managerName', e.target.value)}
-                              className="w-full px-4 py-3 border-2 border-gray-200 rounded-[15px] focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all text-gray-900 placeholder-gray-400 hover:border-gray-300"
+                              className="w-full px-4 py-3 border border-gray-200 rounded-[4px] focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all text-gray-900 placeholder-gray-400 hover:border-gray-300"
                               placeholder="Store manager's name (optional)"
                             />
                           </div>
@@ -1207,9 +1207,8 @@ export default function RegisterRetailer() {
                 <motion.button
                   type="button"
                   onClick={addAdditionalStore}
-                  whileHover={{ y: -2 }}
-                  whileTap={{ scale: 0.98 }}
-                  className="mt-6 px-6 py-3 rounded-[15px] text-sm font-bold transition-all flex items-center gap-2 text-gray-700 hover:text-gray-900 border-2 border-gray-200 hover:border-gray-300"
+                  
+                  className="mt-6 px-6 py-3 rounded-[4px] text-sm font-medium transition-all flex items-center gap-2 text-gray-700 hover:text-gray-900 border border-gray-200 hover:border-gray-300"
                 >
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
@@ -1227,7 +1226,7 @@ export default function RegisterRetailer() {
                 <motion.div
                   initial={{ opacity: 0, scale: 0.9 }}
                   animate={{ opacity: 1, scale: 1 }}
-                  className="bg-red-50 border-2 border-red-200 text-red-700 px-4 py-3 rounded-[20px] flex items-start gap-2 shadow-lg"
+                  className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-[4px] flex items-start gap-2"
                 >
                   <svg className="w-5 h-5 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                     <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
@@ -1241,9 +1240,7 @@ export default function RegisterRetailer() {
                 variants={fadeInUp}
                 type="submit"
                 disabled={loading}
-                whileHover={{ y: loading ? 0 : -2 }}
-                whileTap={{ scale: loading ? 1 : 0.98 }}
-                className="w-full bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3] text-white py-4 px-6 rounded-[16px] font-bold text-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3] text-white py-4 px-6 rounded-[4px] font-medium text-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {loading ? (
                   <span className="flex items-center justify-center gap-2">
@@ -1281,7 +1278,7 @@ export default function RegisterRetailer() {
           transition={{ duration: 0.5, delay: 0.8 }}
           className="text-center mt-8 md:mt-12"
         >
-          <Link href="/onboard" className="text-gray-600 hover:text-gray-900 font-bold inline-flex items-center gap-2 hover:gap-3 transition-all">
+          <Link href="/onboard" className="text-gray-600 hover:text-gray-900 font-medium inline-flex items-center gap-2 hover:gap-3 transition-all">
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
             </svg>

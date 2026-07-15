@@ -15,12 +15,12 @@ export default function ClaimedSuccess() {
   }, [router]);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-50 to-blue-50 flex items-center justify-center px-4">
+    <div className="min-h-screen bg-white flex items-center justify-center px-4">
       <motion.div
         initial={{ scale: 0.8, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
         transition={{ duration: 0.5, type: "spring" }}
-        className="max-w-md w-full bg-white rounded-[23px] shadow-2xl p-8 text-center"
+        className="max-w-md w-full bg-white rounded-[4px] p-8 text-center"
       >
         <motion.div
           initial={{ scale: 0 }}
@@ -33,7 +33,7 @@ export default function ClaimedSuccess() {
           </svg>
         </motion.div>
 
-        <h1 className="text-3xl font-bold text-gray-900 mb-3">
+        <h1 className="text-3xl font-medium text-gray-900 mb-3">
           Display Claimed!
         </h1>
 
@@ -45,19 +45,19 @@ export default function ClaimedSuccess() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.5 }}
-          className="bg-gradient-to-r from-purple-50 to-pink-50 border-2 border-purple-200 rounded-[23px] p-4 mb-6"
+          className="bg-gradient-to-r from-purple-50 to-pink-50 border border-purple-200 rounded-[4px] p-4 mb-6"
         >
           <p className="text-sm text-gray-700">
             Redirecting to your dashboard...
           </p>
           <div className="mt-3 flex justify-center">
-            <div className="animate-spin rounded-full h-6 w-6 border-2 border-purple-500 border-t-transparent"></div>
+            <div className="animate-spin rounded-full h-6 w-6 border border-purple-500 border-t-transparent"></div>
           </div>
         </motion.div>
 
         <button
           onClick={() => router.push('/onboard/dashboard')}
-          className="bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3] text-white px-6 py-3 rounded-[15px] font-bold hover:shadow-lg transition-all"
+          className="bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3] text-white px-6 py-3 rounded-[4px] font-medium transition-all"
         >
           Go to Dashboard Now →
         </button>

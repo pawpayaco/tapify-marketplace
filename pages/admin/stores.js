@@ -126,10 +126,10 @@ export default function AdminStores({ user, isAdmin, error }) {
   // Loading state
   if (!mounted) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 flex items-center justify-center">
+      <div className="min-h-screen bg-white flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-16 w-16 border-4 border-purple-500 border-t-transparent mx-auto mb-4"></div>
-          <p className="text-gray-600 text-lg font-semibold">Loading...</p>
+          <p className="text-gray-600 text-lg font-medium">Loading...</p>
         </div>
       </div>
     );
@@ -138,27 +138,27 @@ export default function AdminStores({ user, isAdmin, error }) {
   // Access denied
   if (!isAdmin) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-red-50 to-orange-50 p-8">
+      <div className="min-h-screen bg-white p-8">
         <div className="max-w-2xl mx-auto">
-          <div className="bg-red-100 border-l-4 border-red-500 rounded-[23px] shadow-lg p-6">
-            <h1 className="text-2xl font-bold text-red-900 mb-2">🚫 Access Denied</h1>
+          <div className="bg-red-100 border-l-4 border-red-500 rounded-[4px] p-6">
+            <h1 className="text-2xl font-medium text-red-900 mb-2">🚫 Access Denied</h1>
             <p className="text-red-800 mb-4">You are not authorized to access the stores admin panel.</p>
             {error && (
               <div className="bg-red-50 border border-red-200 rounded p-4 mb-4">
-                <p className="font-bold text-red-900">Error:</p>
+                <p className="font-medium text-red-900">Error:</p>
                 <p className="text-sm text-red-800 font-mono">{error}</p>
               </div>
             )}
             <div className="flex gap-3 mt-4">
               <button
                 onClick={() => router.push('/admin')}
-                className="px-6 py-3 bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3] text-white rounded-[15px] font-bold hover:shadow-lg"
+                className="px-6 py-3 bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3] text-white rounded-[4px] font-medium"
               >
                 ← Back to Admin
               </button>
               <button
                 onClick={() => router.push('/')}
-                className="px-6 py-3 bg-gray-600 text-white rounded-[15px] font-bold hover:bg-gray-700"
+                className="px-6 py-3 bg-gray-600 text-white rounded-[4px] font-medium hover:bg-gray-700"
               >
                 Home
               </button>
@@ -177,7 +177,7 @@ export default function AdminStores({ user, isAdmin, error }) {
       <motion.div 
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3] text-white shadow-lg relative overflow-hidden"
+        className="bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3] text-white relative overflow-hidden"
       >
         <div className="absolute inset-0 opacity-10 pointer-events-none">
           <div className="absolute top-0 right-0 w-96 h-96 bg-white rounded-full blur-3xl"></div>
@@ -190,20 +190,20 @@ export default function AdminStores({ user, isAdmin, error }) {
               <div className="flex items-center gap-3 mb-2">
                 <button
                   onClick={() => router.push('/admin')}
-                  className="p-2 hover:bg-white/20 rounded-[15px] transition-all"
+                  className="p-2 hover:bg-white/20 rounded-[4px] transition-all"
                 >
                   <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
                   </svg>
                 </button>
                 <span className="text-3xl">🏪</span>
-                <h1 className="text-3xl md:text-4xl font-bold">Stores / Outreach</h1>
+                <h1 className="text-3xl md:text-4xl font-medium">Stores / Outreach</h1>
               </div>
               <p className="text-white/90 ml-14">
                 Manage retailers, track outreach campaigns, and register store owners
               </p>
               <p className="text-white/70 text-sm ml-14 mt-1">
-                Logged in as: <span className="font-semibold">{user?.email}</span>
+                Logged in as: <span className="font-medium">{user?.email}</span>
               </p>
             </div>
           </div>
@@ -217,19 +217,19 @@ export default function AdminStores({ user, isAdmin, error }) {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
-          className="bg-white rounded-[23px] shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_1px_-0.5px_rgba(0,0,0,0.06),0px_3px_3px_-1.5px_rgba(0,0,0,0.06),0px_6px_6px_-3px_rgba(0,0,0,0.06),0px_12px_12px_-6px_rgba(0,0,0,0.06),0px_24px_24px_-12px_rgba(0,0,0,0.06)] border border-transparent p-4 mb-6"
+          className="bg-white rounded-[4px] border border-transparent p-4 mb-6"
         >
           <div className="flex items-center justify-between gap-3">
-            <div className="text-gray-700 font-bold text-lg">
+            <div className="text-gray-700 font-medium text-lg">
               📊 Store Management
             </div>
 
             {/* Add Prospect Button */}
             <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
+              
+              
               onClick={() => setShowAddProspectModal(true)}
-              className="rounded-[15px] px-6 py-3 text-sm font-bold bg-gradient-to-r from-green-500 to-emerald-600 text-white shadow-lg hover:shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_1px_-0.5px_rgba(0,0,0,0.06),0px_3px_3px_-1.5px_rgba(0,0,0,0.06),0px_6px_6px_-3px_rgba(0,0,0,0.06),0px_12px_12px_-6px_rgba(0,0,0,0.06),0px_24px_24px_-12px_rgba(0,0,0,0.06)] transition-all flex items-center gap-2"
+              className="rounded-[4px] px-6 py-3 text-sm font-medium bg-gradient-to-r from-green-500 to-emerald-600 text-white hover: transition-all flex items-center gap-2"
             >
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />

@@ -155,20 +155,20 @@ export default function DashboardSettings({ retailerId }) {
     <div className="max-w-4xl mx-auto p-6 space-y-6">
       <Toast />
       <div>
-        <h1 className="text-3xl font-bold mb-2">Settings</h1>
+        <h1 className="text-3xl font-medium mb-2">Settings</h1>
         <p className="text-gray-600">Manage your account and upgrade options</p>
       </div>
 
       {/* Priority Display Upgrade Card */}
-      <div className="bg-white rounded-[23px] shadow-md overflow-hidden">
+      <div className="bg-white rounded-[4px] overflow-hidden">
         <div className="bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3] p-4">
-          <h2 className="text-2xl font-bold text-white">Priority Display</h2>
+          <h2 className="text-2xl font-medium text-white">Priority Display</h2>
         </div>
 
         <div className="p-6">
           <div className="flex items-start justify-between gap-6">
             <div className="flex-1">
-              <h3 className="text-xl font-semibold mb-2">
+              <h3 className="text-xl font-medium mb-2">
                 Featured Marketplace Placement
               </h3>
               <p className="text-gray-700 mb-4">
@@ -180,7 +180,7 @@ export default function DashboardSettings({ retailerId }) {
               {/* Status Display */}
               <div className="mb-4">
                 {priorityDisplayActive ? (
-                  <div className="flex items-center gap-3 p-4 bg-green-50 border border-green-200 rounded-[23px]">
+                  <div className="flex items-center gap-3 p-4 bg-green-50 border border-green-200 rounded-[4px]">
                     <svg
                       className="w-8 h-8 text-green-600"
                       fill="none"
@@ -193,7 +193,7 @@ export default function DashboardSettings({ retailerId }) {
                       <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                     </svg>
                     <div>
-                      <div className="text-green-800 font-semibold text-lg">
+                      <div className="text-green-800 font-medium text-lg">
                         Priority Display Active
                       </div>
                       <div className="text-green-700 text-sm">
@@ -202,7 +202,7 @@ export default function DashboardSettings({ retailerId }) {
                     </div>
                   </div>
                 ) : (
-                  <div className="flex items-center gap-3 p-4 bg-gray-50 border border-gray-200 rounded-[23px]">
+                  <div className="flex items-center gap-3 p-4 bg-gray-50 border border-gray-200 rounded-[4px]">
                     <svg
                       className="w-8 h-8 text-gray-400"
                       fill="none"
@@ -215,7 +215,7 @@ export default function DashboardSettings({ retailerId }) {
                       <path d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                     </svg>
                     <div>
-                      <div className="text-gray-700 font-semibold">
+                      <div className="text-gray-700 font-medium">
                         Not purchased yet
                       </div>
                       <div className="text-gray-600 text-sm italic">
@@ -228,26 +228,26 @@ export default function DashboardSettings({ retailerId }) {
 
               {!priorityDisplayActive && (
                 <div className="space-y-2 mb-4">
-                  <h4 className="font-semibold">Benefits Include:</h4>
+                  <h4 className="font-medium">Benefits Include:</h4>
                   <ul className="space-y-1 text-sm text-gray-700">
                     <li className="flex items-center gap-2">
-                      <span className="text-green-500 font-bold">✓</span>
+                      <span className="text-green-500 font-medium">✓</span>
                       Featured placement at top of marketplace
                     </li>
                     <li className="flex items-center gap-2">
-                      <span className="text-green-500 font-bold">✓</span>
+                      <span className="text-green-500 font-medium">✓</span>
                       3x more visibility to potential customers
                     </li>
                     <li className="flex items-center gap-2">
-                      <span className="text-green-500 font-bold">✓</span>
+                      <span className="text-green-500 font-medium">✓</span>
                       Higher click-through and conversion rates
                     </li>
                     <li className="flex items-center gap-2">
-                      <span className="text-green-500 font-bold">✓</span>
+                      <span className="text-green-500 font-medium">✓</span>
                       Priority badge on your store listing
                     </li>
                     <li className="flex items-center gap-2">
-                      <span className="text-green-500 font-bold">✓</span>
+                      <span className="text-green-500 font-medium">✓</span>
                       One-time payment, ongoing benefits
                     </li>
                   </ul>
@@ -260,7 +260,7 @@ export default function DashboardSettings({ retailerId }) {
                 <button
                   onClick={handleUpgradeClick}
                   disabled={!uid}
-                  className="px-8 py-4 bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3] text-white font-bold text-lg rounded-[23px] hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed shadow-lg"
+                  className="px-8 py-4 bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3] text-white font-medium text-lg rounded-[4px] hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   Upgrade to $50<br />Priority Display
                 </button>
@@ -271,15 +271,15 @@ export default function DashboardSettings({ retailerId }) {
       </div>
 
       {/* Display Shipping Preferences */}
-      <div className="bg-white rounded-[23px] shadow-md overflow-hidden">
+      <div className="bg-white rounded-[4px] overflow-hidden">
         <div className="bg-gradient-to-r from-blue-500 to-indigo-600 p-4">
-          <h2 className="text-2xl font-bold text-white">Display Shipping Preferences</h2>
+          <h2 className="text-2xl font-medium text-white">Display Shipping Preferences</h2>
         </div>
 
         <div className="p-6">
           {priorityDisplayActive ? (
             <div>
-              <div className="flex items-center gap-3 mb-4 p-4 bg-green-50 border border-green-200 rounded-[23px]">
+              <div className="flex items-center gap-3 mb-4 p-4 bg-green-50 border border-green-200 rounded-[4px]">
                 <svg
                   className="w-6 h-6 text-green-600 flex-shrink-0"
                   fill="none"
@@ -292,21 +292,21 @@ export default function DashboardSettings({ retailerId }) {
                   <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                 </svg>
                 <div>
-                  <p className="font-bold text-green-900">Priority Display Active</p>
+                  <p className="font-medium text-green-900">Priority Display Active</p>
                   <p className="text-sm text-green-700">Your display shipping is managed through Shopify</p>
                 </div>
               </div>
 
               <div className="space-y-4">
                 <div>
-                  <h3 className="font-semibold text-gray-900 mb-2">Shipping Status</h3>
+                  <h3 className="font-medium text-gray-900 mb-2">Shipping Status</h3>
                   <p className="text-gray-700 text-sm">
                     Your Priority Display upgrade includes expedited shipping. Track your order through your Shopify confirmation email.
                   </p>
                 </div>
 
                 <div>
-                  <h3 className="font-semibold text-gray-900 mb-2">Need Help?</h3>
+                  <h3 className="font-medium text-gray-900 mb-2">Need Help?</h3>
                   <p className="text-gray-700 text-sm">
                     Contact support if you have questions about your display shipment or tracking information.
                   </p>
@@ -328,7 +328,7 @@ export default function DashboardSettings({ retailerId }) {
                   <path d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
                 </svg>
               </div>
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">
+              <h3 className="text-lg font-medium text-gray-900 mb-2">
                 Priority Display Shipping Not Active
               </h3>
               <p className="text-gray-600 mb-4">
@@ -337,7 +337,7 @@ export default function DashboardSettings({ retailerId }) {
               <button
                 onClick={handleUpgradeClick}
                 disabled={!uid}
-                className="px-6 py-3 bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3] text-white font-bold rounded-[23px] hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed shadow-lg"
+                className="px-6 py-3 bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3] text-white font-medium rounded-[4px] hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 Upgrade to Priority Display
               </button>
@@ -347,64 +347,64 @@ export default function DashboardSettings({ retailerId }) {
       </div>
 
       {/* Account Settings Form */}
-      <div className="bg-white rounded-[23px] shadow-md p-6">
-        <h2 className="text-2xl font-bold mb-4">Account Information</h2>
+      <div className="bg-white rounded-[4px] p-6">
+        <h2 className="text-2xl font-medium mb-4">Account Information</h2>
 
         <form onSubmit={handleSaveSettings} className="space-y-4">
           <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-1">
+            <label className="block text-sm font-medium text-gray-700 mb-1">
               Store Name
             </label>
             <input
               type="text"
               value={retailer?.name || ''}
               onChange={(e) => setRetailer({ ...retailer, name: e.target.value })}
-              className="w-full px-4 py-2 border border-gray-300 rounded-[23px] focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full px-4 py-2 border border-gray-300 rounded-[4px] focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               required
             />
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-gray-700 mb-1">
                 Phone Number
               </label>
               <input
                 type="tel"
                 value={retailer?.phone || ''}
                 onChange={(e) => setRetailer({ ...retailer, phone: e.target.value })}
-                className="w-full px-4 py-2 border border-gray-300 rounded-[23px] focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full px-4 py-2 border border-gray-300 rounded-[4px] focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-gray-700 mb-1">
                 Email
               </label>
               <input
                 type="email"
                 value={retailer?.email || ''}
                 onChange={(e) => setRetailer({ ...retailer, email: e.target.value })}
-                className="w-full px-4 py-2 border border-gray-300 rounded-[23px] focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full px-4 py-2 border border-gray-300 rounded-[4px] focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               />
             </div>
           </div>
 
           <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-1">
+            <label className="block text-sm font-medium text-gray-700 mb-1">
               Store Address
             </label>
             <textarea
               value={retailer?.address || ''}
               onChange={(e) => setRetailer({ ...retailer, address: e.target.value })}
               rows={3}
-              className="w-full px-4 py-2 border border-gray-300 rounded-[23px] focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full px-4 py-2 border border-gray-300 rounded-[4px] focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             />
           </div>
 
           {uid && (
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-gray-700 mb-1">
                 Your Tracking ID
               </label>
               <div className="flex items-center gap-2">
@@ -412,7 +412,7 @@ export default function DashboardSettings({ retailerId }) {
                   type="text"
                   value={uid}
                   readOnly
-                  className="flex-1 px-4 py-2 bg-gray-100 border border-gray-300 rounded-[23px] text-gray-700"
+                  className="flex-1 px-4 py-2 bg-gray-100 border border-gray-300 rounded-[4px] text-gray-700"
                 />
                 <button
                   type="button"
@@ -420,7 +420,7 @@ export default function DashboardSettings({ retailerId }) {
                     navigator.clipboard.writeText(uid);
                     alert('Tracking ID copied to clipboard!');
                   }}
-                  className="px-4 py-2 bg-blue-600 text-white rounded-[23px] hover:bg-blue-700 transition-colors"
+                  className="px-4 py-2 bg-blue-600 text-white rounded-[4px] hover:bg-blue-700 transition-colors"
                 >
                   Copy
                 </button>
@@ -432,14 +432,14 @@ export default function DashboardSettings({ retailerId }) {
             <button
               type="button"
               onClick={() => loadRetailerSettings()}
-              className="px-6 py-2 border border-gray-300 text-gray-700 rounded-[23px] hover:bg-gray-50 transition-colors"
+              className="px-6 py-2 border border-gray-300 text-gray-700 rounded-[4px] hover:bg-gray-50 transition-colors"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={saving}
-              className="px-6 py-2 bg-blue-600 text-white rounded-[23px] hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              className="px-6 py-2 bg-blue-600 text-white rounded-[4px] hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {saving ? 'Saving...' : 'Save Changes'}
             </button>

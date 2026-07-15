@@ -1,14 +1,15 @@
+@import "./tokens.css";
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 html {
-  background: #f3f4f6;
+  background: #ffffff;
   min-height: 100vh;
 }
 
 body {
-  background: #f3f4f6;
+  background: #ffffff;
   min-height: 100vh;
 }
 
@@ -49,12 +50,12 @@ body {
 @layer base {
   html {
     font-family: 'Geist', system-ui, -apple-system, sans-serif !important;
-    letter-spacing: 0.01em !important;
+    letter-spacing: normal;
   }
 
   body {
     font-family: 'Geist', system-ui, -apple-system, sans-serif !important;
-    letter-spacing: 0.01em !important;
+    letter-spacing: normal;
   }
 
   /* All headings use Geist with expanded letter spacing */
@@ -90,20 +91,20 @@ body {
   h4, h5, h6 {
     font-size: clamp(24px, 2.5vw, 28px) !important;
     line-height: 1.4 !important;
-    letter-spacing: 0.01em !important;
+    letter-spacing: normal;
     font-weight: 600 !important;
   }
 
   /* All body text uses Geist with expanded letter spacing */
   p, span, a, li, td, th, label, div {
     font-family: 'Geist', system-ui, -apple-system, sans-serif !important;
-    letter-spacing: 0.01em !important;
+    letter-spacing: normal;
   }
 
   /* Form elements use Geist */
   input, textarea, select, button {
     font-family: 'Geist', system-ui, -apple-system, sans-serif !important;
-    letter-spacing: 0.01em !important;
+    letter-spacing: normal;
   }
 
   /* Colored text utilities for multi-color headings */
@@ -225,20 +226,20 @@ body {
 /* Default body text */
 html {
   font-family: 'Geist', system-ui, -apple-system, sans-serif !important;
-  letter-spacing: 0.01em !important;
-  background-color: #f3f4f6 !important;
+  letter-spacing: normal;
+  background-color: #ffffff;
 }
 
 body {
   font-family: 'Geist', system-ui, -apple-system, sans-serif !important;
-  letter-spacing: 0.01em !important;
-  background-color: #f3f4f6 !important;
+  letter-spacing: normal;
+  background-color: #ffffff;
 }
 
 p, span:not(h1 *, h2 *, h3 *, h4 *, h5 *, h6 *), a:not(h1 *, h2 *, h3 *, h4 *, h5 *, h6 *),
 li, td, th, label, div:not(h1 *, h2 *, h3 *, h4 *, h5 *, h6 *) {
   font-family: 'Geist', system-ui, -apple-system, sans-serif !important;
-  letter-spacing: 0.01em !important;
+  letter-spacing: normal;
 }
 
 /* Force Geist on ALL headings site-wide */
@@ -275,6 +276,6 @@ h3 {
 h4, h5, h6 {
   font-size: clamp(24px, 2.5vw, 28px) !important;
   line-height: 1.4 !important;
-  letter-spacing: 0.01em !important;
+  letter-spacing: normal;
   font-weight: 600 !important;
 }

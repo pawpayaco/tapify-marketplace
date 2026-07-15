@@ -84,7 +84,7 @@ export default function ShopifyConnect() {
             initial={{ opacity: 0, scale: 0.9, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             transition={{ duration: 0.3 }}
-            className="bg-white rounded-[23px] p-8 max-w-md w-full relative shadow-2xl"
+            className="bg-white rounded-[4px] p-8 max-w-md w-full relative"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Close Button */}
@@ -99,12 +99,12 @@ export default function ShopifyConnect() {
 
             {/* Success Content */}
             <div className="text-center">
-              <h1 className="text-3xl sm:text-4xl font-black mb-2 leading-tight">
+              <h1 className="text-3xl sm:text-4xl font-medium mb-2 leading-tight">
                 <span style={{ background: 'linear-gradient(to right, #ff7a4a, #ff6fb3)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
                   Success!
                 </span>
               </h1>
-              <h2 className="text-2xl font-black text-gray-900 mb-4">
+              <h2 className="text-2xl font-medium text-gray-900 mb-4">
               
               </h2>
               <p className="text-xl md:text-2xl text-gray-700 font-medium mb-6 leading-relaxed">
@@ -113,10 +113,9 @@ export default function ShopifyConnect() {
 
               {/* OK Button */}
               <motion.button
-                whileHover={{ y: -2 }}
-                whileTap={{ scale: 0.98 }}
+                
                 onClick={() => setShowSuccessModal(false)}
-                className="px-8 py-3 rounded-[23px] font-black text-lg text-white shadow-lg"
+                className="px-8 py-3 rounded-[4px] font-medium text-lg text-white"
                 style={{ background: 'linear-gradient(to right, #ff7a4a, #ff6fb3)' }}
               >
                 Got it! →
@@ -135,10 +134,10 @@ export default function ShopifyConnect() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.2 }}
-            className="bg-gradient-to-br from-gray-50 to-white border-2 border-gray-200 rounded-[23px] p-8 md:p-10"
+            className="bg-white to-white border border-gray-200 rounded-[4px] p-8 md:p-10"
           >
             <div className="mb-6">
-              <h2 className="text-3xl md:text-4xl font-black text-gray-900 mb-3">
+              <h2 className="text-3xl md:text-4xl font-medium text-gray-900 mb-3">
                 <span style={{ background: 'linear-gradient(to right, #ff7a4a, #ff6fb3)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
                   Priority<br />Upgrade
                 </span><br />
@@ -149,33 +148,32 @@ export default function ShopifyConnect() {
               </p>
             </div>
 
-            <div className="rounded-[23px] p-6 mb-8" style={{ background: 'linear-gradient(135deg, #FFF5F0 0%, #FFF0F8 100%)' }}>
-              <h3 className="font-black text-lg text-gray-900 mb-4">Priority Benefits:</h3>
+            <div className="rounded-[4px] p-6 mb-8" style={{ background: 'linear-gradient(135deg, #FFF5F0 0%, #FFF0F8 100%)' }}>
+              <h3 className="font-medium text-lg text-gray-900 mb-4">Priority Benefits:</h3>
               <ul className="space-y-3 text-gray-700 text-sm md:text-base">
                 <li className="flex items-start gap-3">
-                  <span className="font-bold text-xl flex-shrink-0" style={{ color: '#ff6fb3' }}>✓</span>
+                  <span className="font-medium text-xl flex-shrink-0" style={{ color: '#ff6fb3' }}>✓</span>
                   <span>Arrives at the start of November (vs. after Black Friday)</span>
                 </li>
                 <li className="flex items-start gap-3">
-                  <span className="font-bold text-xl flex-shrink-0" style={{ color: '#ff6fb3' }}>✓</span>
+                  <span className="font-medium text-xl flex-shrink-0" style={{ color: '#ff6fb3' }}>✓</span>
                   <span>Break even after just 5 sales — many customers buy multiple sets</span>
                 </li>
                 <li className="flex items-start gap-3">
-                  <span className="font-bold text-xl flex-shrink-0" style={{ color: '#ff6fb3' }}>✓</span>
+                  <span className="font-medium text-xl flex-shrink-0" style={{ color: '#ff6fb3' }}>✓</span>
                   <span>Stand out with cuter, higher-quality products than your competitors</span>
                 </li>
                 <li className="flex items-start gap-3">
-                  <span className="font-bold text-xl flex-shrink-0" style={{ color: '#ff6fb3' }}>✓</span>
+                  <span className="font-medium text-xl flex-shrink-0" style={{ color: '#ff6fb3' }}>✓</span>
                   <span>Be among the first stores to feature this limited display</span>
                 </li>
               </ul>
             </div>
 
             <motion.button
-              whileHover={{ y: -2 }}
-              whileTap={{ scale: 0.98 }}
+              
               onClick={handlePriorityUpgrade}
-              className="w-full py-4 rounded-[23px] font-black text-lg text-white shadow-lg"
+              className="w-full py-4 rounded-[4px] font-medium text-lg text-white"
               style={{ background: 'linear-gradient(to right, #ff7a4a, #ff6fb3)' }}
             >
               Upgrade for $50 →
@@ -187,16 +185,16 @@ export default function ShopifyConnect() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.25 }}
-            className="bg-white border-2 border-gray-200 rounded-[23px] p-8 md:p-10 shadow-sm"
+            className="bg-white border border-gray-200 rounded-[4px] p-8 md:p-10"
           >
-            <div className="font-bold text-gray-900 mb-6 text-center" style={{ fontSize: '28px', lineHeight: '1.3' }}>
+            <div className="font-medium text-gray-900 mb-6 text-center" style={{ fontSize: '28px', lineHeight: '1.3' }}>
               Common Questions
             </div>
 
             <div className="space-y-6">
               {/* Question 2 */}
               <div className="pb-6 border-b border-gray-100">
-                <div className="font-bold text-gray-900 mb-2" style={{ fontSize: '18px', lineHeight: '1.4' }}>
+                <div className="font-medium text-gray-900 mb-2" style={{ fontSize: '18px', lineHeight: '1.4' }}>
                   Thinking of waiting until after Black Friday?
                 </div>
                 <p className="text-sm md:text-base text-gray-600 leading-relaxed">
@@ -206,7 +204,7 @@ export default function ShopifyConnect() {
 
               {/* Question 3 */}
               <div className="pb-6 border-b border-gray-100">
-                <div className="font-bold text-gray-900 mb-2" style={{ fontSize: '18px', lineHeight: '1.4' }}>
+                <div className="font-medium text-gray-900 mb-2" style={{ fontSize: '18px', lineHeight: '1.4' }}>
                   Don't want to spend extra right now?
                 </div>
                 <p className="text-sm md:text-base text-gray-600 leading-relaxed">
@@ -216,7 +214,7 @@ export default function ShopifyConnect() {
 
               {/* Question 4 */}
               <div>
-                <div className="font-bold text-gray-900 mb-2" style={{ fontSize: '18px', lineHeight: '1.4' }}>
+                <div className="font-medium text-gray-900 mb-2" style={{ fontSize: '18px', lineHeight: '1.4' }}>
                   Limited on space?
                 </div>
                 <p className="text-sm md:text-base text-gray-600 leading-relaxed">
@@ -229,7 +227,7 @@ export default function ShopifyConnect() {
             <div className="mt-4 pt-6 border-t-2 border-transparent">
               <p className="text-center text-sm text-gray-500">
                 Still have questions?<br />
-                <a href="tel:7159791259" className="font-bold hover:underline" style={{ color: '#ff6fb3' }}>
+                <a href="tel:7159791259" className="font-medium hover:underline" style={{ color: '#ff6fb3' }}>
                   Call us at (715) 979-1259
                 </a>
               </p>
@@ -241,10 +239,10 @@ export default function ShopifyConnect() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.3 }}
-            className="bg-gradient-to-br from-gray-50 to-white border-2 border-gray-200 rounded-[23px] p-8 md:p-10"
+            className="bg-white to-white border border-gray-200 rounded-[4px] p-8 md:p-10"
           >
             <div className="mb-6">
-              <h2 className="text-3xl md:text-4xl font-black text-gray-600 mb-3">
+              <h2 className="text-3xl md:text-4xl font-medium text-gray-600 mb-3">
                 Standard Shipping
               </h2>
               <p className="text-base md:text-lg text-gray-700 leading-relaxed mb-6">
@@ -256,11 +254,10 @@ export default function ShopifyConnect() {
           
 
             <motion.button
-              whileHover={{ y: -2 }}
-              whileTap={{ scale: 0.98 }}
+              
               onClick={handleSkipToDashboard}
               disabled={loading}
-              className="w-full py-4 rounded-[23px] font-bold text-lg bg-gray-500 text-white disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+              className="w-full py-4 rounded-[4px] font-medium text-lg bg-gray-500 text-white disabled:opacity-50 disabled:cursor-not-allowed transition-all"
             >
               {loading ? (
                 <span className="flex items-center justify-center gap-2">
@@ -282,11 +279,11 @@ export default function ShopifyConnect() {
           transition={{ delay: 0.5 }}
           className="text-center"
         >
-          <div className="bg-white rounded-[23px] p-6 border-2 border-gray-200 inline-block">
+          <div className="bg-white rounded-[4px] p-6 border border-gray-200 inline-block">
             <p className="text-gray-600 text-base md:text-lg mb-2">
               Either way, you're all set! We'll send tracking info to your email as soon as it ships.
             </p>
-            <p className="font-black text-gray-900 text-lg md:text-xl">
+            <p className="font-medium text-gray-900 text-lg md:text-xl">
               Welcome to the Pawpaya network!
             </p>
           </div>

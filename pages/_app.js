@@ -37,16 +37,15 @@ const geist = localFont({
 export default function MyApp({ Component, pageProps }) {
   return (
     <AuthProvider>
-      <div className={`${inter.variable} ${geist.variable}`} style={{ backgroundColor: '#f3f4f6', minHeight: '100vh' }}>
+      <div className={`${inter.variable} ${geist.variable}`} style={{ backgroundColor: '#ffffff', minHeight: '100vh' }}>
         <Head>
           <meta
             name="viewport"
             content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
           />
-          <meta name="theme-color" content="#f3f4f6" />
+          <meta name="theme-color" content="#ffffff" />
           <style>{`
-            html { background: #f3f4f6 !important; }
-            body { background: #f3f4f6 !important; }
+            html, body { background: #ffffff; }
           `}</style>
         </Head>
         <Layout>

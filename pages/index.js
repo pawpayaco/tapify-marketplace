@@ -156,15 +156,15 @@ export default function Home() {
       {/* Franchise Owner Funnel Card - First Section */}
       <section className="pb-8 sm:pb-12 md:pb-20 px-4 sm:px-6 lg:px-8">
         <div className="max-w-6xl mx-auto">
-          <div className="bg-gradient-to-br from-[#ff7a4a]/90 via-[#ff6fb3]/90 to-[#ff7a4a]/70 rounded-[23px] sm:rounded-[23px] md:rounded-[23px] p-6 sm:p-8 md:p-12 lg:p-16 shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_1px_-0.5px_rgba(0,0,0,0.06),0px_3px_3px_-1.5px_rgba(0,0,0,0.06),0px_6px_6px_-3px_rgba(0,0,0,0.06),0px_12px_12px_-6px_rgba(0,0,0,0.06),0px_24px_24px_-12px_rgba(0,0,0,0.06)] text-center relative z-10">
+          <div className="bg-gradient-to-br from-[#ff7a4a]/90 via-[#ff6fb3]/90 to-[#ff7a4a]/70 rounded-[4px] sm:rounded-[4px] md:rounded-[4px] p-6 sm:p-8 md:p-12 lg:p-16 text-center relative z-10">
             <div className="text-white">
               {/* Pre-heading */}
-              <div className="text-xs sm:text-xs md:text-sm font-semibold opacity-90 uppercase tracking-wide mb-2 sm:mb-3 md:mb-4 px-4 py-2.5">
+              <div className="text-xs sm:text-xs md:text-sm font-medium opacity-90 uppercase tracking-wide mb-2 sm:mb-3 md:mb-4 px-4 py-2.5">
                 • Earn Passive Profit Every Day •
               </div>
 
               {/* Main heading */}
-              <h1 className="text-2xl sm:text-3xl md:text-5xl lg:text-6xl font-bold mb-3 sm:mb-4 md:mb-6 px-1 sm:px-2 leading-tight">
+              <h1 className="text-2xl sm:text-3xl md:text-5xl lg:text-6xl font-medium mb-3 sm:mb-4 md:mb-6 px-1 sm:px-2 leading-tight">
                 Happiness<br />delivered<br />to your customers
               </h1>
 
@@ -175,13 +175,13 @@ export default function Home() {
 
               {/* Value props - visible on mobile */}
               <div className="flex flex-wrap justify-center gap-2 sm:gap-3 md:gap-4 mb-4 sm:mb-6 md:mb-8 px-1 sm:px-2">
-                <div className="bg-white/20 backdrop-blur-sm px-3 py-1.5 sm:px-4 sm:py-2 rounded-full text-xs md:text-sm font-semibold">
+                <div className="bg-white/20 backdrop-blur-sm px-3 py-1.5 sm:px-4 sm:py-2 rounded-full text-xs md:text-sm font-medium">
                   ✓ Free Display
                 </div>
-                <div className="bg-white/20 backdrop-blur-sm px-3 py-1.5 sm:px-4 sm:py-2 rounded-full text-xs md:text-sm font-semibold">
+                <div className="bg-white/20 backdrop-blur-sm px-3 py-1.5 sm:px-4 sm:py-2 rounded-full text-xs md:text-sm font-medium">
                   ✓ Auto Payouts
                 </div>
-                <div className="bg-white/20 backdrop-blur-sm px-3 py-1.5 sm:px-4 sm:py-2 rounded-full text-xs md:text-sm font-semibold">
+                <div className="bg-white/20 backdrop-blur-sm px-3 py-1.5 sm:px-4 sm:py-2 rounded-full text-xs md:text-sm font-medium">
                   ✓ Zero Inventory
                 </div>
               </div>
@@ -191,9 +191,8 @@ export default function Home() {
                 <Link href="/onboard/about">
                   <span className="glow-button">
                     <motion.span
-                      whileHover={{ y: -2 }}
-                      whileTap={{ scale: 0.98 }}
-                      className="inline-flex items-center justify-center text-[#ff7a4a] px-5 sm:px-6 md:px-8 py-2.5 sm:py-3 md:py-4 font-bold text-sm sm:text-base md:text-xl shadow-xl hover:shadow-2xl transition-all bg-white"
+                      
+                      className="inline-flex items-center justify-center text-[#ff7a4a] px-5 sm:px-6 md:px-8 py-2.5 sm:py-3 md:py-4 font-medium text-sm sm:text-base md:text-xl transition-all bg-white"
                       style={{
                         borderRadius: '15px'
                       }}
@@ -211,18 +210,18 @@ export default function Home() {
       {/* Manager Referral Card */}
       <section className="pb-8 sm:pb-12 px-4 sm:px-6 lg:px-8">
         <div className="max-w-4xl mx-auto">
-          <div className="bg-white rounded-[23px] p-5 md:p-6 shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_1px_-0.5px_rgba(0,0,0,0.06),0px_3px_3px_-1.5px_rgba(0,0,0,0.06),0px_6px_6px_-3px_rgba(0,0,0,0.06),0px_12px_12px_-6px_rgba(0,0,0,0.06),0px_24px_24px_-12px_rgba(0,0,0,0.06)] border border-transparent text-center"
+          <div className="bg-white rounded-[4px] p-5 md:p-6 border border-transparent text-center"
           >
-            <h3 className="text-xl font-black text-gray-900 mb-3">Managers</h3>
+            <h3 className="text-xl font-medium text-gray-900 mb-3">Managers</h3>
             <p className="text-gray-600 mb-4 leading-relaxed">
               Think your store would benefit from this? Help the owner discover this opportunity by sharing with them.
             </p>
             <motion.button
               onClick={handleManagerShare}
               type="button"
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-              className="w-full sm:w-auto px-6 py-3 rounded-[15px] font-bold shadow-lg transition-all bg-white border-2"
+              
+              
+              className="w-full sm:w-auto px-6 py-3 rounded-[4px] font-medium transition-all bg-white border"
               style={{ borderColor: '#ff6fb3', color: '#ff6fb3' }}
             >
               {isCopied ? 'Copied! ✓' : 'Share With Owner'}
@@ -239,9 +238,9 @@ export default function Home() {
               return (
                 <div
                   key={card.title}
-                  className="rounded-[23px] md:rounded-[23px] p-8 md:p-10 shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_1px_-0.5px_rgba(0,0,0,0.06),0px_3px_3px_-1.5px_rgba(0,0,0,0.06),0px_6px_6px_-3px_rgba(0,0,0,0.06),0px_12px_12px_-6px_rgba(0,0,0,0.06),0px_24px_24px_-12px_rgba(0,0,0,0.06)] border border-transparent transition-all h-full bg-white hover:shadow-[0px_0px_0px_1px_rgba(0,0,0,0.08),0px_2px_2px_-0.5px_rgba(0,0,0,0.08),0px_4px_4px_-1.5px_rgba(0,0,0,0.08),0px_8px_8px_-3px_rgba(0,0,0,0.08),0px_16px_16px_-6px_rgba(0,0,0,0.08),0px_32px_32px_-12px_rgba(0,0,0,0.08)]"
+                  className="rounded-[4px] md:rounded-[4px] p-8 md:p-10 border border-transparent transition-all h-full bg-white hover: "
                 >
-                <h3 className="text-2xl md:text-3xl font-bold mb-3 md:mb-4 text-gray-900">
+                <h3 className="text-2xl md:text-3xl font-medium mb-3 md:mb-4 text-gray-900">
                   {card.title}
                 </h3>
                 <p className="text-base md:text-lg mb-4 md:mb-6 leading-relaxed text-gray-600">
@@ -249,13 +248,13 @@ export default function Home() {
                 </p>
                 {card.copyAction ? (
                   <motion.button
-                    whileHover={{ scale: 1.03 }}
-                    whileTap={{ scale: 0.96 }}
+                    
+                    
                     onClick={handleCopyEmail}
-                    className={`inline-flex items-center justify-center px-6 py-3 rounded-[15px] font-bold text-sm md:text-base shadow-lg transition-all ${
+                    className={`inline-flex items-center justify-center px-6 py-3 rounded-[4px] font-medium text-sm md:text-base transition-all ${
                       copiedEmail
                         ? 'bg-gradient-to-r from-green-500 to-green-600 text-white'
-                        : 'bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3] text-white hover:shadow-xl'
+                        : 'bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3] text-white'
                     }`}
                   >
                     {copiedEmail ? '✓ Copied!' : `${card.buttonLabel} →`}
@@ -263,16 +262,16 @@ export default function Home() {
                 ) : card.external ? (
                   <a
                     href={card.href}
-                    className="inline-flex items-center justify-center px-6 py-3 rounded-[23px] font-bold text-sm md:text-base shadow-lg transition-all bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3] text-white hover:shadow-xl"
+                    className="inline-flex items-center justify-center px-6 py-3 rounded-[4px] font-medium text-sm md:text-base transition-all bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3] text-white"
                   >
                     {card.buttonLabel} →
                   </a>
                 ) : (
                   <Link href={card.href}>
                     <motion.span
-                      whileHover={{ scale: 1.03 }}
-                      whileTap={{ scale: 0.96 }}
-                      className="inline-flex items-center justify-center px-6 py-3 rounded-[15px] font-bold text-sm md:text-base shadow-lg transition-all bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3] text-white hover:shadow-xl"
+                      
+                      
+                      className="inline-flex items-center justify-center px-6 py-3 rounded-[4px] font-medium text-sm md:text-base transition-all bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3] text-white"
                     >
                       {card.buttonLabel} →
                     </motion.span>
@@ -288,9 +287,9 @@ export default function Home() {
       {/* Closing CTA */}
       <section className="pt-6 md:pt-10 pb-12 md:pb-20 px-4 sm:px-6 lg:px-8">
         <div className="max-w-5xl mx-auto">
-          <div className="bg-gradient-to-br from-[#fff3ea] via-[#fff6fb] to-[#f0f4ff] rounded-[23px] md:rounded-[23px] p-8 sm:p-10 md:p-12 lg:p-14 shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_1px_-0.5px_rgba(0,0,0,0.06),0px_3px_3px_-1.5px_rgba(0,0,0,0.06),0px_6px_6px_-3px_rgba(0,0,0,0.06),0px_12px_12px_-6px_rgba(0,0,0,0.06),0px_24px_24px_-12px_rgba(0,0,0,0.06)] border border-transparent text-center"
+          <div className="bg-gradient-to-br from-[#fff3ea] via-[#fff6fb] to-[#f0f4ff] rounded-[4px] md:rounded-[4px] p-8 sm:p-10 md:p-12 lg:p-14 border border-transparent text-center"
           >
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 mb-3 md:mb-4 px-2">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-medium text-gray-900 mb-3 md:mb-4 px-2">
               Test it Out
             </h2>
             <p className="text-lg sm:text-xl md:text-2xl text-gray-700 leading-relaxed mb-6 px-2">
@@ -299,9 +298,9 @@ export default function Home() {
               <div className="flex justify-center">
                 <Link href="/onboard/about">
                 <motion.span
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  className="inline-flex items-center justify-center bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3] text-white px-6 md:px-8 py-3 rounded-[15px] font-bold text-base md:text-lg shadow-xl hover:shadow-2xl transition-all"
+                  
+                  
+                  className="inline-flex items-center justify-center bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3] text-white px-6 md:px-8 py-3 rounded-[4px] font-medium text-base md:text-lg transition-all"
                 >
                   Get Your Display →
                 </motion.span>
@@ -316,7 +315,7 @@ export default function Home() {
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-8 md:mb-14"
           >
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 mb-3 md:mb-4 px-2">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-medium text-gray-900 mb-3 md:mb-4 px-2">
               How it Works
             </h2>
             <p className="text-lg sm:text-xl md:text-2xl text-gray-600 max-w-3xl mx-auto px-2">
@@ -328,14 +327,14 @@ export default function Home() {
             {journey.map((step, index) => (
               <div key={step.title}
               >
-                <div className="relative bg-white rounded-[23px] md:rounded-[23px] p-8 md:p-10 shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_1px_-0.5px_rgba(0,0,0,0.06),0px_3px_3px_-1.5px_rgba(0,0,0,0.06),0px_6px_6px_-3px_rgba(0,0,0,0.06),0px_12px_12px_-6px_rgba(0,0,0,0.06),0px_24px_24px_-12px_rgba(0,0,0,0.06)] border border-transparent h-full">
+                <div className="relative bg-white rounded-[4px] md:rounded-[4px] p-8 md:p-10 border border-transparent h-full">
                   <div className="absolute -top-4 md:-top-6 left-1/2 transform -translate-x-1/2">
-                    <div className="bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3] text-white w-10 h-10 md:w-12 md:h-12 rounded-full flex items-center justify-center font-bold shadow-lg text-sm md:text-base">
+                    <div className="bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3] text-white w-10 h-10 md:w-12 md:h-12 rounded-full flex items-center justify-center font-medium text-sm md:text-base">
                       {index + 1}
                     </div>
                   </div>
                   <div className="text-4xl md:text-5xl text-center mt-6 md:mt-8 mb-3 md:mb-4">{step.icon}</div>
-                  <h3 className="text-xl md:text-2xl font-bold text-gray-900 mb-2 md:mb-3 text-center">{step.title}</h3>
+                  <h3 className="text-xl md:text-2xl font-medium text-gray-900 mb-2 md:mb-3 text-center">{step.title}</h3>
                   <p className="text-base md:text-lg text-gray-600 text-center leading-relaxed">{step.description}</p>
                 </div>
               </div>
@@ -349,7 +348,7 @@ export default function Home() {
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-8 md:mb-12"
           >
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 mb-3 md:mb-4 px-2">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-medium text-gray-900 mb-3 md:mb-4 px-2">
               What's Next on the Tapify Roadmap
             </h2>
             <p className="text-lg sm:text-xl md:text-2xl text-gray-600 max-w-3xl mx-auto px-2">
@@ -361,9 +360,9 @@ export default function Home() {
             {roadmap.map((item, index) => (
               <div key={item.title}
               >
-                <div className="bg-white rounded-[23px] md:rounded-[23px] p-8 md:p-10 shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_1px_-0.5px_rgba(0,0,0,0.06),0px_3px_3px_-1.5px_rgba(0,0,0,0.06),0px_6px_6px_-3px_rgba(0,0,0,0.06),0px_12px_12px_-6px_rgba(0,0,0,0.06),0px_24px_24px_-12px_rgba(0,0,0,0.06)] border border-transparent hover:shadow-[0px_0px_0px_1px_rgba(0,0,0,0.08),0px_2px_2px_-0.5px_rgba(0,0,0,0.08),0px_4px_4px_-1.5px_rgba(0,0,0,0.08),0px_8px_8px_-3px_rgba(0,0,0,0.08),0px_16px_16px_-6px_rgba(0,0,0,0.08),0px_32px_32px_-12px_rgba(0,0,0,0.08)] transition-all h-full">
-                  <div className="text-sm md:text-base font-semibold text-[#ff7a4a] mb-2 md:mb-3">Coming Soon</div>
-                  <h3 className="text-xl md:text-2xl font-bold text-gray-900 mb-2 md:mb-3">{item.title}</h3>
+                <div className="bg-white rounded-[4px] md:rounded-[4px] p-8 md:p-10 border border-transparent hover: transition-all h-full">
+                  <div className="text-sm md:text-base font-medium text-[#ff7a4a] mb-2 md:mb-3">Coming Soon</div>
+                  <h3 className="text-xl md:text-2xl font-medium text-gray-900 mb-2 md:mb-3">{item.title}</h3>
                   <p className="text-base md:text-lg text-gray-600 leading-relaxed">{item.description}</p>
                 </div>
               </div>
@@ -375,15 +374,15 @@ export default function Home() {
       {/* Questions Card */}
       <section className="pb-12 md:pb-20 px-4 sm:px-6 lg:px-8">
         <div className="max-w-4xl mx-auto">
-          <div className="bg-white rounded-[23px] p-5 md:p-6 shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_1px_-0.5px_rgba(0,0,0,0.06),0px_3px_3px_-1.5px_rgba(0,0,0,0.06),0px_6px_6px_-3px_rgba(0,0,0,0.06),0px_12px_12px_-6px_rgba(0,0,0,0.06),0px_24px_24px_-12px_rgba(0,0,0,0.06)] border border-transparent text-center"
+          <div className="bg-white rounded-[4px] p-5 md:p-6 border border-transparent text-center"
           >
-            <h3 className="text-xl font-black text-gray-900 mb-3">Questions?</h3>
+            <h3 className="text-xl font-medium text-gray-900 mb-3">Questions?</h3>
             <p className="text-gray-600 mb-4 leading-relaxed">
               Call us now! We're here to help you out.
             </p>
             <a
               href="tel:7159791259"
-              className="inline-block px-6 py-3 rounded-[15px] font-bold text-white shadow-lg hover:shadow-xl transition-all"
+              className="inline-block px-6 py-3 rounded-[4px] font-medium text-white transition-all"
               style={{ background: 'linear-gradient(to right, #ff7a4a, #ff6fb3)' }}
             >
               (715) 979-1259

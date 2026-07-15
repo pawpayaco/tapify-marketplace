@@ -1,0 +1,214 @@
+/* Tapify design tokens — Tesla-derived restraint, Pawpaya brand.
+ *
+ * The dashboard has no photography, so the numbers do the work photography does
+ * on Tesla's site: large, confident, alone in space. Everything else gets out of
+ * the way. The gradient is the only chromatic event on a screen — spend it once.
+ */
+
+:root {
+  /* Ink scale — warm-neutral near-black through to hairlines */
+  --ink:      #17171a;  /* headings, stat numerals */
+  --graphite: #55555c;  /* body */
+  --pewter:   #86868c;  /* labels, meta */
+  --fog:      #a9a9af;  /* placeholder, disabled */
+  --hairline: #e8e8ea;  /* rules, borders — the only "container" we get */
+  --ash:      #f6f6f7;  /* alternate surface */
+  --canvas:   #ffffff;
+
+  /* Brand — used for primary action and exactly one hero number per screen */
+  --coral: #ff7a4a;
+  --pink:  #ff6fb3;
+  --brand-gradient: linear-gradient(100deg, #ff7a4a 0%, #ff6fb3 100%);
+
+  /* Status — desaturated so it reads as data, not candy.
+     Pills and table cells only. Never a surface, never a border. */
+  --ok:      #2f6b4f;
+  --pending: #8a6d2f;
+  --fail:    #8c3a3a;
+
+  /* Tesla's universal timing. Color-only transitions — no scale, no translate. */
+  --t: 0.33s cubic-bezier(0.5, 0, 0, 0.75);
+
+  --radius: 4px;   /* precision over playfulness */
+  --rule: 1px solid var(--hairline);
+
+  --mono: ui-monospace, "SF Mono", SFMono-Regular, Menlo, monospace;
+}
+
+/* ---------------------------------------------------------------- primitives */
+
+.t-page {
+  background: var(--canvas);
+  color: var(--ink);
+  font-family: var(--font-geist), system-ui, sans-serif;
+  font-weight: 400;
+  letter-spacing: normal;   /* Tesla uses default tracking everywhere */
+}
+
+/* The spec sheet. Tesla: 358mi / 200mph / 3.1s. Here: scans / revenue / displays.
+   No cards. Hairline verticals. The number is the whole point. */
+.t-spec {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  border-top: var(--rule);
+  border-bottom: var(--rule);
+}
+.t-spec > * + * { border-left: var(--rule); }
+.t-spec__cell { padding: 40px 32px; }
+.t-spec__value {
+  font-size: 44px;
+  font-weight: 500;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+}
+/* The one brand moment per screen. */
+.t-spec__value--brand {
+  background: var(--brand-gradient);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.t-spec__label {
+  margin-top: 10px;
+  font-size: 13px;
+  font-weight: 400;
+  color: var(--pewter);
+}
+
+/* Sections are separated by space and a rule — never by a card. */
+.t-section { padding: 56px 0; border-top: var(--rule); }
+.t-section__title { font-size: 20px; font-weight: 500; letter-spacing: -0.01em; }
+.t-section__note { margin-top: 6px; font-size: 13px; color: var(--pewter); }
+
+/* Telemetry feed. Each row is a person touching a phone to a display. */
+.t-feed { width: 100%; border-collapse: collapse; }
+.t-feed th {
+  text-align: left;
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--pewter);
+  padding: 0 16px 14px 0;
+}
+.t-feed td {
+  padding: 16px 16px 16px 0;
+  border-top: var(--rule);
+  font-size: 14px;
+  vertical-align: middle;
+}
+.t-mono { font-family: var(--mono); font-size: 13px; letter-spacing: -0.01em; }
+
+/* Status: a dot and a word. That's the entire vocabulary. */
+.t-status { display: inline-flex; align-items: center; gap: 8px; font-size: 13px; }
+.t-status::before {
+  content: ""; width: 6px; height: 6px; border-radius: 50%;
+  background: currentColor;
+}
+.t-status--ok      { color: var(--ok); }
+.t-status--pending { color: var(--pending); }
+.t-status--fail    { color: var(--fail); }
+.t-status--idle    { color: var(--fog); }
+
+/* Buttons: 4px radius, color-only transitions, no shadow, no lift. */
+.t-btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  min-height: 40px; padding: 0 24px;
+  border: 0; border-radius: var(--radius);
+  font-size: 14px; font-weight: 500; font-family: inherit;
+  cursor: pointer;
+  transition: background-color var(--t), color var(--t), border-color var(--t), opacity var(--t);
+}
+.t-btn--primary { background: var(--brand-gradient); color: #fff; }
+.t-btn--primary:hover { opacity: 0.88; }
+.t-btn--secondary { background: var(--canvas); color: var(--graphite); box-shadow: inset 0 0 0 1px var(--hairline); }
+.t-btn--secondary:hover { color: var(--ink); box-shadow: inset 0 0 0 1px var(--fog); }
+.t-btn--quiet { background: transparent; color: var(--pewter); padding: 0 8px; }
+.t-btn--quiet:hover { color: var(--ink); }
+.t-btn:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+
+/* Tabs: a hairline underline, not a pill. */
+.t-tabs { display: flex; gap: 32px; border-bottom: var(--rule); }
+.t-tab {
+  background: 0; border: 0; padding: 0 0 14px; cursor: pointer;
+  font-family: inherit; font-size: 14px; font-weight: 400; color: var(--pewter);
+  border-bottom: 2px solid transparent; margin-bottom: -1px;
+  transition: color var(--t), border-color var(--t);
+}
+.t-tab:hover { color: var(--ink); }
+.t-tab[aria-selected="true"] { color: var(--ink); font-weight: 500; border-bottom-color: var(--ink); }
+
+@media (prefers-reduced-motion: reduce) {
+  * { transition: none !important; animation: none !important; }
+}
+
+@media (max-width: 860px) {
+  .t-spec { grid-template-columns: repeat(2, 1fr); }
+  .t-spec > *:nth-child(3) { border-left: 0; }
+  .t-spec > *:nth-child(n+3) { border-top: var(--rule); }
+  .t-spec__cell { padding: 28px 20px; }
+  .t-spec__value { font-size: 34px; }
+}
+
+/* ---------------------------------------------------------------- chrome */
+
+.t-nav {
+  position: sticky; top: 0; z-index: 50;
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: saturate(180%) blur(12px);
+  border-bottom: var(--rule);
+}
+.t-nav__inner {
+  max-width: 1120px; margin: 0 auto; padding: 0 32px;
+  height: 60px; display: flex; align-items: center; justify-content: space-between;
+}
+.t-nav__brand { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+.t-nav__word {
+  font-size: 15px; font-weight: 500; color: var(--ink);
+  letter-spacing: 0.14em; text-transform: uppercase;  /* the wordmark only — Tesla spaces its mark and nothing else */
+}
+.t-nav__links { display: flex; align-items: center; gap: 28px; }
+.t-navlink {
+  font-size: 14px; font-weight: 400; color: var(--graphite);
+  text-decoration: none; transition: color var(--t);
+}
+.t-navlink:hover { color: var(--ink); }
+.t-navlink--strong { font-weight: 500; color: var(--ink); }
+.t-navlink:focus-visible { outline: 2px solid var(--ink); outline-offset: 4px; border-radius: 2px; }
+
+.t-footer { border-top: var(--rule); background: var(--canvas); margin-top: 96px; }
+.t-footer__inner { max-width: 1120px; margin: 0 auto; padding: 56px 32px 40px; }
+.t-footer__cols {
+  display: flex; justify-content: space-between; gap: 64px; flex-wrap: wrap;
+  padding-bottom: 40px;
+}
+.t-footer__lede {
+  max-width: 380px; margin: 0 0 20px;
+  font-size: 14px; line-height: 1.5; color: var(--graphite);
+}
+.t-footer__phone {
+  display: block; font-size: 20px; font-weight: 500; color: var(--ink);
+  text-decoration: none; letter-spacing: -0.01em; transition: color var(--t);
+}
+.t-footer__phone:hover { color: var(--coral); }
+.t-footer__mail {
+  display: block; margin-top: 6px; font-size: 14px; color: var(--pewter);
+  text-decoration: none; transition: color var(--t);
+}
+.t-footer__mail:hover { color: var(--ink); }
+.t-footer__nav { display: flex; flex-direction: column; gap: 12px; }
+.t-footer__link {
+  font-size: 14px; color: var(--pewter); text-decoration: none; transition: color var(--t);
+}
+.t-footer__link:hover { color: var(--ink); }
+.t-footer__base {
+  border-top: var(--rule); padding-top: 24px;
+  display: flex; justify-content: space-between; align-items: center; gap: 16px;
+  font-size: 13px; color: var(--pewter);
+}
+
+@media (max-width: 640px) {
+  .t-nav__inner, .t-footer__inner { padding-left: 20px; padding-right: 20px; }
+  .t-nav__links { gap: 18px; }
+  .t-nav__word { display: none; }   /* mark alone on small screens */
+  .t-footer__cols { gap: 32px; }
+}

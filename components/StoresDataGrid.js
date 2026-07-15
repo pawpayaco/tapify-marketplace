@@ -225,10 +225,10 @@ export default function StoresDataGrid({ onRefresh }) {
 
   if (loading) {
     return (
-      <div className="bg-white rounded-[23px] shadow-xl border-2 border-gray-100 p-12">
+      <div className="bg-white rounded-[4px] border border-gray-100 p-12">
         <div className="text-center">
           <div className="animate-spin rounded-full h-16 w-16 border-4 border-[#ff7a4a] border-t-transparent mx-auto mb-4"></div>
-          <p className="text-gray-600 font-semibold">Loading stores...</p>
+          <p className="text-gray-600 font-medium">Loading stores...</p>
         </div>
       </div>
     );
@@ -236,16 +236,16 @@ export default function StoresDataGrid({ onRefresh }) {
 
   if (error) {
     return (
-      <div className="bg-white rounded-[23px] shadow-xl border-2 border-red-200 p-8">
+      <div className="bg-white rounded-[4px] border border-red-200 p-8">
         <div className="text-center">
           <div className="text-5xl mb-4">⚠️</div>
-          <h3 className="text-xl font-bold text-red-900 mb-2">Error Loading Stores</h3>
+          <h3 className="text-xl font-medium text-red-900 mb-2">Error Loading Stores</h3>
           <p className="text-red-700 mb-4">{error}</p>
           <motion.button
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
+            
+            
             onClick={fetchStores}
-            className="px-6 py-3 bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3] text-white rounded-[23px] font-bold"
+            className="px-6 py-3 bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3] text-white rounded-[4px] font-medium"
           >
             Try Again
           </motion.button>
@@ -256,7 +256,7 @@ export default function StoresDataGrid({ onRefresh }) {
 
   return (
     <>
-      <div className="bg-white rounded-[23px] shadow-xl border-2 border-gray-100 overflow-hidden">
+      <div className="bg-white rounded-[4px] border border-gray-100 overflow-hidden">
         
         {/* Filters Header */}
         <div className="bg-gradient-to-r from-gray-50 to-gray-100 border-b-2 border-gray-200 p-6">
@@ -270,7 +270,7 @@ export default function StoresDataGrid({ onRefresh }) {
                   placeholder="Search by name, address, phone, or notes..."
                   value={searchText}
                   onChange={(e) => setSearchText(e.target.value)}
-                  className="w-full px-4 py-3 pl-11 border-2 border-gray-300 rounded-[23px] focus:ring-2 focus:ring-[#ff6fb3] focus:border-transparent text-gray-900 placeholder-gray-500"
+                  className="w-full px-4 py-3 pl-11 border border-gray-300 rounded-[4px] focus:ring-2 focus:ring-[#ff6fb3] focus:border-transparent text-gray-900 placeholder-gray-500"
                 />
                 <svg className="w-5 h-5 text-gray-400 absolute left-3 top-1/2 transform -translate-y-1/2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
@@ -282,7 +282,7 @@ export default function StoresDataGrid({ onRefresh }) {
             <select
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
-              className="px-4 py-3 border-2 border-gray-300 rounded-[23px] focus:ring-2 focus:ring-[#ff6fb3] focus:border-transparent text-gray-900 font-medium"
+              className="px-4 py-3 border border-gray-300 rounded-[4px] focus:ring-2 focus:ring-[#ff6fb3] focus:border-transparent text-gray-900 font-medium"
             >
               <option value="all">All Status</option>
               <option value="prospect">🟡 Prospect</option>
@@ -293,7 +293,7 @@ export default function StoresDataGrid({ onRefresh }) {
             <select
               value={emailSentFilter}
               onChange={(e) => setEmailSentFilter(e.target.value)}
-              className="px-4 py-3 border-2 border-gray-300 rounded-[23px] focus:ring-2 focus:ring-[#ff6fb3] focus:border-transparent text-gray-900 font-medium"
+              className="px-4 py-3 border border-gray-300 rounded-[4px] focus:ring-2 focus:ring-[#ff6fb3] focus:border-transparent text-gray-900 font-medium"
             >
               <option value="all">All Calls</option>
               <option value="sent">📞 Called</option>
@@ -302,11 +302,11 @@ export default function StoresDataGrid({ onRefresh }) {
 
             {/* Export Button */}
             <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
+              
+              
               onClick={handleExportCSV}
               disabled={filteredStores.length === 0}
-              className="px-6 py-3 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-[23px] font-bold hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+              className="px-6 py-3 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-[4px] font-medium disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
             >
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
@@ -326,13 +326,13 @@ export default function StoresDataGrid({ onRefresh }) {
           <table className="w-full table-fixed">
             <thead className="bg-gradient-to-r from-gray-100 to-gray-200 border-b-2 border-gray-300">
               <tr>
-                <th className="w-[12%] px-4 py-4 text-left font-bold text-gray-700 text-sm">Name</th>
-                <th className="w-[15%] px-4 py-4 text-left font-bold text-gray-700 text-sm">Address</th>
-                <th className="w-[12%] px-4 py-4 text-left font-bold text-gray-700 text-sm">Phone</th>
-                <th className="w-[20%] px-4 py-4 text-left font-bold text-gray-700 text-sm">Notes</th>
-                <th className="w-[10%] px-2 py-4 text-center font-bold text-gray-700 text-sm">Cold Called</th>
-                <th className="w-[10%] px-2 py-4 text-center font-bold text-gray-700 text-sm">Status</th>
-                <th className="w-[11%] px-2 py-4 text-center font-bold text-gray-700 text-sm">Actions</th>
+                <th className="w-[12%] px-4 py-4 text-left font-medium text-gray-700 text-sm">Name</th>
+                <th className="w-[15%] px-4 py-4 text-left font-medium text-gray-700 text-sm">Address</th>
+                <th className="w-[12%] px-4 py-4 text-left font-medium text-gray-700 text-sm">Phone</th>
+                <th className="w-[20%] px-4 py-4 text-left font-medium text-gray-700 text-sm">Notes</th>
+                <th className="w-[10%] px-2 py-4 text-center font-medium text-gray-700 text-sm">Cold Called</th>
+                <th className="w-[10%] px-2 py-4 text-center font-medium text-gray-700 text-sm">Status</th>
+                <th className="w-[11%] px-2 py-4 text-center font-medium text-gray-700 text-sm">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100">
@@ -351,7 +351,7 @@ export default function StoresDataGrid({ onRefresh }) {
                           setStatusFilter('all');
                           setEmailSentFilter('all');
                         }}
-                        className="mt-4 text-[#ff6fb3] font-bold hover:underline"
+                        className="mt-4 text-[#ff6fb3] font-medium hover:underline"
                       >
                         Clear all filters
                       </button>
@@ -369,7 +369,7 @@ export default function StoresDataGrid({ onRefresh }) {
                   >
                     {/* Name */}
                     <td className="w-[12%] px-4 py-4">
-                      <div className="font-bold text-gray-900 break-words" title={store.name}>
+                      <div className="font-medium text-gray-900 break-words" title={store.name}>
                         {store.name || '-'}
                       </div>
                       {store.owner_name && (
@@ -415,8 +415,8 @@ export default function StoresDataGrid({ onRefresh }) {
                     {/* Cold Called Toggle */}
                     <td className="w-[10%] px-2 py-4 text-center">
                       <motion.button
-                        whileHover={{ scale: 1.1 }}
-                        whileTap={{ scale: 0.9 }}
+                        
+                        
                         onClick={() => handleToggleEmailSent(store)}
                         className={[
                           "relative inline-flex items-center h-6 w-12 rounded-full transition-colors",
@@ -426,7 +426,7 @@ export default function StoresDataGrid({ onRefresh }) {
                       >
                         <span
                           className={[
-                            "inline-block w-4 h-4 bg-white rounded-full shadow-lg transform transition-transform",
+                            "inline-block w-4 h-4 bg-white rounded-full transform transition-transform",
                             store.cold_called ? "translate-x-6" : "translate-x-1"
                           ].join(" ")}
                         />
@@ -442,7 +442,7 @@ export default function StoresDataGrid({ onRefresh }) {
                     {/* Status */}
                     <td className="w-[10%] px-2 py-4 text-center">
                       <span className={[
-                        "inline-flex items-center justify-center px-2 py-1 rounded-full text-xs font-bold min-w-[80px]",
+                        "inline-flex items-center justify-center px-2 py-1 rounded-full text-xs font-medium min-w-[80px]",
                         store.converted
                           ? "bg-green-100 text-green-800"
                           : "bg-yellow-100 text-yellow-800"
@@ -461,10 +461,10 @@ export default function StoresDataGrid({ onRefresh }) {
                     <td className="w-[15%] px-2 py-4">
                       <div className="flex items-center justify-center">
                         <motion.button
-                          whileHover={{ scale: 1.05 }}
-                          whileTap={{ scale: 0.95 }}
+                          
+                          
                           onClick={() => handleEditClick(store)}
-                          className="px-3 py-1.5 rounded-[23px] bg-gradient-to-r from-blue-500 to-purple-600 text-white text-xs font-bold hover:shadow-lg flex items-center gap-1"
+                          className="px-3 py-1.5 rounded-[4px] bg-gradient-to-r from-blue-500 to-purple-600 text-white text-xs font-medium flex items-center gap-1"
                           title="Edit store profile and owner info"
                         >
                           <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -507,7 +507,7 @@ export default function StoresDataGrid({ onRefresh }) {
             className="fixed top-8 right-8 z-50"
           >
             <div className={[
-              "px-6 py-4 rounded-[23px] shadow-2xl font-bold text-white flex items-center gap-3",
+              "px-6 py-4 rounded-[4px] font-medium text-white flex items-center gap-3",
               toast.type === 'error' ? "bg-red-500" : "bg-green-500"
             ].join(" ")}>
               <span className="text-2xl">{toast.type === 'error' ? '❌' : '✅'}</span>
@@ -584,25 +584,25 @@ function EditProfileModal({ isOpen, onClose, store, onSuccess }) {
         initial={{ opacity: 0, scale: 0.95, y: 20 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
         exit={{ opacity: 0, scale: 0.95, y: 20 }}
-        className="bg-white rounded-[23px] shadow-xl max-w-lg w-full max-h-[85vh] overflow-y-auto"
+        className="bg-white rounded-[4px] max-w-lg w-full max-h-[85vh] overflow-y-auto"
       >
         {/* Header */}
         <div className="bg-gradient-to-r from-blue-500 to-purple-600 text-white p-5 rounded-t-[15px]">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-[23px] bg-white/20 backdrop-blur-sm flex items-center justify-center">
+              <div className="w-10 h-10 rounded-[4px] bg-white/20 backdrop-blur-sm flex items-center justify-center">
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                 </svg>
               </div>
               <div>
-                <h2 className="text-xl font-bold">Edit Profile</h2>
+                <h2 className="text-xl font-medium">Edit Profile</h2>
                 <p className="text-white/80 text-sm">Update store and owner information</p>
               </div>
             </div>
             <button
               onClick={onClose}
-              className="p-2 hover:bg-white/20 rounded-[23px] transition-colors"
+              className="p-2 hover:bg-white/20 rounded-[4px] transition-colors"
             >
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -615,7 +615,7 @@ function EditProfileModal({ isOpen, onClose, store, onSuccess }) {
         <form onSubmit={handleSubmit} className="p-6 space-y-4">
           {/* Store Name */}
           <div>
-            <label className="block text-sm font-bold text-gray-700 mb-2">
+            <label className="block text-sm font-medium text-gray-700 mb-2">
               Store Name <span className="text-red-500">*</span>
             </label>
             <input
@@ -623,7 +623,7 @@ function EditProfileModal({ isOpen, onClose, store, onSuccess }) {
               value={formData.name}
               onChange={(e) => setFormData({ ...formData, name: e.target.value })}
               required
-              className="w-full px-4 py-3 border-2 border-gray-300 rounded-[23px] focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+              className="w-full px-4 py-3 border border-gray-300 rounded-[4px] focus:ring-2 focus:ring-purple-500 focus:border-transparent"
               placeholder="e.g., Starbucks Coffee"
             />
           </div>
@@ -651,42 +651,42 @@ function EditProfileModal({ isOpen, onClose, store, onSuccess }) {
 
           {/* Owner Name */}
           <div>
-            <label className="block text-sm font-bold text-gray-700 mb-2">
+            <label className="block text-sm font-medium text-gray-700 mb-2">
               Owner / Management Group's Name
             </label>
             <input
               type="text"
               value={formData.owner_name}
               onChange={(e) => setFormData({ ...formData, owner_name: e.target.value })}
-              className="w-full px-4 py-3 border-2 border-gray-300 rounded-[23px] focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+              className="w-full px-4 py-3 border border-gray-300 rounded-[4px] focus:ring-2 focus:ring-purple-500 focus:border-transparent"
               placeholder="e.g., John Smith or Management Group"
             />
           </div>
 
           {/* Phone */}
           <div>
-            <label className="block text-sm font-bold text-gray-700 mb-2">
+            <label className="block text-sm font-medium text-gray-700 mb-2">
               Phone
             </label>
             <input
               type="tel"
               value={formData.phone}
               onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-              className="w-full px-4 py-3 border-2 border-gray-300 rounded-[23px] focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+              className="w-full px-4 py-3 border border-gray-300 rounded-[4px] focus:ring-2 focus:ring-purple-500 focus:border-transparent"
               placeholder="(555) 123-4567"
             />
           </div>
 
           {/* Notes */}
           <div>
-            <label className="block text-sm font-bold text-gray-700 mb-2">
+            <label className="block text-sm font-medium text-gray-700 mb-2">
               Outreach Notes
             </label>
             <textarea
               value={formData.outreach_notes}
               onChange={(e) => setFormData({ ...formData, outreach_notes: e.target.value })}
               rows={4}
-              className="w-full px-4 py-3 border-2 border-gray-300 rounded-[23px] focus:ring-2 focus:ring-purple-500 focus:border-transparent resize-none"
+              className="w-full px-4 py-3 border border-gray-300 rounded-[4px] focus:ring-2 focus:ring-purple-500 focus:border-transparent resize-none"
               placeholder="Add any notes about calls, conversations, or follow-ups..."
             />
           </div>
@@ -694,7 +694,7 @@ function EditProfileModal({ isOpen, onClose, store, onSuccess }) {
 
           {/* Error Message */}
           {error && (
-            <div className="bg-red-50 border-2 border-red-200 rounded-[23px] p-4 flex items-start gap-3">
+            <div className="bg-red-50 border border-red-200 rounded-[4px] p-4 flex items-start gap-3">
               <svg className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
                 <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
               </svg>
@@ -706,19 +706,19 @@ function EditProfileModal({ isOpen, onClose, store, onSuccess }) {
           <div className="flex gap-3 pt-4">
             <motion.button
               type="button"
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
+              
+              
               onClick={onClose}
-              className="flex-1 px-6 py-3 border-2 border-gray-300 text-gray-700 rounded-[23px] font-bold hover:bg-gray-50"
+              className="flex-1 px-6 py-3 border border-gray-300 text-gray-700 rounded-[4px] font-medium hover:bg-gray-50"
             >
               Cancel
             </motion.button>
             <motion.button
               type="submit"
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
+              
+              
               disabled={loading}
-              className="flex-1 px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-[23px] font-bold hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+              className="flex-1 px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-[4px] font-medium disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {loading ? (
                 <span className="flex items-center justify-center gap-2">

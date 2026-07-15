@@ -81,15 +81,15 @@ export default function PrivacyPolicies() {
           transition={{ duration: 0.6 }}
           className="text-center"
         >
-          <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">Privacy & Security Policies</h1>
+          <h1 className="text-4xl md:text-5xl font-medium text-gray-900 mb-4">Privacy & Security Policies</h1>
           <p className="text-xl text-gray-700 mb-6">
             Your security and privacy are our top priorities. Download our comprehensive policy documents below.
           </p>
           <Link href="/">
             <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              className="bg-white text-gray-700 border-2 border-gray-300 px-6 py-3 rounded-[23px] font-bold transition-all hover:bg-gray-50"
+              
+              
+              className="bg-white text-gray-700 border border-gray-300 px-6 py-3 rounded-[4px] font-medium transition-all hover:bg-gray-50"
             >
               ← Back to Home
             </motion.button>
@@ -110,15 +110,15 @@ export default function PrivacyPolicies() {
             <motion.div 
               key={sectionIdx}
               variants={fadeInUp}
-              className="bg-white rounded-[23px] shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_1px_-0.5px_rgba(0,0,0,0.06),0px_3px_3px_-1.5px_rgba(0,0,0,0.06),0px_6px_6px_-3px_rgba(0,0,0,0.06),0px_12px_12px_-6px_rgba(0,0,0,0.06),0px_24px_24px_-12px_rgba(0,0,0,0.06)] p-8 border border-transparent"
+              className="bg-white rounded-[4px] p-8 border border-transparent"
             >
               {/* Category Header */}
               <div className="mb-6 pb-6 border-b-2 border-gray-100">
                 <div className="flex items-center gap-3 mb-3">
-                  <div className="w-10 h-10 bg-gradient-to-br from-[#ff7a4a] to-[#ff6fb3] rounded-[23px] flex items-center justify-center shadow-lg">
-                    <span className="text-white font-bold text-lg">{sectionIdx + 1}</span>
+                  <div className="w-10 h-10 bg-gradient-to-br from-[#ff7a4a] to-[#ff6fb3] rounded-[4px] flex items-center justify-center">
+                    <span className="text-white font-medium text-lg">{sectionIdx + 1}</span>
                   </div>
-                  <h2 className="text-2xl font-bold text-gray-900">{section.category}</h2>
+                  <h2 className="text-2xl font-medium text-gray-900">{section.category}</h2>
                 </div>
                 <p className="text-gray-600 ml-13">{section.description}</p>
               </div>
@@ -130,12 +130,12 @@ export default function PrivacyPolicies() {
                     key={docIdx}
                     href={`/Privacy/${doc.file}`}
                     download
-                    whileHover={{ scale: 1.02, y: -2 }}
-                    whileTap={{ scale: 0.98 }}
-                    className="flex items-start gap-4 p-5 rounded-[23px] border border-transparent hover:border-[#ff6fb3] hover:bg-gradient-to-br hover:from-pink-50 hover:to-purple-50 transition-all group"
+                    
+                    
+                    className="flex items-start gap-4 p-5 rounded-[4px] border border-transparent hover:border-[#ff6fb3] hover:bg-gradient-to-br hover:from-pink-50 hover:to-purple-50 transition-all group"
                   >
                     {/* PDF Icon */}
-                    <div className="flex-shrink-0 w-12 h-12 bg-gradient-to-br from-red-500 to-red-600 rounded-[23px] flex items-center justify-center shadow-md group-hover:shadow-lg transition-all">
+                    <div className="flex-shrink-0 w-12 h-12 bg-white rounded-[4px] flex items-center justify-center group- transition-all">
                       <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
                       </svg>
@@ -143,7 +143,7 @@ export default function PrivacyPolicies() {
                     
                     {/* Document Info */}
                     <div className="flex-1 min-w-0">
-                      <p className="font-bold text-gray-900 text-base leading-tight group-hover:text-[#ff6fb3] transition-colors mb-2">
+                      <p className="font-medium text-gray-900 text-base leading-tight group-hover:text-[#ff6fb3] transition-colors mb-2">
                         {doc.name}
                       </p>
                       <p className="text-sm text-gray-600 leading-snug">{doc.description}</p>
@@ -168,17 +168,17 @@ export default function PrivacyPolicies() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
-          className="mt-16 bg-gradient-to-br from-[#fff3ea] to-[#fff6fb] rounded-[23px] p-10 text-center border-2 border-[#ff6fb3]/20 shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_1px_-0.5px_rgba(0,0,0,0.06),0px_3px_3px_-1.5px_rgba(0,0,0,0.06),0px_6px_6px_-3px_rgba(0,0,0,0.06),0px_12px_12px_-6px_rgba(0,0,0,0.06),0px_24px_24px_-12px_rgba(0,0,0,0.06)]"
+          className="mt-16 bg-gradient-to-br from-[#fff3ea] to-[#fff6fb] rounded-[4px] p-10 text-center border border-[#ff6fb3]/20 "
         >
-          <h3 className="text-2xl font-bold text-gray-900 mb-4">Have Questions?</h3>
+          <h3 className="text-2xl font-medium text-gray-900 mb-4">Have Questions?</h3>
           <p className="text-gray-700 mb-6 max-w-2xl mx-auto">
             If you have any questions about our privacy and security policies, please don't hesitate to reach out to our team.
           </p>
           <motion.button
             onClick={copyEmailToClipboard}
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            className="inline-flex items-center gap-3 bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3] text-white px-8 py-4 rounded-[23px] font-bold shadow-lg hover:shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_1px_-0.5px_rgba(0,0,0,0.06),0px_3px_3px_-1.5px_rgba(0,0,0,0.06),0px_6px_6px_-3px_rgba(0,0,0,0.06),0px_12px_12px_-6px_rgba(0,0,0,0.06),0px_24px_24px_-12px_rgba(0,0,0,0.06)] transition-all"
+            
+            
+            className="inline-flex items-center gap-3 bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3] text-white px-8 py-4 rounded-[4px] font-medium hover: transition-all"
           >
             {emailCopied ? (
               <>

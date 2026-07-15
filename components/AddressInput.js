@@ -224,7 +224,7 @@ export default function AddressInput({
 
   return (
     <div ref={wrapperRef} className={`relative ${className}`}>
-      <label htmlFor="address" className="block text-sm font-bold text-gray-700 mb-2">
+      <label htmlFor="address" className="block text-sm font-medium text-gray-700 mb-2">
         {label} {required && <span className="text-red-500">*</span>}
         {validating && <span className="text-blue-600 text-xs ml-2">(Validating...)</span>}
         {success && <span className="text-green-600 text-xs ml-2"> </span>}
@@ -232,9 +232,9 @@ export default function AddressInput({
 
       <div
         className={[
-          "border-2 transition-all overflow-hidden bg-white rounded-[15px]",
+          "border transition-all overflow-hidden bg-white rounded-[4px]",
           showSuggestions && query.length >= 3
-            ? "border-gray-300 shadow-lg"
+            ? "border-gray-300"
             : error 
               ? "border-red-300 hover:border-red-400"
               : success
@@ -277,7 +277,7 @@ export default function AddressInput({
             <div className="max-h-64 overflow-y-auto bg-white">
               {loading ? (
                 <div className="px-4 py-8 text-gray-500 text-sm flex items-center justify-center gap-2">
-                  <div className="animate-spin rounded-full h-4 w-4 border-2 border-blue-500 border-t-transparent"></div>
+                  <div className="animate-spin rounded-full h-4 w-4 border border-blue-500 border-t-transparent"></div>
                   Searching addresses...
                 </div>
               ) : suggestions.length > 0 ? (
@@ -290,7 +290,7 @@ export default function AddressInput({
                       className="w-full text-left px-4 py-3 hover:bg-gradient-to-r hover:from-blue-50 hover:to-purple-50 border-b border-gray-100 last:border-b-0 transition-all group"
                     >
                       <div className="flex items-start gap-3">
-                        <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center flex-shrink-0 mt-0.5">
+                        <div className="w-8 h-8 rounded-full bg-white flex items-center justify-center flex-shrink-0 mt-0.5">
                           <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />

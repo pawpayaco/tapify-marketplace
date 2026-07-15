@@ -18,10 +18,10 @@ class ErrorBoundary extends React.Component {
     if (this.state.hasError) {
       return (
         <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
-          <div className="max-w-md w-full bg-white rounded-[23px] shadow-lg p-6">
+          <div className="max-w-md w-full bg-white rounded-[4px] p-6">
             <div className="text-center">
               <div className="text-6xl mb-4">⚠️</div>
-              <h1 className="text-2xl font-bold text-gray-900 mb-2">
+              <h1 className="text-2xl font-medium text-gray-900 mb-2">
                 Oops! Something went wrong
               </h1>
               <p className="text-gray-600 mb-6">
@@ -29,7 +29,7 @@ class ErrorBoundary extends React.Component {
               </p>
               {process.env.NODE_ENV === 'development' && (
                 <details className="text-left bg-gray-100 p-4 rounded mb-4">
-                  <summary className="cursor-pointer font-semibold text-sm">
+                  <summary className="cursor-pointer font-medium text-sm">
                     Error Details
                   </summary>
                   <pre className="text-xs mt-2 overflow-auto">
@@ -39,7 +39,7 @@ class ErrorBoundary extends React.Component {
               )}
               <button
                 onClick={() => window.location.reload()}
-                className="bg-blue-600 text-white px-6 py-2 rounded-[23px] hover:bg-blue-700 transition"
+                className="bg-blue-600 text-white px-6 py-2 rounded-[4px] hover:bg-blue-700 transition"
               >
                 Reload Page
               </button>
