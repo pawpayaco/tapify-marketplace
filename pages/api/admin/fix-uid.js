@@ -1,4 +1,5 @@
 import { supabaseAdmin } from '../../../lib/supabase.js';
+import { buildAffiliateUrl } from '../../../lib/affiliate';
 
 /**
  * ADMIN ONLY: Fix a UID that's not working properly
@@ -60,7 +61,7 @@ export default async function handler(req, res) {
         });
       }
 
-      const affiliateUrl = `https://pawpayaco.com/products/custom?ref=${uid}&utm_source=nfc&utm_medium=display&utm_campaign=${uid}`;
+      const affiliateUrl = buildAffiliateUrl(uid);
 
       const { error: createError } = await supabaseAdmin
         .from('uids')
@@ -101,7 +102,7 @@ export default async function handler(req, res) {
 
     // Fix: affiliate_url
     if (!currentUid.affiliate_url || currentUid.affiliate_url.trim() === '') {
-      updates.affiliate_url = `https://pawpayaco.com/products/custom?ref=${uid}&utm_source=nfc&utm_medium=display&utm_campaign=${uid}`;
+      updates.affiliate_url = buildAffiliateUrl(uid);
       changes.push('Generated affiliate_url');
     }
 

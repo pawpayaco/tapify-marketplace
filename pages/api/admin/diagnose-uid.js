@@ -1,4 +1,5 @@
 import { supabaseAdmin } from '../../../lib/supabase.js';
+import { buildAffiliateUrl } from '../../../lib/affiliate';
 
 /**
  * ADMIN ONLY: Diagnostic tool to check UID status and fix issues
@@ -86,7 +87,7 @@ export default async function handler(req, res) {
     }
 
     // Generate recommended affiliate URL (with UTM parameters for better tracking)
-    const recommendedUrl = `https://pawpayaco.com/products/custom?ref=${uid}&utm_source=nfc&utm_medium=display&utm_campaign=${uid}`;
+    const recommendedUrl = buildAffiliateUrl(uid);
 
     return res.status(200).json({
       uid: uid,

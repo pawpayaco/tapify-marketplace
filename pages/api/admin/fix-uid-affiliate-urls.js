@@ -1,4 +1,5 @@
 import { supabaseAdmin } from '../../../lib/supabase.js';
+import { buildAffiliateUrl, isCurrentAffiliateUrl } from '../../../lib/affiliate';
 
 /**
  * ADMIN ONLY: One-time fix script to repair UIDs with null affiliate_urls
@@ -47,7 +48,7 @@ export default async function handler(req, res) {
       !uid.affiliate_url ||
       uid.affiliate_url.trim() === '' ||
       !uid.affiliate_url.includes('utm_source=nfc') ||
-      !uid.affiliate_url.includes('pawpayaco.com/products/custom')
+      !isCurrentAffiliateUrl(uid.affiliate_url)
     ) || [];
 
     if (!brokenUids || brokenUids.length === 0) {
@@ -64,7 +65,7 @@ export default async function handler(req, res) {
     // Update each UID with proper affiliate URL (includes UTM parameters for better tracking)
     const updates = [];
     for (const uidData of brokenUids) {
-      const affiliateUrl = `https://pawpayaco.com/products/custom?ref=${uidData.uid}&utm_source=nfc&utm_medium=display&utm_campaign=${uidData.uid}`;
+      const affiliateUrl = buildAffiliateUrl(uidData.uid);
 
       const { error: updateError } = await supabaseAdmin
         .from('uids')
