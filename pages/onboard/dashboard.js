@@ -275,7 +275,7 @@ export default function RetailerDashboard() {
 
         // Get retailer account
         const { data: accountData } = await supabase
-          .from('retailer_accounts')
+          .from('retailer_bank_status')
           .select('*')
           .eq('retailer_id', retailerData.id)
           .maybeSingle();
@@ -571,7 +571,7 @@ export default function RetailerDashboard() {
 
               // Refresh retailer account data
               const { data: accountData } = await supabase
-                .from('retailer_accounts')
+                .from('retailer_bank_status')
                 .select('*')
                 .eq('retailer_id', retailer.id)
                 .maybeSingle();
@@ -1332,7 +1332,7 @@ export default function RetailerDashboard() {
                 <div className="bg-gradient-to-br from-gray-50 to-white border-2 border-gray-200 rounded-[23px] p-4 md:p-8 shadow-lg">
                   <h4 className="font-bold text-gray-900 text-base md:text-lg mb-4 md:mb-6">Bank Connection</h4>
                   
-                  {retailerAccount?.plaid_access_token ? (
+                  {retailerAccount?.is_connected ? (
                     <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 p-4 md:p-6 bg-green-50 border-2 border-green-200 rounded-[23px]">
                       <div className="flex items-center gap-4">
                         <div className="w-12 h-12 bg-gradient-to-br from-green-400 to-emerald-500 rounded-[23px] flex items-center justify-center">
@@ -1341,8 +1341,17 @@ export default function RetailerDashboard() {
                           </svg>
                         </div>
                         <div>
-                          <p className="font-bold text-gray-900">Bank Account Connected</p>
-                          <p className="text-sm text-gray-600">Ready to receive payouts</p>
+                          <p className="font-bold text-gray-900">
+                            {retailerAccount?.institution_name || 'Bank Account Connected'}
+                            {retailerAccount?.account_mask && (
+                              <span className="ml-2 font-mono text-gray-500">••••{retailerAccount.account_mask}</span>
+                            )}
+                          </p>
+                          <p className="text-sm text-gray-600">
+                            {retailerAccount?.account_name
+                              ? `${retailerAccount.account_name} · Ready to receive payouts`
+                              : 'Ready to receive payouts'}
+                          </p>
                         </div>
                       </div>
                       <motion.button
