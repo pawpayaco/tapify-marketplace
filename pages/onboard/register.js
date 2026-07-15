@@ -8,6 +8,7 @@ import AddressInput from '../../components/AddressInput';
 
 export default function RegisterRetailer() {
   const router = useRouter();
+  const [step, setStep] = useState(1);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
@@ -46,41 +47,6 @@ export default function RegisterRetailer() {
   const [additionalStores, setAdditionalStores] = useState([]);
   const [lastAddedStoreId, setLastAddedStoreId] = useState(null);
   const storeRefs = useRef({});
-  const [isCopied, setIsCopied] = useState(false);
-
-  const handleManagerShare = async () => {
-    const shareUrl = window.location.origin + '/onboard/about';
-
-    try {
-      // Try to copy to clipboard first
-      if (navigator.clipboard && navigator.clipboard.writeText) {
-        await navigator.clipboard.writeText(shareUrl);
-        setIsCopied(true);
-        setTimeout(() => setIsCopied(false), 2000);
-      }
-    } catch (clipboardErr) {
-      console.log('Clipboard write failed:', clipboardErr);
-      // Fallback: still show as copied if we proceed to share
-      setIsCopied(true);
-      setTimeout(() => setIsCopied(false), 2000);
-    }
-
-    // Try native share API if available (separate from clipboard)
-    if (navigator.share) {
-      try {
-        await navigator.share({
-          title: 'Pawpaya Display Program',
-          text: 'I found this program that\'s completely free to sign up, can you check it out?',
-          url: shareUrl
-        });
-      } catch (shareErr) {
-        // User cancelled share or share failed - that's ok, link is already copied
-        if (shareErr.name !== 'AbortError') {
-          console.log('Share failed:', shareErr);
-        }
-      }
-    }
-  };
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -370,6 +336,22 @@ export default function RegisterRetailer() {
     }
   };
 
+
+  // Step 1 must hold before we ask for account details — otherwise a missing
+  // address only surfaces after the user has typed a password.
+  const goToStep2 = () => {
+    setError('');
+    if (!formData.storeName) return setError('Pick your store, or add it as a new one.');
+    if (!formData.storeAddress) return setError('We need a shipping address to send your display.');
+    for (const store of additionalStores) {
+      if (!store.storeName || !store.storeAddress) {
+        return setError('Finish the extra location, or remove it.');
+      }
+    }
+    setStep(2);
+    if (typeof window !== 'undefined') window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -484,16 +466,6 @@ export default function RegisterRetailer() {
     visible: { opacity: 1, y: 0 }
   };
 
-  const staggerContainer = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.1
-      }
-    }
-  };
-
 
   const nextSteps = [
     {
@@ -515,199 +487,29 @@ export default function RegisterRetailer() {
 
 
   return (
-    <>
-      <style jsx global>{`
-        body {
-          overflow-x: hidden !important;
-          max-width: 100vw !important;
-        }
-        html {
-          overflow-x: hidden !important;
-        }
-      `}</style>
-    <div className="min-h-screen bg-white pt-28 md:pt-36 pb-16">
+    <div className="t-page" style={{ minHeight: '100vh' }}>
+      <div className="t-wrap" style={{ maxWidth: 640 }}>
 
-      {/* Desktop: Two-column layout, Mobile: Single column */}
-      <div className="max-w-[1600px] mx-auto px-4 sm:px-10 lg:px-12 pb-12">
-        <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 lg:items-start">
-          {/* LEFT COLUMN - Info (Sticky on desktop) */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.4 }}
-            className="lg:sticky lg:top-8 space-y-4 md:space-y-6 order-2 lg:order-1"
-          >
-            {/* Step Indicator + Hero - Hidden on mobile, visible on desktop */}
-            <div className="hidden lg:block text-center lg:text-left space-y-6">
-              <motion.div
-                initial={{ scale: 0.85, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
-                transition={{ duration: 0.5, delay: 0.2 }}
-                className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium"
-                style={{ background: 'linear-gradient(to right, #ff7a4a, #ff6fb3)', color: 'white' }}
-              >
-                <span>🎉</span>
-                <span>Final Step — Claim Your Display</span>
-              </motion.div>
-              <motion.h1
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: 0.3 }}
-                className="text-4xl md:text-5xl lg:text-6xl font-medium text-gray-900 leading-tight"
-              >
-                Claim Your{' '}
-                <span style={{ background: 'linear-gradient(to right, #ff7a4a, #ff6fb3)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
-                  Display
-                </span>
-              </motion.h1>
-              <motion.p
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: 0.35 }}
-                className="text-xl text-gray-700 font-medium leading-relaxed"
-              >
-                Complete the form to get your free Pawpaya display shipped within 5-7 days.
-                Every customer tap earns you money—automatically.
-              </motion.p>
-            </div>
+        <header style={{ padding: '64px 0 8px' }}>
+          <p style={{ fontSize: 13, color: 'var(--pewter)', margin: 0 }}>
+            Step {step} of 2 · {step === 1 ? 'Your store' : 'Your account'}
+          </p>
+          <h1 style={{ fontSize: 32, fontWeight: 500, letterSpacing: '-0.02em', margin: '8px 0 0' }}>
+            {step === 1 ? 'Which store is this for?' : 'Create your account'}
+          </h1>
+          <p className="t-section__note" style={{ maxWidth: 460 }}>
+            {step === 1
+              ? 'We print and ship your display free. Tell us where to send it.'
+              : 'This is how you sign in to see your taps and get paid.'}
+          </p>
+        </header>
 
-            {/* What Happens Next */}
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.85 }}
-              className="bg-white rounded-[4px] p-5 md:p-6 border border-transparent"
-            >
-              <div className="mb-4 md:mb-6">
-                <h3 className="text-2xl font-medium text-gray-900 mb-2">What Happens Next</h3>
-                <p className="text-gray-600 text-sm"></p>
-              </div>
-              <div className="space-y-4 md:space-y-5">
-                {nextSteps.map((step, idx) => (
-                  <div
-                    key={step.title}
-                    className="relative"
-                  >
-                    <div className="flex items-start gap-4">
-                      <div className="flex-shrink-0 w-12 h-12 rounded-[4px] flex items-center justify-center text-white text-xl font-medium"
-                           style={{ background: 'linear-gradient(to right, #ff7a4a, #ff6fb3)' }}>
-                        {idx + 1}
-                      </div>
-                      <div className="flex-1">
-                        <div className="flex items-center gap-3 mb-2">
-                          <h4 className="font-medium text-lg text-gray-900">{step.title}</h4>
-                          <span className="px-3 py-1 rounded-full text-xs font-medium whitespace-nowrap"
-                                style={{ background: 'linear-gradient(to right, #ff7a4a, #ff6fb3)', color: 'white' }}>
-                            {step.timing}
-                          </span>
-                        </div>
-                        <p className="text-gray-600 leading-relaxed">{step.description}</p>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </motion.div>
+        <div className="t-progress"><div className="t-progress__fill" style={{ width: step === 1 ? '50%' : '100%' }} /></div>
 
-            {/* Manager Referral Card */}
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.9 }}
-              className="bg-white rounded-[4px] p-5 md:p-6 border border-transparent"
-            >
-              <h3 className="text-xl font-medium text-gray-900 mb-3">Managers</h3>
-              <p className="text-gray-600 mb-4 leading-relaxed">
-                Think your store would benefit from this? Help the owner discover this opportunity by sharing with them.
-              </p>
-              <button
-                onClick={handleManagerShare}
-                type="button"
-                className="w-full px-6 py-3 rounded-[4px] font-medium transition-all bg-white border"
-                style={{ borderColor: '#ff6fb3', color: '#ff6fb3' }}
-              >
-                {isCopied ? 'Copied! ✓' : 'Share With Owner'}
-              </button>
-            </motion.div>
+        <form onSubmit={handleSubmit} className="space-y-5 w-full" style={{ paddingTop: 36 }}>
 
-            {/* Questions Contact Card */}
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 1.0 }}
-              className="bg-white rounded-[4px] p-5 md:p-6 border border-transparent text-center"
-            >
-              <h3 className="text-xl font-medium text-gray-900 mb-3">Questions?</h3>
-              <p className="text-gray-600 mb-4 leading-relaxed">
-                Call us now! We're here to help you out.
-              </p>
-              <a
-                href="tel:7159791259"
-                className="inline-block px-6 py-3 rounded-[4px] font-medium text-white transition-all"
-                style={{ background: 'linear-gradient(to right, #ff7a4a, #ff6fb3)' }}
-              >
-                (715) 979-1259
-              </a>
-            </motion.div>
-
-          </motion.div>
-
-          {/* RIGHT COLUMN - Registration Form */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.4 }}
-            className="bg-white rounded-[4px] p-8 lg:p-10 border border-transparent order-1 lg:order-2 w-full"
-            style={{
-              overflow: 'visible',
-              height: 'auto',
-              minHeight: 'unset',
-              maxHeight: 'none'
-            }}
-          >
-            {/* Mobile Hero Header - Only visible on mobile */}
-            <div className="lg:hidden mb-8 text-center">
-              <motion.div
-                initial={{ scale: 0.85, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
-                transition={{ duration: 0.5, delay: 0.2 }}
-                className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium mb-6"
-                style={{ background: 'linear-gradient(to right, #ff7a4a, #ff6fb3)', color: 'white' }}
-              >
-                <span>🎉</span>
-                <span>Final Step</span>
-              </motion.div>
-
-              <h1 className="text-3xl sm:text-4xl font-medium text-gray-900 leading-tight mb-4">
-                {' '}
-                <span style={{ background: 'linear-gradient(to right, #ff7a4a, #ff6fb3)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
-                  Claim Your Display
-                </span>
-              </h1>
-
-              <p className="text-base text-gray-700 font-medium leading-relaxed mb-8">
-
-              </p>
-            </div>
-
-            {/* Form Header - Desktop */}
-            <div className="mb-8 hidden lg:block">
-              <h2 className="text-3xl font-medium text-gray-900 mb-1">Registration Form</h2>
-              <p className="text-gray-600 text-base">Let's make you more money.</p>
-            </div>
-
-            <motion.form
-              onSubmit={handleSubmit}
-              variants={staggerContainer}
-              initial="hidden"
-              animate="visible"
-              className="space-y-5 w-full"
-              style={{
-                overflow: 'visible',
-                height: 'auto',
-                maxHeight: 'none'
-              }}
-            >
+          {step === 1 && (
+            <>
               {/* Store Name with Autocomplete */}
               <motion.div variants={fadeInUp} className="relative w-full" ref={suggestionsRef}>
                 <label htmlFor="storeName" className="block text-sm font-medium text-gray-700 mb-2">
@@ -868,94 +670,6 @@ export default function RegisterRetailer() {
                 )}
 
               </motion.div>
-
-              {/* Owner & Manager Names - Side by Side */}
-              <motion.div variants={fadeInUp} className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                  <label htmlFor="ownerName" className="block text-sm font-medium text-gray-700 mb-2">
-                    Owner's Name(s) <span className="text-red-500">*</span>
-                  </label>
-                  <input
-                    type="text"
-                    id="ownerName"
-                    name="ownerName"
-                    value={formData.ownerName}
-                    onChange={handleChange}
-                    required
-                    className="w-full px-4 py-3 border border-gray-200 rounded-[4px] focus:ring-2 focus:ring-[#ff6fb3] focus:border-transparent transition-all text-gray-900 placeholder-gray-400 hover:border-gray-300"
-                    placeholder="John Doe"
-                  />
-                </div>
-
-                <div>
-                  <label htmlFor="managerName" className="block text-sm font-medium text-gray-700 mb-2">
-                    Manager's Name
-                  </label>
-                  <input
-                    type="text"
-                    id="managerName"
-                    name="managerName"
-                    value={formData.managerName}
-                    onChange={handleChange}
-                    className="w-full px-4 py-3 border border-gray-200 rounded-[4px] focus:ring-2 focus:ring-[#ff6fb3] focus:border-transparent transition-all text-gray-900 placeholder-gray-400 hover:border-gray-300"
-                    placeholder="Jane Smith (optional)"
-                  />
-                </div>
-              </motion.div>
-
-              {/* Email & Phone - Side by Side */}
-              <motion.div variants={fadeInUp} className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                  <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
-                    Email Address <span className="text-red-500">*</span>
-                  </label>
-                  <input
-                    type="email"
-                    id="email"
-                    name="email"
-                    value={formData.email}
-                    onChange={handleChange}
-                    required
-                    className="w-full px-4 py-3 border border-gray-200 rounded-[4px] focus:ring-2 focus:ring-[#ff6fb3] focus:border-transparent transition-all text-gray-900 placeholder-gray-400 hover:border-gray-300"
-                    placeholder="owner@store.com"
-                  />
-                </div>
-
-                <div>
-                  <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-2">
-                    Phone Number
-                  </label>
-                  <input
-                    type="tel"
-                    id="phone"
-                    name="phone"
-                    value={formData.phone}
-                    onChange={handleChange}
-                    className="w-full px-4 py-3 border border-gray-200 rounded-[4px] focus:ring-2 focus:ring-[#ff6fb3] focus:border-transparent transition-all text-gray-900 placeholder-gray-400 hover:border-gray-300"
-                    placeholder="(555) 123-4567 (optional)"
-                  />
-                </div>
-              </motion.div>
-
-              {/* Password */}
-              <motion.div variants={fadeInUp}>
-                <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
-                  Create Password <span className="text-red-500">*</span>
-                </label>
-                <input
-                  type="password"
-                  id="password"
-                  name="password"
-                  value={formData.password}
-                  onChange={handleChange}
-                  required
-                  minLength={6}
-                  className="w-full px-4 py-3 border border-gray-200 rounded-[4px] focus:ring-2 focus:ring-[#ff6fb3] focus:border-transparent transition-all text-gray-900 placeholder-gray-400 hover:border-gray-300"
-                  placeholder="At least 6 characters"
-                />
-                <p className="text-xs text-gray-500 mt-1">Create a password to access your account dashboard</p>
-              </motion.div>
-
               {/* Store Address - Google Maps + USPS Validation */}
               <motion.div variants={fadeInUp}>
                 <AddressInput
@@ -1221,7 +935,101 @@ export default function RegisterRetailer() {
 
               {/* Success message now shows under Store Name field */}
 
-              {/* Error Message */}
+            </>
+          )}
+
+          {step === 2 && (
+            <>
+              {/* Owner & Manager Names - Side by Side */}
+              <motion.div variants={fadeInUp} className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label htmlFor="ownerName" className="block text-sm font-medium text-gray-700 mb-2">
+                    Owner's Name(s) <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    id="ownerName"
+                    name="ownerName"
+                    value={formData.ownerName}
+                    onChange={handleChange}
+                    required
+                    className="w-full px-4 py-3 border border-gray-200 rounded-[4px] focus:ring-2 focus:ring-[#ff6fb3] focus:border-transparent transition-all text-gray-900 placeholder-gray-400 hover:border-gray-300"
+                    placeholder="John Doe"
+                  />
+                </div>
+
+                <div>
+                  <label htmlFor="managerName" className="block text-sm font-medium text-gray-700 mb-2">
+                    Manager's Name
+                  </label>
+                  <input
+                    type="text"
+                    id="managerName"
+                    name="managerName"
+                    value={formData.managerName}
+                    onChange={handleChange}
+                    className="w-full px-4 py-3 border border-gray-200 rounded-[4px] focus:ring-2 focus:ring-[#ff6fb3] focus:border-transparent transition-all text-gray-900 placeholder-gray-400 hover:border-gray-300"
+                    placeholder="Jane Smith (optional)"
+                  />
+                </div>
+              </motion.div>
+
+              {/* Email & Phone - Side by Side */}
+              <motion.div variants={fadeInUp} className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
+                    Email Address <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    type="email"
+                    id="email"
+                    name="email"
+                    value={formData.email}
+                    onChange={handleChange}
+                    required
+                    className="w-full px-4 py-3 border border-gray-200 rounded-[4px] focus:ring-2 focus:ring-[#ff6fb3] focus:border-transparent transition-all text-gray-900 placeholder-gray-400 hover:border-gray-300"
+                    placeholder="owner@store.com"
+                  />
+                </div>
+
+                <div>
+                  <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-2">
+                    Phone Number
+                  </label>
+                  <input
+                    type="tel"
+                    id="phone"
+                    name="phone"
+                    value={formData.phone}
+                    onChange={handleChange}
+                    className="w-full px-4 py-3 border border-gray-200 rounded-[4px] focus:ring-2 focus:ring-[#ff6fb3] focus:border-transparent transition-all text-gray-900 placeholder-gray-400 hover:border-gray-300"
+                    placeholder="(555) 123-4567 (optional)"
+                  />
+                </div>
+              </motion.div>
+
+              {/* Password */}
+              <motion.div variants={fadeInUp}>
+                <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
+                  Create Password <span className="text-red-500">*</span>
+                </label>
+                <input
+                  type="password"
+                  id="password"
+                  name="password"
+                  value={formData.password}
+                  onChange={handleChange}
+                  required
+                  minLength={6}
+                  className="w-full px-4 py-3 border border-gray-200 rounded-[4px] focus:ring-2 focus:ring-[#ff6fb3] focus:border-transparent transition-all text-gray-900 placeholder-gray-400 hover:border-gray-300"
+                  placeholder="At least 6 characters"
+                />
+                <p className="text-xs text-gray-500 mt-1">Create a password to access your account dashboard</p>
+              </motion.div>
+
+            </>
+          )}
+
               {error && (
                 <motion.div
                   initial={{ opacity: 0, scale: 0.9 }}
@@ -1235,58 +1043,30 @@ export default function RegisterRetailer() {
                 </motion.div>
               )}
 
-              {/* Submit Button */}
-              <motion.button
-                variants={fadeInUp}
-                type="submit"
-                disabled={loading}
-                className="w-full bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3] text-white py-4 px-6 rounded-[4px] font-medium text-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                {loading ? (
-                  <span className="flex items-center justify-center gap-2">
-                    <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                    </svg>
-                    Processing...
-                  </span>
-                ) : (
-                  <span>
-                    Claim My Free Display{additionalStores.length > 0 ? `s (${additionalStores.length + 1} total)` : ''}
-                  </span>
-                )}
-              </motion.button>
+          <div style={{ display: 'flex', gap: 12, paddingTop: 16 }}>
+            {step === 2 && (
+              <button type="button" className="t-btn t-btn--secondary" onClick={() => setStep(1)}>Back</button>
+            )}
+            {step === 1 ? (
+              <button type="button" className="t-btn t-btn--primary" style={{ flex: 1 }} onClick={goToStep2}>Continue</button>
+            ) : (
+              <button type="submit" className="t-btn t-btn--primary" style={{ flex: 1 }} disabled={loading}>
+                {loading ? 'Setting up…' : `Claim my free display${additionalStores.length > 0 ? `s (${additionalStores.length + 1})` : ''}`}
+              </button>
+            )}
+          </div>
 
-              {/* Terms */}
-              <motion.p
-                variants={fadeInUp}
-                className="text-xs text-gray-500 text-center"
-              >
-                By submitting, you agree to receive your free display(s) and marketing emails.
-                <br />
-                No spam, unsubscribe anytime. {additionalStores.length > 0 && `You will receive ${additionalStores.length + 1} displays total. `}Shipping is free.
-              </motion.p>
-            </motion.form>
+          {step === 2 && (
+            <p style={{ fontSize: 12, color: 'var(--pewter)', paddingTop: 8 }}>
+              By submitting you agree to receive your display{additionalStores.length > 0 ? 's' : ''} and marketing emails. Unsubscribe anytime. Shipping is free.
+            </p>
+          )}
+        </form>
 
-          </motion.div>
+        <div style={{ padding: '48px 0 96px' }}>
+          <Link href="/onboard" className="t-footer__link">← Back to overview</Link>
         </div>
-
-        {/* Back Link - Below everything */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.8 }}
-          className="text-center mt-8 md:mt-12"
-        >
-          <Link href="/onboard" className="text-gray-600 hover:text-gray-900 font-medium inline-flex items-center gap-2 hover:gap-3 transition-all">
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-            </svg>
-            Back to landing page
-          </Link>
-        </motion.div>
       </div>
     </div>
-    </>
   );
 }

@@ -272,3 +272,7 @@
   .t-dl__row { flex-direction: column; gap: 4px; }
   .t-dl__k { width: auto; }
 }
+
+/* Two-step register: a hairline that fills. Not a pill, not a stepper widget. */
+.t-progress { height: 2px; background: var(--hairline); }
+.t-progress__fill { height: 100%; background: var(--brand-gradient); transition: width var(--t); }
