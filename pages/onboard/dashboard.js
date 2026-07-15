@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { motion, AnimatePresence } from 'framer-motion';
 import { supabase } from '../../lib/supabase';
 import { useAuthContext } from '../../context/AuthContext';
 import Script from 'next/script';
@@ -637,17 +636,19 @@ export default function RetailerDashboard() {
   const maxScans = weeklyData.length > 0 ? Math.max(...weeklyData.map(d => d.scans), 1) : 1;
   const maxRevenue = weeklyData.length > 0 ? Math.max(...weeklyData.map(d => d.revenue), 1) : 1;
 
+  // A spinner is a decoration for a wait this short. Say what's happening and
+  // hold the layout still.
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center pt-20" style={{ backgroundColor: '#FFFFFF' }}>
-        <motion.div 
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          className="text-center"
-        >
-          <div className="animate-spin rounded-full h-16 w-16 border-4 border-[#ff6fb3] border-t-transparent mx-auto mb-4"></div>
-          <p className="text-gray-700 font-medium text-lg">Loading your dashboard...</p>
-        </motion.div>
+      <div className="t-page" style={{ minHeight: '100vh' }}>
+        <div className="t-wrap">
+          <header style={{ padding: '64px 0 36px' }}>
+            <p style={{ fontSize: 13, color: 'var(--pewter)', margin: 0 }}>&nbsp;</p>
+            <h1 style={{ fontSize: 32, fontWeight: 500, letterSpacing: '-0.02em', margin: '8px 0 0', color: 'var(--fog)' }}>
+              Loading your displays…
+            </h1>
+          </header>
+        </div>
       </div>
     );
   }
@@ -668,1051 +669,363 @@ export default function RetailerDashboard() {
     }
   };
 
+  // Formatting helpers for the rebuilt view.
+  const fmtMoney = (n) =>
+    Number(n || 0).toLocaleString('en-US', { style: 'currency', currency: 'USD' });
+  const fmtWhen = (ts) => {
+    if (!ts) return '—';
+    const d = new Date(ts);
+    const today = new Date().toDateString() === d.toDateString();
+    return today
+      ? d.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })
+      : d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+  };
+
   return (
     <>
       <Script
         src="https://cdn.plaid.com/link/v2/stable/link-initialize.js"
         strategy="lazyOnload"
-        onLoad={() => {
-          console.log('[PLAID] Script loaded via next/script');
-          setPlaidScriptLoaded(true);
-        }}
-        onError={() => {
-          console.error('[PLAID] Script failed to load');
-        }}
+        onLoad={() => setPlaidScriptLoaded(true)}
+        onError={() => console.error('[PLAID] Script failed to load')}
       />
-      <div className="min-h-screen pt-20" style={{ backgroundColor: '#FFFFFF' }}>
-      {/* Header */}
-      <motion.div
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        className="bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3] text-white relative overflow-hidden"
-      >
-        <div className="absolute inset-0 opacity-10 pointer-events-none">
-          <div className="absolute top-0 right-0 w-96 h-96 bg-white rounded-full blur-3xl"></div>
-          <div className="absolute bottom-0 left-0 w-96 h-96 bg-white rounded-full blur-3xl"></div>
-        </div>
 
-        <div className="relative z-10 w-full">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 md:py-8">
-            <div className="flex items-start justify-between gap-4">
-              <motion.div
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.5, delay: 0.2 }}
-                className="flex-1 min-w-0"
-              >
-                <h1 className="text-lg sm:text-xl md:text-2xl font-medium leading-tight mb-2">
-                  Your Dashboard
-                </h1>
-                <p className="text-white/90 text-xs leading-relaxed">
-                  Welcome back! Here's how your displays are performing.
-                </p>
-              </motion.div>
+      <div className="t-page" style={{ minHeight: '100vh' }}>
+        <div className="t-wrap">
+
+          {/* Header — the store's own name, then the one thing this page is about. */}
+          <header style={{ padding: '64px 0 36px' }}>
+            <p style={{ fontSize: 13, color: 'var(--pewter)', margin: 0 }}>
+              {retailer?.name || 'Your store'}
+            </p>
+            <h1 style={{ fontSize: 32, fontWeight: 500, letterSpacing: '-0.02em', margin: '8px 0 0' }}>
+              Your displays
+            </h1>
+          </header>
+
+          {/* Spec sheet. Tesla puts 358mi / 200mph / 3.1s here. One gradient number. */}
+          <section className="t-spec">
+            <div className="t-spec__cell">
+              <div className="t-spec__value">{stats.weeklyScans}</div>
+              <div className="t-spec__label">Taps this week</div>
             </div>
-          </div>
-        </div>
-      </motion.div>
+            <div className="t-spec__cell">
+              <div className="t-spec__value t-spec__value--brand">{fmtMoney(stats.revenue)}</div>
+              <div className="t-spec__label">Earned this month</div>
+            </div>
+            <div className="t-spec__cell">
+              <div className="t-spec__value">{stats.displaysClaimed}</div>
+              <div className="t-spec__label">{stats.displaysClaimed === 1 ? 'Display live' : 'Displays live'}</div>
+            </div>
+            <div className="t-spec__cell">
+              <div className="t-spec__value">
+                {Math.round(stats.conversionRate)}<span style={{ fontSize: 24, color: 'var(--pewter)' }}>%</span>
+              </div>
+              <div className="t-spec__label">Taps that bought</div>
+            </div>
+          </section>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4 sm:py-6 md:py-8">
-        {/* KPI Cards */}
-        <motion.div
-          variants={staggerContainer}
-          initial="hidden"
-          animate="visible"
-          className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-6 mb-4 md:mb-8"
-        >
-          {/* Weekly Scans */}
-          <motion.div
-            variants={fadeInUp}
-            className="bg-white rounded-[4px] p-4 md:p-6 border border-transparent text-center"
-          >
-            <p className="text-gray-600 text-base md:text-lg font-medium mb-2">Weekly scans</p>
-            <p className="text-xl md:text-2xl font-medium text-gray-900 mb-1">{stats.weeklyScans}</p>
-            <p className="text-xs text-gray-500">Last 7 days</p>
-          </motion.div>
-
-          {/* Revenue */}
-          <motion.div
-            variants={fadeInUp}
-            className="bg-white rounded-[4px] p-4 md:p-6 border border-transparent text-center"
-          >
-            <p className="text-gray-600 text-base md:text-lg font-medium mb-2">Revenue earned</p>
-            <p className="text-xl md:text-2xl font-medium text-gray-900 mb-1">${stats.revenue.toLocaleString()}</p>
-            <p className="text-xs text-gray-500">This month</p>
-          </motion.div>
-
-          {/* Displays Claimed */}
-          <motion.div
-            variants={fadeInUp}
-            className="bg-white rounded-[4px] p-4 md:p-6 border border-transparent text-center"
-          >
-            <p className="text-gray-600 text-base md:text-lg font-medium mb-2">Displays active</p>
-            <p className="text-xl md:text-2xl font-medium text-gray-900 mb-1">{stats.displaysClaimed}</p>
-            <p className="text-xs text-gray-500">In your store</p>
-          </motion.div>
-
-          {/* Conversion Rate */}
-          <motion.div
-            variants={fadeInUp}
-            className="bg-white rounded-[4px] p-4 md:p-6 border border-transparent text-center"
-          >
-            <p className="text-gray-600 text-base md:text-lg font-medium mb-2">Conversion rate</p>
-            <p className="text-xl md:text-2xl font-medium text-gray-900 mb-1">{stats.conversionRate}%</p>
-            <p className="text-xs text-gray-500">Scans to orders</p>
-          </motion.div>
-        </motion.div>
-
-        {/* Tabs */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.4 }}
-          className="mb-6"
-        >
-          <div className="flex gap-2 border-b-2 border-gray-200">
-            {[
-              { id: 'stats', label: 'Orders & Analytics' },
-              { id: 'payouts', label: 'Payouts' },
-              { id: 'settings', label: 'Settings' }
-            ].map((tab) => {
-              const active = activeTab === tab.id;
-              return (
-                <motion.button
-                  key={tab.id}
-                  
-                  
-                  onClick={() => handleTabChange(tab.id)}
-                  className={[
-                    "px-4 py-3 md:px-6 text-xs md:text-sm font-medium transition-all relative",
-                    active
-                      ? "text-[#ff6fb3]"
-                      : "text-gray-600 hover:text-gray-900",
-                  ].join(" ")}
-                >
-                  {tab.label}
-                  {active && (
-                    <motion.div
-                      layoutId="activeTab"
-                      className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3]"
-                      transition={{ type: "spring", stiffness: 380, damping: 30 }}
-                    />
-                  )}
-                </motion.button>
-              );
-            })}
-          </div>
-        </motion.div>
-
-          {/* Tab Content */}
-          <div className="bg-white rounded-[4px] border border-transparent p-4 md:p-8">
-            {/* Stats Tab */}
-            {activeTab === 'stats' && (
-              <motion.div
-                key="stats"
-                initial={{ opacity: 0, x: tabDirection * 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.3 }}
-                className="space-y-8"
-              >
-                {/* Recent Scan Activity */}
-                <motion.div
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ duration: 0.3 }}
-                  className="space-y-4 md:space-y-6"
-                >
-                  <div className="flex items-center justify-between mb-3 md:mb-6">
-                    <h3 className="text-xs md:text-sm font-medium text-gray-900">Recent Scan Activity</h3>
-                    <div className="text-xs md:text-sm text-gray-500 font-medium">
-                      Showing {scans.length} scans
-                    </div>
-                  </div>
-
-                  {scans.length > 0 ? (
-                    <>
-                      {/* Desktop Table View */}
-                      <div className="hidden md:block bg-white to-white border border-gray-200 rounded-[4px] overflow-hidden">
-                        <table className="w-full">
-                          <thead className="bg-gradient-to-r from-pink-50 to-purple-50">
-                            <tr>
-                              <th className="text-left py-4 px-6 font-medium text-gray-700">UID</th>
-                              <th className="text-left py-4 px-6 font-medium text-gray-700">Location</th>
-                              <th className="text-center py-4 px-6 font-medium text-gray-700">Clicked</th>
-                              <th className="text-center py-4 px-6 font-medium text-gray-700">Converted</th>
-                              <th className="text-right py-4 px-6 font-medium text-gray-700">Revenue</th>
-                              <th className="text-right py-4 px-6 font-medium text-gray-700">Date</th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            {scans.slice(0, 50).map((scan, idx) => (
-                              <motion.tr
-                                key={scan.id || idx}
-                                initial={{ opacity: 0, x: -20 }}
-                                animate={{ opacity: 1, x: 0 }}
-                                transition={{ duration: 0.3, delay: Math.min(idx * 0.05, 0.5) }}
-                                className="border-t border-gray-100"
-                              >
-                                <td className="py-4 px-6">
-                                  <span className="font-mono text-sm text-gray-900">{scan.uid || '-'}</span>
-                                </td>
-                                <td className="py-4 px-6 text-gray-700">{scan.location || '-'}</td>
-                                <td className="py-4 px-6 text-center">
-                                  {scan.clicked ? (
-                                    <span className="text-green-600 text-lg">✓</span>
-                                  ) : (
-                                    <span className="text-gray-300 text-lg">○</span>
-                                  )}
-                                </td>
-                                <td className="py-4 px-6 text-center">
-                                  {scan.converted ? (
-                                    <span className="text-green-600 font-medium text-lg">✓</span>
-                                  ) : (
-                                    <span className="text-gray-300 text-lg">○</span>
-                                  )}
-                                </td>
-                                <td className="py-4 px-6 text-right">
-                                  <span className="font-medium text-green-700">
-                                    ${(scan.revenue || 0).toFixed(2)}
-                                  </span>
-                                </td>
-                                <td className="py-4 px-6 text-right text-sm text-gray-600">
-                                  {new Date(scan.timestamp).toLocaleDateString()}
-                                </td>
-                              </motion.tr>
-                            ))}
-                          </tbody>
-                        </table>
-                      </div>
-
-                      {/* Mobile Card View */}
-                      <div className="md:hidden space-y-3">
-                        {scans.slice(0, 50).map((scan, idx) => (
-                          <motion.div
-                            key={scan.id || idx}
-                            initial={{ opacity: 0, y: 10 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ duration: 0.3, delay: Math.min(idx * 0.05, 0.5) }}
-                            className="bg-white to-white border border-gray-200 rounded-[4px] p-4"
-                          >
-                            <div className="flex items-center justify-between mb-3">
-                              <div>
-                                <div className="text-xs text-gray-500 mb-1">UID</div>
-                                <span className="font-mono text-sm text-gray-900">{scan.uid || '-'}</span>
-                              </div>
-                              <div className="text-right">
-                                <div className="text-xs text-gray-500 mb-1">Date</div>
-                                <span className="text-sm text-gray-600">{new Date(scan.timestamp).toLocaleDateString()}</span>
-                              </div>
-                            </div>
-
-                            <div className="mb-3">
-                              <div className="text-xs text-gray-500 mb-1">Location</div>
-                              <span className="text-sm text-gray-700">{scan.location || '-'}</span>
-                            </div>
-
-                            <div className="grid grid-cols-3 gap-3 pt-3 border-t border-gray-100">
-                              <div className="text-center">
-                                <div className="text-xs text-gray-500 mb-1">Clicked</div>
-                                {scan.clicked ? (
-                                  <span className="text-green-600 text-lg">✓</span>
-                                ) : (
-                                  <span className="text-gray-300 text-lg">○</span>
-                                )}
-                              </div>
-                              <div className="text-center">
-                                <div className="text-xs text-gray-500 mb-1">Converted</div>
-                                {scan.converted ? (
-                                  <span className="text-green-600 font-medium text-lg">✓</span>
-                                ) : (
-                                  <span className="text-gray-300 text-lg">○</span>
-                                )}
-                              </div>
-                              <div className="text-center">
-                                <div className="text-xs text-gray-500 mb-1">Revenue</div>
-                                <span className="font-medium text-green-700">
-                                  ${(scan.revenue || 0).toFixed(2)}
-                                </span>
-                              </div>
-                            </div>
-                          </motion.div>
-                        ))}
-                      </div>
-                    </>
-                  ) : (
-                    <div className="bg-white rounded-[4px] border border-transparent py-12 md:py-20 text-center">
-                      <div className="flex flex-col items-center gap-4 max-w-sm mx-auto px-4">
-                        <div className="w-20 h-20 bg-white rounded-full flex items-center justify-center">
-                          <svg className="w-10 h-10 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-                          </svg>
-                        </div>
-                        <div>
-                          <p className="text-gray-900 font-medium text-lg mb-1">No scans yet</p>
-                          <p className="text-gray-500 text-sm">Scan activity will appear here once customers interact with your displays</p>
-                        </div>
-                      </div>
-                    </div>
-                  )}
-
-                  {stats.unpaidEarnings > 0 && (
-                    <div className="bg-gradient-to-r from-yellow-100 to-orange-100 border border-yellow-300 rounded-[4px] p-6">
-                      <div className="flex items-center justify-between">
-                        <div>
-                          <h4 className="text-lg font-medium text-gray-900 mb-1">Unpaid Earnings</h4>
-                          <p className="text-sm text-gray-600">Pending payout to your account</p>
-                        </div>
-                        <div className="text-3xl font-medium text-orange-700">${stats.unpaidEarnings.toFixed(2)}</div>
-                      </div>
-                    </div>
-                  )}
-                </motion.div>
-
-                {/* Weekly Performance Chart */}
-                <div>
-                  <h3 className="text-xs font-medium text-gray-900 mb-4 md:mb-6">Weekly Performance</h3>
-                  <div className="bg-white to-white rounded-[4px] p-4 md:p-8 border border-transparent">
-                    {/* Bar Chart - Scans */}
-                    <div className="mb-10">
-                      <div className="flex items-center justify-between mb-4">
-                        <h4 className="font-medium text-gray-700 text-xs md:text-sm">Scans per Day</h4>
-                        <div className="text-xs md:text-sm text-gray-500">Max: {maxScans}</div>
-                      </div>
-                      <div className="flex items-end justify-between gap-2 h-48">
-                        {weeklyData.map((day, idx) => {
-                          const barHeight = Math.max((day.scans / maxScans) * 100, day.scans > 0 ? 8 : 0);
-                          return (
-                            <div
-                              key={idx}
-                              className="flex-1 flex flex-col items-center gap-2 h-full"
-                            >
-                              <div className="w-full flex flex-col justify-end h-full">
-                                <motion.div
-                                  initial={{ height: 0 }}
-                                  animate={{ height: `${barHeight}%` }}
-                                  transition={{ duration: 0.6, delay: idx * 0.1, ease: "easeOut" }}
-                                  className="w-full bg-gradient-to-t from-[#ff7a4a] to-[#ff6fb3] rounded-t-[15px] relative group origin-bottom min-h-[4px]"
-                                >
-                                  <div className="absolute -top-10 left-1/2 transform -translate-x-1/2 bg-gray-900 text-white text-xs px-3 py-1.5 rounded-[4px] opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap font-medium z-10">
-                                    {day.scans} scans
-                                  </div>
-                                </motion.div>
-                              </div>
-                              <span className="text-sm font-medium text-gray-600">{day.day}</span>
-                            </div>
-                          );
-                        })}
-                      </div>
-                    </div>
-
-                    {/* Revenue Chart */}
-                    <div>
-                      <div className="flex items-center justify-between mb-4">
-                        <h4 className="font-medium text-gray-700 text-xs md:text-sm">Revenue per Day</h4>
-                        <div className="text-xs md:text-sm text-gray-500">Max: ${maxRevenue.toFixed(2)}</div>
-                      </div>
-                      <div className="flex items-end justify-between gap-2 h-48">
-                        {weeklyData.map((day, idx) => {
-                          const barHeight = Math.max((day.revenue / maxRevenue) * 100, day.revenue > 0 ? 8 : 0);
-                          return (
-                            <div
-                              key={idx}
-                              className="flex-1 flex flex-col items-center gap-2 h-full"
-                            >
-                              <div className="w-full flex flex-col justify-end h-full">
-                                <motion.div
-                                  initial={{ height: 0 }}
-                                  animate={{ height: `${barHeight}%` }}
-                                  transition={{ duration: 0.6, delay: idx * 0.1 + 0.3, ease: "easeOut" }}
-                                  className="w-full bg-gradient-to-t from-[#ff7a4a] to-[#ff6fb3] rounded-t-[15px] relative group origin-bottom min-h-[4px]"
-                                >
-                                  <div className="absolute -top-10 left-1/2 transform -translate-x-1/2 bg-gray-900 text-white text-xs px-3 py-1.5 rounded-[4px] opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap font-medium z-10">
-                                    ${day.revenue.toFixed(2)}
-                                  </div>
-                                </motion.div>
-                              </div>
-                              <span className="text-sm font-medium text-gray-600">{day.day}</span>
-                            </div>
-                          );
-                        })}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-              </motion.div>
+          {/* The thing a store owner opens this page to see. */}
+          <section className="t-section t-row">
+            <div>
+              <div className="t-section__title">Waiting to be paid</div>
+              <p className="t-section__note">
+                {retailerAccount?.is_connected
+                  ? `Deposited to ${retailerAccount.institution_name || 'your bank'}${retailerAccount.account_mask ? ` ••••${retailerAccount.account_mask}` : ''}.`
+                  : 'Connect a bank below to get paid.'}
+              </p>
+              <div className="t-hero-num">{fmtMoney(stats.unpaidEarnings)}</div>
+            </div>
+            {payoutJobs.length > 0 && (
+              <button className="t-btn t-btn--secondary" onClick={handleExportPayouts}>Export CSV</button>
             )}
+          </section>
 
-            {/* Payouts Tab */}
-            {activeTab === 'payouts' && (
-              <motion.div
-                key="payouts"
-                initial={{ opacity: 0, x: tabDirection * 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.3 }}
-              >
-                 <div className="flex items-center justify-between mb-4 md:mb-6">
-                   <h3 className="text-sm md:text-base font-medium text-gray-900">Payouts</h3>
-                  <motion.button
-                    
-                    
-                    onClick={handleExportPayouts}
-                    className="px-3 py-2 md:px-5 md:py-2.5 bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3] text-white rounded-[4px] text-xs md:text-sm font-medium transition-all"
-                  >
-                    Export CSV
-                  </motion.button>
-                </div>
+          <section className="t-section" style={{ paddingBottom: 0 }}>
+            <div className="t-tabs">
+              {[['stats', 'Activity'], ['payouts', 'Payouts'], ['settings', 'Settings']].map(([id, label]) => (
+                <button
+                  key={id}
+                  className="t-tab"
+                  role="tab"
+                  aria-selected={activeTab === id}
+                  onClick={() => handleTabChange(id)}
+                >
+                  {label}
+                </button>
+              ))}
+            </div>
+          </section>
 
-                {/* Summary Cards */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 mb-4 md:mb-8">
-                  <div className="bg-white to-white border border-gray-200 rounded-[4px] p-4 md:p-6">
-                    <h4 className="font-medium text-gray-700 mb-2 text-sm md:text-base">Pending Earnings</h4>
-                    <p className="text-2xl md:text-3xl font-medium text-gray-900">
-                      ${payoutJobs
-                        .filter(p => p.status === 'pending')
-                        .reduce((sum, p) => sum + (p.retailer_cut || 0), 0)
-                        .toFixed(2)}
-                    </p>
-                  </div>
+          {/* ---------------------------------------------------------- ACTIVITY */}
+          {activeTab === 'stats' && (
+            <>
+              <section className="t-section" style={{ borderTop: 0 }}>
+                <div className="t-section__title">Recent taps</div>
+                <p className="t-section__note">Every row is someone who tapped a display in your store.</p>
 
-                  <div className="bg-white to-white border border-gray-200 rounded-[4px] p-4 md:p-6">
-                    <h4 className="font-medium text-gray-700 mb-2 text-sm md:text-base">Total Paid Out</h4>
-                    <p className="text-2xl md:text-3xl font-medium text-gray-900">
-                      ${payoutJobs
-                        .filter(p => p.status === 'paid')
-                        .reduce((sum, p) => sum + (p.retailer_cut || 0), 0)
-                        .toFixed(2)}
-                    </p>
-                  </div>
-
-                  <div className="bg-white to-white border border-gray-200 rounded-[4px] p-4 md:p-6">
-                    <h4 className="font-medium text-gray-700 mb-2 text-sm md:text-base">Lifetime Earnings</h4>
-                    <p className="text-2xl md:text-3xl font-medium text-gray-900">
-                      ${payoutJobs
-                        .reduce((sum, p) => sum + (p.retailer_cut || 0), 0)
-                        .toFixed(2)}
-                    </p>
-                  </div>
-                </div>
-
-                {/* Payouts Table */}
-                {payoutJobs.length > 0 ? (
-                  <>
-                    {/* Desktop Table View */}
-                    <div className="hidden md:block bg-white to-white border border-gray-200 rounded-[4px] overflow-hidden">
-                      <table className="w-full">
-                        <thead className="bg-gradient-to-r from-pink-50 to-purple-50">
-                          <tr>
-                            <th className="text-left py-4 px-6 font-medium text-gray-700">Date</th>
-                            <th className="text-left py-4 px-6 font-medium text-gray-700">Vendor</th>
-                            <th className="text-right py-4 px-6 font-medium text-gray-700">Your Cut</th>
-                            <th className="text-right py-4 px-6 font-medium text-gray-700">Total Amount</th>
-                            <th className="text-center py-4 px-6 font-medium text-gray-700">Status</th>
-                            <th className="text-right py-4 px-6 font-medium text-gray-700">Paid Date</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {payoutJobs.map((payout, idx) => (
-                            <tr key={idx} className="border-t border-gray-100">
-                              <td className="py-4 px-6 text-gray-900">
-                                {new Date(payout.created_at).toLocaleDateString()}
-                              </td>
-                              <td className="py-4 px-6 text-gray-700">Vendor #{payout.vendor_id?.substring(0, 8)}</td>
-                              <td className="py-4 px-6 text-right">
-                                <span className="font-medium text-green-700">${(payout.retailer_cut || 0).toFixed(2)}</span>
-                              </td>
-                              <td className="py-4 px-6 text-right">
-                                <span className="font-medium text-gray-900">${(payout.total_amount || 0).toFixed(2)}</span>
-                              </td>
-                              <td className="py-4 px-6 text-center">
-                                <span className={`inline-block px-4 py-1.5 rounded-full text-xs font-medium ${
-                                  payout.status === 'paid'
-                                    ? 'bg-green-100 text-green-700'
-                                    : 'bg-yellow-100 text-yellow-700'
-                                }`}>
-                                  {payout.status}
-                                </span>
-                              </td>
-                              <td className="py-4 px-6 text-right text-gray-600">
-                                {payout.date_paid ? new Date(payout.date_paid).toLocaleDateString() : '-'}
-                              </td>
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
-                    </div>
-
-                    {/* Mobile Card View */}
-                    <div className="md:hidden space-y-3">
-                      {payoutJobs.map((payout, idx) => (
-                        <motion.div
-                          key={idx}
-                          initial={{ opacity: 0, y: 10 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          transition={{ duration: 0.3, delay: idx * 0.1 }}
-                          className="bg-white to-white border border-gray-200 rounded-[4px] p-4"
-                        >
-                          <div className="flex items-center justify-between mb-3">
-                            <div>
-                              <div className="text-xs text-gray-500 mb-1">Date</div>
-                              <span className="text-sm font-medium text-gray-900">
-                                {new Date(payout.created_at).toLocaleDateString()}
-                              </span>
-                            </div>
-                            <span className={`px-3 py-1 rounded-full text-xs font-medium ${
-                              payout.status === 'paid'
-                                ? 'bg-green-100 text-green-700'
-                                : 'bg-yellow-100 text-yellow-700'
-                            }`}>
-                              {payout.status}
-                            </span>
-                          </div>
-
-                          <div className="mb-3">
-                            <div className="text-xs text-gray-500 mb-1">Vendor</div>
-                            <span className="text-sm text-gray-700">Vendor #{payout.vendor_id?.substring(0, 8)}</span>
-                          </div>
-
-                          <div className="grid grid-cols-2 gap-3 pt-3 border-t border-gray-100">
-                            <div>
-                              <div className="text-xs text-gray-500 mb-1">Your Cut</div>
-                              <span className="font-medium text-green-700 text-sm">${(payout.retailer_cut || 0).toFixed(2)}</span>
-                            </div>
-                            <div>
-                              <div className="text-xs text-gray-500 mb-1">Total Amount</div>
-                              <span className="font-medium text-gray-900 text-sm">${(payout.total_amount || 0).toFixed(2)}</span>
-                            </div>
-                          </div>
-
-                          {payout.date_paid && (
-                            <div className="mt-3 pt-3 border-t border-gray-100">
-                              <div className="text-xs text-gray-500 mb-1">Paid Date</div>
-                              <span className="text-sm text-gray-600">{new Date(payout.date_paid).toLocaleDateString()}</span>
-                            </div>
-                          )}
-                        </motion.div>
-                      ))}
-                    </div>
-                  </>
+                {scans.length === 0 ? (
+                  <p className="t-empty">No taps yet. Once your display is on the counter, they show up here within seconds.</p>
                 ) : (
-                  <div className="bg-white rounded-[4px] border border-transparent py-12 md:py-20 text-center">
-                    <div className="flex flex-col items-center gap-4 max-w-sm mx-auto px-4">
-                      <div className="w-20 h-20 bg-white rounded-full flex items-center justify-center">
-                        <svg className="w-10 h-10 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg>
-                      </div>
-                      <div>
-                        <p className="text-gray-900 font-medium text-lg mb-1">No payouts yet</p>
-                        <p className="text-gray-500 text-sm">Your payout history will appear here</p>
-                      </div>
-                    </div>
+                  <div className="t-scroll">
+                    <table className="t-feed" style={{ marginTop: 28 }}>
+                      <thead>
+                        <tr>
+                          <th style={{ width: 150 }}>When</th>
+                          <th style={{ width: 170 }}>Display</th>
+                          <th>Where</th>
+                          <th style={{ width: 130 }}>Result</th>
+                          <th style={{ width: 110, textAlign: 'right' }}>You earned</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {scans.slice(0, 25).map((scan) => (
+                          <tr key={scan.id}>
+                            <td className="t-mono" style={{ color: 'var(--pewter)' }}>{fmtWhen(scan.timestamp)}</td>
+                            <td className="t-mono">{scan.uid}</td>
+                            <td style={{ color: 'var(--graphite)' }}>{scan.location || '—'}</td>
+                            <td>
+                              <span className={`t-status ${scan.converted ? 't-status--ok' : 't-status--idle'}`}>
+                                {scan.converted ? 'Bought' : 'Browsed'}
+                              </span>
+                            </td>
+                            <td className="t-mono" style={{ textAlign: 'right', color: scan.revenue ? 'var(--ink)' : 'var(--fog)' }}>
+                              {scan.revenue ? fmtMoney(scan.revenue * 0.3) : '—'}
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
                   </div>
                 )}
-              </motion.div>
-            )}
+              </section>
 
-            {/* Settings Tab */}
-            {activeTab === 'settings' && (
-              <motion.div
-                key="settings"
-                initial={{ opacity: 0, x: tabDirection * 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.3 }}
-                className="space-y-4 md:space-y-6"
-              >
-                <h3 className="text-sm md:text-base font-medium text-gray-900">Store Settings</h3>
-
-                {/* Display Confirmation */}
-                <motion.div
-                  className="bg-white to-white border border-gray-200 rounded-[4px] p-4 md:p-8"
-                >
-                  <h4 className="font-medium text-gray-900 text-base md:text-lg mb-4 md:mb-6">Display Confirmation</h4>
-                  <div className="space-y-4">
-                    <div className="bg-white border border-purple-200 rounded-[4px] p-4">
-                      <div className="flex items-start gap-3">
-                        <div className="flex-shrink-0 w-10 h-10 bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3] rounded-full flex items-center justify-center">
-                          <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                          </svg>
-                        </div>
-                        <div className="flex-1">
-                          <div className="flex items-center justify-between mb-2">
-                            <h5 className="font-medium text-gray-900">Displays Owned</h5>
-                            <span className="text-2xl font-medium bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3] bg-clip-text text-transparent">
-                              {retailer?.displays_ordered || 1}
-                            </span>
-                          </div>
-                          <p className="text-sm text-gray-600 mb-3">
-                            You have {retailer?.displays_ordered || 1} {(retailer?.displays_ordered || 1) === 1 ? 'display' : 'displays'} registered to your store
-                          </p>
-
-                          {/* Display Status */}
-                          {retailer?.priority_display_active ? (
-                            // Priority Display Active - Show purple shipping badge
-                            <div className="mt-3 p-3 rounded-[4px] border bg-gradient-to-r from-purple-50 to-pink-50 border-purple-300">
-                              <div className="flex items-center gap-2">
-                                <span className="text-lg">⚡</span>
-                                <div>
-                                  <p className="font-medium text-purple-900">Priority Shipping</p>
-                                  <p className="text-xs text-purple-700">
-                                    Your displays ship with priority delivery
-                                  </p>
-                                </div>
-                              </div>
-                            </div>
-                          ) : (
-                            // Standard Display - Show upgrade option + email warning
-                            <div className="mt-3 space-y-2">
-                              <div className="p-3 bg-blue-50 border border-blue-200 rounded-[4px]">
-                                <div className="flex items-center gap-2">
-                                  <span className="text-lg">📦</span>
-                                  <div>
-                                    <p className="font-medium text-blue-900">Standard Display</p>
-                                    <p className="text-xs text-blue-700">
-                                      <a
-                                        href={`https://pawpayaco.com/products/display-setup-for-affiliate?email=${encodeURIComponent(retailer?.email || '')}&retailer_id=${retailer?.id || ''}`}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        className="underline hover:text-blue-900"
-                                      >
-                                        Upgrade to Priority Shipping
-                                      </a> for four extra weeks of profit during Q4 and Black Friday
-                                    </p>
-                                  </div>
-                                </div>
-                              </div>
-
-                              {/* Important Notice */}
-                              <div className="p-3 bg-amber-50 border border-amber-400 rounded-[4px]">
-                                <div className="flex items-start gap-2">
-                                  <span className="text-xl mt-0.5">⚠️</span>
-                                  <div className="flex-1">
-                                    <p className="font-medium text-amber-900 text-xs mb-1">Important: Use Your Account Email</p>
-                                    <p className="text-xs text-amber-800 mb-2">
-                                      When checking out on Shopify, you <span className="font-medium">must use this email</span> to activate the upgrade:
-                                    </p>
-                                    <p className="text-xs text-amber-800 mb-2">
-                                      Dashboard takes ~30 seconds to register upgrade - wait and refresh the tab.
-                                    </p>
-                                    <div className="bg-white px-3 py-2 rounded-[4px] border border-amber-300">
-                                      <p className="text-xs font-mono font-medium text-amber-900">{retailer?.email}</p>
-                                    </div>
-                                    <p className="text-xs text-amber-700 mt-2">
-                                      Using a different email will prevent automatic activation.
-                                    </p>
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                          )}
-
-                          {/* Order Another Display Button */}
-                          <motion.button
-                            onClick={() => setIsOrderModalOpen(true)}
-                            
-                            
-                            className="mt-4 w-full px-6 py-3 bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3] text-white rounded-[4px] font-medium transition-all flex items-center justify-center gap-2"
-                          >
-                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-                            </svg>
-                            Order Another Display
-                          </motion.button>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </motion.div>
-
-                {/* Bank Connection Section */}
-                <div className="bg-white to-white border border-gray-200 rounded-[4px] p-4 md:p-8">
-                  <h4 className="font-medium text-gray-900 text-base md:text-lg mb-4 md:mb-6">Bank Connection</h4>
-                  
-                  {retailerAccount?.is_connected ? (
-                    <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 p-4 md:p-6 bg-green-50 border border-green-200 rounded-[4px]">
-                      <div className="flex items-center gap-4">
-                        <div className="w-12 h-12 bg-white rounded-[4px] flex items-center justify-center">
-                          <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                          </svg>
-                        </div>
-                        <div>
-                          <p className="font-medium text-gray-900">
-                            {retailerAccount?.institution_name || 'Bank Account Connected'}
-                            {retailerAccount?.account_mask && (
-                              <span className="ml-2 font-mono text-gray-500">••••{retailerAccount.account_mask}</span>
-                            )}
-                          </p>
-                          <p className="text-sm text-gray-600">
-                            {retailerAccount?.account_name
-                              ? `${retailerAccount.account_name} · Ready to receive payouts`
-                              : 'Ready to receive payouts'}
-                          </p>
-                        </div>
-                      </div>
-                      <motion.button
-                        onClick={() => setShowRemoveConfirm(true)}
-                        disabled={removingBank}
-                        className={`w-full md:w-auto px-6 py-2.5 border border-red-300 text-red-700 rounded-[4px] text-sm font-medium hover:bg-red-50 transition-all flex items-center justify-center gap-2 ${
-                          removingBank ? 'opacity-75 cursor-not-allowed' : ''
-                        }`}
-                      >
-                        {removingBank && (
-                          <svg className="animate-spin h-4 w-4 text-red-700" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                          </svg>
-                        )}
-                        {removingBank ? 'Removing...' : 'Remove Bank'}
-                      </motion.button>
-                    </div>
-                  ) : (
-                    <div className="text-center pt-8 pb-4">
-                      <div className="w-20 h-20 bg-white rounded-full flex items-center justify-center mx-auto mb-4">
-                        <svg className="w-10 h-10 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
-                        </svg>
-                      </div>
-                      <p className="text-gray-700 font-medium text-lg mb-2">No bank account connected</p>
-                      <p className="text-gray-500 mb-6">Connect your bank account to receive payouts</p>
-                      {retailer?.id ? (
-                        <>
-                          {/* TEMPORARY: Disabled during Dwolla production approval */}
-                          {BANK_CONNECTION_DISABLED ? (
-                            <div className="text-center">
-                              <button
-                                disabled
-                                className="px-8 py-3 bg-gray-300 text-gray-500 rounded-[4px] font-medium cursor-not-allowed flex items-center gap-2 mx-auto opacity-50"
-                              >
-                                Connect Bank Account
-                              </button>
-                              <p className="text-xs text-gray-500 mt-3">
-                                Bank connections temporarily unavailable during system upgrade
-                              </p>
-                            </div>
-                          ) : (
-                            <motion.button
-                              whileHover={{ scale: (plaidLoading || connecting) ? 1 : 1.05 }}
-                              whileTap={{ scale: (plaidLoading || connecting) ? 1 : 0.95 }}
-                              onClick={handlePlaidConnect}
-                              disabled={plaidLoading || connecting || !plaidScriptLoaded}
-                              className={`px-8 py-3 bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3] text-white rounded-[4px] font-medium hover: transition-all flex items-center gap-2 mx-auto ${
-                                (plaidLoading || connecting || !plaidScriptLoaded) ? 'opacity-75 cursor-not-allowed' : ''
-                              }`}
-                            >
-                              {(plaidLoading || connecting) && (
-                                <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                                </svg>
-                              )}
-                              {connecting ? 'Connecting...' : plaidLoading ? 'Opening...' : !plaidScriptLoaded ? 'Loading...' : 'Connect Bank Account'}
-                            </motion.button>
-                          )}
-                        </>
-                      ) : (
-                        <Link href="/onboard/register">
-                          <motion.button
-                            
-                            
-                            className="px-8 py-3 bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3] text-white rounded-[4px] font-medium hover: transition-all mx-auto"
-                          >
-                            Complete registration first
-                          </motion.button>
-                        </Link>
-                      )}
-                      
-                      {/* Bank Availability Info */}
-                      <div className="mt-6 p-4 bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-[4px] text-center">
-                        <div className="flex items-center justify-center gap-2 mb-2">
-                          <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                          <span className="text-sm font-medium text-blue-800">Chase, Schwab, and PNC available soon</span>
-                        </div>
-                        <p className="text-xs text-blue-600">All other major banks accepted • Instant setup • Secure connection</p>
-                      </div>
-                    </div>
-                  )}
-                </div>
-
-                {/* Your Displays Section */}
-                <motion.div
-                  className="bg-white to-white border border-gray-200 rounded-[4px] p-4 md:p-8"
-                >
-                  <h4 className="font-medium text-gray-900 text-base md:text-lg mb-4 md:mb-6">Your Displays (UIDs)</h4>
-
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
-                    {uids.map((uid, idx) => {
-                      const displayStatus = getDisplayStatus(uid);
-                      const statusColors = {
-                        green: 'bg-green-100 text-green-700 border-green-200',
-                        blue: 'bg-blue-100 text-blue-700 border-blue-200',
-                        yellow: 'bg-yellow-100 text-yellow-700 border-yellow-200',
-                        gray: 'bg-gray-100 text-gray-700 border-gray-200'
-                      };
-                      
+              {/* Bars are hairline columns, not filled rounded blocks. */}
+              {weeklyData.length > 0 && (
+                <section className="t-section">
+                  <div className="t-section__title">This week</div>
+                  <p className="t-section__note">Taps per day.</p>
+                  <div className="t-bars">
+                    {weeklyData.map((d, i) => {
+                      const max = Math.max(...weeklyData.map((x) => x.scans), 1);
                       return (
-                        <motion.div
-                          key={uid.uid}
-                          initial={{ opacity: 0, y: 20 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          transition={{ delay: idx * 0.1 }}
-                          className="bg-white to-white border border-gray-200 rounded-[4px] p-6"
-                        >
-                          <div className="flex items-start justify-between mb-4">
-                            <div className="inline-flex items-center gap-2 bg-gray-100 px-4 py-2.5 rounded-full">
-                              <span className={`w-2 h-2 ${displayStatus.dotColor} rounded-full animate-pulse`}></span>
-                              <span className="text-sm font-medium text-gray-700">{displayStatus.badge}</span>
-                            </div>
-                            <span className={`px-3 py-1.5 rounded-full text-xs font-medium border ${statusColors[displayStatus.color]}`}>
-                              {displayStatus.status.includes('Active') ? 'Active' : displayStatus.status.split(' ')[0]}
-                            </span>
+                        <div key={i} className="t-bars__col">
+                          <div className="t-bars__track">
+                            <div
+                              className="t-bars__fill"
+                              style={{ height: `${(d.scans / max) * 100}%` }}
+                              aria-label={`${d.scans} taps on ${d.day}`}
+                            />
                           </div>
-
-                          <h5 className="text-lg font-medium text-gray-900 mb-2">Display UID</h5>
-
-                          <div className="mb-3">
-                            <span className="text-xs text-gray-500 font-medium">UID:</span>
-                            <p className="font-mono text-sm text-gray-900 bg-gray-100 px-3 py-1.5 rounded-[4px] mt-1">
-                              {uid.uid}
-                            </p>
-                          </div>
-
-                          <div className="space-y-2">
-                            <div className="text-sm font-medium text-gray-700">
-                              {displayStatus.status}
-                            </div>
-                            
-                            {uid.registered_at && (
-                              <div className="text-xs text-gray-500">
-                                Registered: {new Date(uid.registered_at).toLocaleDateString()}
-                              </div>
-                            )}
-                            
-                            {uid.claimed_at && (
-                              <div className="text-xs text-gray-500">
-                                Claimed: {new Date(uid.claimed_at).toLocaleDateString()}
-                              </div>
-                            )}
-                            
-                            {displayStatus.storeName && (
-                              <div className="text-xs text-gray-600 font-medium">
-                                📍 {displayStatus.storeName}
-                              </div>
-                            )}
-                          </div>
-                        </motion.div>
+                          <div className="t-bars__n">{d.scans || ''}</div>
+                          <div className="t-bars__d">{d.day}</div>
+                        </div>
                       );
                     })}
                   </div>
-
-                  {uids.length === 0 && (
-                    <div className="bg-white to-white border border-gray-200 rounded-[4px] p-12 text-center">
-                      <div className="flex flex-col items-center gap-4 max-w-sm mx-auto px-4">
-                        <div className="w-20 h-20 bg-white rounded-full flex items-center justify-center">
-                          <svg className="w-10 h-10 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                          </svg>
-                        </div>
-                        <div>
-                          <p className="text-gray-900 font-medium text-lg mb-1">No displays assigned yet</p>
-                          <p className="text-gray-500 text-sm">Contact support to get your first display</p>
-                        </div>
-                      </div>
-                    </div>
-                  )}
-                </motion.div>
-
-                {/* Store Profile */}
-                <motion.div
-                  className="bg-white to-white border border-gray-200 rounded-[4px] p-4 md:p-8"
-                >
-                  <h4 className="font-medium text-gray-900 text-base md:text-lg mb-4 md:mb-6">Store Profile</h4>
-                  <div className="space-y-4">
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">Store Name</label>
-                      <div className="w-full px-4 py-3 border border-transparent rounded-[4px] bg-gray-50 text-gray-900">
-                        {retailer?.name || 'Not set'}
-                      </div>
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">Address</label>
-                      <div className="w-full px-4 py-3 border border-transparent rounded-[4px] bg-gray-50 text-gray-900">
-                        {retailer?.address || retailer?.location || 'Not set'}
-                      </div>
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">Owner Name</label>
-                      <div className="w-full px-4 py-3 border border-transparent rounded-[4px] bg-gray-50 text-gray-900">
-                        {retailer?.owner_name || 'Not set'}
-                      </div>
-                    </div>
-                    <p className="text-xs text-gray-500 mt-2">Contact support to update your store information</p>
-                  </div>
-                </motion.div>
-
-                {/* Store Contact Information */}
-                <motion.div
-                  className="bg-white to-white border border-gray-200 rounded-[4px] p-4 md:p-8"
-                >
-                  <h4 className="font-medium text-gray-900 text-base md:text-lg mb-4 md:mb-6">Store Contact Information</h4>
-                  <div className="space-y-4">
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">Manager Name</label>
-                      <div className="w-full px-4 py-3 border border-transparent rounded-[4px] bg-gray-50 text-gray-900">
-                        {retailer?.manager_name || 'Not set'}
-                      </div>
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">Store Phone</label>
-                      <div className="w-full px-4 py-3 border border-transparent rounded-[4px] bg-gray-50 text-gray-900">
-                        {retailer?.phone || retailer?.store_phone || 'Not set'}
-                      </div>
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">Store Email</label>
-                      <div className="w-full px-4 py-3 border border-transparent rounded-[4px] bg-gray-50 text-gray-900">
-                        {retailer?.email || 'Not set'}
-                      </div>
-                    </div>
-                    <p className="text-xs text-gray-500">We use this information to send updates about your displays and payouts</p>
-                  </div>
-                </motion.div>
-
-                {/* Account Actions */}
-                <motion.div
-                  className="bg-white to-white border border-gray-200 rounded-[4px] p-4 md:p-8"
-                >
-                  <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-                    <div>
-                      <h4 className="font-medium text-gray-900 text-base md:text-lg mb-2">Account</h4>
-                      <p className="text-sm text-gray-600">Sign out to switch accounts or end your session securely.</p>
-                    </div>
-                    <button
-                      onClick={() => signOut()}
-                      className="px-6 py-3 font-medium text-gray-700 hover:text-gray-900 transition-all rounded-[4px] border border-transparent/80 hover:border-gray-400 bg-white/80 backdrop-blur-sm hover:bg-white/90"
-                    >
-                      Sign Out
-                    </button>
-                  </div>
-                </motion.div>
-
-                {/* Save Button */}
-                <motion.button
-                  onClick={() => {
-                    if (settingsChanged) {
-                      showToast('Settings saved successfully!', 'success');
-                      setSettingsChanged(false);
-                    }
-                  }}
-                  className={`w-full py-4 px-6 rounded-[4px] font-medium text-lg transition-all ${
-                    settingsChanged
-                      ? 'bg-gradient-to-r from-[#ff7a4a] to-[#ff6fb3] text-white hover: cursor-pointer'
-                      : 'bg-gray-200 text-gray-500 cursor-not-allowed'
-                  }`}
-                  disabled={!settingsChanged}
-                >
-                  {settingsChanged ? '💾 Save Changes' : '✓ All Settings Saved'}
-                </motion.button>
-              </motion.div>
-            )}
-          </div>
-      </div>
-
-      {/* Remove Bank Confirmation Modal */}
-      <AnimatePresence>
-        {showRemoveConfirm && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4"
-            onClick={() => setShowRemoveConfirm(false)}
-          >
-            <motion.div
-              initial={{ opacity: 0, scale: 0.95, y: 20 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.95, y: 20 }}
-              onClick={(e) => e.stopPropagation()}
-              className="bg-white rounded-[4px] max-w-md w-full p-6 md:p-8 border border-transparent"
-            >
-              <div className="flex items-center justify-center w-16 h-16 bg-red-100 rounded-full mx-auto mb-4">
-                <svg className="w-8 h-8 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-                </svg>
-              </div>
-              <h3 className="text-xs md:text-sm font-medium text-gray-900 text-center mb-2">Remove Bank Account?</h3>
-              <p className="text-sm text-gray-600 text-center mb-6">
-                This will disconnect your bank account. Your payout history will be preserved, but you won't be able to receive new payouts until you connect a new bank account.
-              </p>
-              <div className="flex gap-3">
-                <motion.button
-                  
-                  
-                  onClick={() => setShowRemoveConfirm(false)}
-                  className="flex-1 px-6 py-3 border border-transparent text-gray-700 rounded-[4px] font-medium hover:bg-gray-50 transition-all"
-                >
-                  Cancel
-                </motion.button>
-                <motion.button
-                  
-                  
-                  onClick={handleRemoveBank}
-                  className="flex-1 px-6 py-3 bg-gradient-to-r from-red-500 to-red-600 text-white rounded-[4px] font-medium transition-all"
-                >
-                  Remove Bank
-                </motion.button>
-              </div>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      {/* Toast Notification */}
-      <AnimatePresence>
-        {toast && (
-          <motion.div
-            initial={{ opacity: 0, y: 50, scale: 0.9 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 50, scale: 0.9 }}
-            className="fixed bottom-8 right-8 z-50"
-          >
-            <div className={[
-              "rounded-[4px] px-6 py-4 border flex items-center gap-3 min-w-[300px]",
-              toast.type === 'success' 
-                ? "bg-gradient-to-r from-green-400 to-emerald-500 border-green-300 text-white" 
-                : "bg-gradient-to-r from-red-400 to-rose-500 border-red-300 text-white"
-            ].join(" ")}>
-              {toast.type === 'success' ? (
-                <svg className="w-6 h-6 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-              ) : (
-                <svg className="w-6 h-6 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
+                </section>
               )}
-              <p className="font-medium">{toast.message}</p>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+            </>
+          )}
 
-      {/* Order Display Modal */}
-      <OrderDisplayModal
-        isOpen={isOrderModalOpen}
-        onClose={() => setIsOrderModalOpen(false)}
-        onSuccess={(result) => {
-          setIsOrderModalOpen(false);
-          showToast(`Display ordered successfully! Total displays: ${result.displays_ordered}`, 'success');
-          // Refresh retailer data to update the counter
-          if (retailer) {
-            setRetailer({ ...retailer, displays_ordered: result.displays_ordered });
-          }
-        }}
-      />
-    </div>
+          {/* ---------------------------------------------------------- PAYOUTS */}
+          {activeTab === 'payouts' && (
+            <section className="t-section" style={{ borderTop: 0 }}>
+              <div className="t-section__title">Payouts</div>
+              <p className="t-section__note">Your 30% of every order a tap produced.</p>
+
+              {payoutJobs.length === 0 ? (
+                <p className="t-empty">Nothing yet. Payouts appear here the moment a tap turns into an order.</p>
+              ) : (
+                <div className="t-scroll">
+                  <table className="t-feed" style={{ marginTop: 28 }}>
+                    <thead>
+                      <tr>
+                        <th style={{ width: 150 }}>Date</th>
+                        <th style={{ width: 130 }}>Order total</th>
+                        <th style={{ width: 140 }}>Status</th>
+                        <th style={{ textAlign: 'right' }}>Your cut</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {payoutJobs.map((payout, i) => (
+                        <tr key={i}>
+                          <td className="t-mono" style={{ color: 'var(--pewter)' }}>{fmtWhen(payout.date_paid || payout.created_at)}</td>
+                          <td className="t-mono">{fmtMoney(payout.total_amount || 0)}</td>
+                          <td>
+                            <span className={`t-status ${payout.status === 'paid' ? 't-status--ok' : 't-status--pending'}`}>
+                              {payout.status === 'paid' ? 'Paid' : 'Pending'}
+                            </span>
+                          </td>
+                          <td className="t-mono" style={{ textAlign: 'right', fontWeight: 500 }}>{fmtMoney(payout.retailer_cut || 0)}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+            </section>
+          )}
+
+          {/* ---------------------------------------------------------- SETTINGS */}
+          {activeTab === 'settings' && (
+            <>
+              <section className="t-section" style={{ borderTop: 0 }}>
+                <div className="t-section__title">Your displays</div>
+                <p className="t-section__note">
+                  {retailer?.displays_ordered > 0
+                    ? `${retailer.displays_ordered} registered to ${retailer?.name || 'your store'}.`
+                    : 'None ordered yet.'}
+                </p>
+
+                {uids.length > 0 && (
+                  <div className="t-scroll">
+                    <table className="t-feed" style={{ marginTop: 28 }}>
+                      <thead>
+                        <tr>
+                          <th style={{ width: 190 }}>Display</th>
+                          <th>Status</th>
+                          <th style={{ width: 150, textAlign: 'right' }}>Claimed</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {uids.map((uid) => {
+                          const st = getDisplayStatus(uid);
+                          return (
+                            <tr key={uid.uid}>
+                              <td className="t-mono">{uid.uid}</td>
+                              <td>
+                                <span className={`t-status ${st.color === 'green' ? 't-status--ok' : st.color === 'blue' ? 't-status--pending' : 't-status--idle'}`}>
+                                  {st.status}
+                                </span>
+                              </td>
+                              <td className="t-mono" style={{ textAlign: 'right', color: 'var(--pewter)' }}>
+                                {uid.claimed_at ? new Date(uid.claimed_at).toLocaleDateString() : '—'}
+                              </td>
+                            </tr>
+                          );
+                        })}
+                      </tbody>
+                    </table>
+                  </div>
+                )}
+
+                <button className="t-btn t-btn--primary" style={{ marginTop: 28 }} onClick={() => setIsOrderModalOpen(true)}>
+                  Order another display
+                </button>
+              </section>
+
+              {/* Bank — status is a dot and a word, not a green card. */}
+              <section className="t-section t-row">
+                {retailerAccount?.is_connected ? (
+                  <>
+                    <div>
+                      <div className="t-section__title">
+                        {retailerAccount.institution_name || 'Bank connected'}
+                        {retailerAccount.account_mask && (
+                          <span className="t-mono" style={{ color: 'var(--pewter)', fontSize: 16, marginLeft: 8 }}>
+                            ••••{retailerAccount.account_mask}
+                          </span>
+                        )}
+                      </div>
+                      <p className="t-section__note">
+                        {retailerAccount.account_name ? `${retailerAccount.account_name} · ` : ''}
+                        <span className="t-status t-status--ok">Ready for payouts</span>
+                      </p>
+                    </div>
+                    <button className="t-btn t-btn--quiet" onClick={() => setShowRemoveConfirm(true)} disabled={removingBank}>
+                      {removingBank ? 'Removing…' : 'Remove bank'}
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    <div>
+                      <div className="t-section__title">No bank connected</div>
+                      <p className="t-section__note">
+                        {retailer?.id ? 'Connect a bank and we deposit your cut directly.' : 'Finish registering your store first.'}
+                      </p>
+                    </div>
+                    {retailer?.id ? (
+                      <button
+                        className="t-btn t-btn--primary"
+                        onClick={handlePlaidConnect}
+                        disabled={plaidLoading || connecting || !plaidScriptLoaded}
+                      >
+                        {connecting ? 'Connecting…' : plaidLoading ? 'Opening…' : !plaidScriptLoaded ? 'Loading…' : 'Connect bank account'}
+                      </button>
+                    ) : (
+                      <Link href="/onboard/register" className="t-btn t-btn--primary">Finish registering</Link>
+                    )}
+                  </>
+                )}
+              </section>
+
+              <section className="t-section">
+                <div className="t-section__title">Store details</div>
+                <p className="t-section__note">Call us to change any of this.</p>
+                <dl className="t-dl">
+                  {[
+                    ['Store', retailer?.name],
+                    ['Address', retailer?.address || retailer?.location],
+                    ['Owner', retailer?.owner_name],
+                    ['Manager', retailer?.manager_name],
+                    ['Phone', retailer?.phone || retailer?.store_phone],
+                    ['Email', retailer?.email],
+                  ].map(([k, v]) => (
+                    <div key={k} className="t-dl__row">
+                      <dt className="t-dl__k">{k}</dt>
+                      <dd className="t-dl__v">{v || <span style={{ color: 'var(--fog)' }}>Not set</span>}</dd>
+                    </div>
+                  ))}
+                </dl>
+              </section>
+
+              <section className="t-section" style={{ paddingBottom: 96 }}>
+                <div className="t-section__title">Account</div>
+                <p className="t-section__note">Signed in as {retailer?.email || 'your account'}.</p>
+                <button className="t-btn t-btn--secondary" style={{ marginTop: 20 }} onClick={async () => { await supabase.auth.signOut(); router.push('/login'); }}>
+                  Sign out
+                </button>
+              </section>
+            </>
+          )}
+        </div>
+
+        {/* Remove-bank confirm */}
+        {showRemoveConfirm && (
+          <div className="t-modal" role="dialog" aria-modal="true">
+            <div className="t-modal__panel">
+              <div className="t-section__title">Remove this bank?</div>
+              <p className="t-section__note" style={{ marginBottom: 28 }}>
+                We stop depositing your payouts until you connect another one. Nothing you&apos;ve already earned goes away.
+              </p>
+              <div style={{ display: 'flex', gap: 12, justifyContent: 'flex-end' }}>
+                <button className="t-btn t-btn--secondary" onClick={() => setShowRemoveConfirm(false)}>Keep it</button>
+                <button className="t-btn t-btn--danger" onClick={handleRemoveBank} disabled={removingBank}>
+                  {removingBank ? 'Removing…' : 'Remove bank'}
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Toast — a hairline card and a word, no gradient, no bounce. */}
+        {toast && (
+          <div className={`t-toast ${toast.type === 'success' ? 't-toast--ok' : 't-toast--fail'}`} role="status">
+            {toast.message}
+          </div>
+        )}
+
+        <OrderDisplayModal
+          isOpen={isOrderModalOpen}
+          onClose={() => setIsOrderModalOpen(false)}
+          onSuccess={(result) => {
+            setIsOrderModalOpen(false);
+            showToast(`Display ordered. You now have ${result.displays_ordered}.`, 'success');
+            if (retailer) setRetailer({ ...retailer, displays_ordered: result.displays_ordered });
+          }}
+        />
+      </div>
     </>
   );
 }

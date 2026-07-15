@@ -212,3 +212,63 @@
   .t-nav__word { display: none; }   /* mark alone on small screens */
   .t-footer__cols { gap: 32px; }
 }
+
+/* ---------------------------------------------------------------- dashboard */
+
+.t-wrap { max-width: 1120px; margin: 0 auto; padding: 0 32px; }
+
+.t-row {
+  display: flex; align-items: flex-end; justify-content: space-between;
+  gap: 32px; flex-wrap: wrap;
+}
+.t-hero-num {
+  font-size: 56px; font-weight: 500; letter-spacing: -0.03em;
+  margin-top: 20px; font-variant-numeric: tabular-nums;
+}
+.t-empty {
+  margin-top: 24px; font-size: 14px; color: var(--pewter); max-width: 460px;
+}
+.t-scroll { overflow-x: auto; }   /* tables scroll themselves; the page never does */
+
+/* Weekly bars: hairline columns. No fills, no rounding, no gridlines. */
+.t-bars { display: flex; gap: 8px; margin-top: 32px; height: 140px; align-items: flex-end; }
+.t-bars__col { flex: 1; display: flex; flex-direction: column; align-items: center; height: 100%; }
+.t-bars__track { flex: 1; width: 100%; display: flex; align-items: flex-end; }
+.t-bars__fill { width: 100%; background: var(--ink); min-height: 1px; transition: height var(--t); }
+.t-bars__n { font-size: 12px; color: var(--pewter); margin-top: 8px; font-variant-numeric: tabular-nums; min-height: 16px; }
+.t-bars__d { font-size: 12px; color: var(--fog); }
+
+/* Definition list instead of a "profile card". */
+.t-dl { margin: 28px 0 0; }
+.t-dl__row { display: flex; gap: 24px; padding: 14px 0; border-top: var(--rule); }
+.t-dl__k { width: 140px; flex-shrink: 0; font-size: 13px; color: var(--pewter); margin: 0; }
+.t-dl__v { font-size: 14px; color: var(--ink); margin: 0; }
+
+.t-btn--danger { background: var(--canvas); color: var(--fail); box-shadow: inset 0 0 0 1px var(--fail); }
+.t-btn--danger:hover { background: var(--fail); color: #fff; }
+.t-btn:disabled { opacity: 0.45; cursor: not-allowed; }
+
+.t-modal {
+  position: fixed; inset: 0; z-index: 60;
+  background: rgba(128, 128, 128, 0.65);   /* Tesla's overlay value */
+  display: flex; align-items: center; justify-content: center; padding: 24px;
+}
+.t-modal__panel {
+  background: var(--canvas); border-radius: var(--radius);
+  padding: 32px; max-width: 440px; width: 100%;
+}
+
+.t-toast {
+  position: fixed; bottom: 24px; right: 24px; z-index: 70;
+  background: var(--ink); color: #fff;
+  padding: 14px 20px; border-radius: var(--radius);
+  font-size: 14px; font-weight: 400; max-width: 380px;
+}
+.t-toast--fail { background: var(--fail); }
+
+@media (max-width: 640px) {
+  .t-wrap { padding: 0 20px; }
+  .t-hero-num { font-size: 40px; }
+  .t-dl__row { flex-direction: column; gap: 4px; }
+  .t-dl__k { width: auto; }
+}
